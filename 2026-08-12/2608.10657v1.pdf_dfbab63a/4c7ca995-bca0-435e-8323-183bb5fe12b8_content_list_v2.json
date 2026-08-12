@@ -1,0 +1,3536 @@
+[
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Retrieval-Augmented Vision Foundation Models for Robust Leukemia Cell Classification across Multiple Microscopy Datasets"
+                    }
+                ],
+                "level": 1
+            },
+            "bbox": [
+                112,
+                87,
+                883,
+                159
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Carlos Zamora<sup>a,†</sup>, Hiram Zuniga<sup>a,†</sup>, Ulises Orozco-Rosas<sup>a,∗</sup>, and Kenia Picos<sup>a</sup>"
+                    }
+                ]
+            },
+            "bbox": [
+                173,
+                176,
+                823,
+                194
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "<sup>a</sup>CETYS Universidad, Ave. CETYS Universidad No. 4, Fracc. El Lago, C.P. 22210, Tijuana, Baja California, Mexico"
+                    }
+                ]
+            },
+            "bbox": [
+                102,
+                207,
+                892,
+                243
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "ABSTRACT"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                437,
+                268,
+                558,
+                285
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Leukemia cell image classification is challenged by real-world domain shifts from acquisition, staining, illumination, and site protocols, causing single-dataset models to generalize poorly in real clinical scenarios. This work presents a robust framework for leukemia classification across multiple heterogeneous datasets using a two-stage pipeline with a pretrained vision foundation model. Stage 1 performs binary classification (leukemia vs. non-leukemia) and is trained using 122,167 single-cell images. Stage 2 is conditionally applied to Stage 1 positives to perform subtype classification into Acute Lymphoblastic Leukemia (ALL) and Acute Myeloid Leukemia (AML), trained using 69,400 single-cell images. Labels are harmonized across five heterogeneous datasets to enable cross-dataset training, and performance is evaluated on a held-out dataset protocol to assess domain-shift generalization. Within this pipeline, three encoders are benchmarked (DinoBloom, pretrained on single-cell images; BiomedCLIP, pretrained on biomedical data; and CLIP as a general-purpose model) under linear probing, Low-Rank Adaptation (LoRA), and a Retrieval-Augmented Classification (RAC) module that retrieves the top-k most similar cell images to provide cytomorphological grounding. The objective is to quantify how much domain-specific pretraining contributes to performance under domain shift, and whether cost-efective adaptation and retrieval can be a viable alternative to expensive domain-specialized pretraining. The held-out protocol additionally serves as a diagnostic tool, revealing when classification performance is attributable to dataset-specific artifacts rather than to cytomorphological features."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                291,
+                900,
+                535
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Keywords: medical imaging, vision transformers, low-rank adaptation (LoRA), computer vision, cytomorphology, hematopathology"
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                541,
+                897,
+                573
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "1. INTRODUCTION"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                400,
+                592,
+                596,
+                606
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Leukemia is the most common cancer among children and a leading cause of pediatric deaths.<sup>1</sup> Early detection of leukemia is important for patient survival, but confirmatory diagnostic methods are expensive and invasive, complicating detection.<sup>2</sup> This work presents a robust framework for leukemia classification across multiple datasets of single-cell microscopy images. Such a framework could ofer a non-invasive first-line screening on peripheral blood smear microscopy images that can help guide the need for more invasive and expensive confirmatory diagnostic methods."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                613,
+                900,
+                705
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Deep learning has been widely used for leukemia classification using blood smear microscopy images.<sup>3–5</sup> The problem with this classification task is the real-world domain shifts arising from diferences in acquisition devices, staining, illumination, and site protocols, which can degrade the performance of models trained on a single dataset.<sup>6</sup> This work uses cross-dataset training over five heterogeneous datasets spanning diferent acquisition protocols, staining, and illumination. Model robustness is then assessed under domain shift."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                708,
+                900,
+                786
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "This study proposes a two-stage pipeline using a pretrained vision foundation model backbone with two classification heads, reducing the diagnostic task into two subtasks: detecting whether a patient has leukemia and, if so, determining its subtype. Stage 1 performs binary classification (leukemia vs. non-leukemia) and is trained using 122,167 single-cell images. Stage 2 is conditionally applied to Stage 1 positives and performs subtype classification into Acute Lymphoblastic Leukemia (ALL) and Acute Myeloid Leukemia (AML), trained using 69,400 leukemic cell images. This two-stage pipeline allows Stage 1 to be trained on 122,167 images rather than being limited to datasets with ALL and AML labels, potentially improving generalization under domain shift. To quantify this, the study evaluates on a held-out dataset representing an unseen domain, instead of a test split from a domain seen during model training."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                790,
+                900,
+                821
+            ]
+        },
+        {
+            "type": "page_aside_text",
+            "content": {
+                "page_aside_text_content": [
+                    {
+                        "type": "text",
+                        "content": "arXiv:2608.10657v1 [eess.IV] 11 Aug 2026"
+                    }
+                ]
+            },
+            "bbox": [
+                29,
+                353,
+                65,
+                814
+            ]
+        },
+        {
+            "type": "page_footnote",
+            "content": {
+                "page_footnote_content": [
+                    {
+                        "type": "text",
+                        "content": "†These authors contributed equally to this work."
+                    }
+                ]
+            },
+            "bbox": [
+                119,
+                827,
+                447,
+                842
+            ]
+        },
+        {
+            "type": "page_footnote",
+            "content": {
+                "page_footnote_content": [
+                    {
+                        "type": "text",
+                        "content": "*Corresponding author(s)."
+                    }
+                ]
+            },
+            "bbox": [
+                119,
+                840,
+                300,
+                856
+            ]
+        },
+        {
+            "type": "page_footnote",
+            "content": {
+                "page_footnote_content": [
+                    {
+                        "type": "text",
+                        "content": "U. Orozco-Rosas: E-mail: ulises.orozco@cetys.mx"
+                    }
+                ]
+            },
+            "bbox": [
+                119,
+                854,
+                452,
+                869
+            ]
+        },
+        {
+            "type": "page_footnote",
+            "content": {
+                "page_footnote_content": [
+                    {
+                        "type": "text",
+                        "content": "Author’s version of a manuscript accepted for presentation at SPIE Optics + Photonics 2026. Copyright 2026 SPIE."
+                    }
+                ]
+            },
+            "bbox": [
+                119,
+                873,
+                893,
+                888
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/e989a372c7e28279ab57adead0f5b76b4aa1a261532e1072eba2cda7f68b1fad.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 1: Overview of the proposed framework. Five heterogeneous single-cell datasets are harmonized into three classes and encoded by one of three vision foundation models, either frozen with linear probing or adapted with LoRA, with an optional retrieval-augmented classification module. Stage 1 performs binary classification and routes leukemia positives to Stage 2 for subtype classification. Each stage is evaluated on its own held-out dataset. 122,167 and 69,400 are the remaining training data for each stage after excluding the held-out datasets."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                112,
+                98,
+                893,
+                505
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                96,
+                606,
+                900,
+                713
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "A systematic benchmark is proposed to quantify the impact of specialized and general-purpose Vision Models within the same two-stage pipeline to evaluate how domain-specific pretraining contributes to classification performance. The models used in this work are DinoBloom, which is trained on single-cell images,<sup>7</sup> Biomed-CLIP as a biomedical model,<sup>8</sup> and CLIP as a general-purpose model.<sup>9</sup> Encoder adaptation is assessed through parameter-eficient fine-tuning (PEFT), specifically Low-Rank Adaptation (LoRA). Finally, a Retrieval Augmented Classification (RAC) module that retrieves the top-k most similar labeled cell images in the embedding space is introduced, providing case-based support through cytomorphologically grounded data. An overview of the proposed framework is shown in Fig. 1."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                717,
+                900,
+                840
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "This work addresses the following research gap: how much does pretraining afect model performance and robustness under domain shift, and how much can fine-tuning and other techniques make up for this diference? Quantifying this impact allows us to evaluate whether cost-efective methods such as PEFT and retrieva augmentation can be a viable alternative to expensive domain-specialized pretraining for leukemia classification. The main contributions of this work are described as follows:"
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                842,
+                900,
+                890
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                98,
+                90,
+                897,
+                127
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• A two-stage classification pipeline, performing a binary classification at Stage 1 on leukemia vs nonleukemia, and then performing a subtype classification (ALL/AML) on leukemia positives for Stage 2, reducing the broad classification task into two steps."
+                    }
+                ]
+            },
+            "bbox": [
+                120,
+                141,
+                898,
+                188
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• A systematic benchmark that quantifies the impact of pretraining specialization on a foundation model for leukemia classification, evaluating models pretrained on single-cell images, biomedical data, and generalpurpose data within the same two-stage pipeline. The benchmark further isolates the contribution of adaptation strategies (linear probe and LoRA) and RAC, quantifying how much these techniques compensate for diferences in pretraining."
+                    }
+                ]
+            },
+            "bbox": [
+                120,
+                196,
+                900,
+                273
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• A held-out dataset evaluation protocol to assess performance under an unseen domain, instead of using a test split from domains seen during training. Cross-dataset training is performed using the remaining heterogeneous datasets (122,167 images for Stage 1 and 69,400 for Stage 2), comprising diferent acquisition protocols, staining, and labeling paradigms. This evaluation protocol also exposes dependencies on the acquisition source that a within-domain test split cannot reveal."
+                    }
+                ]
+            },
+            "bbox": [
+                120,
+                281,
+                900,
+                358
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The remainder of the paper is structured as follows: Section 2 is related studies; this literature review discusses implementations relevant to our work. Section 3 is the technical background, where foundation concepts specific to this paper are discussed; these are needed to understand our implementation. Section 4 presents the experimental setup, where the methodology and how the results are obtained are presented. Section 5 presents the experimental results and discusses them. Finally, Section 6 presents the Conclusions and Future Work."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                371,
+                900,
+                449
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "2. RELATED STUDIES"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                385,
+                463,
+                611,
+                479
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Deep learning approaches for leukemia classification have increasingly shifted from Convolutional Neural Networks (CNNs)<sup>10</sup> to Vision Transformers (ViTs),<sup>11</sup> whose self-attention mechanism can capture long-range dependencies and global patterns in cellular features. Prasad and Anbarasi<sup>12</sup> implemented ViTs for ALL detection using the ALL image dataset from the Taleqani Hospital (Tehran, Iran), classifying blood smear images into Benign and ALL morphological types. Similarly, Pandey et al.<sup>13</sup> used ViTs for the same task using microscopic high-resolution White Blood Cell (WBC) images from blood and bone marrow. Finally, Revathi and Kaliappan<sup>14</sup> proposed a hybrid ViT and U-Net framework for ALL classification, trained on single-cell images from the ALL-IDB2 dataset, performing binary classification (ALL or HEM). While these studies demonstrated strong performance on ALL classification, each is limited to only one dataset for training and evaluation, potentially leading to poor generalization under domain shift or cross-dataset evaluation."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                486,
+                900,
+                638
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Various works have acknowledged the importance of cross-dataset training and protocols that may increase model robustness under diferent acquisition conditions. Preethika and Ananthajothi<sup>15</sup> proposed a hybrid model using a ViT-CNN architecture, evaluated using two datasets: ALL-IDB1 and ALL-IDB2, and reporting robustness to image variability. Umer et al.<sup>16</sup> discuss robustness to diferent staining procedures, magnifications, and imaging protocols. They addressed domain shifts using three diferent datasets to train a robust CNN for WBC classification, addressing missing classes, class imbalance, preprocessing, and so on. Their work uses two datasets we employ, but focuses on white blood cell type classification rather than leukemia detection and subtyping. Wang et al.<sup>17</sup> proposed ALSNet for morphological cell classification, trained on 180,928 single-cell images from three diferent imaging platforms to enhance generalizability; they reported good classification results even when using a held-out dataset evaluation, suggesting cross-dataset training from diferent imaging platforms may increase robustness under domain shift. While this is a key finding for our study, ALSNet focuses on cell-level morphological classification aggregated into case-level subtype predictions, whereas our study trains on a multi-dataset corpus specific to leukemia detection and ALL/AML subtyping. In contrast to these three studies, this work addresses encoder adaptation using LoRA and linear probing, and introduces a RAC module."
+                    }
+                ]
+            },
+            "bbox": [
+                94,
+                641,
+                900,
+                856
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Outside cross-dataset training, several methods have been explored to improve model generalization in leukemia classification. Patel et al.<sup>18</sup> investigated the use of vision-language models (VLMs), such as CLIP,"
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                858,
+                900,
+                890
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "BiomedCLIP, and PLIP, for leukemia classification. Their study focused on prompt engineering techniques such as few-shot learning to assess their impact on classification performance using scarce data, showing that biomedical VLMs can achieve strong performance with minimal labeled data. Their work is relevant as it employs general-purpose and biomedical VLMs used in this study, though it does not incorporate encoder adaptation. In another study, the same authors<sup>19</sup> evaluated the same VLMs for classifying blood cells as normal or malignant, comparing general-purpose VLMs to biomedical-focused VLMs for specialized medical image classification. While this is relevant because it motivates our comparison of encoders, their evaluation does not quantify how adaptation strategies ofset pretraining diferences."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                92,
+                900,
+                213
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Beyond encoder selection, retrieval-based approaches have also been applied to leukemia. Song et al.<sup>20</sup> incorporated a knowledge graph-guided RAG from hematology-oncology textbooks for decision support in pediatric acute leukemia; while this implementation is evaluated with text and its purpose is clinical support, rather than performing leukemia classification on images, it serves as a bridge for the RAC modules. Naing et al.<sup>21</sup> proposed a deep metric learning system for image retrieval and classification, using a ResNet34 backbone for AML blood cell stages classification, this is a very similar approach to our RAC component because it retrieves images from an embedding space, but difers in that their embedding space is trained from scratch with metric learning objectives, whereas we perform retrieval on pretrained foundation models for cytomorphological grounding data. Another key diference is the use of additional techniques that support this retrieval approach, such as LoRA and linear probe. Their evaluation is limited to a single dataset with an 80/20 split, while we implement cross-dataset training and a held-out dataset evaluation to quantify how RAC contributes to classification performance."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                217,
+                900,
+                385
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "While the studies above address individual components in isolation, a few closely related works partially combine them. Dasdelen et al.<sup>22</sup> introduced cAItomorph for classifying hematological malignancies from peripheral blood smears, using a DinoBloom encoder with no adaptation techniques or retrieval augmentation. Although trained on a large image corpus comprising eight classes, their external evaluation is restricted to the AML class, leaving the remaining classes untested in external datasets. Ng et al.<sup>23</sup> proposed a hierarchical ensemble pipeline for WBC classification under domain shift, using DinoBloom with LoRA adaptation and a retrievalbased inference step conceptually similar to our RAC module. However, their study relies on a single encoder and therefore cannot evaluate how much domain-specific pretraining contributes to performance. Their hold-out test uses the test-split provided by WBCBench, gathered from domains seen during training. Additionally, their focus is WBC classification, not leukemia diagnosis and subtyping."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                388,
+                900,
+                541
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Most closely related to our work, Ben Rabah and Serag<sup>24</sup> proposed a benchmark to quantify the impact of pretraining specialization for computational pathology, evaluating seven general-purpose and three domainspecific foundation models across leukemia, prostate cancer, and breast cancer using linear probing and last-layer fine-tuning adaptation strategies. To assess robustness under domain shift, they trained on a source dataset and evaluated on external datasets for breast and prostate cancer. However, leukemia classification was excluded from this protocol due to inconsistent class definitions across sources, and their four datasets were instead evaluated individually, training and testing within each one. Our work addresses this gap by normalizing labels from five heterogeneous datasets, enabling cross-dataset training and a held-out dataset evaluation protocol. Additionally, LoRA and retrieval augmentation are applied within a two-stage classification pipeline."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                545,
+                900,
+                683
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "To the best of the authors’ knowledge, no prior work has implemented cross-dataset training through heterogeneous datasets and a held-out dataset test evaluation protocol in the same work for leukemia classification and its subtypes. See Table 1 for a comparison of related studies against the components integrated in this work. This work presents a framework that unifies all of these components and adds a two-stage pipeline, linear probe, LoRA, retrieval augmentation, and a systematic benchmark. Combined, these components let us answer: how much can cost-efective adaptation techniques improve model performance under domain shift, and assess whether this can be a viable alternative to expensive domain-specialized pretraining of a foundation model, which requires substantial computational resources."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                686,
+                900,
+                809
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3. TECHNICAL BACKGROUND"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                341,
+                825,
+                655,
+                840
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "This section describes the fundamental theory needed to understand the concepts and methods presented in this work."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                847,
+                898,
+                877
+            ]
+        }
+    ],
+    [
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/11e2d99014fa03503a1db235a26f510acf80b7e877dc68147b1f7021880727c9.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 1: Comparison of related studies against the components integrated in this work. PEFT: parametereficient fine-tuning. Enc.: benchmark of encoders with diferent pretraining specializations. Retr.: retrieval augmentation. X-train: training across multiple heterogeneous datasets. Held-out: evaluation on a dataset unseen during training."
+                    }
+                ],
+                "table_footnote": [
+                    {
+                        "type": "text",
+                        "content": "<sup>†</sup> Applied to prostate and breast cancer only; hematology was excluded from the cross-dataset analysis."
+                    }
+                ],
+                "html": "<table><tr><td>Study</td><td>Task</td><td></td><td></td><td></td><td></td><td>Enc. PEFT Retr. X-train Held-out</td></tr><tr><td>Prasad and Anbarasi12</td><td>ALL subtypes</td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>Pandey et al.13</td><td>ALL subtypes</td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>Revathi and Kaliappan14</td><td>ALL vs. HEM</td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>Preethika and Ananthajothi¹5</td><td>Leukemia det.</td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>Umer et al.16</td><td>WBC typing</td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>Wang et al.17</td><td>Cell + subtype</td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>Patel et al.18</td><td>Leukemia det.</td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>Patel et al.19</td><td>Normal vs. malig.</td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>Song et al.20</td><td>Clinical QA (text)</td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>Naing et al.21</td><td>AML cell stages</td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>Dasdelen et al.22</td><td>Malignancy classes</td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>Ng et al.23</td><td>WBC typing</td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>Ben Rabah and Serag24</td><td>Multi-domain path.</td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>This work (our proposal)</td><td>Leukemia + ALL/AML</td><td></td><td></td><td></td><td></td><td></td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                129,
+                150,
+                862,
+                396
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.1 Leukemia and Morphological Diagnosis"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                98,
+                433,
+                493,
+                449
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Leukemia is a type of cancer that afects the body’s blood-forming tissues, including the bone marrow. It is characterized by the uncontrolled proliferation of abnormal hematopoietic cells, consequently afecting the production of white blood cells (WBCs), which play a crucial role in protecting against infections. There are several subtypes of leukemia, with the main categories being Acute Lymphoblastic Leukemia (ALL), Acute Myeloid Leukemia (AML), Chronic Lymphocytic Leukemia (CLL), and Chronic Myeloid Leukemia (CML).<sup>25</sup>"
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                454,
+                900,
+                531
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Leukemia begins when the DNA of a single hematopoietic precursor cell in a person’s bone marrow mutates, causing its daughter cells to also inherit the same genetic alteration. These abnormal cells accumulate in the bone marrow and eventually enter the bloodstream. The abnormally produced cells are immature and inefective at supporting the immune system. Furthermore, their uncontrolled proliferation disrupts normal hematopoiesis, which directly afects the body’s ability to produce new healthy blood cells.<sup>25,</sup> <sup>26</sup>"
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                536,
+                900,
+                612
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Morphological classification of acute leukemias is based on two factors: the cell lineage from which it originates and its maturity stage.<sup>27</sup> Blood cells develop in the bone marrow and are divided into two main lineages: myeloid (red blood cells, platelets, granulocytes, and monocytes) and lymphoid (B lymphocytes, T lymphocytes, and natural killer cells).<sup>26,</sup> <sup>28</sup>"
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                616,
+                900,
+                678
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Diagnosing acute leukemias can begin with a non-invasive blood test, where a specialist analyzes a peripheral blood smear sample. The specialist determines whether abnormal cell morphology is present or identifies the presence of leukemic cells.<sup>29</sup> This process becomes dificult for several reasons, including the morphological similarities between leukemia subtypes, which require analyzing characteristics of the cytoplasm, nucleoli, and nuclear membrane. Additionally, key identifiable cells may appear in multiple leukemia subtypes, and low peripheral blood leukocyte levels can further complicate successful diagnosis.<sup>27</sup> To assist specialists and potentially improve early screening before invasive diagnostic procedures such as a bone marrow test, computer-assisted diagnostic tools have become a promising tool for leukemia morphological diagnosis."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                683,
+                900,
+                805
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "To prepare and fine-tune an AI-assisted tool, large datasets containing blood cell images are required. Medical image datasets vary in image quality, staining protocols, imaging hardware, and sample sources, introducing varying levels of domain shift, with annotation granularity representing a key characteristic.<sup>30</sup> Some datasets consist of peripheral blood smear images containing WBCs, the primary subjects of study for leukemia diagnosis, and accompanied by surrounding red blood cells (RBCs). These may be annotated at the patient-level or contain additional coordinate-based annotations, requiring an additional cell localization and extraction process before they can be used for morphological classification. In contrast, others provide cropped single-cell images of WBCs, where each cell is individually annotated according to its morphological or diagnostic category.<sup>31</sup>"
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                809,
+                900,
+                886
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                96,
+                90,
+                900,
+                138
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.2 Vision Foundation Models for Medical Image Classification"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                98,
+                148,
+                673,
+                165
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Vision Foundation Models (VFMs) are deep learning models that are pretrained on large-scale image datasets to learn visual representations. By being trained on large quantities of diverse, often unlabeled image datasets, these models learn important features and can later be tailored to a specific domain with fine-tuning techniques and adapted to downstream tasks such as image classification.<sup>32</sup> This gained knowledge allows the model to understand the structure of images rather than memorizing patterns from specific tasks, greatly improving its generalization capability and allowing it to reuse these acquired visual representations for various tasks.<sup>9,</sup> <sup>33</sup>"
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                171,
+                900,
+                263
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Compared with conventional Convolutional Neural Networks (CNNs), which are commonly used in medical imaging for disease classification and grading tasks, including MRI scans, X-rays, and peripheral blood smears,<sup>34</sup> VFMs ofer increased flexibility and generalization capabilities. Additionally, while supervised CNN-based classifiers are restricted to predefined categories and require task-specific training,<sup>10</sup> VFMs minimize reliance on task-specific annotated datasets by learning transferable visual representations that can later be adapted to downstream tasks in new domains.<sup>9,</sup> <sup>33</sup> This advantage is particularly important in medical imaging tasks, where datasets are scarce, are limited in size, require costly expert annotation, and frequently exhibit significant domain shift due to variations in acquisition methods and medical procedures.<sup>30</sup> Ultimately, VFMs are a promising tool for assisting clinicians in leukemia morphological diagnosis from peripheral blood smear images."
+                    }
+                ]
+            },
+            "bbox": [
+                94,
+                267,
+                900,
+                405
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.3 Encoder Adaptation Strategies"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                98,
+                415,
+                419,
+                433
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Modern AI foundation models, including VFMs, are computationally expensive, and fine-tuning them to a specific problem demands substantial computational resources. Parameter-Eficient Fine-Tuning (PEFT) refers to a collection of methods used to adapt pre-trained deep learning models on new datasets and tasks in a resourceand time-eficient way. PEFT commonly involves freezing most of the model while only training a small subset of parameters, allowing the model to adjust to a new domain while keeping its pretrained knowledge intact. This additionally reduces the risk of catastrophic forgetting, where knowledge that it gained originally is lost and overwritten by newly gained information, all while using significantly less memory and computational power compared to traditional fine-tuning algorithms.<sup>35</sup>"
+                    }
+                ]
+            },
+            "bbox": [
+                94,
+                438,
+                900,
+                560
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Among various PEFT approaches, Low-Rank Adaptation (LoRA) stands out as a resource-eficient way of fine-tuning a model. Unlike traditional techniques, LoRA focuses on freezing the model’s parameters, leaving its pretrained weights intact, and then injecting two new trainable low-rank matrices, B and A, to greatly reduce the number of trainable parameters and decrease the computational power needed for fine-tuning. Instead of using one matrix to represent the full weight update, LoRA approximates it with two smaller ones, using a low-rank decomposition to further reduce the memory needed for this process. This method is based on Eq. (1)."
+                    }
+                ]
+            },
+            "bbox": [
+                94,
+                563,
+                900,
+                656
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "h = W _ { 0 } x + \\Delta W x = W _ { 0 } x + B A x\\tag{1}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/a77f1edd06e859736137a538591f37acaba5702e27f4c9ea59f5c801012f1611.jpg"
+                }
+            },
+            "bbox": [
+                377,
+                674,
+                619,
+                690
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Where h is the resulting output feature representation, "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "W _ { 0 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is the frozen pretrained weight matrix, x indicates the input feature vector, ∆W is the trainable low-rank weight update, and B and A are the learnable low-rank matrices where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\Delta W = B A"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". This formulation produces the weight updates added to the frozen weights during the forward pass of the model.<sup>35,</sup> <sup>36</sup>"
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                702,
+                900,
+                765
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Although VFMs are a breakthrough technology that allows models to learn important visual representations from images, they are expensive to fit to downstream tasks because of their large parameter scale. Medical tasks are no exception, as expertly annotated datasets are limited and typically much smaller than those used during the foundation model pretraining.<sup>30</sup> Consequently, PEFT methods such as LoRA are used to facilitate finetuning VFMs to a specific problem, such as leukemia morphological diagnosis. This approach permits eficient adaptation while preserving the powerful visual representations learned during the model’s original large-scale pretraining.<sup>37</sup>"
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                768,
+                900,
+                876
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Linear probing for VFMs is a technique commonly used to evaluate the quality of the visual representations learned by the pretrained model. It works by freezing the image encoder and adding a lightweight linear classifier on top. The performance of this classifier shows how well the visual representations transfer to the classification task. High accuracy indicates that these learned representations contain information relevant to the task; otherwise, it suggests that these features are less useful.<sup>38</sup> A simplified overview of the linear probing process is shown in Fig. 2."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                92,
+                900,
+                183
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/b6926169daf35a090a651f2ae5158ed0107fb16fd935c93859ca7ce0607c1ef1.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 2: Simplified overview of the linear probing process. The pretrained VFM encoder remains frozen while a trainable linear classifier is optimized using the extracted visual representations for the target classification task."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                99,
+                204,
+                879,
+                327
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.4 Retrieval-Augmented Classification"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                98,
+                390,
+                457,
+                405
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Retrieval-augmented methods in artificial intelligence (AI) systems involve implementing an external memory retrieval mechanism for a pretrained model, allowing it to fetch task-specific information and enhance performance.<sup>39</sup> For VFM-based image classifiers, this technique aids the classification process, enabling the model to not only depend on its pretrained visual representations, but also incorporate additional context that helps to accurately classify an image. This is known as Retrieval-Augmented Classification (RAC). The mechanism consists of a parallel retrieval branch that is combined with the image encoder. At inference time, the retrieva branch queries pre-encoded images, which provide additional context and are fused with the base classification to create one final classification.<sup>40</sup>"
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                411,
+                900,
+                534
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "In medical image classification tasks, class imbalance is a commonly observed problem that can create a bias towards the majority (“head”) classes, making it dificult for a model to successfully identify the underrepresented (“tail”) classes.<sup>41</sup> Retrieval-Augmented Classification methods can help in these scenarios, where some disease categories may contain considerably fewer examples; this is also called long-tail classification. By providing additional contextual information, RAC can help the model include information from underrepresented samples during its final classification process, improving its accuracy at classifying “rare” classes.<sup>40</sup> A simplified overview of the Retrieval-Augmented Classification framework is shown in Fig. 3."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                537,
+                900,
+                645
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4. EXPERIMENTAL SETUP"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                361,
+                671,
+                635,
+                688
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "This section describes the datasets employed in this work, domain shift mitigation, label harmonization, the two-stage classification pipeline, the encoders and adaptation strategies, retrieval-augmented classification, the held-out evaluation protocol and metrics, and the experimental environment."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                694,
+                900,
+                741
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.1 Datasets"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                98,
+                753,
+                218,
+                768
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Multiple publicly available datasets containing cropped single-cell images of white blood cells (WBCs) were unified into a single dataset, consisting of three main classes: ALL, AML, and normal cells. The purpose of this merge was to improve the framework model’s generalization capability by introducing varying image quality, staining protocols, and image acquisition methods, increasing overall sample diversity. After preprocessing, the final dataset contained 122,427 single-cell images."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                773,
+                900,
+                852
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/49025b2221e9460d022de5d33f5720f00bda3709f1366dc18a26ccb999734989.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 3: Simplified overview of the Retrieval-Augmented Classification (RAC) framework. The input image is processed by a Vision Foundation Model (VFM) encoder, while a parallel retrieval branch retrieves relevant pre-encoded images. The retrieved information is fused with the classification features to produce the fina prediction."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                104,
+                87,
+                898,
+                376
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.1.1 C-NMC 2019"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                98,
+                462,
+                264,
+                478
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The CNMC 2019 dataset was originally released as part of the challenge: Classification of Normal vs Malignant Cells in B-ALL White Blood Cancer Microscopic Images, and contains expert-annotated images of WBCs collected from patients diagnosed with acute lymphoblastic leukemia (ALL) and healthy subjects. The dataset consists of 15,135 cropped single-cell images from 118 subjects, including 69 ALL and 49 healthy patients. Each image contains a segmented stained white blood cell isolated against a black background. Since the oficial test partition does not provide annotations, only the labeled training and validation subsets were incorporated into the unified dataset used in this work.<sup>42</sup> Representative examples of the images contained in the C-NMC 2019 dataset are shown in Fig. 4."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                483,
+                900,
+                607
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/6bad992d06aa998d50389a72a0a13d57d71b63fbac207a1095b95edff6963f29.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 4: Random samples from the C-NMC 2019 dataset."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                101,
+                616,
+                895,
+                742
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.1.2 AML-Cytomorphology"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                96,
+                780,
+                338,
+                796
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The Munich AML-Cytomorphology dataset consists of 18,365 expert-annotated microscopic images of individual white blood cells collected from 200 subjects, including 100 patients diagnosed with acute myeloid leukemia (AML) and 100 healthy patients. The dataset’s images are categorized according to cell morphology rather than explicit disease labels. The AML and normal cell labels for this work were derived from the cell morphology annotations. Additionally, ambiguous cell types were excluded, resulting in a curated subset of leukemic and normal cells that was incorporated into the unified dataset.<sup>43</sup> Representative examples of the images contained in the AML-Cytomorphology dataset are shown in Fig. 5."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                801,
+                900,
+                878
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                96,
+                90,
+                898,
+                122
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/57742940949ee8d9e0f499cb1fa2acd3c7ae7056d316a7115bd1ce8a3635cf3f.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 5: Random samples from the AML-Cytomorphology dataset."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                102,
+                132,
+                893,
+                256
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.1.3 Peripheral Blood Cell Dataset"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                98,
+                296,
+                400,
+                311
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "This dataset contains 17,092 expert-annotated microscopic images of individual normal blood cells acquired from peripheral blood smears. Each sample consists of a cropped single-cell image belonging to one of several normal hematopoietic cell types, including neutrophils, eosinophils, basophils, lymphocytes, monocytes, immature granulocytes, erythroblasts, and platelets. Since the dataset contains only non-leukemic cells, it served as an additional source of normal blood cell images for the unified dataset.<sup>44</sup> Representative examples of the normal blood cell images from this dataset are shown in Fig. 6."
+                    }
+                ]
+            },
+            "bbox": [
+                94,
+                318,
+                900,
+                410
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/e574211a9c01c75352adea5472f2fdf819fe87edcb1582063872ee1927614e75.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 6: Random samples from the Peripheral Blood Cell Dataset."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                102,
+                420,
+                893,
+                544
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.1.4 AML-Cytomorphology MLL Helmholtz"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                98,
+                583,
+                477,
+                599
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The AML-Cytomorphology MLL Helmholtz dataset is a large collection of expert-annotated microscopic images of individual white blood cells obtained from peripheral blood smears, acquired from the Munich Leukemia Laboratory (MLL). The dataset consists of 81,214 cropped single-cell images from 189 subjects, including 129 from patients diagnosed with AML and 60 from healthy patients. It includes four genetically defined AML subtypes according to the WHO 2022 classification (PML::RARA, NPM1, CBFB::MYH11, and RUNX1::RUNX1T1).<sup>45</sup> Representative examples of the images contained in the AML-Cytomorphology MLL Helmholtz dataset are shown in Fig. 7."
+                    }
+                ]
+            },
+            "bbox": [
+                94,
+                604,
+                900,
+                712
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/9217253a73f9ec4622d5a444169a9ee0304a02be93dcda87f6bbaaf84fe831dc.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 7: Random samples from the AML-Cytomorphology MLL Helmholtz dataset."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                99,
+                722,
+                897,
+                844
+            ]
+        }
+    ],
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.1.5 ALL-IDB2"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                98,
+                90,
+                240,
+                106
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The publicly available ALL-IDB2 dataset is designed to evaluate acute lymphoblastic leukemia (ALL) classification algorithms using microscopic blood smear images. The dataset contains 260 expert-annotated cropped single-cell images, equally divided between blast cells from ALL patients and normal white blood cells from healthy subjects. Each image contains a segmented individual cell extracted from peripheral blood smear microscopy. Although relatively small, it was incorporated into the unified dataset to increase the diversity of ALL cell samples.<sup>31</sup> Representative examples of the images contained in the ALL-IDB2 dataset are shown in Fig. 8."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                112,
+                900,
+                204
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/f0a09e925cac1492f5875924be4f9640ed45ed5a5c3bd7064320379efb1b8c51.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 8: Random samples from the ALL-IDB2 dataset."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                104,
+                213,
+                893,
+                338
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/550e07b04b8d858d47714bf8c09af8b54e0415854534b72f5f660e00db325c3a.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 2: Summary of the datasets used to create the unified dataset. The Original column reports the size of each dataset as published. The ALL, AML, and Normal columns report the images retained after applying the inclusion criterion of Section 4.3, and therefore sum to the Usable column."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td colspan=\"5\"></td><td colspan=\"4\">After filtering</td></tr><tr><td>Dataset</td><td>ID</td><td>Subjects</td><td>Original</td><td>ALL</td><td>AML</td><td>Normal</td><td></td><td>Usable</td></tr><tr><td>C-NMC 2019</td><td>D1</td><td>118</td><td>15,135</td><td>8,491</td><td></td><td></td><td>4,037</td><td>12,528</td></tr><tr><td>AML-Cytomorphology</td><td>D2</td><td>200</td><td>18,365</td><td></td><td></td><td>3,294</td><td>14,833</td><td>18,127</td></tr><tr><td>Peripheral Blood Cell</td><td>D3</td><td></td><td>17,092</td><td></td><td></td><td></td><td>10,298</td><td>10,298</td></tr><tr><td>AML-Cytomorphology MLL Helmholtz</td><td>D4</td><td>189</td><td>81,214</td><td></td><td></td><td>60,909</td><td>20,305</td><td>81,214</td></tr><tr><td>ALL-IDB2</td><td>D5</td><td></td><td>260</td><td>130</td><td></td><td></td><td>130</td><td>260</td></tr><tr><td>Total</td><td></td><td>507</td><td>132,066</td><td>8,621</td><td></td><td>64,203</td><td>49,603</td><td>122,427</td></tr></table>",
+                "table_type": "complex_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                102,
+                428,
+                893,
+                575
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Table 2 summarizes the original size of each dataset together with the number of images retained after preprocessing and filtering."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                597,
+                898,
+                630
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.2 Domain Shift Mitigation"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                98,
+                641,
+                362,
+                657
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "One of the main challenges we encountered when creating the unified dataset was the high level of visual inconsistency present in the single-cell images from the C-NMC 2019 dataset. While the other images were similar, consisting of a purple-stained WBC with a light background and often accompanied by red blood cells in the background, those from the C-NMC 2019 dataset were isolated and placed in front of a black background, as seen in Fig. 4."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                662,
+                900,
+                739
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "To mitigate this large domain shift and reduce the risk of the model learning to diferentiate the ALL class by memorizing image elements unrelated to cell morphology, each image was processed. The black background was removed and replaced with a randomly selected area from a healthy peripheral blood smear sample, shown in Fig. 9, containing mainly RBCs.<sup>46</sup> To increase generalization, the background was randomly modified through rotations and scaling. Additionally, Reinhard color normalization was applied to improve color consistency between datasets."
+                    }
+                ]
+            },
+            "bbox": [
+                94,
+                743,
+                900,
+                835
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/fbe7f59324bd0c194951dd163014328937bee80e2b2d4774bf417d5e44e420a1.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 9: A healthy peripheral blood smear background is used to replace the black backgrounds from C-NMC 2019 images during domain shift reduction."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                99,
+                88,
+                898,
+                347
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "This preprocessing strategy, as seen in Fig. 10, helped produce more visually consistent images. While not perfect, the resulting images are similar enough to reduce the likelihood that the model will learn irrelevant image characteristics during training."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                402,
+                898,
+                449
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/934a349564a079298869960c612e69f705911155acd63d6c9e978d2ed7532d04.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 10: Examples of curated CNMC samples after applying the proposed domain shift reduction technique."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                104,
+                463,
+                893,
+                574
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.3 Label Harmonization"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                98,
+                616,
+                330,
+                631
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Across the five heterogeneous datasets used for training and evaluation, annotation schemes difer substantially. Some provide binary image-level labels (e.g., ALL vs. non-ALL), others provide morphological cell-type labels (e.g., basophil, eosinophil), and others provide AML-type labels (e.g., monoblasts, myeloblasts). Additionally, some datasets are annotated at the patient level rather than the single-cell level (Section 4.1)."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                637,
+                898,
+                699
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "To enable cross-dataset training and held-out dataset evaluation, this work harmonizes these heterogeneous labels into three classes: normal, ALL, and AML. All genetic AML subtypes were collapsed into a single AML class. A uniform inclusion criterion was applied: only non-ambiguous nucleated leukocytes were used, since these are the cells relevant to leukemia diagnosis and the only cell type consistently present across all five datasets. Consequently, this study excluded non-leukocyte samples (platelets and erythroblasts), as they are not leukocytes, and smudge cells (labeled as KSC in D2), as they are ruptured cells that cannot be reliably identified. Immature granulocytes (promyelocytes, myelocytes, and metamyelocytes) were excluded because they are labeled inconsistently across datasets. Some sources label them as normal cells and others as leukemic. For the myeloid leukemic class, positive samples were restricted to blasts (myeloblasts and monoblasts). These rules and criteria were applied uniformly across all five datasets to ensure a consistent preprocessing pipeline before training and evaluation."
+                    }
+                ]
+            },
+            "bbox": [
+                94,
+                703,
+                900,
+                869
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "For the patient-level dataset (D4), cell-level labels are not available because each single-cell crop inherits the diagnostic label of its patient. Since a blood smear from a patient diagnosed with AML still contains a proportion of morphologically normal cells, some individually healthy cells are labeled as AML. This may introduce instancelevel label noise. However, it arises from the dataset design rather than from this study’s pipeline. Finally, all images were resized to 224×224 pixels."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                90,
+                900,
+                167
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.4 Two-Stage Classification Pipeline"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                98,
+                179,
+                441,
+                195
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "In this work, leukemia classification is decomposed into two sequential stages, each implemented as an independent linear classifier on top of a vision encoder: DinoBloom, BiomedCLIP, or CLIP. Stage 1 performs a binary classification (leukemia vs. non-leukemia) over the full harmonized corpus of 122,427 single-cell images, collapsing the AML and ALL classes into a single leukemia class. Stage 2 performs subtype classification (ALL vs. AML), applied conditionally to the samples predicted as leukemic by Stage 1, over the 72,824 leukemic single-cell images that remain after removing samples labeled as normal. The flow of this pipeline can be seen in Figure 11."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                202,
+                900,
+                308
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/79890ad96480e86a15ac236d7278ec4e41a795617a8f15303aed310955264a5c.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 11: Overview of the two-stage classification pipeline. Stage 1 performs binary classification over the full harmonized corpus. Samples predicted as leukemic are passed to Stage 2 for subtype classification. Additionally, 122,427 and 72,824 correspond to the full harmonized corpus per stage, before excluding the held-out datasets."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                99,
+                320,
+                897,
+                497
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Decoupling the task this way allows Stage 1 to leverage every labeled image, including datasets that provide only normal single-cell images, rather than being restricted to sources with subtype annotations, augmenting the corpus from 72,824 images to 122,427 images. The two stages are trained and evaluated as separate classifiers under their own held-out datasets (Section 4.7), avoiding contamination or data leakage between stages."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                579,
+                900,
+                641
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.5 Encoders and Adaptation Strategies"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                98,
+                651,
+                467,
+                667
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Three vision encoders from diferent pretraining specializations were trained and compared within the same pipeline. DinoBloom<sup>7</sup> is a DINOv2-based model<sup>33</sup> developed by MarrLab and pretrained on 13 publicly available datasets of single-cell images from peripheral blood and bone marrow, serving as the specialized model. BiomedCLIP<sup>8</sup> is pretrained on biomedical image and text pairs extracted from PubMed Central articles and represents the semi-specialized model, since it is pretrained on a biomedical domain but not as specific as single-cell images. Lastly, CLIP<sup>9</sup> is the general-purpose baseline, pretrained on natural image and text pairs. The versions used for these three vision encoders were: DinoBloom-B, which produces 14×14 image patches, 768-dimensional embeddings, and has 85.7 million parameters. BiomedCLIP produces 16×16 image patches, 512-dimensional embeddings, and has 86.2 million parameters, and CLIP produces 32×32 image patches, 512- dimensional embeddings, and has 87.8 million parameters; this information is presented in Table 3. The purpose of choosing these base models was to isolate the pretraining domain as the main source of variation between them, since the three encoders are consistent in parameter quantity; no result can be attributed to encoder size. For the two vision-language models (BiomedCLIP and CLIP), only the vision tower is used, since the pipeline requires no text input. All embeddings are L2-normalized before classification."
+                    }
+                ]
+            },
+            "bbox": [
+                94,
+                674,
+                900,
+                887
+            ]
+        }
+    ],
+    [
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/65a0ce74e756a50521c995d2e9e596187ef1a14aa88361c7398a155ac5b170b2.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 3: Vision encoders evaluated in this work. All three use the Base Vision Transformer configuration and difer by less than 2.5% in parameter count, which makes the pretraining domain the main source of variation. Token count corresponds to a "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "2 2 4 \\times 2 2 4"
+                    },
+                    {
+                        "type": "text",
+                        "content": "input."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Model</td><td>Pretraining domain</td><td>Architecture</td><td>Parameters</td><td>Tokens</td><td>Embedding dim.</td></tr><tr><td>DinoBloom-B</td><td>Single-cell hematology</td><td>ViT  $. \\mathrm { B } / 1 4$ </td><td>85.7M</td><td>256</td><td>768</td></tr><tr><td>BiomedCLIP</td><td>Biomedical image-text</td><td>ViT-B/16</td><td>86.2M</td><td>196</td><td>512</td></tr><tr><td>CLIP</td><td>Natural image-text</td><td>ViT-B/32</td><td>87.8M</td><td>49</td><td>512</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                112,
+                135,
+                882,
+                208
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Two adaptation strategies are evaluated using these three encoders. Linear probing involves freezing the encoder and training only a logistic regression classifier on the precomputed embeddings, using class weighting to compensate for class imbalance. This configuration isolates the representational quality of the pretrained encoder, since no parameter of the backbone is modified, only the head classifier. No augmentation was applied for linear probing, since embeddings were extracted once with deterministic preprocessing, and the encoder never processes the images again during training"
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                232,
+                900,
+                324
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "In Low-Rank Adaptation, low-rank update matrices are injected into the encoder’s attention projection layers while the pretrained weights remain frozen. The LoRA parameters and a linear classification head are trained jointly. LoRA was configured with the following hyperparameters: rank "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "r = 8 ."
+                    },
+                    {
+                        "type": "text",
+                        "content": ", scaling factor 16, and dropout 0.05. This results in 296,450 trainable parameters for DinoBloom, 295,938 for BiomedCLIP, and 443,394 for CLIP, a small fraction of the approximately 86 million parameters of each encoder. Training used the AdamW optimizer with a learning rate of "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "1 \\times 1 0 ^ { - 4 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", a batch size of 128, and class-weighted cross-entropy, for a fixed budget of three epochs with mixed-precision computation. Light augmentation consisting of horizontal and vertical flips and mild color jitter was applied during LoRA training. The same LoRA hyperparameters and training budget were applied uniformly across the three encoders and both stages to ensure comparability. The held-out datasets were never used during training or hyperparameter selection."
+                    }
+                ]
+            },
+            "bbox": [
+                94,
+                328,
+                900,
+                481
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.6 Retrieval-Augmented Classification"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                98,
+                491,
+                459,
+                507
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The RAC module works on the embedding space produced by the frozen or LoRA-adapted encoder. Given a query image, its embedding is compared by cosine similarity against an embedding bank comprising the L2-normalized training embeddings produced by the encoder. The top-k most similar samples make a similarityweighted vote over classes, making a retrieval distribution "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "p _ { \\mathrm { r e t } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". This distribution is then fused with the linear classifier distribution "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "p _ { \\mathrm { p r o b e } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "in log space, as defined in Eq. (2). Where α weights the contribution of the retrieval branch. In the linear probe configurations, the α value was selected on an internal validation split derived from the training datasets, searching over the grid {0, 0.25, 0.5, 0.75, 1}."
+                    }
+                ]
+            },
+            "bbox": [
+                94,
+                512,
+                900,
+                619
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathrm { l o g i t s } _ { \\mathrm { f i n a l } } = \\log p _ { \\mathrm { p r o b e } } + \\alpha \\log p _ { \\mathrm { r e t } }\\tag{2}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/b985ac45122368026fc27b06933e9a7d021448642c67552c1296f23e3f1449a2.jpg"
+                }
+            },
+            "bbox": [
+                377,
+                637,
+                619,
+                655
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "In contrast, for the LoRA configurations, α was fixed at 0.5 due to computational budget. The held-out datasets were never used for tuning. The predicted class corresponds to the highest resulting logit, and the k value was set to 20 in all experiments."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                664,
+                900,
+                710
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "This RAC module is implemented as an exact search in PyTorch. Since embeddings are L2-normalized, cosine similarity reduces to a dot product between the query and the embedding bank, and the top-k neighbors are obtained directly. No approximate nearest neighbor index or external retrieval library such as FAISS (Facebook AI Similarity Search) was used."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                713,
+                900,
+                776
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.7 Held-out Evaluation Protocol and Metrics"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                96,
+                786,
+                521,
+                803
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "To assess model performance under domain shift, each stage is evaluated on a held-out dataset excluded entirely from training, rather than on a test split derived from domains already seen by the model. Each stage uses its own held-out dataset, since the two stages are trained and evaluated as independent classifiers."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                808,
+                900,
+                854
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Stage 1 is evaluated on the ALL-IDB2 dataset, which contains both leukemic and healthy cells in a balanced proportion (130 and 130 single-cell images). This dataset is not part of the reported pretraining corpus of"
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                857,
+                901,
+                890
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "DinoBloom, which strengthens the evaluation, since it represents a domain unseen by the domain-specific encoder. Stage 1 training used the four remaining datasets, consisting of 122,167 single-cell images. Stage 2 is evaluated on the combination of ALL-IDB2 (representing the ALL class) and AML-Cytomorphology (representing the AML class), because, to the best of the authors’ knowledge, no single public dataset contains both subtypes. This results in a test set of 3,424 images (130 ALL and 3,294 AML). Stage 2 training was performed on the remaining two datasets, consisting of 69,400 leukemic single-cell images. In both stages, the held-out datasets are excluded from training to avoid contamination or data leakage. Neither classifier is reused across stages, avoiding data leakage between them."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                92,
+                900,
+                213
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "As a control experiment, Stage 2 is additionally evaluated under a conventional random 80/20 split stratified by class, using the same encoders and linear classifier. This within-domain split quantifies how much of the reported performance depends on dataset-specific artifacts rather than cell morphology patterns."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                217,
+                898,
+                265
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Performance is reported as accuracy, macro-averaged recall, and macro-averaged F1-score, defined in Eq. (3), (4), and (5) respectively. Macro averaging assigns equal weight to both classes regardless of their frequency. This is necessary in Stage 2 because the held-out test set is dominated by the AML class, with 3,294 samples against 130 of the ALL class. Without macro averaging, a majority-class predictor would still reach a high recall, hiding the failure on the minority class."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                267,
+                900,
+                344
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathrm { A c c u r a c y } = { \\frac { T P + T N } { T P + T N + F P + F N } }\\tag{3}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/57629beaf308ad8e17007cf8cb74efa295fc0ad069d4a354daeb9378b4017f93.jpg"
+                }
+            },
+            "bbox": [
+                366,
+                358,
+                627,
+                391
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathrm { R e c a l l } _ { \\mathrm { m a c r o } } = { \\frac { 1 } { C } } \\sum _ { c = 1 } ^ { C } { { \\frac { T P _ { c } } { T P _ { c } + F N _ { c } } } }\\tag{4}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/7302f53b0117b7f5d8064b994c195435979d3f1d6f54adbeaad9513ccdb04521.jpg"
+                }
+            },
+            "bbox": [
+                379,
+                406,
+                616,
+                449
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathrm { F 1 } _ { \\mathrm { m a c r o } } = { \\frac { 1 } { C } } \\sum _ { c = 1 } ^ { C } 2 \\cdot { \\frac { P _ { c } \\cdot R _ { c } } { P _ { c } + R _ { c } } }\\tag{5}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/0d3f0584261f09de18902b4b4bf0ba0aa0b39ea1453082058b7ea6e242819b89.jpg"
+                }
+            },
+            "bbox": [
+                392,
+                460,
+                601,
+                502
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "T P , T N , F P ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and FN denote the true positives, true negatives, false positives, and false negatives over the entire evaluation set, C is the number of classes, "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "T P _ { c }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "F N _ { c }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "are the true positives and false negatives of class "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "c ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "P _ { c }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "R _ { c }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "are the precision and recall of class c."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                512,
+                898,
+                559
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.8 Experimental Environment"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                98,
+                570,
+                385,
+                587
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "All of the results were generated using the same experimental setup: a laptop with Windows 11, an Intel Core i9-13900HX Central Processing Unit (CPU), an RTX 4090 Graphics Processing Unit (GPU), and 32 GB of Random Access Memory (RAM). Embedding extraction, LoRA adaptation, and retrieval search were executed on the GPU, whereas linear probing was executed on the CPU over precomputed embeddings."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                592,
+                900,
+                655
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Encoder weights were obtained from their oficial public releases. DinoBloom-B was loaded from the MarrLab repository on the Hugging Face Hub, CLIP from the OpenAI clip-vit-base-patch32 checkpoint through the transformers library, and BiomedCLIP through open clip. Embeddings were extracted once per encoder over the full curated corpus and saved to disk, so that linear probing and retrieval augmentation operate on precomputed embeddings. LoRA adaptation requires the raw images, since the encoder is modified during training, and is therefore the only configuration that recomputes embeddings. Embedding extraction over the full corpus required between 6 and 20 minutes per encoder, depending on patch size, while LoRA adaptation required between 4 and 16 minutes per epoch, depending on the encoder and stage."
+                    }
+                ]
+            },
+            "bbox": [
+                94,
+                659,
+                900,
+                781
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "All the described experiments were executed in Python 3.12.10, using the following library versions: PyTorch 2.5.1 (CUDA 12.1), torchvision 0.20.1, transformers 5.9.0, huggingface hub 1.10.1, open clip 3.3.0, PEFT 0.20.0, scikit-learn 1.8.0, NumPy 2.4.6, pandas 3.0.3, Pillow 12.2.0, and OpenCV 4.13.0."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                785,
+                898,
+                832
+            ]
+        }
+    ],
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "5. EXPERIMENTAL RESULTS"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                349,
+                89,
+                647,
+                106
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "This section presents the experimental results, starting with Stage 1. This benchmark evaluated three encoders under four configurations on a held-out dataset (D5) consisting of 260 single-cell images of leukemic and healthy cells. This evaluation protocol assesses whether Stage 1 can correctly diferentiate a leukemic cell from a healthy one. Although the leukemic cells in this held-out set are all of the ALL subtype, these count as leukemic cells at this stage, since the purpose of Stage 1 is to separate leukemic from healthy cells so they can be subtyped in Stage 2."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                112,
+                900,
+                204
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/073b437b9cd444a35aaa546796031faf1781b7324601b0d74f43bc45699f7416.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 4: Stage 1 performance comparison for leukemic versus non-leukemic cell classification. Evaluated on the held-out dataset (ALL-IDB2, n = 260)."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Model</td><td>Metric</td><td>Linear probe</td><td>Linear probe + RAC</td><td>LoRA</td><td>LoRA + RAC</td></tr><tr><td rowspan=\"3\">DinoBloom</td><td>Accuracy</td><td>0.8923</td><td>0.9423</td><td>0.9308</td><td>0.9385</td></tr><tr><td>Recall</td><td>0.8923</td><td>0.9423</td><td>0.9308</td><td>0.9385</td></tr><tr><td>F1-score</td><td>0.8923</td><td>0.9423</td><td>0.9307</td><td>0.9384</td></tr><tr><td rowspan=\"3\">BiomedCLIP</td><td>Accuracy</td><td>0.6962</td><td>0.6923</td><td>0.7962</td><td>0.8115</td></tr><tr><td>Recall</td><td>0.6962</td><td>0.6923</td><td>0.7962</td><td>0.8115</td></tr><tr><td>F1-score</td><td>0.6918</td><td>0.6697</td><td>0.7886</td><td>0.8057</td></tr><tr><td rowspan=\"3\">CLIP</td><td>Accuracy</td><td>0.6346</td><td>0.5577</td><td>0.9115</td><td>0.8923</td></tr><tr><td>Recall</td><td>0.6346</td><td>0.5577</td><td>0.9115</td><td>0.8923</td></tr><tr><td>F1-score</td><td>0.6345</td><td>0.5464</td><td>0.9112</td><td>0.8917</td></tr></table>",
+                "table_type": "complex_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                133,
+                250,
+                861,
+                426
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "As shown in Table 4, the best result was achieved by DinoBloom with RAC (0.9423 accuracy), with results ranging from 0.54 to 0.94 depending on the encoder and configuration. The held-out set is uncontaminated for the domain-specific encoder, since D5 is not part of the reported pretraining corpus of DinoBloom, which includes D2, D3, and D4 but not D1. Since D5 and D1 are the only available sources of ALL single-cell images, D1 was assigned to training and D5 to evaluation, as D1 is considerably larger than D5."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                450,
+                900,
+                527
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "5.1 Impact of Pretraining Specialization"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                98,
+                539,
+                467,
+                555
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "During Stage 1 evaluation, this study quantified the impact of pretraining specialization. DinoBloom achieved the best overall performance, achieving 0.8923 accuracy under linear probing, which best isolates the encoder’s raw ability to classify leukemia or not, since the backbone remains frozen. In contrast, BiomedCLIP achieved 0.6962 accuracy, and CLIP achieved 0.6346 under the same configuration."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                560,
+                900,
+                622
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/8dfbc322f6f0a8ecc4c90c264d8abe34f8524a01d4de6ed28b11d75c4a1677a5.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 5: Efect of pretraining specialization on Stage 1, measured with linear probing on the held-out dataset (ALL-IDB2, n = 260). The encoder is frozen, so diferences reflect the pretraining corpus alone. ∆ denotes the gain over the general-purpose baseline (CLIP)."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Model</td><td>Pretraining domain</td><td>Accuracy</td><td>Recall</td><td>F1-score</td><td>∆ Accuracy</td></tr><tr><td>DinoBloom</td><td>Single-cell hematology</td><td>0.8923</td><td>0.8923</td><td>0.8923</td><td>+0.2577</td></tr><tr><td>BiomedCLIP</td><td>Biomedical image-text</td><td>0.6962</td><td>0.6962</td><td>0.6918</td><td>+0.0616</td></tr><tr><td>CLIP</td><td>Natural images (general)</td><td>0.6346</td><td>0.6346</td><td>0.6345</td><td></td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                156,
+                681,
+                839,
+                755
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "As shown in Table 5, DinoBloom, which was pretrained on single-cell images, obtained a substantial amount of accuracy gain against the general-purpose encoder CLIP (0.2577). This reinforces the importance of pretraining domain for specialized classification tasks such as leukemia classification using cell-level images. Additionally, BiomedCLIP obtained only a 0.0616 gain over CLIP. Since BiomedCLIP was pretrained on biomedical data, it is expected to outperform CLIP, but the magnitude of this accuracy gain is small, which suggests that general biomedical pretraining is not suficient when the target task requires identifying specific cytomorphological features."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                780,
+                900,
+                886
+            ]
+        }
+    ],
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "5.2 Can Cost-efective Adaptation Replace Expensive Specialized Pretraining?"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                98,
+                90,
+                813,
+                107
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The main question this paper aims to answer is how viable cost-efective techniques such as LoRA or RAC can be for leukemia classification, and whether these techniques can replace the need for specialized pretraining."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                112,
+                898,
+                143
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Adding RAC improved performance by 0.0500 for DinoBloom but decreased it for CLIP and BiomedCLIP, suggesting that retrieval can add noise rather than help when the encoder is inefective at the classification task at hand. On the other hand, the most meaningful finding of these experiments is that LoRA increased CLIP performance by 0.2769, reaching 0.9115 accuracy and surpassing DinoBloom performance with a frozen encoder (0.8923), which directly addresses the research question of this work. These results are presented in Table 6."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                147,
+                900,
+                224
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/90ec56eb3b3c6df80ecdbaffb2d692d5559c85b8ef43976eacb00ff998a6bc23.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 6: Efect of LoRA adaptation on Stage 1 accuracy (held-out dataset, n = 260). Accuracy gain denotes the diference between LoRA and linear probing for each encoder. Retrieval augmentation is not applied in either configuration."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Model</td><td>Linear probe</td><td>LoRA</td><td>Accuracy gain</td></tr><tr><td>DinoBloom</td><td>0.8923</td><td>0.9308</td><td>+0.0385</td></tr><tr><td>BiomedCLIP</td><td>0.6962</td><td>0.7962</td><td>+0.1000</td></tr><tr><td>CLIP</td><td>0.6346</td><td>0.9115</td><td>+0.2769</td></tr><tr><td>Gap (DinoBloom – CLIP)</td><td>0.2577</td><td>0.0193</td><td></td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                212,
+                284,
+                784,
+                380
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "In this specific task, the need for expensive pretraining on hematology images was surpassed by a generalpurpose vision model using LoRA, an eficient fine-tuning method. However, DinoBloom with LoRA achieved better performance, indicating that LoRA benefits not only general-purpose encoders but also those with specialized pretraining. Although a specialized encoder can be matched or surpassed using LoRA adaptation, the best overall performance in Stage 1 was achieved by DinoBloom with RAC (0.9423), representing a specialized encoder with a cost-efective method. This suggests that cost-efective techniques remain valuable even when the encoder is already domain-specialized."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                404,
+                900,
+                511
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "5.3 Retrieval Augmentation"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                98,
+                522,
+                357,
+                539
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The RAC module retrieves the k most similar training embeddings by cosine similarity and aggregates their labels into a similarity-weighted vote. Its efect on Stage 1 was not uniform across encoders. The RAC module improved DinoBloom performance in both linear probe and LoRA settings. In contrast, performance decreased for BiomedCLIP and CLIP under linear probing. After LoRA adaptation, the retrieval branch either improved performance or reduced the magnitude of the degradation."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                544,
+                900,
+                622
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/a4737f363a34401c694f608a714250bea8257f6b5c86fc7a848c488bd946a3a2.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 7: Efect of retrieval augmentation on Stage 1 accuracy (held-out dataset, n = 260). Values denote the change in accuracy when RAC is added to each configuration."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Model</td><td>Linear probe → + RAC</td><td>LoRA → + RAC</td></tr><tr><td>DinoBloom</td><td>+0.0500</td><td>+0.0077</td></tr><tr><td>BiomedCLIP</td><td>-0.0039</td><td>+0.0153</td></tr><tr><td>CLIP</td><td>-0.0769</td><td>-0.0192</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                253,
+                666,
+                743,
+                739
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "As shown in Table 7, general-purpose encoders did not benefit from the RAC module, which is explained by how the module works. Its usefulness depends on how the encoder organizes the embedding space. When cells are grouped by cytomorphological features, the retrieved neighbors belong to the correct class and the RAC module reinforces the classifier, boosting its performance. When cells are instead grouped by dataset-specific artifacts, such as illumination, staining, or scanner characteristics, the retrieved neighbors come from visually similar sources rather than morphologically similar cells, and the module introduces noise that decreases encoder performance. Therefore, the embedding space needs to encode cytomorphological patterns for the RAC module to be useful. This is consistent with the Stage 1 results, where the domain-specific encoder benefits from retrieval while the general-purpose encoder is degraded by it."
+                    }
+                ]
+            },
+            "bbox": [
+                94,
+                763,
+                901,
+                872
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                96,
+                92,
+                898,
+                122
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "DinoBloom benefited from the RAC module (+0.0500), whereas CLIP, pretrained on natural images, was degraded by it (-0.0769). BiomedCLIP falls between these two, with a slight performance decrease (-0.0039). RAC behavior after LoRA adaptation supports this interpretation. Once the encoder is adapted to the task, the degradation on CLIP is reduced from -0.0769 to -0.0192, and BiomedCLIP shifts from a decrease to an increase in performance (+0.0153), reinforcing the importance of encoder quality for the RAC module to be efective."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                126,
+                900,
+                204
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "One methodological diference should be noted when comparing these two settings. The fusion weight α was selected from an internal validation split for the linear probe configurations. In contrast, for the LoRA configurations, the α value was fixed at 0.5 due to computational budget. Since the retrieval branch carries less weight in the LoRA setting, part of the reduced degradation on CLIP and the shift observed on BiomedCLIP may reflect this inconsistency."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                208,
+                900,
+                285
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "5.4 Why Subtype Classification Fails Under Domain Shift"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                98,
+                295,
+                627,
+                313
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "During the Stage 2 experiments, predictions collapsed almost entirely to the AML class. Nearly all configurations classified none of the 130 ALL cells correctly, as shown by the macro-averaged recall values in Table 8 and by the confusion matrix in Figure 12. This happened even though the training loss reached 0.0000, meaning the model learned the training data perfectly but collapsed on the unseen domains from the held-out datasets. This section examines why this happens."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                318,
+                900,
+                395
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/b936f060a83bfae94fc7ee0ddae161d5460f21395db345324f366961efb6efea.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 8: Stage 2 performance comparison for ALL versus AML subtype classification. Evaluated on the held-out datasets (ALL-IDB2 and AML-Cytomorphology, "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "n = 3 4 2 4 )"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". Accuracy reflects the majority class; macro-averaged recall near 0.50 indicates collapse to the AML class."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Model</td><td>Metric</td><td>Linear probe</td><td>Linear probe + RAC</td><td>LoRA</td><td>LoRA + RAC</td></tr><tr><td rowspan=\"3\">DinoBloom</td><td>Accuracy</td><td>0.9620</td><td>0.9620</td><td>0.9617</td><td>0.9620</td></tr><tr><td>Recall</td><td>0.5000</td><td>0.5000</td><td>0.4998</td><td>0.5000</td></tr><tr><td>F1-score</td><td>0.4903</td><td>0.4903</td><td>0.4902</td><td>0.4903</td></tr><tr><td rowspan=\"3\">BiomedCLIP</td><td>Accuracy</td><td>0.9620</td><td>0.9620</td><td>0.9620</td><td>0.9620</td></tr><tr><td>Recall</td><td>0.5000</td><td>0.5000</td><td>0.5000</td><td>0.5000</td></tr><tr><td>F1-score</td><td>0.4903</td><td>0.4903</td><td>0.4903</td><td>0.4903</td></tr><tr><td rowspan=\"3\">CLIP</td><td>Accuracy</td><td>0.9118</td><td>0.9118</td><td>0.9620</td><td>0.9620</td></tr><tr><td>Recall</td><td>0.4850</td><td>0.4850</td><td>0.5000</td><td>0.5000</td></tr><tr><td>F1-score</td><td>0.4867</td><td>0.4867</td><td>0.4903</td><td>0.4903</td></tr></table>",
+                "table_type": "complex_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                135,
+                454,
+                861,
+                631
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "There is a specific reason why ALL classifications were biased towards the AML class. Training was limited to one source per subtype: one dataset provided AML samples, and another provided ALL samples, with a synthetic image background. Consequently, the encoder learned the smear background and dataset-specific artifacts rather than morphological cellular features, which are more dificult for a vision encoder to extract. Learning cytomorphological patterns was not necessary, since the models reached a training loss of 0.000 by the second epoch, meaning the optimization did not provide feedback to move beyond dataset-specific shortcuts. This behavior is not explained by class imbalance either. Class weighting was applied in both linear probing and LoRA training, and the loss still converged to zero, suggesting that the model had no problem classifying the minority class during training."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                655,
+                900,
+                792
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Building on this, we performed an additional experiment on the DinoBloom encoder to assess the RAC module. This revealed that when querying an ALL image in the embedding space, 96.5% of the retrieved neighbors were AML and only 3.5% were ALL. This indicates that the encoder was placing the ALL cells on the AML side of the embedding space, before any classifier was applied. A possible explanation is that the held-out ALL dataset lacks a synthetic background, unlike the ALL dataset used for training, so the encoder associates it more closely with the AML images, which have a similar smear background. This behavior is also not attributable to the calibration of the retrieval branch. Increasing the fusion weight up to "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\alpha = 8 ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "where retrieval dominates the classifier output, never raises ALL recall above 0.0385 for any of the three encoders. Both findings reinforce that the encoder was learning shortcuts on the background of the cell image rather than cytomorphological patterns."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                796,
+                900,
+                888
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                96,
+                90,
+                900,
+                154
+            ]
+        },
+        {
+            "type": "chart",
+            "content": {
+                "image_source": {
+                    "path": "images/f0cfa99d84261e7f67738fdba31be54754a90d309c412068123cfe9e4b22bc6e.jpg"
+                },
+                "content": "",
+                "chart_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 12: Confusion matrix for Stage 2 subtype classification on the held-out datasets, shown for DinoBloom with linear probing. All 130 ALL cells are assigned to the AML class. This pattern is representative of nearly all encoder and adaptation configurations."
+                    }
+                ],
+                "chart_footnote": []
+            },
+            "bbox": [
+                326,
+                167,
+                671,
+                424
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "To quantify how much of this performance depends on dataset-specific artifacts rather than cell morphology, an additional control experiment was performed. The same models were evaluated under a random 80/20 split within the domain instead of the held-out dataset protocol. To make this dependency explicit, models were evaluated using a linear probe with a frozen encoder. The results presented in Table 9 show that ALL class recall increased to at least 0.99 in every model. This reinforces the idea that the encoder was learning datasetspecific backgrounds, since the same models collapse to near-zero ALL recall when they are evaluated through a strict held-out dataset evaluation protocol. This is most clearly demonstrated by the CLIP results. A general purpose model achieved 1.0000 accuracy on a specialized single-cell classification task without any fine-tuning, which contradicts the results in Stage 1 shown in Table 4, where CLIP with a frozen encoder achieved only 0.6346 accuracy. Reaching perfect accuracy suggests that CLIP learned the acquisition source rather than hematology features, which is something a non-specialized encoder can do. This is what the evaluation protocol on a held-out dataset uncovered: high performance is achieved under a random split, but when exposing the same model to an unseen domain, performance drops to near-zero ALL recall."
+                    }
+                ]
+            },
+            "bbox": [
+                94,
+                500,
+                900,
+                698
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/3b2bfc5e88d502e339cba438773769a950d409ce2eb0027fbd154dfdb9eb9f09.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 9: Stage 2 control experiment. Linear probing is evaluated under a random 80/20 split (within-domain) and under the held-out dataset protocol (cross-domain). ALL recall denotes the proportion of correctly identified ALL cells."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td rowspan=\"2\">Model</td><td colspan=\"2\">Random split</td><td colspan=\"2\">Held-out dataset</td></tr><tr><td>Accuracy</td><td>ALL recall</td><td>Accuracy</td><td>ALL recall</td></tr><tr><td>DinoBloom</td><td>0.9999</td><td>0.9988</td><td>0.9620</td><td>0.0000</td></tr><tr><td>BiomedCLIP</td><td>0.9997</td><td>0.9971</td><td>0.9620</td><td>0.0000</td></tr><tr><td>CLIP</td><td>1.0000</td><td>1.0000</td><td>0.9118</td><td>0.0231</td></tr></table>",
+                "table_type": "complex_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                259,
+                755,
+                736,
+                849
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "This is directly related to what this work means by robustness. Much of the previous work trains and evaluates on the same internal split, but such models’ performance can degrade severely when exposed to a new domain, as in a real-world scenario. A model can be trained on data from one hospital and collapse when applied to another, which is why a robust evaluation protocol is needed. Building on this, subtype classification under domain shift could be addressed in two ways. The first would require a dataset containing both ALL and AML single-cell images acquired from the same imaging platform, which would then be used as the held-out evaluation. The second would involve training on additional sources of ALL and AML data, so that the encoder is forced to learn cytomorphological features instead of dataset-specific shortcuts. Neither approach is available with the current public single-cell image datasets, and both could be considered for future work."
+                    }
+                ]
+            },
+            "bbox": [
+                120,
+                872,
+                900,
+                888
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                96,
+                92,
+                900,
+                213
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "5.5 Comparison with Prior Work"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                98,
+                224,
+                405,
+                241
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "A direct numerical comparison is not possible in this study, since the literature review found no works using a two-stage cascaded classification pipeline, which would make any comparison unfair. Additionally, some of the previous works perform WBC classification, or address only ALL or AML classification, or evaluate on a test split from a domain already seen by the encoder during training, as discussed in section 5.4, where such models are prone to collapse when exposed to a diferent domain."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                246,
+                900,
+                323
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "A close study of this work is the benchmark proposed by Ben Rabah and Serag,<sup>24</sup> which quantifies the impact of pretraining specialization across diferent foundation models. Their evaluation protocol was training on a source dataset and evaluating on a held-out dataset for breast and prostate cancer. However, leukemia was excluded from this cross-dataset evaluation protocol because of inconsistent class definitions across sources, and was instead trained and evaluated using a single dataset and an inner split within domain. The main consequence of using an inner split within domain, as presented in the results of this work, is that the encoder is not evaluated under domain shift, and the encoder’s performance may degrade when tested under an unseen domain. This work addresses the obstacle of label harmonization that motivated their study to exclude leukemia classification from the held-out dataset evaluation protocol, enabling cross-dataset training and held-out dataset evaluation for leukemia. However, this made a second obstacle apparent: even after harmonizing labels across heterogeneous datasets, subtype classification remains confounded by dataset-specific artifacts, since no public single-cell dataset provides both subtypes under the same imaging protocol. These two obstacles are layered, and this work documents the second one."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                327,
+                900,
+                525
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Wang et al.<sup>17</sup> report a rigorous evaluation protocol, proposing ALSNet, trained on 180,928 single-cell images from three diferent imaging platforms and reporting strong performance under held-out dataset evaluation. A relevant diference is the scope; their pipeline performs cell-level morphological classification into nineteen categories, aggregated into case-level predictions from bone marrow smears. In contrast, the present work classifies each cell directly into diagnostic categories such as AML or ALL. Additionally, this study evaluates encoder adaptation through LoRA and retrieval augmentation, which their study does not address."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                529,
+                900,
+                621
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "To the authors’ knowledge, no prior study focuses solely on evaluating leukemia detection and subtyping under domain shift and trained across heterogeneous single-cell sources, while additionally implementing encoder adaptation techniques such as LoRA and retrieval augmentation within the same two-stage cascaded pipeline. Therefore, a direct numerical comparison would not be meaningful."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                625,
+                900,
+                686
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "5.6 Limitations"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                98,
+                698,
+                245,
+                713
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Some limitations should be considered when interpreting these results and are described as follows:"
+                    }
+                ]
+            },
+            "bbox": [
+                98,
+                719,
+                810,
+                736
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• Size of the Stage 1 held-out set. The held-out evaluation for Stage 1 contains 260 images. ALL-IDB2 was selected because it is the only dataset containing both classes that lies outside the pretraining corpus of the domain-specific encoder, but its limited size means that small diferences in accuracy correspond to a small number of individual cells."
+                    }
+                ]
+            },
+            "bbox": [
+                120,
+                752,
+                900,
+                814
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• Pretraining contamination for the specialized encoder. Three of the five datasets used in this work are reported within the pretraining corpus of DinoBloom. Both available AML sources fall in this category, so the AML component of the evaluation does not represent a fully unseen domain for that encoder."
+                    }
+                ]
+            },
+            "bbox": [
+                122,
+                824,
+                900,
+                869
+            ]
+        }
+    ],
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "6. CONCLUSIONS AND FUTURE WORK"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                297,
+                90,
+                699,
+                106
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "This work presents a framework for robust leukemia classification using single-cell images across heterogeneous datasets, addressing domain shift by using a synthetic background, label harmonization across five datasets with diferent class definitions, and a uniform inclusion criterion on non-ambiguous nucleated leukocytes. In Stage 1, under held-out dataset evaluation, pretraining specialization accounts for a 0.2577 accuracy gap between DinoBloom (domain-specific) and CLIP (general-purpose) when both are evaluated with a frozen encoder (linear probing). This gap narrows to 0.0193 once LoRA adaptation is applied. Additionally, CLIP adapted with LoRA (0.9115) surpasses DinoBloom without adaptation (0.8923). The best overall result (0.9423) was achieved by combining the domain-specific encoder with retrieval augmentation and linear probing, without any fine-tuning. Cost-efective adaptation methods can compensate for most of the advantage provided by expensive domainspecific pretraining in this leukemia and subtyping classification task, although the highest performance was stil achieved by combining both specialized pretraining with RAC. Therefore, cost-efective adaptation benefits not only general-purpose encoders but also specialized ones, and is a viable alternative if expensive pretraining is not feasible due to time or computational resources."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                112,
+                900,
+                309
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The held-out dataset evaluation made visible a limitation that a test split within the domain would not expose in this experimental setting. In Stage 2, subtype classification collapses to the majority class under held-out dataset evaluation, while the same models and data achieve near-perfect accuracy using a random within-domain 80/20 split. This is attributable to each subtype class coming from a single dataset or imaging source during training, which allows the encoder to rely on dataset-specific artifacts instead of cytomorphological features. Therefore, future work should focus on adding more data sources to force the encoder to learn cellular patterns rather than shortcuts based on smear backgrounds. Another direction would be to normalize the backgrounds in all single-cell images across datasets, which could be done by applying the same synthetic background. This would force the encoder to learn cellular patterns instead of dataset-specific artifacts, providing a more consistent comparison."
+                    }
+                ]
+            },
+            "bbox": [
+                94,
+                313,
+                900,
+                464
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "ACKNOWLEDGMENTS"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                380,
+                479,
+                617,
+                494
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "This work was supported by the Coordinaci´on Institucional de Investigaci´on of CETYS Universidad."
+                    }
+                ]
+            },
+            "bbox": [
+                98,
+                501,
+                821,
+                516
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "REFERENCES"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                424,
+                531,
+                571,
+                546
+            ]
+        },
+        {
+            "type": "list",
+            "content": {
+                "list_type": "reference_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[1] Liu, W., Fang, J., Zhu, M., Zhou, J., and Yuan, C., “Global, regional, and national burden of childhood leukemia from 1990 to 2021,” BMC Pediatrics 25(1), 571 (2025)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[2] Yan, G., Gao, M., Shi, W., Liang, H., Qin, L., Liu, A., Kong, X., Zhao, H., Zhao, J., and Yan, Q., “Diagnosis and typing of leukemia using a single peripheral blood cell through deep learning,” Cancer Science 116(2), 533–543 (2025)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[3] Oybek Kizi, R. F., Theodore Armand, T. P., and Kim, H.-C., “A review of deep learning techniques for leukemia cancer classification based on blood smear images,” Applied Biosciences 4(1), 9 (2025)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[4] Hita, X., Javed, F., and Lodi, S., “Reliable leukemia detection via transfer-enhanced bayesian cnns,” Computers in Biology and Medicine 202, 111419 (2026)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[5] Nunna, H. K., Altable, A., Gundala, P., and Rangarajan, P. K., “Vista: vision transformer-attention enhanced cnn ensemble for optimized classification of acute lymphoblastic leukemia benign and progressive malignant stages,” International Journal of Information Technology (2024)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[6] Lopez-Montiel, M., Orozco-Rosas, U., S´anchez-Adame, M., Montiel, O., Picos, K., and Tapia, J. J., “Trafic sign classification using real-time gpu-embedded systems,” SN Computer Science 7(1), 12 (2025)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[7] Koch, V., Wagner, S. J., Kazeminia, S., Sancar, E., Hehr, M., Schnabel, J. A., Peng, T., and Marr, C., “Dinobloom: A foundation model for generalizable cell embeddings in hematology,” in [Medical Image Computing and Computer Assisted Intervention – MICCAI 2024], Lecture Notes in Computer Science 15012, 520–530, Springer, Cham (2024)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[8] Zhang, S., Xu, Y., Usuyama, N., Xu, H., Bagga, J., Tinn, R., Preston, S., Rao, R., Wei, M., Valluri, N., Wong, C., Tupini, A., Wang, Y., Mazzola, M., Shukla, S., Liden, L., Gao, J., Crabtree, A., Piening, B., Bifulco, C., Lungren, M. P., Naumann, T., Wang, S., and Poon, H., “A multimodal biomedical foundation model trained from fifteen million image–text pairs,” NEJM AI 2(1), AIoa2400640 (2025)."
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                106,
+                553,
+                897,
+                582
+            ]
+        }
+    ],
+    [
+        {
+            "type": "list",
+            "content": {
+                "list_type": "reference_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[9] Radford, A., Kim, J. W., Hallacy, C., Ramesh, A., Goh, G., Agarwal, S., Sastry, G., Askell, A., Mishkin, P., Clark, J., Krueger, G., and Sutskever, I., “Learning transferable visual models from natural language supervision,” in [Proceedings of the 38th International Conference on Machine Learning (ICML)], Proceedings of Machine Learning Research 139, 8748–8763, PMLR (2021)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[10] LeCun, Y., Bottou, L., Bengio, Y., and Hafner, P., “Gradient-based learning applied to document recognition,” Proceedings of the IEEE 86(11), 2278–2324 (1998)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[11] Dosovitskiy, A., Beyer, L., Kolesnikov, A., Weissenborn, D., Zhai, X., Unterthiner, T., Dehghani, M., Minderer, M., Heigold, G., Gelly, S., Uszkoreit, J., and Houlsby, N., “An image is worth 16x16 words: Transformers for image recognition at scale,” in [International Conference on Learning Representations (ICLR)], (2021)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[12] Prasad, P. and Anbarasi L., J., “Acute lymphoblastic leukemia subtypes detection using vision transformer model,” in [5th International Conference on Data Intelligence and Cognitive Informatics (ICDICI)], 1413– 1418 (2024)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[13] Pandey, P., RG, R. T., Pati, R. P., and Singh, S., “All-vit: A novel approach for detection of acute lymphoblastic leukemia,” in [12th International Conference on Emerging Trends in Engineering & Technology – Signal and Information Processing (ICETET–SIP)], 1–6 (2025)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[14] Revathi, B. and Kaliappan, M., “Leukovit-unet: A u-net and vision transformer hybrid approach for leukemia cell segmentation and classification,” International Journal of Computational Intelligence Systems 19(1), 257 (2026)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[15] Preethika, P. and Ananthajothi, K., “Hybrid vision transformer and cnn for leukemia detection in blood smear images,” in [11th International Conference on Communication and Signal Processing (ICCSP)], 1344– 1349 (2025)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[16] Umer, R. M., Gruber, A., Boushehri, S. S., Metak, C., and Marr, C., “Imbalanced domain generalization for robust single cell classification in hematological cytomorphology,” in [ICLR Workshop on Domain Generalization], (2023). arXiv:2303.07771."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[17] Wang, G., Chen, W., Zhao, H., Chen, X., Wu, M., Yu, Q., Liu, Q., Liu, H., Song, E., Xue, M., Sun, C., Chu, Z., and Hu, Y., “Cross-platform deep learning enables automated cytomorphologic subtyping of acute leukemia from bone marrow smears,” Virchows Archiv (2026)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[18] Patel, T., El-Sayed, H., and Sarker, M. K., “Microscopic hematological image classification with captions using few-shot learning in data-scarce environments,” in [IEEE International Conference on Internet of Things and Intelligence Systems (IoTaIS)], 184–190 (2024)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[19] Patel, T., El-Sayed, H., and Sarker, M. K., “Evaluating vision-language models for hematology image classification: Performance analysis of clip and its biomedical ai variants,” in [36th Conference of Open Innovations Association (FRUCT)], 578–584 (2024)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[20] Song, J. K., Youk, D. B., Kim, H., and Hwang, S.-H., “Multimodal knowledge graph–guided rag-llm for clinical decision support in pediatric leukemia,” Cancer Research and Treatment (2026). Epub ahead of print."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[21] Naing, K. M., Kittichai, V., Tongloy, T., Chuwongin, S., and Boonsang, S., “Images retrieval and classification for acute myeloid leukemia blood cell using deep metric learning,” in [Recent Challenges in Intelligent Information and Database Systems (ACIIDS)], Communications in Computer and Information Science 1863, 27–39, Springer, Cham (2023)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[22] Dasdelen, M. F., Kukuljan, I., Lienemann, P., Ozlugedik, F., Sadafi, A., Hehr, M., Spiekermann, K., Pohlkamp, C., and Marr, C., “AI-based hematological malignancy prediction from peripheral blood smears in a large diagnostic laboratory cohort,” Leukemia 40(6), 1318–1322 (2026)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[23] Ng, T., Dai, R., and Chen, H., “A hierarchical ensemble inference pipeline for robust white blood cell classification under domain shifts,” in [IEEE 23rd International Symposium on Biomedical Imaging (ISBI)], 1–4 (2026)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[24] Ben Rabah, C. and Serag, A., “Do foundation models truly outperform domain-specific models? evidence from digital pathology,” Machine Learning and Knowledge Extraction 8(6), 164 (2026)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[25] Li, J., Wang, Y., Dong, C., and Luo, L., “Advancements in leukemia management: Bridging diagnosis, prognosis and nanotechnology (review),” International Journal of Oncology 65(6), 112 (2024)."
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                106,
+                90,
+                900,
+                151
+            ]
+        }
+    ],
+    [
+        {
+            "type": "list",
+            "content": {
+                "list_type": "reference_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[26] Passegu´e, E., Jamieson, C. H., Ailles, L. E., and Weissman, I. L., “Normal and leukemic hematopoiesis: Are leukemias a stem cell disorder or a reacquisition of stem cell characteristics?,” Proceedings of the National Academy of Sciences of the United States of America 100(Suppl. 1), 11842–11849 (2003)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[27] Ladines-Castro, W., Barrag´an-Iba˜nez, G., Luna-P´erez, M. A., Santoyo-S´anchez, A., Collazo-Jaloma, J., Mendoza-Garc´ıa, E., and Ramos-Pe˜nafiel, C. O., “Morphology of leukaemias,” Revista M´edica del Hospital General de M´exico 79(2), 107–113 (2016)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[28] Kondo, M., “Lymphoid and myeloid lineage commitment in multipotent hematopoietic progenitors,” Immunological Reviews 238(1), 37–46 (2010)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[29] Sekar, M. D., Raj, M., and Manivannan, P., “Role of morphology in the diagnosis of acute leukemias: Systematic review,” Indian Journal of Medical and Paediatric Oncology 44(5), 464–473 (2023)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[30] Kumari, P., Bozorgpour, A., Reisenb¨uchler, D., Jost, E., Crysandt, M., Matek, C., and Merhof, D., “Domain-incremental white blood cell classification with privacy-aware continual learning,” Scientific Reports 15, 25468 (2025)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[31] Donida Labati, R., Piuri, V., and Scotti, F., “All-idb: The acute lymphoblastic leukemia image database for image processing,” in [Proceedings of the IEEE International Conference on Image Processing (ICIP)], 2045–2048 (2011)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[32] Lopez-Montiel, M., Orozco-Rosas, U., S´anchez-Adame, M., Picos, K., and Ross, O. H. M., “Evaluation method of deep learning-based embedded systems for trafic sign detection,” IEEE Access 9, 101217–101238 (2021)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[33] Oquab, M., Darcet, T., Moutakanni, T., Vo, H. V., Szafraniec, M., Khalidov, V., Fernandez, P., Haziza, D., Massa, F., El-Nouby, A., Assran, M., Ballas, N., Galuba, W., Howes, R., Huang, P.-Y., Li, S.-W., Misra, I., Rabbat, M., Sharma, V., Synnaeve, G., Xu, H., Jegou, H., Mairal, J., Labatut, P., Joulin, A., and Bojanowski, P., “Dinov2: Learning robust visual features without supervision,” Transactions on Machine Learning Research (2024)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[34] Jia, H., Zhang, J., Ma, K., Qiao, X., Ren, L., and Shi, X., “Application of convolutional neural networks in medical images: a bibliometric analysis,” Quantitative Imaging in Medicine and Surgery 14(5), 3501–3518 (2024)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[35] Han, Z., Gao, C., Liu, J., Zhang, J., and Zhang, S. Q., “Parameter-eficient fine-tuning for large models: A comprehensive survey,” arXiv preprint arXiv:2403.14608 (2024)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[36] Hu, E. J., Shen, Y., Wallis, P., Allen-Zhu, Z., Li, Y., Wang, S., Wang, L., and Chen, W., “LoRA: Low-rank adaptation of large language models,” arXiv preprint arXiv:2106.09685 (2021)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[37] Zanella, M. and Ben Ayed, I., “Low-rank few-shot adaptation of vision-language models,” in [Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition Workshops (CVPRW)], 1593–1603 (2024)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[38] Heim, E., Zhao, A., Tanner, C., Perkonigg, M. G., Ramesh, V. K., Angel, S., and Sampson, A., “Towards better understanding of domain shift on linear-probed visual foundation models,” in [NeurIPS 2023 Workshop on Distribution Shifts: Connecting Methods and Applications], (2023)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[39] Lewis, P., Perez, E., Piktus, A., Petroni, F., Karpukhin, V., Goyal, N., K¨uttler, H., Lewis, M., Yih, W., Rockt¨aschel, T., Riedel, S., and Kiela, D., “Retrieval-augmented generation for knowledge-intensive nlp tasks,” arXiv preprint arXiv:2005.11401 (2020)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[40] Long, A., Yin, W., Ajanthan, T., Nguyen, V., Purkait, P., Garg, R., Blair, A., Shen, C., and van den Hengel, A., “Retrieval augmented classification for long-tail visual recognition,” arXiv preprint arXiv:2202.11233 (2022)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[41] Mosquera, C., Ferrer, L., Milone, D. H., Luna, D., and Ferrante, E., “Class imbalance on medical image classification: towards better evaluation practices for discrimination and calibration performance,” European Radiology 34(12), 7895–7903 (2024)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[42] Mourya, S., Kant, S., Kumar, P., Gupta, A., and Gupta, R., “All challenge dataset of ISBI 2019 (C-NMC 2019),” (2019)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[43] Matek, C., Schwarz, S., Marr, C., and Spiekermann, K., “A single-cell morphological dataset of leukocytes from aml patients and non-malignant controls,” (2019)."
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                99,
+                90,
+                900,
+                137
+            ]
+        }
+    ],
+    [
+        {
+            "type": "list",
+            "content": {
+                "list_type": "reference_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[44] Acevedo, A., Merino, A., Alf´erez, S., Molina, A., Bold´u, L., and Rodellar, J., “A dataset for microscopic<sup>´</sup> peripheral blood cell images for development of automatic recognition systems,” (2020)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[45] Hehr, M., Sadafi, A., Matek, C., Lienemann, P., Pohlkamp, C., Haferlach, T., Spiekermann, K., and Marr, C., “A morphological dataset of white blood cells from patients with four diferent genetic aml entities and non-malignant controls (aml-cytomorphology mll helmholtz),” (2023)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[46] Lam, S. T. T. and Wang, W., [Normal Histology of Blood], BCcampus Open Publishing (2021)."
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                101,
+                90,
+                897,
+                122
+            ]
+        }
+    ]
+]
