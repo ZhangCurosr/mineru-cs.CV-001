@@ -1,0 +1,3410 @@
+[
+    {
+        "type": "text",
+        "text": "Towards Unified Dynamic Face Landmark Detection",
+        "text_level": 1,
+        "bbox": [
+            178,
+            121,
+            816,
+            147
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Sebastian Regalado<sup>1,2,†∗</sup> Varshanth Rao<sup>2,∗</sup> Ruowei Jiang<sup>2,†</sup> Parham Aarabi<sup>1</sup> Igor Gilitschenski<sup>1</sup> <sup>1</sup>University of Toronto <sup>2</sup>ModiFace",
+        "bbox": [
+            178,
+            199,
+            815,
+            228
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Abstract",
+        "text_level": 2,
+        "bbox": [
+            459,
+            263,
+            539,
+            280
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Although advancements in face landmark detection (FLD) methods continue to push performance boundaries, they overlook two major functional limitations: (1) different network parameters need to be trained independently for each “N-point” benchmark dataset, and (2) a model trained on an “N-point” dataset reliably outputs only the N landmarks. In our work, we first conceptualize Face Part-Anchored Landmark Positions (FPALPs), wherein each landmark is treated as a progression value between zero (start) and one (end) along a face part’s contour. Every landmark can be expressed in the FPALP format, irrespective of its source dataset, hence unlocking the ability to unify all “N-point” datasets into a single dataset. Secondly, we represent each landmark with an FPALP-based query, refine it progressively with a cross-modality decoder, and predict its coordinates based on the final representation. Our approach, called Unified Dynamic FLD, embodies these two design choices and streamlines the landmark detection pipeline by enabling (1) a single model to learn on any number of “N-point” datasets, and (2) yield any number of specific landmark predictions by loading the designated landmark queries at runtime. Extensive experiments on multiple benchmark datasets show that our method delivers these benefits while remaining competitive with, and in several cases outperforming existing state-of-the-art methods.",
+        "bbox": [
+            228,
+            295,
+            767,
+            546
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "1 Introduction",
+        "text_level": 2,
+        "bbox": [
+            173,
+            570,
+            313,
+            587
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Face landmark detection (FLD) aims to predict the coordinates of predefined landmarks in facial images. Facial landmarks provide rich and diverse visual cues regarding face shape, face-part positions, and pose information. These are essential for many downstream tasks such as 3D face reconstruction [37, 4], face recognition [15, 33], face expression recognition [23, 25], and more recently facial beauty predictions [2, 12] and face make-up try on [22, 16, 19, 32].",
+        "bbox": [
+            169,
+            602,
+            826,
+            672
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Despite being at the core of numerous applications, FLD algorithms suffer from major inherent drawbacks at both the training and prediction stages due to a rigid adherence to the landmark layout defined by the training dataset. Facial images are annotated with different landmark definitions across datasets such as AFLW [48] (19/21 points), 300W [31] (68 points), and WFLW [39] (98 points). Generalizing, we denote an FLD dataset that defines a unique face layout of N landmarks as the term “N-point\" dataset. Prior works [40, 46, 10, 18] have advanced FLD performance on these datasets by training on them individually using separate backbones and/or regression heads, and designing the networks to output only the dataset-specific N points. We denote the above as the separate model and common backbone paradigms (see Figure 1) and investigate their demerits in detail below.",
+        "bbox": [
+            169,
+            678,
+            826,
+            804
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Theoretically, each “N-point\" dataset can specify facial landmarks according to mutually exclusive semantic definitions. Here, the specialist nature of the separate model paradigm may outweigh the benefits of a model that was trained on multiple datasets through the common backbone paradigm, as only low-level features might be shared. In reality, we observe that this assumption does not always hold true. As an example, in Figure 2a, we overlay the landmark predictions output by SLPT [40], a state-of-the-art FLD method, that was trained separately on three benchmark datasets; AFLW19 [48], 300W [31], and WFLW [39]. We make two critical observations: (1) facial landmark annotations are semantically anchored to face parts such as eyes, lips, nose, etc., and (2) are often defined to be evenly spaced along a face part boundary [39, 42]. These cause the landmarks in the different “N-point\" datasets to be non-mutually exclusive and strongly semantically related. Based on these observations, we conceptualize Face Part-Anchored Landmark Positions (FPALPs), in which each facial landmark is first associated with one or more distinct face parts and then assigned a value between 0 and 1 designating a progression point between the start and end of the face part boundary, respectively. We illustrate FPALPs in Figure 2b, wherein most facial landmarks of the WFLW [39] format are anchored to 9 distinct face parts. By indexing facial landmarks as FPALPs calculated on the union of all landmark definitions across the different benchmark datasets, we enable unified FLD: the ability ofan FLD model to be trained end-to-end on the combination ofall the considered datasets.",
+        "bbox": [
+            169,
+            808,
+            826,
+            880
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "aside_text",
+        "text": "arXiv:2608.10346v1 [cs.CV] 11 Aug 2026",
+        "bbox": [
+            27,
+            351,
+            65,
+            800
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "page_footnote",
+        "text": "<sup>∗</sup>Equal contribution. <sup>†</sup>Work completed while employed at ModiFace.",
+        "bbox": [
+            187,
+            887,
+            583,
+            901
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "footer",
+        "text": "Preprint.",
+        "bbox": [
+            171,
+            924,
+            222,
+            938
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "image",
+        "img_path": "images/53057d92ddaa1185fa4ac46e199cd5234dc4f5f2ee6415f29054d479fd4745cb.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "bbox": [
+            174,
+            87,
+            508,
+            237
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "image",
+        "img_path": "images/df9aeeb20006d56ad6d185812792af2c2165421d6a537d41e5ffdba2f3e99693.jpg",
+        "image_caption": [
+            "(a)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            513,
+            88,
+            666,
+            217
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "image",
+        "img_path": "images/29b39a7d053d53dcb0eae28a7395b9a67942158a7529f967ef40238dd4775fde.jpg",
+        "image_caption": [
+            "(b)",
+            "Figure 1: A comparison of the end-to-end training pipeline of prior works’ separate model and common backbone paradigms to the single model paradigm implemented by our Unified Dynamic Face Landmark Detection method. BB, RH, and D denote backbone, regression head, and number of datasets, respectively. Based on Face Part-Anchored Landmark Positions, our network can train on the combination of multiple “N-point\" datasets and execute an unlimited number of landmark predictions.",
+            "Figure 2: (a) An overlay of the facial landmarks in the AFLW (19-point), 300W (68-point), and WFLW (98-point) formats. The landmark definitions across different datasets are observed to be non-mutually exclusive and strongly semantically related via face parts. (b) Landmarks (excluding pupils) of the WFLW format expressed as Face Part-Anchored Landmark Positions. Each gradient curve transitioning from white to a darker colour indicates the progression from the start to the end of a face part boundary."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            669,
+            88,
+            812,
+            215
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            169,
+            425,
+            826,
+            593
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "As noted earlier, during inference, FLD methods trained on an “N-point\" dataset outputs only N facial landmarks. Such output rigidity is non-optimal for downstream applications like face direction estimation [1, 34] and FLD stabilization in videos [14, 38] that may utilize only a few sparse facial landmarks, and restrictive for applications like face image animation [44] that require a higher density of accurate facial landmarks. Although higher facial landmark density can be naïvely achieved using interpolation methods, the output accuracy is dependent on a higher N since face parts have non-linear shape. To this end, we construct facial landmark queries on demand using the combination of their FPALPs and the text embedding of the containing face parts, and feed them to a cross-modality decoder-regressor to enable dynamic FLD: the ability of an FLD model to output the predictions of only the queried landmarks.",
+        "bbox": [
+            169,
+            598,
+            826,
+            738
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "Revisiting Figure 1, our Unified Dynamic FLD, which is founded on the concept of FPALPs, executes a single model paradigm that can be trained on the combination of diverse “N-point\" datasets, and can yield any number of specific facial landmark predictions at inference time. In Table 1, we compare the efficiency of the single model paradigm of our method with the separate model and common backbone paradigms executed by prior work, when trained on D number of unique “N-point\" datasets. Visibly, our method is the most efficient since it is agnostic to D on all the considered factors, and is the most versatile since it offers demand-specific landmark throughput.",
+        "bbox": [
+            171,
+            742,
+            825,
+            772
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "table",
+        "img_path": "images/35e5a43da47872dfc4c028c81b3141d89e8e1f4ff921886ca617796877dd7ec0.jpg",
+        "table_caption": [
+            "Table 1: An efficiency comparison of different face landmark detection paradigms. D denotes the number of unique “N-point\" datasets. B, H, and $E _ { Q }$ denotes the backbone, regression heads, and landmark query encoder respectively."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td rowspan=\"2\">FLD Paradigm</td><td colspan=\"4\">Efficiency</td></tr><tr><td>Training Cycles</td><td>Inference Calculation</td><td>Storage Parameter</td><td>Landmark Throughput</td></tr><tr><td>Separate Model Common Backbone Single Model (Ours)</td><td>D D 1</td><td>DB + DH 1B + DH 1B + 1H + 1EQ</td><td>DB + DH  $1 B + D \\mathcal { H }$   $1 B + 1 \\mathcal { H } + 1 E _ { Q }$ </td><td>N N  $0 - \\infty$ </td></tr></table>",
+        "bbox": [
+            334,
+            849,
+            660,
+            909
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "page_number",
+        "text": "2",
+        "bbox": [
+            493,
+            935,
+            504,
+            948
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            169,
+            92,
+            826,
+            162
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Our contributions and their benefits are summarized below:",
+        "bbox": [
+            171,
+            166,
+            565,
+            181
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "1. We propose the Face Part-Anchored Landmark Positions (FPALPs), an intuitive representation of face landmarks that are evenly distributed on well-defined face part curves. The FPALP format is universal and allows for compatibility with all existing and future datasets.",
+        "bbox": [
+            210,
+            191,
+            826,
+            234
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "2. To the best of our knowledge, our work using FPALPs is the first to enable, without auxiliary dataset information, Unified FLD: the ability of a model to be trained end-to-end on the fusion of multiple “N-point\" datasets. We demonstrate increased model generalization by training on a larger, more diverse combined dataset offering higher landmark heterogeneity through the unification of various “N-point\" formats.",
+        "bbox": [
+            209,
+            237,
+            826,
+            309
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "3. We propose a novel FPALP-based landmark queried regressor to enable Dynamic FLD, i.e., unlimited on-demand landmark prediction without network retraining.",
+        "bbox": [
+            209,
+            311,
+            826,
+            340
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "4. We demonstrate through extensive experiments that our work not only unlocks the numerous benefits of Unified Dynamic FLD but also matches or outperforms existing state-of-the-art methods on several benchmark datasets.",
+        "bbox": [
+            209,
+            344,
+            826,
+            387
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "2 Related Work",
+        "text_level": 2,
+        "bbox": [
+            171,
+            405,
+            325,
+            421
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Targeting Fundamental Performance Improvements. Recent face landmark detection (FLD) methods can be categorized into direct coordinate regression methods [18, 40, 20] and heatmapbased regression methods [10, 46, 17]. While each approach has advantages and disadvantages, they target different challenges to achieve performance improvements. AnchorFace [41] uses a split-aggregate strategy using anchor templates, while MCUDN [36] combines uncertainty-aware regression with a multi-expert collaborative module to tackle landmark uncertainty in occluded and large face poses. ADNet [10] and STAR Loss [46] address the semantic ambiguity in landmark annotations by suppressing the associated disentangled loss component for landmarks with an anisotropic distribution. DTLD [18] and SLPT [40] adaptively leverage the underlying inter-landmark structural relationship to improve localization performance, especially on occluded landmarks. Meanwhile, PIPNet [13] performs simultaneous heatmap regression and offset predictions to speed up inference while achieving competitive localization accuracy. Recently, PossLoss [47] aimed at aligning landmark peaks and emphasizing hard examples to improve the precision and robustness of the predicted landmarks. Orthogonal to these efforts, our work aims to deliver the aforementioned unified and dynamic FLD properties to induce robustness and versatility at the system level.",
+        "bbox": [
+            169,
+            435,
+            828,
+            645
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Approaches to Ameliorate the FLD Pipeline. Prior works have also surfaced the issues of immisci bility of the various “N-point\" annotation schemes across datasets [39, 42], and the infeasibility to infer landmarks beyond those N defined by the training dataset [42, 5]. LAB [39] represented facial structure using 13 boundary lines, theorized that facial landmarks across datasets can be interpolated within these lines, and performed landmark regression using the common backbone paradigm. LDDMM-Face [42] maps landmarks on mean face templates to semantic boundary flows and predicts final landmarks via flow-wise deformation layers, with limited cross-annotation adaptation handled by affine alignment between source and target mean faces. FreeEnricher [11] refines interpolated landmarks along a face-part curve using contextual patches to predict boundary-aligned offsets, but because this enrichment is decoupled from the base landmark detector, its effectiveness depends heavily on the accuracy of the initial landmark predictions. Recently, CLD [5] proposed a pipeline that ingests a facial image and arbitrary 3D query locations on a canonical face shape to output the corresponding and possibly continuous 2D landmark coordinates. Although CLD could be trained with multiple datasets, its success is highly dependent on a large collection of densely annotated face datasets having 3D canonical landmark mappings. In contrast, our single model paradigm trains end-to-end with only sparsely annotated 2D landmark datasets and performs dynamic and direct inference to any arbitrary landmark format without manual transformations. Furthermore, our Face Part-Anchored Landmark Position-based landmark queries are easily interpretable and allows for unconstrained interaction with text-based or agentic downstream applications.",
+        "bbox": [
+            169,
+            648,
+            828,
+            914
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "page_number",
+        "text": "3",
+        "bbox": [
+            493,
+            935,
+            504,
+            948
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "image",
+        "img_path": "images/7a4acb7493c7e5660146599901105cdcba81597cdd2a77c41771194345fbc934.jpg",
+        "image_caption": [
+            "Figure 3: An overview of our proposed framework. First, we associate user-defined face parts to the required landmarks and calculate their Face Part-Anchored Landmark Positions (FPALPs). The FPALPs and the face parts’ text are encoded and aggregated to yield the image-agnostic landmark encodings. The facial image’s visual features are then conditioned on these encodings to output the initial landmark queries and coordinate predictions. Lastly, a cross-modality decoder block iteratively refines the landmark queries and coordinate predictions to output the final values."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            189,
+            90,
+            807,
+            251
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "Generalist Face Models. Another line of research aims to simultaneously perform facial tasks such as landmark detection, age/gender/head-pose estimation, and face parsing using multi-task learning. Early works like HyperFace [28] and AIO [29] utilized multi-scale features from various CNN layers and executed upto 7 face tasks at once using task-wise heads. Recently, FaceXFormer [24] and Faceptor [27] treated face tasks as tokens in transformer-based architectures [35] containing unified task and pixel decoders. These on-demand task-expandable generalist face models train on the fusion of diverse task datasets. However, for the FLD task, they still train separately on the “N-point\" datasets and yield only a fixed N output. Our unified dynamic FLD method can be readily integrated into existing generalist face models to streamline their FLD division.",
+        "bbox": [
+            169,
+            366,
+            826,
+            492
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "3 Methodology",
+        "text_level": 2,
+        "bbox": [
+            171,
+            511,
+            316,
+            529
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "Our proposed Unified Dynamic Face Landmark Detection framework is inspired by Grounding DINO [21] and is illustrated in Figure 3. First, we introduce Face Part-Anchored Landmark Positions (FPALPs), a supplementary representation of facial landmarks from the viewpoint of face part boundaries. Next, we describe how we construct image-agnostic landmark encodings using FPALPs and combine them with facial image features sourced from an image encoder to initialize the landmark queries and the primitive coordinate predictions. Lastly, we elucidate the process of iterative query refinement to yield the final landmark representations and coordinate predictions.",
+        "bbox": [
+            169,
+            542,
+            826,
+            641
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "Face Part-Anchored Landmark Positions (FPALPs).",
+        "text_level": 2,
+        "bbox": [
+            171,
+            646,
+            539,
+            661
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "As prior work [39, 42] have noted and illustrated by us earlier in Figure $^ { 2 \\mathrm { a } , }$ facial landmarks specified by benchmark datasets that we consider, i.e., AFLW [48], WFLW [39], and 300W [31], are bound to face part boundaries in an evenly spaced manner. To leverage this observation, we conceptualize Face Part-Anchored Landmark Positions (FPALPs). Here, each landmark is associated with one or more containing face parts and is represented as a progression value between 0 and 1 denoting its fractional position within the containing face part curve. Since each “N-point\" dataset can define its face template with different landmark layouts and different start and end positions for the various face parts, we first create a unified face template by taking the union of the face templates of all datasets. Formally, we denote the face template for dataset ${ \\bar { D } } _ { i } .$ , out of D considered datasets, having $N _ { i }$ number of landmarks, as $T _ { D _ { i } }$ , and the unified face template as $T _ { \\mathrm { U } } = T _ { D _ { 1 } } \\cup T _ { D _ { 2 } } \\cup \\ldots \\cup T _ { D _ { D } }$ $T _ { \\mathrm { { U } } }$ consists of $N _ { \\mathrm { U } }$ number of landmarks clusters each of which indicates a landmark’s proximity across the D datasets. While this may seem inexact, for the considered datasets, we observed a clean alignment between the face templates resulting in tight proximal landmark clusters having an average intra-cluster distance of 2.22 pixels averaged over all face parts.",
+        "bbox": [
+            169,
+            666,
+            826,
+            862
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "We split $T _ { \\mathrm { { U } } }$ into $P$ face-part templates, $T _ { \\mathrm { U } } = T _ { P _ { 1 } } \\cup T _ { P _ { 2 } } \\cup \\cdot \\cdot \\cdot \\cup T _ { P _ { P } }$ , each consisting of member landmarks that represent user-defined face-part curves such as the left/right eye(brow), face contour, and inner/outer lip.",
+        "bbox": [
+            171,
+            866,
+            826,
+            909
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "page_number",
+        "text": "4",
+        "bbox": [
+            493,
+            935,
+            504,
+            946
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "Face part curves can be open (e.g., nose bridge, face contour) or closed (e.g., eyes, lips). For closed curve face parts, we create a copy of the starting landmark in the curve sequence and signify it as the ending landmark for that sequence. In Figure 4, we exemplify the following FPALP formulation using the left eyebrow and right eye face part curves. For a landmark l positioned at $p o s _ { l , p }$ within a sequence of $N _ { p }$ landmarks that compose the face part $p$ with template $T _ { p } .$ , we define the FPALP of l as $F P A L P _ { l , p } = p o s _ { l , p } ^ { * } / ( N _ { p } - 1 )$",
+        "bbox": [
+            169,
+            92,
+            500,
+            246
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "image",
+        "img_path": "images/8076cf1535c1315a50efcaab3deca071d0f8f37958485913f9663531445e745d.jpg",
+        "image_caption": [
+            "Figure 4: Illustration of the construction of Face Part-Anchored Landmark Positions (FPALPs) for the landmarks of the left eyebrow and the right eye closed-curve face parts."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            509,
+            93,
+            823,
+            165
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Image-Agnostic Landmark Encodings. To achieve dynamic face landmark detection, we represent target landmarks as landmark queries. To this end, we construct initial image-agnostic representations which conceptually capture the landmarks to be queried. Firstly, we encode FPALPs using a simple MLP with ReLU activation. Next, we input the face part name into a lightweight pretrained text encoder to get its textual representation. Finally, we derive the image-agnostic landmark encodings as the summation of the encoded FPALPs and the face part textual representations. Formally, for a landmark l in the face part $p ,$ the image-agnostic landmark encodings $E _ { \\mathrm { I A } } ^ { l , p }$ are derived as:",
+        "bbox": [
+            169,
+            250,
+            826,
+            352
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/00f37cc5599f018d9102812a6180c479c64e236660697671c6af498e5d5e7c9a.jpg",
+        "text": "$$\nE _ { \\mathrm { F P A L P } } ^ { l , p } = \\mathbf { M L P } ( F P A L P _ { l , p } ) , \\quad E _ { \\mathrm { t e x t } } ^ { p } = \\mathrm { E n c } _ { \\mathrm { t e x t } } ( p ) , \\quad E _ { \\mathrm { I A } } ^ { l , p } = E _ { \\mathrm { F P A L P } } ^ { l , p } + E _ { \\mathrm { t e x t } } ^ { p }\\tag{1}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            233,
+            367,
+            761,
+            387
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "where $E _ { \\mathrm { F P A L P } } ^ { l , p } , E _ { \\mathrm { t e x t } } ^ { p } , E _ { \\mathrm { I A } } ^ { l , p } \\in \\mathbb { R } ^ { d }$ , and d is the encoding dimension. In lieu of ${ \\mathrm { E n c } } _ { \\mathrm { t e x t } }$ , we could use learnable embeddings to yield the face part representations. We hypothesize that pretrained text encoders are more superior since they may already encode the semantics of facial layouts. In Sec. 4.2, we compare both the options and corroborate that using pretrained text encoders is the better choice.",
+        "bbox": [
+            169,
+            396,
+            826,
+            455
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Landmark Query Initialization. Effective initial landmark queries should capture the required landmarks’ proximity specified by their semantic definitions. To this end, we condition the facial image’s visual features with the image-agnostic landmark encodings in the following manner. First, we utilize a pretrained image encoder to output the facial image features $E _ { \\mathrm { I } } \\in \\mathbb { R } ^ { H _ { \\mathrm { I } } \\times W _ { \\mathrm { I } } \\times d } ,$ , where $( H _ { \\mathrm { I } } , W _ { \\mathrm { I } } )$ represents the spatial resolution of the image features. Let $G _ { \\mathrm { I } } = \\{ ( x _ { i , j } ^ { c } , y _ { i , j } ^ { c } ) \\} _ { i = 0 , j = 0 } ^ { H _ { \\mathrm { I } } - 1 , W _ { \\mathrm { I } } - 1 } \\in$ $\\mathbb { R } ^ { H _ { \\mathrm { I } } \\times W _ { \\mathrm { I } } \\times 2 }$ represent the grid of the image-space center coordinates corresponding to $E _ { \\mathrm { I } }$ . Next, we derive the attention map A of the visual features with respect to the required image-agnostic landmark encodings $E _ { \\mathrm { I A } } \\doteq \\mathbb { R } ^ { L \\times d }$ , where L denotes the number of landmarks to be queried, as $A = \\mathrm { S o f t m a x } ( E _ { \\mathrm { I } } \\cdot E _ { \\mathrm { I A } } ^ { T } )$ , where $\\boldsymbol { A } ^ { \\prime } \\in \\mathbb { R } ^ { H _ { \\mathrm { I } } \\times W _ { \\mathrm { I } } \\times L }$ and the softmax is applied along the $H _ { \\mathrm { I } } \\times W _ { \\mathrm { I } }$ dimension. Here, A reflects the activation of the visual regions that correspond to the required landmarks’ image-agnostic landmark encodings. We obtain our initial landmark queries $Q _ { 0 } \\in \\mathbb { R } ^ { L \\times d }$ and initial coordinate predictions $C _ { 0 } \\in \\mathbb { R } ^ { L \\times \\widetilde { 2 } }$ by taking the weighted mean of $\\dot { E _ { \\mathrm { I } } }$ and $G _ { \\mathrm { I } }$ using the attention map A, respectively. Formally, given grid center coordinates $( x _ { i , j } ^ { c } , y _ { i , j } ^ { c } ) \\in G _ { \\mathrm { I } }$ , for a required landmark $l \\in [ 0 , L )$ with a corresponding attention map $A ^ { l } \\in \\mathbb { R } ^ { H _ { \\mathrm { I } } \\times W _ { \\mathrm { I } } }$ , the initial landmark query $L Q _ { 0 } ^ { l }$ and initial coordinate prediction $C _ { 0 } ^ { l }$ are derived as:",
+        "bbox": [
+            169,
+            459,
+            826,
+            681
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/081a298c5cb98280f227bb00bedd8d3fd64ad336d6b207f1eb4d26609ef2a2d9.jpg",
+        "text": "$$\nL Q _ { 0 } ^ { l } = \\sum _ { \\substack { i = 0 , j = 0 } } ^ { H _ { 1 } - 1 , W _ { 1 } - 1 } A _ { i , j } ^ { l } \\cdot E _ { \\mathrm { I } _ { i , j } } , \\qquad C _ { 0 } ^ { l } = \\left( \\sum _ { \\substack { i = 0 , j = 0 } } ^ { H _ { \\mathrm { I } } - 1 , W _ { 1 } - 1 } A _ { i , j } ^ { l } \\cdot x _ { i , j } ^ { c } , \\sum _ { \\substack { i = 0 , j = 0 } } ^ { H _ { \\mathrm { I } } - 1 , W _ { 1 } - 1 } A _ { i , j } ^ { l } \\cdot y _ { i , j } ^ { c } \\right)\\tag{2}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            194,
+            704,
+            781,
+            750
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "We supervise $A ^ { l }$ with the PossLoss [47] following the standard practice of transforming ground-truth landmarks into 2D Gaussian heatmaps.",
+        "bbox": [
+            169,
+            765,
+            825,
+            795
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Landmark Query Refinement. We employ a cross-modality transformer decoder, as depicted in the third block of Figure 3, to iteratively hone the landmark queries and the predicted coordinates. This block consists of $n _ { \\mathrm { d e c } }$ decoder layers, the first of which consumes $L \\bar { Q } _ { 0 }$ and $C _ { 0 } .$ , while the later layers consume the output of the previous layers to implement iterative refinement. At layer dec , we first execute self-attention on the landmark queries $\\bar { L } Q _ { \\mathrm { d e c } _ { i } - 1 }$ to exploit the inter-landmark dependencies. Then, we deploy a deformable attention [49] layer that consumes the locations $C _ { { \\mathrm { d e c } } _ { i } - 1 }$ and performs targeted cross-modality attention between the image features and the queries from the previous step. To better align the queries with the semantic definitions of the target landmarks, we apply a cross-attention layer between the previous-step queries and the image-agnostic landmark encodings $E _ { \\mathrm { { I A } } }$ . Finally, we deploy a feed-forward network to yield the decoder layer’s query output $L Q _ { \\mathrm { d e c } } ,$ , operate an MLP on it to derive the coordinate offsets with respect to $C _ { \\mathrm { d e c } _ { i } - 1 }$ , and calculate the coordinate predictions as $C _ { \\mathrm { d e c } _ { i } } .$ . For brevity, we assume familiarity with standard transformer notation and describe the process below using simplified equations:",
+        "bbox": [
+            169,
+            800,
+            826,
+            912
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "page_number",
+        "text": "5",
+        "bbox": [
+            493,
+            935,
+            504,
+            948
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            169,
+            92,
+            826,
+            161
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "equation",
+        "img_path": "images/2212bac4d465fd43f67cabbf56f43d056d671f5b0c23e3363564d2ac7db4f754.jpg",
+        "text": "$$\nL Q _ { \\mathrm { d e c } _ { i } } ^ { S A } = \\mathrm { S e l f A t t n } ( L Q _ { \\mathrm { d e c } _ { i } - 1 } , L Q _ { \\mathrm { d e c } _ { i } - 1 } , L Q _ { \\mathrm { d e c } _ { i } - 1 } )\\tag{3}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            325,
+            166,
+            681,
+            184
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "equation",
+        "img_path": "images/ef42f49765f21058e8f0695cb4e0499b701e177dc7df6a79aa866c37f7dc9e8b.jpg",
+        "text": "$$\nL Q _ { \\mathrm { d e c } _ { i } } ^ { D I C A } = \\mathrm { D e f o r m a b l e A t t n } ( L Q _ { \\mathrm { d e c } _ { i } } ^ { S A } , E _ { \\mathrm { I } } , E _ { \\mathrm { I } } , C _ { \\mathrm { d e c } _ { i } - 1 } )\\tag{4}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            316,
+            185,
+            679,
+            205
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "equation",
+        "img_path": "images/3ff39140fcdb38281a35dfd250476dae0ca60ba3c94e4806ff827c7a2d50b8b2.jpg",
+        "text": "$$\nL Q _ { \\mathrm { d e c } _ { i } } ^ { C A } = \\mathrm { C r o s s A t t n } ( L Q _ { \\mathrm { d e c } _ { i } } ^ { D I C A } , E _ { \\mathrm { I A } } , E _ { \\mathrm { I A } } )\\tag{5}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            326,
+            207,
+            609,
+            227
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "equation",
+        "img_path": "images/3fabd3f9505bb753114c3b39c4ea26cc1172b1dffbe749e14f7354d06ed7b493.jpg",
+        "text": "$$\nL Q _ { \\mathrm { d e c } _ { i } } = \\mathrm { F F N } ( L Q _ { \\mathrm { d e c } _ { i } } ^ { C A } )\\tag{6}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            326,
+            228,
+            495,
+            247
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "equation",
+        "img_path": "images/d085616cd9d5a1a0ad42eb5b4868479df678e3abdd1a8ea7262cca1c8e71cccf.jpg",
+        "text": "$$\nC _ { \\mathrm { d e c } _ { i } } = C _ { \\mathrm { d e c } _ { i } - 1 } + \\mathrm { M L P } ( L Q _ { \\mathrm { d e c } _ { i } } )\\tag{7}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            338,
+            247,
+            570,
+            266
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "where dec $_ i \\in [ 1 , n _ { \\mathrm { d e c } } ]$ and the first three inputs to the layers in Equation 3-5 respectively assume the roles of query, key, and value in the attention mechanism.",
+        "bbox": [
+            169,
+            275,
+            825,
+            304
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Given the ground truth coordinates of the required L landmarks $C _ { \\mathrm { G T } } \\in \\mathbb { R } ^ { L \\times 2 }$ , we supervise both our intermediate and final coordinate predictions $C _ { \\mathrm { d e c } _ { \\mathrm { i } } }$ where de ${ \\sf z } _ { i } \\in [ 0 , n _ { \\mathrm { d e c } } ]$ using the Wing Loss [7] as $\\textstyle { \\mathcal { L } } = \\sum _ { \\mathrm { d e c } _ { i } = 0 } ^ { n _ { \\mathrm { d e c } } }$ WingL $\\mathsf { \\_ o s s } ( C _ { \\mathrm { d e c } _ { i } } , \\mathsf { \\bar { C } } _ { \\mathrm { G T } } )$",
+        "bbox": [
+            169,
+            309,
+            825,
+            354
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "In Sec. 4.1, to estimate the maximum achievable performance on each dataset $D _ { i }$ , we inject LoRA [9] modules separately for each dataset, only into the final decoder layer (dec ${ \\mathrm { \\Pi } } _ { ; i } = n _ { \\mathrm { d e c } } )$ , specifically its cross-attention and FFN sublayers. We refer to these dataset-specific LoRA modules as Dataset Adapters and use them to evaluate the corresponding dataset-specific fine-tuned network.",
+        "bbox": [
+            169,
+            358,
+            825,
+            415
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "4 Experiments",
+        "text_level": 2,
+        "bbox": [
+            171,
+            433,
+            313,
+            449
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Datasets. We train and evaluate our framework on three benchmark datasets: AFLW [48], 300W [31], and WFLW [39]. AFLW focuses on coarse annotations for in-the-wild images and comprises of 20000 training and 4386 test facial images, each annotated with 19 landmarks. 300W is collected from five facial datasets and contains 3148 training and 689 test facial images, each annotated with 68 landmarks. The test set is further divided into common (554 images) and challenging (135 images) subsets. WFLW is collected from WIDER Face [43] with an emphasis on challenging poses, expressions, and occlusions. It consists of 7500 training and 2500 test images, each annotated with 98 landmarks. For cross-dataset evaluation, we consider COFW [3], which contains 507 test images each annotated with 29 landmarks, COFW68 and WFLW68, the 68 landmark variants whose face template matches that of 300W. Collectively, these datasets provide images with diverse levels of expression, pose, and occlusion, making them effective to evaluate a model’s generalization ability.",
+        "bbox": [
+            169,
+            463,
+            826,
+            617
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Implementation Details. Facial images from all datasets are cropped using the given bounding boxes and resized to either 224 × 224 (ViT-B) or $2 5 6 \\times 2 5 6$ (ResNet) depending on the image encoder. Following prior works [13, 18, 27], bounding boxes are enlarged by 10% to include more contextual information. Data augmentation methods including random rotations $( \\pm 1 5 ^ { \\circ } )$ , scaling (±20%), horizontal flipping, and translation (±10 pixels), are employed to improve model robustness by simulating real-world variability.",
+        "bbox": [
+            169,
+            621,
+            825,
+            707
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "We employ the pretrained SentenceBERT [30] as the face part text encoder, FaRL [45] pretrained ViT-B [6] or ResNet [8] as the facial image encoder, 3 decoder layers $( n _ { d e c } )$ , each with 8 attention heads, and a model-wide feature dimension d = 256. During image cross-attention, 4 features per head are sampled from each level of the image feature maps for each query. We train the full model on an NVIDIA A100 GPU (40GB) for 32 epochs, with a batch size of 16, using the Adam optimizer with a learning rate of $1 0 ^ { - 4 }$ and a weight decay of $1 0 ^ { - 5 }$ . The learning rate is lowered to $1 0 ^ { - 5 }$ from the 25th epoch. The image and text encoders are trained at a tenth of the running learning rate. For the PossLoss [47], the weighting and temperature parameters are set to 2 and 0.1 respectively.",
+        "bbox": [
+            169,
+            710,
+            826,
+            824
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Evaluation Metrics. Following prior works [13, 18, 40], we evaluate the face landmark detection methods using the Normalized Mean Error (NME) percentage. NME measures the L2 distance between the predicted and true landmarks and is normalized by either the inter-ocular distance $( \\mathrm { N M E _ { i o } } )$ , which is used for evaluation on 300W and WFLW, or the diagonal distance of the facial bounding box $\\mathrm { ( N M E _ { d i a g } ) }$ , which is used for evaluation on AFLW. For WFLW, we also report the Failure Rate $\\mathrm { ( F R _ { 1 0 } ) }$ based on a threshold of 10% error.",
+        "bbox": [
+            169,
+            827,
+            826,
+            912
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "page_number",
+        "text": "6",
+        "bbox": [
+            493,
+            935,
+            504,
+            948
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "table",
+        "img_path": "images/bedca23e66c08fb16682d43472f183bac84aecee9c93c11f9a5ece362c2d8aa7.jpg",
+        "table_caption": [
+            "Table 2: Comparison of our Unified Dynamic Face Landmark Detection approach with SOTA methods on the WFLW, 300W, and AFLW-19 datasets. We include the generalist approaches that use additional datasets from other tasks for reference purpose only. We enablefused dataset training and dynamic landmark prediction while matching/outperforming SOTA methods on the full version of the datasets. Bold and underline indicates the best and second best results respectively."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Method</td><td>Method Type</td><td>Trained w/ Additional Datasets</td><td>Fused Dataset Training</td><td>Dynamic Landmark Prediction</td><td colspan=\"2\">WFLW Full NMEio ↓ FR10 ↓</td><td colspan=\"2\">300W Common Challenge Full NMEio ↓</td><td>AFLW-19 Full NMEdiag ↓</td></tr><tr><td>FaceXFormer [24] Faceptor [27]</td><td>Generalist</td><td>√ √</td><td>X x</td><td>X x</td><td>4.03</td><td>2.66 1</td><td>4.67 2.52 4.25</td><td>3.05 2.86</td><td>0.95</td></tr><tr><td>PIPNet [13]</td><td rowspan=\"7\"></td><td>X</td><td>X</td><td>X</td><td>4.31</td><td>= 2.72</td><td>2.78 4.89</td><td>3.19</td><td>1.42</td></tr><tr><td>ADNet [10]</td><td>x</td><td>x</td><td>X</td><td>4.14</td><td>2.53</td><td>4.58</td><td>2.93</td><td>=</td></tr><tr><td>SLPT [40]</td><td>x</td><td>x</td><td>x</td><td>4.14</td><td>2.76 2.75</td><td>4.90</td><td>3.17</td><td></td></tr><tr><td>DTLD+ [18]</td><td>x</td><td>x</td><td>X</td><td>4.05</td><td>2.76 2.60</td><td>4.48</td><td>2.96</td><td>1.37</td></tr><tr><td></td><td>x</td><td>x</td><td>x</td><td>4.02</td><td>2.32 2.52</td><td>4.32</td><td>2.87</td><td></td></tr><tr><td>STAR Loss [46]</td><td>x</td><td>x</td><td>x</td><td>4.07</td><td>2.51</td><td>4.21</td><td>2.84</td><td></td></tr><tr><td>PossLoss [47] MCUDN [36]</td><td>x</td><td>x</td><td>x</td><td>4.15</td><td>2.12</td><td>4.33</td><td>2.79</td><td>1.47</td></tr><tr><td>Ours (ViT-B)</td><td rowspan=\"2\">Specialist</td><td>x</td><td>√</td><td>√</td><td></td><td></td><td>2.42</td><td>2.80</td><td></td></tr><tr><td>+ Dataset Adapters</td><td>x</td><td>√</td><td>√</td><td>4.05 4.02</td><td>2.38 2.19</td><td>2.47 2.43</td><td>4.25 4.19</td><td>2.76</td><td>1.02 1.01</td></tr></table>",
+        "bbox": [
+            240,
+            165,
+            758,
+            294
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "4.1 Comparison with SOTA Methods",
+        "text_level": 2,
+        "bbox": [
+            171,
+            319,
+            446,
+            334
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "Our main contribution is the enablement ofthe unified and dynamic FLDfeatures rather than dataset specific specialization. Accordingly, in the below subsection, we compare against prior methods both with and without Dataset Adapters. In all other experiments, Dataset Adapters are not used, since they are intended to assess the unified model itself. Since most prior methods are not open-sourced and often use different backbones, fair direct comparison under a common setting is challenging. Hence, we cite their reported results and explicate our model configuration for transparency.",
+        "bbox": [
+            169,
+            344,
+            826,
+            430
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "Individual Dataset Evaluation. We compare our Unified Dynamic Face Landmark Detection (FLD) framework with SOTA methods in Table 2. Without Dataset Adapters, our model enables joint training on multiple datasets and supports dynamic landmark prediction, while achieving performance on par with prior state of the art. This points to a well-defined alignment among the face templates of the considered datasets and demonstrates that Face Part-Anchored Landmark Positions (FPALPs) constitute an effective representation for FLD. With Dataset Adapters, performance improves further and consistently surpasses prior methods across datasets. This indicates that the model learns a robust unified representation of landmark semantics, from which dataset-specific offsets can be effectively recovered through lightweight adaptation.",
+        "bbox": [
+            169,
+            434,
+            826,
+            560
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "Cross-Dataset Evaluation. To verify the generalization ability of our approach, we conduct a cross-dataset evaluation on the COFW68 and WFLW68 datasets using our model trained only on the 300W dataset, and present the results in Table 3. Our method with the ResNet backbones fare approximately on par with SOTA on the 300W and COFW68 datasets. Using the ViT-B backbone, we demonstrate robustness by significantly improving performance on the challenging WFLW68 dataset, which includes facial images with extreme poses, expressions, occlusions, and makeup.",
+        "bbox": [
+            169,
+            565,
+            501,
+            733
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "table",
+        "img_path": "images/ce2a18985f855d805fed86b1f8be1377cf192ae39f89b9a40920992fb503a255.jpg",
+        "table_caption": [
+            "Table 3: Cross-dataset evaluation comparison. Models are supervised only on 300W."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Method</td><td>300W COFW68 WFLW68 NMEio ↓</td><td></td></tr><tr><td>LAB[39]</td><td>3.49 4.62</td><td>一</td></tr><tr><td>AVSw/SAN[26]</td><td>3.86 4.43</td><td></td></tr><tr><td>DAG[20]</td><td>3.04 4.22</td><td></td></tr><tr><td>PIPNet[13]</td><td>3.36 4.55</td><td>8.09</td></tr><tr><td>DTLD[18]</td><td>3.07 4.42</td><td>7.23</td></tr><tr><td>Ours (ResNet18)</td><td>3.10 4.67</td><td>7.11</td></tr><tr><td>Ours (ResNet101)</td><td>3.05 4.59</td><td>6.86</td></tr><tr><td>Ours (ViT-B)</td><td>3.01 4.40</td><td>6.08</td></tr></table>",
+        "bbox": [
+            552,
+            593,
+            782,
+            698
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "4.2 Ablation Studies",
+        "text_level": 2,
+        "bbox": [
+            171,
+            747,
+            330,
+            762
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "Our model is trained on a fusion of AFLW19, 300W, and WFLW, and we conduct a dataset ablation study to assess the contribution of each dataset to overall performance (Table 4). The study evaluates the impact of training on salient dataset combinations and tests on individual datasets. Notably, when the evaluation dataset uses a different \"N-point\" template than those seen during training, the setting is effectively near zero-shot, as many FPALPs in the target dataset are unseen. Our approach is the first to conduct such cross-template evaluations without resorting to manual interpolation techniques. The results indicate that training on all datasets combined yields the best performance across most datasets, except for WFLW68, where the best performance is achieved by training solely on WFLW. We attribute this to the reduction of non-critical landmarks in the transition from the 98-point to the 68-point template and the dilution of challenging samples when additional datasets are introduced. It is essential to acknowledge that the effect of incorporating new training datasets can vary based on alignment between the distribution and label quality of the training and evaluation datasets. The observed gains from training on datasets with diverse face templates suggest that exposure to varied FPALPs enhances the model’s ability to effectively represent face part curves and generalize across varied facial structures and ambient conditions.",
+        "bbox": [
+            171,
+            772,
+            501,
+            829
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "table",
+        "img_path": "images/c63dd4d3ed9b650fdde48d617d695725dc7c239a11dc4b75f64f4e2d8389dd74.jpg",
+        "table_caption": [
+            "Table 4: Ablation study on training datasets as a cross-dataset evaluation. \\* indicates exclusion of undefined landmarks not defined in the template."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Training Datasets</td><td>AFLW-19 NMEdiag ↓</td><td colspan=\"4\">300W WFLW COFW WFLW68 COFW68 NMEio ↓</td></tr><tr><td>300W</td><td>2.18*</td><td>3.01</td><td>6.32*</td><td>3.81*</td><td>6.08</td></tr><tr><td>WFLW</td><td>2.21*</td><td>4.03</td><td>4.09 3.71</td><td>3.89</td><td>4.40 4.61</td></tr><tr><td>300W + WFLW</td><td>2.20*</td><td>2.89</td><td>4.11 3.64</td><td>4.41</td><td>4.36</td></tr><tr><td>300W + WFLW + AFLW-19</td><td>1.02</td><td>2.80</td><td>4.05 3.52</td><td>4.38</td><td>4.27</td></tr></table>",
+        "bbox": [
+            511,
+            765,
+            821,
+            813
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            169,
+            828,
+            826,
+            912
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "page_number",
+        "text": "7",
+        "bbox": [
+            493,
+            935,
+            504,
+            948
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            169,
+            90,
+            826,
+            190
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "Choices for Face Part Representation. In this study, we investigate the impact of choosing how face parts are represented to yield $E _ { \\mathrm { t e x t } } ^ { p }$ in Equation 1. We present two options: (1) training learnable embeddings, or (2) leveraging the output of pretrained text encoders. The former might seem as the default option given the limited amount of face parts that can be encoded. We contend that, although simpler, training with learnable embeddings may not capture the nontrivial semantics offacial structure, such as the relative positions of face parts, the inter-face part relationships during facial expressions (e.g., the squinting of the eyes and broadening of the lips during a laugh), and interactions with makeup and accessories. We postulate that text encoders that are trained on diverse corpora encode these intricacies. In Figure 5, we compare the training curve plots of the model when using learnable embeddings versus SentenceBERT [30], a lightweight pretrained text encoder, and in Table 5, we compare their per-",
+        "bbox": [
+            169,
+            194,
+            501,
+            484
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "chart",
+        "img_path": "images/98488dfc02d29865494e1eb492f0f241a2476bcf122ef5f33ebcb789b2168d00.jpg",
+        "content": "",
+        "chart_caption": [
+            "Figure 5: A comparison of training curve plots when using learnable embeddings vs. Sentence-BERT [30] to represent face parts."
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            508,
+            198,
+            823,
+            329
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "table",
+        "img_path": "images/2bcc4eeac07a46c7de84ad3cd4acc7b342187c5d617d9710e9c31424d6baa51a.jpg",
+        "table_caption": [
+            "Table 5: Performance comparison using learnable embeddings vs. SentenceBERT [30]."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Query Type</td><td>AFLW-19  $\\underline { { \\mathrm { N M E } _ { \\mathrm { d i a g } } ~ } } \\downarrow$ </td><td colspan=\"3\">300W WFLW COFW COFW68</td></tr><tr><td>Learnable</td><td>1.07</td><td>2.99 4.19</td><td>NMEio ↓ 3.73</td><td>4.35</td></tr><tr><td>Language</td><td>1.02</td><td>2.80</td><td>4.05 3.52</td><td>4.27</td></tr></table>",
+        "bbox": [
+            513,
+            424,
+            820,
+            472
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "formance at convergence. The usage of SentenceBERT to represent face parts results in a faster convergence and a more performant model, thereby corroborating our earlier thesis and proving to be the superior choice over learnable embeddings.",
+        "bbox": [
+            171,
+            484,
+            825,
+            527
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "Impact of Image Encoder. We analyze the impact of different image encoders, including ResNet18, ResNet101, and ViT-B, on the overall performance of our model as well as its generalization ability. In Table 6a, we display the results of our model with different backbones when trained on the fusion of the considered datasets. Although ViT-B proves to be superior on most of the evaluation datasets, it is noteworthy that both ResNets perform competitively, at a fraction of the size of ViT-B. This suggests that the availability of diverse “N-point\" training datasets is of higher importance than the capacity of the image encoder to achieve an overall high-performing model. In Table 6b, we present the results of a cross-dataset evaluation conducted by training our model only on 300W, with different image encoders, and report its performance on 300W, COFW68, WFLW, WFLW68, and WFLW<sub>E</sub>, whose face template contains only the 28 points that are absent/undefined in 300W. We observe that as the image encoder’s capacity increases, the performance improves drastically on most datasets, especially on the WFLW variant where our model executes zero-shot evaluation since the landmarks (and their corresponding FPALPs) are unseen during training. As we constrained our model training to only 300W, the result of this experiment suggests that the generalization ability of our model is dependent on the capacity of the image encoder.",
+        "bbox": [
+            169,
+            532,
+            826,
+            742
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "table",
+        "img_path": "images/d15453df2cdf372c5cdbefad3818dca087ef1b90dc13a1ad895ff34f4fc904c6.jpg",
+        "table_caption": [
+            "Table 6: (a) Performance comparison of our model trained on the fusion of all considered datasets when using various image encoders. (b) Cross-dataset evaluation with our model trained only on 300W when using different image encoders. $\\mathrm { W F L W } _ { E }$ refers to the WFLW dataset containing only the 28 points that are absent/undefined in 300W.",
+            "(a)"
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Image Encoder</td><td>AFLW-19  $\\mathrm { N M E _ { d i a g } \\downarrow }$ </td><td colspan=\"3\">300W WFLW COFW COFW68</td></tr><tr><td>ResNet18</td><td>1.05</td><td>2.97 4.36</td><td>NMEio ↓ 3.73</td><td>4.50</td></tr><tr><td>ResNet101</td><td>1.03</td><td>2.84 4.19</td><td>3.65</td><td>4.42</td></tr><tr><td>ViT-B</td><td>1.02</td><td>2.80 4.05</td><td>3.52</td><td>4.27</td></tr></table>",
+        "bbox": [
+            204,
+            819,
+            457,
+            868
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "table",
+        "img_path": "images/b048ce446880f2f9a6d3328c7daae1e4fb6d2590067dfffa307cfbae73df0695.jpg",
+        "table_caption": [
+            "(b)"
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Method</td><td>300W COFW68 WFLW68 WFLW WFLWE</td><td>NMEio ↓</td><td></td><td></td></tr><tr><td>ResNet18</td><td>3.10</td><td>4.67 7.11</td><td>7.48</td><td>7.63</td></tr><tr><td>ResNet101</td><td>3.05 4.59</td><td>6.86</td><td>7.09</td><td>7.39</td></tr><tr><td>ViT-B</td><td>3.01 4.40</td><td>6.08</td><td>6.32</td><td>6.52</td></tr></table>",
+        "bbox": [
+            540,
+            820,
+            794,
+            868
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "page_number",
+        "text": "8",
+        "bbox": [
+            493,
+            935,
+            504,
+            948
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "image",
+        "img_path": "images/55f952acd4ad9009fd28d40e093dd756f6fcc776fb346b495fe49d2ab8a4f5a5.jpg",
+        "image_caption": [
+            "(a)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            176,
+            88,
+            300,
+            183
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "image",
+        "img_path": "images/6fed76f6ae0624caf8712cb66f1b401bba85060f8ce8765c51c663bab8cd7040.jpg",
+        "image_caption": [
+            "(b)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            305,
+            88,
+            429,
+            184
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "image",
+        "img_path": "images/8f338566f746dc0e2aa1f430cfbe08a1e56d2f104ada7366c18f886946339f6d.jpg",
+        "image_caption": [
+            "(c)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            436,
+            88,
+            558,
+            184
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "image",
+        "img_path": "images/5b7d640f3f4c3ef0038a4931303afe625a4cd02e9241693810b09c6a695d4cf4.jpg",
+        "image_caption": [
+            "(d)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            565,
+            88,
+            689,
+            184
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "image",
+        "img_path": "images/2507da43a9811b8c596e7ea55cb16c8fefd21da962ae111c5e8081b61e72a542.jpg",
+        "image_caption": [
+            "(e)",
+            "Figure 6: An illustration of the dynamic landmark prediction capability of our system. Images are selected from the WFLW (98-point) test set. We anchor the landmarks to the following face parts: left and right eyes, eyebrows, and pupils, inner and outer lips, face contour, nose bridge and boundary. For (e), we split the face contour, lips, and nose boundary into left, center, and right sub-parts. Landmark predictions per face part are depicted using (a)-(c) a granularity multiplier of 0.5, 1, and 4 respectively, (d) 4 landmarks per face part, and (e) a granularity multiplier of 0.5, 1, and 2 for left, center, and right sub-parts whose landmarks are color coded as red, green, and blue respectively."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            694,
+            88,
+            818,
+            184
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "4.3 Dynamic Landmark Prediction",
+        "text_level": 2,
+        "bbox": [
+            171,
+            335,
+            431,
+            351
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "In this section, we qualitatively assess the outputs of our Unified Dynamic Face Landmark Detection system. Using the model trained on the fusion of the considered datasets, we present a variety of dynamic landmark prediction configurations on images from the WFLW test set in Figure 6, and on challenging images with large pose variations and occlusions in Appendix Figure 8-9. In contrast to prior works, which can only output a fixed landmark layout as in Figure 6b, our model can predict landmarks pertaining to user-selected face parts and, furthermore, at various granularities within (Figure 6a-6d) and across (Figure 6e) face parts, hence demonstrating its versatility and applicability to an assortment of downstream applications. We observe that landmark predictions for face parts with higher FPALP diversity, such as the face contour and the eyes, are more accurate than those with lower FPALP diversity, such as the nose boundary. A larger diversity of face templates within the combined training dataset increases the exposure to different FPALPs and empowers the model to accurately predict landmarks at higher granularities. Additionally, incorporating loss components that enforce appropriate distribution of landmark predictions across the input FPALPs could further enhance prediction quality – a direction we leave for future work.",
+        "bbox": [
+            169,
+            361,
+            826,
+            556
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "5 Discussion",
+        "text_level": 2,
+        "bbox": [
+            171,
+            574,
+            295,
+            589
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "Limitations. We acknowledge the likelihood of imprecise alignment of the individual datasets’ face templates during construction of the unified face template, which may hinder scalability of the FPALP formulation. We note from the resiliency of our model, trained on the alignment of three different (14, 68, and 98-point) face templates, that only approximate alignment is necessary for effective face part curve learning. In cases of large misalignment, new face parts can be defined to contain the introduced landmarks. Meaningful inter-face part relationships with the misaligned face parts can still be forged via the landmark query refinement process in our model.",
+        "bbox": [
+            169,
+            604,
+            826,
+            704
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "Future Work. Future work could extend FPALPs to 2D representations that capture face-part surfaces and use query features to track facial artifacts such as acne, moles, and wrinkle lines. Integrating FPALPs with vision-language and generalist face models may further enable text- or visual-promptbased face-part creation, automated landmark-to-FPALP registration, and unified template generation, yielding a more versatile face landmark detection component within a robust face analysis system.",
+        "bbox": [
+            169,
+            708,
+            826,
+            780
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "6 Conclusion",
+        "text_level": 2,
+        "bbox": [
+            171,
+            796,
+            300,
+            813
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "In this paper, we present our Unified Dynamic Face Landmark Detection method, wherein landmarks are treated as progression points on user-defined face parts, allowing for end-to-end model training on the fusion of diverse “N-point\" datasets and execution of unlimited on-demand landmark predictions. With performance competitive with, if not surpassing, SOTA methods, our simple yet adaptable framework is positioned to meet the requirements of various downstream applications that depend on a wide range of precise face landmarks.",
+        "bbox": [
+            169,
+            828,
+            826,
+            912
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "page_number",
+        "text": "9",
+        "bbox": [
+            493,
+            935,
+            504,
+            946
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "References",
+        "text_level": 2,
+        "bbox": [
+            173,
+            89,
+            269,
+            106
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "[1] Arqam M. Al-Nuimi and Ghassan J. Mohammed. Face direction estimation based on mediapipe landmarks. In ICCITM, 2021.",
+            "[2] F. Bougourzi, F. Dornaika, and A. Taleb-Ahmed. Deep learning based face beauty prediction via dynamic robust losses and ensemble regression. Knowledge-Based Systems, 2022.",
+            "[3] Xavier P. Burgos-Artizzu, Pietro Perona, and Piotr Dollár. Robust face landmark estimation under occlusion. In ICCV, 2013.",
+            "[4] Mingcheng Cai, Shuo Zhang, Guoqiang Xiao, and Shoucheng Fan. 3d face reconstruction and dense alignment with a new generated dataset. Displays, 2021.",
+            "[5] Prashanth Chandran, Gaspard Zoss, Paulo Gotardo, and Derek Bradley. Continuous landmark detection with 3d queries. In CVPR, 2023.",
+            "[6] Alexey Dosovitskiy, Lucas Beyer, Alexander Kolesnikov, Dirk Weissenborn, Xiaohua Zhai, Thomas Unterthiner, Mostafa Dehghani, Matthias Minderer, Georg Heigold, Sylvain Gelly, Jakob Uszkoreit, and Neil Houlsby. An image is worth 16x16 words: Transformers for image recognition at scale. In ICLR, 2021.",
+            "[7] Zhen-Hua Feng, Josef Kittler, Muhammad Awais, Patrik Huber, and Xiao-Jun Wu. Wing loss for robust facial landmark localisation with convolutional neural networks. In CVPR, 2018.",
+            "[8] Kaiming He, X. Zhang, Shaoqing Ren, and Jian Sun. Deep residual learning for image recognition. In CVPR, 2016.",
+            "[9] Edward J Hu, Yelong Shen, Phillip Wallis, Zeyuan Allen-Zhu, Yuanzhi Li, Shean Wang, Lu Wang, and Weizhu Chen. LoRA: Low-rank adaptation of large language models. In ICLR, 2022.",
+            "[10] Yangyu Huang, Hao Yang, Chong Li, Jongyoo Kim, and Fangyun Wei. Adnet: Leveraging error-bias towards normal direction in face alignment. In ICCV, 2021.",
+            "[11] Yangyu Huang, Xi Chen, Jongyoo Kim, Hao Yang, Chong Li, Jiaolong Yang, and Dong Chen. Freeenricher: Enriching face landmarks without additional cost. AAAI, 2023.",
+            "[12] Tharun J. Iyer, Rahul K., Ruban Nersisson, Zhemin Zhuang, Alex Noel Joseph Raj, and Imthiaz Refayee. Machine learning-based facial beauty prediction and analysis of frontal facial images using facial landmarks and traditional image descriptors. Computational Intelligence and Neuroscience, 2021.",
+            "[13] Haibo Jin, Shengcai Liao, and Ling Shao. Pixel-in-pixel net: Towards efficient facial landmark detection in the wild. IJCV, 2021.",
+            "[14] Yi Jin, Xingyan Guo, Yidong Li, Junliang Xing, and Hui Tian. Towards stabilizing facial landmark detection and tracking via hierarchical filtering: A new method. Journal of the Franklin Institute, 2020. ISSN 0016-0032.",
+            "[15] Aniwat Juhong and C. Pintavirooj. Face recognition based on facial landmark detection. In BMEiCON, 2017.",
+            "[16] Robin Kips, Ruowei Jiang, Sileye Ba, Edmund Phung, Parham Aarabi, Pietro Gori, Matthieu Perrot, and Isabelle Bloch. Deep graphics encoder for real-time video makeup synthesis from example. In CVPRW, 2021.",
+            "[17] Abhinav Kumar, Tim K. Marks, Wenxuan Mou, Ye Wang, Michael Jones, Anoop Cherian, Toshiaki Koike-Akino, Xiaoming Liu, and Chen Feng. Luvli face alignment: Estimating landmarks’ location, uncertainty, and visibility likelihood. In CVPR, 2020.",
+            "[18] Hui Li, Zidong Guo, Seon-Min Rhee, Seungju Han, and Jae-Joon Han. Towards accurate facial landmark detection via cascaded transformers. In CVPR, June 2022."
+        ],
+        "bbox": [
+            179,
+            114,
+            825,
+            142
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "page_number",
+        "text": "10",
+        "bbox": [
+            490,
+            935,
+            509,
+            948
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "[19] TianXing Li, Zhi Yu, Edmund Phung, Brendan Duke, Irina Kezele, and Parham Aarabi. Lightweight real-time makeup try-on in mobile browsers with tiny cnn models for facial tracking. In CVPRW, 2019.",
+            "[20] Weijian Li, Yuhang Lu, Kang Zheng, Haofu Liao, Chihung Lin, Jiebo Luo, Chi-Tung Cheng, Jing Xiao, Le Lu, Chang-Fu Kuo, et al. Structured landmark detection via topology-adapting deep graph learning. In ECCV, 2020.",
+            "[21] Shilong Liu, Zhaoyang Zeng, Tianhe Ren, Feng Li, Hao Zhang, Jie Yang, Chun yue Li, Jianwei Yang, Hang Su, Jun-Juan Zhu, and Lei Zhang. Grounding dino: Marrying dino with grounded pre-training for open-set object detection. In ECCV, 2023.",
+            "[22] Davide Marelli, Simone Bianco, and Gianluigi Ciocca. Designing an AI-based virtual try-on web application. Sensors, 2022.",
+            "[23] M. I. N. P. Munasinghe. Facial expression recognition using facial landmarks and random forest classifier. In ICIS, 2018.",
+            "[24] Kartik Narayan, Vibashan VS, Rama Chellappa, and Vishal M Patel. Facexformer: A unified transformer for facial analysis. arXiv preprint arXiv:2403.12960, 2024.",
+            "[25] Quang Tran Ngoc, Seunghyun Lee, and Byung Cheol Song. Facial landmark-based emotion recognition via directed graph neural network. Electronics, 2020.",
+            "[26] Shengju Qian, Keqiang Sun, Wayne Wu, Chen Qian, and Jiaya Jia. Aggregation via separation: Boosting facial landmark detector with semi-supervised style translation. In ICCV, 2019.",
+            "[27] Lixiong Qin, Mei Wang, Xuannan Liu, Yuhang Zhang, Wei Deng, Xiaoshuai Song, Weiran Xu, and Weihong Deng. Faceptor: A generalist model for face perception. In ECCV, 2024.",
+            "[28] Rajeev Ranjan, Vishal Patel, and Rama Chellappa. Hyperface: A deep multi-task learning framework for face detection, landmark localization, pose estimation, and gender recognition. TPAMI, 2016.",
+            "[29] Rajeev Ranjan, Swami Sankaranarayanan, Carlos D. Castillo, and Rama Chellappa. An all-inone convolutional neural network for face analysis. In FG, 2017.",
+            "[30] Nils Reimers and Iryna Gurevych. Sentence-bert: Sentence embeddings using siamese bertnetworks. In EMNLP, 2019.",
+            "[31] Christos Sagonas, Georgios Tzimiropoulos, Stefanos Zafeiriou, and Maja Pantic. 300 faces in-the-wild challenge: The first facial landmark localization challenge. In ICCVW, June 2013.",
+            "[32] Divija Sanapala and J. Angel Arul Jothi. Virtual makeup try-on system using cognitive learning. In Cognitive Analytics and Reinforcement Learning, 2024. ISBN 9781394214068.",
+            "[33] Adil Sarsenov and Konstantin Latuta. Face recognition based on facial landmarks. In AICT, 2017.",
+            "[34] Yasmina Souley Dosso, Daniel Kyrollos, Kim Greenwood, Joann Harrold, and James Green. Nicuface: Robust neonatal face detection in complex nicu scenes. IEEE Access, 2022.",
+            "[35] Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N Gomez, Ł ukasz Kaiser, and Illia Polosukhin. Attention is all you need. In NeurIPS, 2017.",
+            "[36] Jun Wan, Hui Xi, Yuanzhi Yao, Hang Sun, Zhihui Lai, and Jie Zhou. Interpretable facial landmark detection by multi-expert collaborative uncertainty-aware deep networks. Neural Networks, 2026.",
+            "[37] Erroll Wood, Tadas Baltrušaitis, Charlie Hewitt, Matthew Johnson, Jingjing Shen, Nikola Milosavljevic, Daniel Wilde, Stephan Garbin, Toby Sharp, Ivan Stojiljkovi´ c, Tom Cashman,´ and Julien Valentin. 3d face reconstruction with dense landmarks. In ECCV, 2022.",
+            "[38] Bing-Fei Wu, Bo-Rui Chen, and Chun-Fei Hsu. Design of a facial landmark detection system using a dynamic optical flow approach. IEEE Access, 2021."
+        ],
+        "bbox": [
+            173,
+            92,
+            826,
+            133
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "page_number",
+        "text": "11",
+        "bbox": [
+            490,
+            935,
+            508,
+            948
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "[39] Wayne Wu, Chen Qian, Shuo Yang, Quan Wang, Yici Cai, and Qiang Zhou. Look at boundary: A boundary-aware face alignment algorithm. In CVPR, 2018.",
+            "[40] Jiahao Xia, Weiwei Qu, Wenjian Huang, Jianguo Zhang, Xi Wang, and Min Xu. Sparse local patch transformer for robust face alignment and landmarks inherent relation learning. In CVPR, 2022.",
+            "[41] Zixuan Xu, Banghuai Li, Miao Geng, Ye Yuan, and Gang Yu. Anchorface: An anchor-based facial landmark detector across large poses. In AAAI, 2020.",
+            "[42] Huilin Yang, Junyan Lyu, Pujin Cheng, Roger Tam, and Xiaoying Tang. Lddmm-face: Large deformation diffeomorphic metric learning for cross-annotation face alignment. Pattern Recognition, 2024. ISSN 0031-3203.",
+            "[43] Shuo Yang, Ping Luo, Chen Change Loy, and Xiaoou Tang. Wider face: A face detection benchmark. In CVPR, 2016.",
+            "[44] Ruiqi Zhao, Tianyi Wu, and Guodong Guo. Sparse to dense motion transfer for face image animation. In ICCVW, 2021.",
+            "[45] Yinglin Zheng, Hao Yang, Ting Zhang, Jianmin Bao, Dongdong Chen, Yangyu Huang, Lu Yuan, Dong Chen, Ming Zeng, and Fang Wen. General facial representation learning in a visuallinguistic manner. In CVPR, June 2022.",
+            "[46] Zhenglin Zhou, Huaxia Li, Hong Liu, Nanyang Wang, Gang Yu, and Rongrong Ji. STAR Loss: Reducing semantic ambiguity in facial landmark detection. In CVPR, 2023.",
+            "[47] Qikui Zhu. Possloss: A reliable and sensitive facial landmark detection loss function. In ICCV, 2025.",
+            "[48] Shizhan Zhu, Cheng Li, Chen Change Loy, and Xiaoou Tang. Face alignment by coarse-to-fine shape searching. In CVPR, 2015.",
+            "[49] Xizhou Zhu, Weijie Su, Lewei Lu, Bin Li, Xiaogang Wang, and Jifeng Dai. Deformable DETR: deformable transformers for end-to-end object detection. In ICLR, 2021."
+        ],
+        "bbox": [
+            173,
+            92,
+            826,
+            121
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "page_number",
+        "text": "12",
+        "bbox": [
+            490,
+            935,
+            509,
+            948
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "A Technical Appendices and Supplementary Material",
+        "text_level": 2,
+        "bbox": [
+            171,
+            89,
+            640,
+            107
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "A.1 Relevance and Strength of Contribution",
+        "text_level": 2,
+        "bbox": [
+            171,
+            119,
+            496,
+            135
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Our work addresses critical limitations in current 2D face landmark detection (FLD) methods and provides an efficient, semantically flexible alternative to both dense and traditional sparse approaches:",
+        "bbox": [
+            169,
+            145,
+            826,
+            175
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "• Unified Training Across Datasets. We introduce the FPALP representation, which enables a single model to be trained across heterogeneous landmark templates without requiring 3D priors or costly alignment procedures. This overcomes the fragmentation seen in prior work, where separate models are typically needed for different datasets.",
+        "bbox": [
+            215,
+            185,
+            826,
+            242
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "• Dynamic, Semantic Landmark Prediction. Unlike fixed-protocol models or dense outputs, our method supports flexible, part-based landmark queries. This design offers interpretability and adaptability for downstream tasks that demand only specific landmarks or face regions.",
+        "bbox": [
+            215,
+            244,
+            826,
+            287
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "• Purely 2D Supervision. Our method operates entirely within the 2D domain, without relying on 3D annotations or model-based priors. This makes it more scalable and accessible in real-world applications where 3D data is limited or unavailable.",
+        "bbox": [
+            215,
+            291,
+            826,
+            333
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "• Improved Generalization and Regularization. Training on diverse datasets with different landmark configurations serves as a natural regularizer, promoting robustness and reducing overfitting. The FPALP structure aligns these heterogeneous protocols into a unified representation that supports generalization to unseen templates.",
+        "bbox": [
+            215,
+            337,
+            826,
+            393
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "• Compatibility with Sparse-to-Dense Learning. Our model supports zero-shot or nearzero-shot generalization across protocols. It can be trained on sparse landmarks and still perform well on denser configurations, laying the groundwork for bridging sparse and dense paradigms in a single framework.",
+        "bbox": [
+            215,
+            396,
+            826,
+            453
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "• Suitability for Low-Resource Deployment. Dynamic 2D FLD is particularly advantageous for edge and mobile devices, where lightweight, semantically interpretable, and adaptable models are essential. Our method meets these requirements, while 3D-based approaches—due to their reliance on dense meshes, heavy computation, and 3D priors—are ill-suited for such environments. By avoiding these constraints, our framework provides a practical and efficient solution for real-world deployment.",
+        "bbox": [
+            215,
+            455,
+            826,
+            540
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "A.2 Limitations Continued",
+        "text_level": 2,
+        "bbox": [
+            171,
+            554,
+            377,
+            569
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "From our ablation studies, we infer that the generalization ability of our model, which we define as its capacity to accurately predict landmarks at unseen Face Part-Anchored Landmark Positions (FPALPs) – is influenced by both the diversity of training dataset face templates and the range of facial and ambient conditions. Training on a broader variety of datasets with distinct landmark layouts, rather than simply increasing the number of datasets with similar layouts, is likely to yield a more generalizable model. However, as discussed in the dataset ablation section, incorporating additional training datasets may enhance overall generalization but could also diminish performance on specific evaluation datasets if the training and evaluation datasets differ significantly in facial and ambient condition distributions or label quality.",
+        "bbox": [
+            169,
+            580,
+            826,
+            705
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "We also note that FPALPs are constructed using native dataset annotations. These annotations along face part boundaries often represent semantic progression points in 2D space. However, landmarks generated through interpolation techniques may not align with those predicted via evenly spaced FPALPs. For instance, consider a front-facing view of a person whose jawline narrows near the chin. Landmarks sampled along the true jaw contour may increase in density as they approach the chin. While these landmarks may appear equidistant in the profile view, they may not be evenly spaced in the frontal view. Consequently, we are unable to quantitatively evaluate our method on benchmarks that employ higher-density landmarks derived through interpolation, as it becomes challenging to objectively identify the cases we described above.",
+        "bbox": [
+            169,
+            712,
+            826,
+            837
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Lastly, we acknowledge that the choice of the training dataset and the text encoder could introduce biases or limitations when face part phrases are described using low-resource languages. In order to mitigate such biases and limitations, the definition of face part phrases should be standardized for a consistent interpretation across the different languages, and the text encoder would either need to be trained or fine-tuned on the target languages. While this is a crucial consideration for real-world deployment in a global context, our current work limits its scope to the English language context, deferring inter-linguistic adaptations and broader cross-cultural considerations to future research.",
+        "bbox": [
+            169,
+            842,
+            826,
+            912
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "page_number",
+        "text": "13",
+        "bbox": [
+            490,
+            935,
+            509,
+            948
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            169,
+            92,
+            826,
+            121
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "A.3 Exclusion of Datasets",
+        "text_level": 2,
+        "bbox": [
+            171,
+            140,
+            367,
+            155
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "Our framework is trained and evaluated on AFLW19 [48], WFLW [39], and 300W [31], with additional evaluation conducted on COFW [3] and its variants. However, we exclude COFW from the training set due to observed inconsistencies in annotation quality. Preliminary experiments indicated that including COFW not only degraded the overall performance across all datasets but also adversely impacted the quality of denser landmark predictions. We also do not evaluate on the Enriched 300W test set proposed in [11] as its annotations are derived through interpolation-based methods, as discussed in the subsection A.2 above.",
+        "bbox": [
+            169,
+            167,
+            826,
+            266
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "A.4 Choice of Text Encoder",
+        "text_level": 2,
+        "bbox": [
+            171,
+            285,
+            382,
+            300
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "As discussed in the main paper, we employ SentenceBERT [30] as the text encoder to generate face part representations. In Sec. 4.2, we detailed the rationale for selecting a language model output rather than a learnable embedding. Another plausible option was to use the FaRL [45] text encoder, given that we already utilize its image encoder. Although FaRL was trained on LAION-FACE [45], a dataset comprising facial image-text pairs, the textual descriptions predominantly consist of general attributes such as “smiling girl with party wig\" or “the beautiful bride with the sunlight shining on her,\" rather than the specific face part intricacies discussed in Sec. 4.2. In contrast, SentenceBERT, having been pretrained on diverse and extensive textual corpora, demonstrated a superior ability to effectively encode these more detailed and nuanced characteristics of individual face parts.",
+        "bbox": [
+            169,
+            313,
+            826,
+            439
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "While our study confirmed that using the FaRL text encoder yielded superior performance compared to generic learnable embeddings, our experiments ultimately revealed that SentenceBERT outperformed FaRL’s text encoder for our specific task. This indicated that, for generating image-agnostic landmark encodings using face part phrases, a superior representation of the specific semantics of face parts is achieved by using a strong pretrained text encoder. Therefore, despite the potential benefits of image-text alignment, the pretrained, lightweight SentenceBERT proved to be the more effective choice for encoding face part phrases in our framework.",
+        "bbox": [
+            169,
+            443,
+            826,
+            541
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "A.5 Implementation Details for Fine-Tuning with Dataset Adapters",
+        "text_level": 2,
+        "bbox": [
+            171,
+            560,
+            655,
+            575
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "In Sec. 4.1, we leverage the Dataset Adapters which was described in Sec. 3 to report the maximum performance we can achieve with our approach for each dataset. We first train our model with the unified dataset and freeze the network. Then, for each dataset, we attach and train only the Dataset Adapters, consisting of LoRA [9] modules of rank 4 to the cross-attention and FFN layers of only the last decoder block, for 5 epochs at a learning rate of 10<sup>−5</sup>.",
+        "bbox": [
+            169,
+            588,
+            826,
+            659
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "A.6 Quantitative Evaluation of Dynamically Queried Landmarks",
+        "text_level": 2,
+        "bbox": [
+            171,
+            678,
+            642,
+            693
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "We further evaluate whether the proposed framework can accurately predict landmark positions that are not directly observed during training. This is particularly important for validating the dynamic landmark prediction capability beyond the qualitative examples presented in the main paper.",
+        "bbox": [
+            169,
+            705,
+            826,
+            750
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "Existing cross-template evaluation. The main paper already provides two evaluations involving unseen landmark queries. First, Table 4 evaluates models on landmark templates that differ from those used for training. For example, models trained only on 300W or WFLW are evaluated on AFLW-19, WFLW, COFW, WFLW68, and COFW68. Whenever the evaluation template differs from the training template, a subset of the requested FPALPs is unseen during training, providing a near-zero-shot evaluation of cross-template landmark prediction.",
+        "bbox": [
+            169,
+            766,
+            826,
+            851
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "Second, Table 6b isolates unseen landmark positions more directly. A model trained only on the 68-point 300W template is evaluated on $\\mathrm { W F L W } _ { E }$ , which contains the 28 WFLW landmarks that are absent from 300W. Despite never observing these FPALPs during training, our ViT-B model achieves an NME of 6.52, with performance improving systematically as backbone capacity increases.",
+        "bbox": [
+            169,
+            856,
+            826,
+            912
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "page_number",
+        "text": "14",
+        "bbox": [
+            488,
+            935,
+            509,
+            948
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "table",
+        "img_path": "images/4e99306880314f3a72a9725fa0a8f75fb7839f0d9855dacda219fcf6b81a6b8f.jpg",
+        "table_caption": [
+            "Table 7: Held-out landmark prediction compared with cubic-spline interpolation. Full supervision is trained using the complete landmark template, while reduced supervision observes only the retained landmarks. Cubic splines are fitted to the retained landmark predictions of the reduced-supervision model. Lower NME is better."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Dataset and split</td><td colspan=\"3\">Full supervision Reduced supervision Cubic spline</td></tr><tr><td>300W: 37 retained, 31 held out</td><td>3.56</td><td>4.08</td><td>5.04</td></tr><tr><td>WFLW: 73 retained, 23 held out</td><td>4.51</td><td>4.92</td><td>5.88</td></tr><tr><td>WFLW: 50 retained, 46 held out</td><td>5.32</td><td>5.76</td><td>6.83</td></tr></table>",
+        "bbox": [
+            207,
+            155,
+            789,
+            223
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "Controlled held-out landmark prediction. To more directly quantify the ability to predict unseen landmark positions, and to compare against geometric interpolation, we construct a controlled heldout landmark experiment using the native annotations of 300W and WFLW. Since these datasets do not provide ground-truth annotations for arbitrarily increased landmark granularity, we instead withhold a subset of their annotated landmarks during training and evaluate prediction accuracy exclusively on these unseen positions.",
+        "bbox": [
+            169,
+            251,
+            826,
+            337
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "For each face-part contour, we retain landmarks by alternating landmark indices within the face-part definitions given in Table 12 and Table 13 of subsection A.15. For face parts containing an odd number of landmarks, the additional landmark is retained. This produces the following splits:",
+        "bbox": [
+            169,
+            342,
+            826,
+            386
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "• 300W-50%: 37 of 68 landmarks are retained for training, while the remaining 31 landmarks are held out for evaluation.",
+        "bbox": [
+            215,
+            395,
+            825,
+            424
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "• WFLW-75%: after excluding the two eye-center landmarks, which do not lie on interpolatable contours, 73 of the remaining 96 landmarks are retained and 23 are held out.",
+        "bbox": [
+            215,
+            429,
+            826,
+            458
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "• WFLW-50%: 50 landmarks are retained and 46 are held out.",
+        "bbox": [
+            215,
+            462,
+            637,
+            478
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "We evaluate three settings:",
+        "bbox": [
+            171,
+            488,
+            351,
+            503
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "1. Full supervision: the model is trained using the complete 68- or 98-point landmark template and evaluated only on the designated held-out subset. This provides a fully supervised reference.",
+        "bbox": [
+            210,
+            515,
+            825,
+            556
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "2. Reduced supervision: the model is trained using only the retained landmarks and is directly queried at the FPALPs corresponding to the held-out landmarks.",
+        "bbox": [
+            209,
+            561,
+            825,
+            590
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "3. Cubic-spline interpolation: cubic splines are fitted independently for each face part using the retained landmark predictions from the reduced-supervision model and are sampled at the FPALPs corresponding to the held-out landmarks.",
+        "bbox": [
+            209,
+            594,
+            826,
+            638
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "We use cubic rather than linear interpolation because facial landmarks predominantly describe smooth, nonlinear contours. Following sparsification, some face parts contain as few as three retained landmarks, for which linear interpolation would produce piecewise-linear boundaries that cannot capture the natural curvature of structures such as the eyes, lips, eyebrows, and jawline. For closed contours, we use periodic cubic splines to preserve smoothness and continuity across the closure point. This therefore provides a strong contour-aware interpolation baseline rather than naive interpolation between neighboring landmarks.",
+        "bbox": [
+            169,
+            648,
+            826,
+            747
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "Table 7 reports NME computed exclusively over the held-out native landmarks. Under identical reduced supervision, directly querying the proposed model at unseen FPALPs improves over cubicspline interpolation by 19.0% on the 37/31 300W split, 16.3% on the 73/23 WFLW split, and 15.7% on the 50/46 WFLW split. The reduced-supervision model also remains relatively close to the fully supervised reference despite never observing the evaluated FPALPs during training.",
+        "bbox": [
+            169,
+            752,
+            826,
+            824
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "These results indicate that the proposed formulation learns more than a geometric interpolation rule between neighboring landmarks. The spline baseline is completely determined by the retained landmark predictions and consequently propagates localization errors from these sparse anchor points to the interpolated locations. In contrast, each queried landmark in our framework is predicted directly from the input image using its semantic face-part representation, FPALP encoding, and learned inter-landmark relationships.",
+        "bbox": [
+            169,
+            827,
+            826,
+            912
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "page_number",
+        "text": "15",
+        "bbox": [
+            488,
+            935,
+            509,
+            948
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "This distinction is particularly relevant for challenging samples involving profile faces, partial occlusions, extreme poses, or strong facial expressions. For simple frontal faces, smooth contour interpolation may often be sufficient. Under more difficult conditions, however, interpolation cannot incorporate additional image evidence at the queried position and inherits errors from the neighboring retained landmarks. Our image-conditioned formulation can instead exploit both local visual evidence and global facial structure when localizing each requested landmark.",
+        "bbox": [
+            169,
+            92,
+            826,
+            176
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "A.7 Ablation Study on the Number of Decoder Blocks",
+        "text_level": 2,
+        "bbox": [
+            171,
+            193,
+            563,
+            207
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "In Table 8, we report an ablation study on the number of decoder blocks $( n _ { \\mathrm { d e c } } )$ used in our final model. We vary $n _ { \\mathrm { d e c } }$ from 1 to 5 and observe rapid performance gains when increasing the number of blocks from 1 to $^ { 3 , }$ followed by degradation starting at 4 blocks, suggesting overfitting. Based on this trend, we set $n _ { \\mathrm { d e c } } = 3$ in our final network configuration.",
+        "bbox": [
+            169,
+            218,
+            826,
+            276
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "A.8 Detailed Comparison with Continuous Landmark Detection [5]",
+        "text_level": 2,
+        "bbox": [
+            171,
+            291,
+            658,
+            308
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "As outlined in Sec. 2, Continuous Landmark Detection (CLD) [5] is a recent framework that takes as input a facial image and arbitrary 3D query locations on a canonical 3D face surface to output corresponding 2D landmark predictions. While CLD can be trained using existing 2D face landmark datasets, it requires a layout mapping to the 3D canonical surface, imposing a dependency on such mappings. In contrast, our Unified Dynamic FLD framework eliminates this dependency by deriving FPALPs directly from the native coordinate system of the dataset, enabling training on all native 2D FLD datasets without additional mappings.",
+        "bbox": [
+            169,
+            318,
+            826,
+            416
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "Furthermore, CLD leverages 3D coordinates on the canonical face mesh as input queries, facilitating continuous landmark detection, and is a very valuable contribution, especially in applications where accurate dense coordinates are required to retrieve and characterize a facial surface. In contrast, our framework is designed to provide a more interpretable and semantically driven interface for querying FLD systems. Specifically, we construct queries based on text-defined face parts and semantic progression points along face contours. We envisage future FLD systems being queried using descriptive instructions, such as “Predict 10 coordinates from the left chin boundary to the end of the jawline,” and position our framework to address such needs.",
+        "bbox": [
+            169,
+            421,
+            826,
+            534
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "From an architectural perspective, CLD’s query encoder processes 3D query locations on a canonical face mesh, whereas our framework encodes face part text and FPALPs. Additionally, while CLD’s landmark predictor employs transformer layers to fuse the image encoder output and the 3D query encoding, our framework instantiates the initial landmark queries and coordinate predictions by encoding the face part text and corresponding FPALPs and subsequently conditioning the image features. We then refine the queries and coordinate predictions using self-attention and cross-attention layers to produce the final landmark coordinates.",
+        "bbox": [
+            169,
+            537,
+            826,
+            637
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "A.9 Detailed FPALP Formulation",
+        "text_level": 2,
+        "bbox": [
+            171,
+            652,
+            423,
+            667
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "In this section, we revisit and elaborate on the formulation of the Face Part-Anchored Landmark Positions (FPALPs). Referring to the FPALP formulation in the main paper, for a landmark l positioned at $p o s _ { l , p }$ in a sequence of $N _ { p }$ landmarks that composes the face part p with template $T _ { p } ,$ we denote the FPALP of l as $F P A L P _ { l , p } = p o s _ { l , p } / ( N _ { p } - 1 )$ . As observed, the landmark layout pertaining to a face part defined by a dataset usually comprises of landmarks that are evenly distributed on the face part boundary. The unification of individual landmark templates of the various datasets into $T _ { \\mathrm { { U } } }$ may render the collection of landmarks to be unevenly distributed along the face part boundary. To determine $p o s _ { l , p }$ of a landmark l which originally belonged to the dataset $D _ { i }$ with landmark layout $T _ { D _ { i } }$ , we first derive the position of the face part’s starting landmark in $T _ { D _ { i } }$ relative to the starting landmark of the face part in $T _ { \\mathrm { { U } } }$ , and then add to it the index of l relative to the other landmarks of the face part in $T _ { D _ { i } }$ . We express the above formulation for $p o s _ { l , p }$ as:",
+        "bbox": [
+            169,
+            679,
+            826,
+            765
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "table",
+        "img_path": "images/99ed77c7d13b3391ef40c85ec84800ea9a24b66c2eb0692f8e68dfe75f5f53b1.jpg",
+        "table_caption": [
+            "Table 8: Ablation study on the number of decoder blocks. Results are reported on the full versions of WFLW, 300W, and AFLW-19."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Number of Decoder Blocks  $( n _ { \\mathrm { d e c } } )$ </td><td>WFLW  $\\mathrm { N M E _ { i o } \\downarrow F R _ { 1 0 } \\downarrow }$ </td><td>300W  $\\mathrm { N M E } _ { \\mathrm { i o } } \\downarrow$ </td><td>AFLW-19  $\\underline { { \\mathrm { N M E } _ { \\mathrm { d i a g } } ~ } } \\downarrow$ </td></tr><tr><td>1</td><td>4.41 2.69</td><td>3.12</td><td>1.24</td></tr><tr><td>2</td><td>4.18 2.44</td><td>2.99</td><td>1.08</td></tr><tr><td>3</td><td>4.05 2.38</td><td>2.80</td><td>1.02</td></tr><tr><td>4</td><td>4.07 2.38</td><td>2.81</td><td>1.04</td></tr><tr><td>5</td><td>4.06 2.41</td><td>2.82</td><td>1.07</td></tr></table>",
+        "bbox": [
+            289,
+            824,
+            707,
+            909
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "page_number",
+        "text": "16",
+        "bbox": [
+            490,
+            935,
+            509,
+            948
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            169,
+            92,
+            826,
+            162
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "equation",
+        "img_path": "images/2d38fd345235f8e7360c42486b5e6e6b36d72d1943ebbd06d1de5d7b12287365.jpg",
+        "text": "$$\np o s _ { l , p } = \\mathrm { R e l a t i v e P o s i t i o n } ( l _ { s t a r t , p } ^ { T _ { D _ { i } } } , l _ { s t a r t , p } ^ { T _ { \\mathrm { U } } } ) + i n d e x _ { l , p } ^ { T _ { D _ { i } } }\\tag{8}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            313,
+            176,
+            679,
+            199
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "The FPALP formulation normalizes progression along each face part from 0 to 1 in a dataset-agnostic manner. Crucially, the start and end points of a face-part curve in FPALPs are not fixed by any dataset; they are defined once by the practitioner when specifying the face-part phrase and its member landmarks. FPALPs then assign each (face part, landmark) pair a normalized position in [0,1] along that user-defined ordering. This means that the same physical landmark can legitimately receive different FPALP values under different, possibly overlapping, face-part phrases (e.g., “nose” = “nose bridge + left + right boundary of nose” vs “right nasal region” = “right boundary of nose + right nasolabial fold”), and differences in how individual datasets choose their “first” or “last” landmark on a contour do not constrain the unified representation.",
+        "bbox": [
+            169,
+            208,
+            826,
+            334
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "A.10 Handling Undefined or Occluded Face Parts",
+        "text_level": 2,
+        "bbox": [
+            171,
+            349,
+            534,
+            364
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "Our current framework assumes that the queried face parts are explicitly defined in the training data. We acknowledge that parts that are heavily occluded or undefined poses a challenge and the impact would be dependent on the extent of visible visual context. To address such cases, the framework could be extended in future work to dynamically infer or adapt face part boundaries:",
+        "bbox": [
+            169,
+            375,
+            826,
+            433
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "1. We can utilize the text encoder to parse face part descriptions into latent embeddings that can be aligned with image features. Soft spatial attention maps based on the introduced face parts can be used to approximate the boundaries of unseen face parts, even under occlusion. Such an extension would enable the model to infer FPALP-like progression values for novel regions by projecting the learned attention map onto surrounding anchor contours. Additionally, a dynamic part discovery module could be trained using contrastive losses to bind new textual descriptions to consistent visual patterns across samples. This could potentially enable open-vocabulary part generalization in FLD, which could be an exciting avenue for future work.",
+        "bbox": [
+            210,
+            443,
+            826,
+            569
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "2. We can also leverage visibility annotations per landmark, such as those provided in the MERL-RAV [17] dataset, to supervise the model in learning to selectively ignore occluded regions during training. This allows the framework to learn robust part representations even when portions of the face are not visible. Additionally, these visibility flags can be used to guide a gating mechanism or soft-attention masking module that modulates the contribution of occluded regions in the query or image features during inference, improving landmark prediction reliability under occlusion.",
+        "bbox": [
+            209,
+            571,
+            826,
+            671
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "A.11 Detailed 2D FPALP Proposal for Future Work",
+        "text_level": 2,
+        "bbox": [
+            171,
+            685,
+            549,
+            700
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "As discussed in the future work section, the proposed FPALPs can be extended to 2D space to facilitate further advancements. Currently, FPALPs are defined in 1D space, representing semantic progression points along a face part curve. By treating face part curves as boundaries, 2D FPALPs can be defined along these boundaries, capturing semantic progression both horizontally and vertically, with either the x or y component as zero. Extending this further, regions within the face part boundary can be described using 2D FPALPs where both x and y components are non-zero. With only the face part boundary as input, weak supervision could be employed to predict 2D FPALPs for arbitrary points within the face part region. Thus, transitioning from 1D to 2D FPALPs shifts the representation from linearly traversing face part curves to encompassing face part surfaces.",
+        "bbox": [
+            169,
+            712,
+            826,
+            838
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "While 1D FPALPs correspond to progression along a face part boundary, 2D FPALPs require a surface parameterization that maps internal face part regions to a normalized coordinate space. Constructing such mappings without dense annotations firstly requires us to define the boundary coordinates of each defined face part in both spatial dimensions and further necessitates the use of weak supervision to learn the face part surface. For example, given only the boundary of a region (e.g., the cheek or forehead), one could generate pseudo-ground-truth 2D FPALP labels using mesh-based interpolation to learn consistent internal representations across identities.",
+        "bbox": [
+            169,
+            842,
+            826,
+            912
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "page_number",
+        "text": "17",
+        "bbox": [
+            490,
+            935,
+            509,
+            948
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            169,
+            92,
+            825,
+            121
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "Incorporating 2D FPALPs would allow the model to reason over continuous face surfaces rather than just boundary curves, enabling richer spatial representations. This would benefit tasks such as facial expression analysis, where subtle shape changes within a region (e.g., the bulging of cheeks or wrinkling of the forehead) may not be captured effectively through sparse boundary points. By modeling internal face part regions with 2D FPALPs, the framework could localize and track deformations more precisely, potentially improving performance on downstream tasks requiring dense spatial awareness.",
+        "bbox": [
+            169,
+            126,
+            826,
+            224
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "A.12 Detailed Training Procedure",
+        "text_level": 2,
+        "bbox": [
+            171,
+            243,
+            424,
+            258
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "Dataset Sampling. As our model is trained on a fusion of multiple datasets, we apply dataset-level oversampling to ensure a balanced training distribution. Each training epoch includes approximately the same number of samples from each dataset, ensuring equal exposure to each N-point facial landmark template.",
+        "bbox": [
+            169,
+            270,
+            826,
+            327
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "Batch Sampling. Since each dataset uses its own N-point template, all samples within a dataset share the same number of queried landmarks. For each training iteration, we randomly select (without replacement) one dataset and sample a batch (equal to the batch size) from it. This ensures consistent tensor shapes for landmark queries and avoids the need for jagged arrays.",
+        "bbox": [
+            169,
+            333,
+            826,
+            390
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "A.13 Explanation of Slight Performance Drop on WFLW68",
+        "text_level": 2,
+        "bbox": [
+            171,
+            409,
+            601,
+            424
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "We address this issue in L282–290 of the manuscript and expand on it here. As noted in L219–220, the WFLW dataset presents a wide range of challenges, including extreme poses, expressions, and occlusions. In our unified training setup, we apply dataset-level oversampling to maintain a balanced exposure across all datasets. However, because other datasets often contain less challenging samples, the model’s exposure to difficult WFLW-specific cases is reduced. This can explain the slight performance drop on WFLW68. Importantly, while we observe a decrease in NME on the 68-point version of WFLW, we also observe a performance gain on the full 98-point format. This suggests that the model benefits from the additional diverse data, especially in handling the extra 30 facial points. In other words, the gain in the 30 additional landmarks outweighs the loss in the common 68, indicating that our method generalizes well overall when exposed to a wider variety of N-point formats.",
+        "bbox": [
+            169,
+            436,
+            826,
+            589
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "A.14 Broader Impact",
+        "text_level": 2,
+        "bbox": [
+            171,
+            608,
+            338,
+            625
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "Our proposed Unified Dynamic Face Landmark Detection (FLD) framework establishes a foundation for adapting FLD systems to downstream applications. While we do not aim to set new benchmark records, our framework introduces fused dataset training without requiring additional dataset information, thereby enabling effective dynamic landmark prediction. Below, we outline potential positive and negative impacts:",
+        "bbox": [
+            169,
+            636,
+            826,
+            707
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "Positive Impacts.",
+        "text_level": 2,
+        "bbox": [
+            171,
+            712,
+            295,
+            727
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "1. Accessibility and Efficiency: By unifying multiple landmark datasets into a single framework, the method reduces the need to train separate models for different datasets. This can lower computational costs and facilitate more accessible deployment of FLD systems, particularly in resource-constrained settings.",
+        "bbox": [
+            210,
+            741,
+            826,
+            799
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "2. Scalability and Adaptability: The ability to handle variable landmark layouts allows for more adaptable systems that can be tailored for specific applications, such as facial expression analysis (select face parts only), face direction estimation, FLD stabilization in videos, and medical diagnostics involving facial structures.",
+        "bbox": [
+            209,
+            805,
+            826,
+            863
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "3. Potential for Improved Fairness: Training a single model on diverse datasets may mitigate biases that arise from models trained solely on specific datasets, potentially leading to more robust performance across varied demographic and environmental conditions.",
+        "bbox": [
+            209,
+            869,
+            825,
+            912
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "page_number",
+        "text": "18",
+        "bbox": [
+            490,
+            935,
+            509,
+            948
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "4. Cross-Dataset Learning: The FPALP framework can promote cross-dataset learning, encouraging researchers to leverage underutilized datasets and discover new patterns in facial landmark configurations.",
+        "bbox": [
+            209,
+            92,
+            826,
+            135
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "Negative Impacts:",
+        "text_level": 2,
+        "bbox": [
+            171,
+            154,
+            303,
+            170
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "1. Dataset Bias Amplification: If the unified dataset disproportionately represents certain demographics or facial structures, the model could inadvertently reinforce existing biases, leading to inaccurate predictions or unfair outcomes.",
+        "bbox": [
+            210,
+            185,
+            826,
+            229
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "2. Dependence on Dataset Quality: The proposed approach relies on the accuracy and consistency of landmark annotations. If certain datasets contain noisy or imprecise labels, the model’s predictions may propagate these errors, potentially compromising its generalizability and reliability.",
+        "bbox": [
+            209,
+            242,
+            828,
+            300
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "A.15 Face Template Alignment Statistics",
+        "text_level": 2,
+        "bbox": [
+            171,
+            327,
+            472,
+            343
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "As detailed in Sec. 3 of the main paper, the first step in the formulation of Face Part-Anchored Landmark Positions (FPALPs) is the synthesis of the unified face template $T _ { \\mathrm { { U } } }$ through an alignment of the individual face templates of the considered datasets. The unified template is constructed algorithmically, via clustering across datasets. In our implementation, we use the mid-density dataset to set the initial clustering centers, restrict drastic center movement to avoid drift, and flag landmarks that do not fit existing clusters. When newly introduced landmarks yield large member distances, it is treated as a new cluster center / new face part rather than being forcibly merged.",
+        "bbox": [
+            169,
+            357,
+            826,
+            457
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "We specified that the alignment of the face templates of AFLW19, 300W, and WFLW, resulted in tight proximal clusters having an average intra-cluster distance of 2.22 pixels averaged over all face parts. In Table 9 we expand this statistic by showing the per-face part mean intra-cluster distances of landmark clusters having at least two landmark members.",
+        "bbox": [
+            169,
+            460,
+            826,
+            518
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "We theorize that these intra-cluster distances quantifies a blend of (1) semantic positioning inconsistency across multiple poses, arising from differences in how datasets define contour trajectories under foreshortening, profile rotations, occlusions and different facial expressions, and (2) subjective annotation noise at the annotator level. FPALPs operate under this noisy supervision yet still learn a stable “average” contour representation. A promising direction for future work is to explicitly model and decompose this noise, e.g., by estimating semantic curve variability separately from annotator-level deviations and training the model to minimize the former while remaining robust to the latter.",
+        "bbox": [
+            169,
+            522,
+            826,
+            636
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "table",
+        "img_path": "images/3d09aa07cce805cc910f628c885187a01e6661e73750185ce22c3a24540084fc.jpg",
+        "table_caption": [
+            "Table 9: Mean intra-cluster distance (in pixels) for the landmark clusters per face part during the alignment of the face templates of the AFLW19, 300W, and WFLW datasets, into a unified face template. A clean alignment is observed with the minimum, maximum, and mean values of the mean intra-cluster distance taken across the face parts as 1.51, 3.82, and 2.22 pixels respectively."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td rowspan=1 colspan=1>Face Part</td><td rowspan=1 colspan=1>Mean Intra-Cluster Distance</td></tr><tr><td rowspan=3 colspan=1>face contourleft eyebrowright eyebrownose bridgenose boundaryleft eyeright eyeouter lipinner lipleft pupilright pupil</td><td></td></tr><tr><td rowspan=1 colspan=1></td></tr><tr><td rowspan=1 colspan=1>2.12</td></tr></table>",
+        "bbox": [
+            349,
+            720,
+            647,
+            888
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "page_number",
+        "text": "19",
+        "bbox": [
+            490,
+            935,
+            509,
+            948
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "A.16 Landmark to FPALP Mapping",
+        "text_level": 2,
+        "bbox": [
+            171,
+            90,
+            442,
+            107
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "text",
+        "text": "After we attain the unified face template $T _ { \\mathrm { { U } } }$ , we assign each landmark to one or more user-defined face parts and calculate its Face Part-Anchored Landmark Positions. We tabulate the result of this assignment for the AFLW, COFW, 300W, and 300W datasets in Tab. Table 10-13 respectively.",
+        "bbox": [
+            169,
+            116,
+            825,
+            160
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "image",
+        "img_path": "images/0f897713c296488cbf852461d5372926450b97195c279081b07b36e05b305127.jpg",
+        "image_caption": [
+            "(a)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            174,
+            171,
+            305,
+            272
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "image",
+        "img_path": "images/b00f0df117f5c768482ada469ca35aaeadb68470f134006e395dbca8a2e50db4.jpg",
+        "image_caption": [
+            "(b)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            307,
+            174,
+            436,
+            273
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "image",
+        "img_path": "images/d17efb74bcf0e21dd4387a310977f2b88320e1935a3df0ac524be51c33196322.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "bbox": [
+            431,
+            172,
+            562,
+            272
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "image",
+        "img_path": "images/95937dacaaa0a2b23cecb27d09569354d5f09690f9497f1926264e9cd937f8b9.jpg",
+        "image_caption": [
+            "(c)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            562,
+            172,
+            694,
+            273
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "image",
+        "img_path": "images/5234f7ae344f4e4bbc12bd4495b899d45e9f9913b8ca38bf94981288870f2073.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "bbox": [
+            694,
+            172,
+            821,
+            273
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "image",
+        "img_path": "images/82a1b713681a048fc19ca467bc88d3b48b6075742d1dfd568cbfb2a4b5a8d4bb.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "bbox": [
+            174,
+            294,
+            299,
+            395
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "image",
+        "img_path": "images/ada7ee3e9002b60d50d0bff2dc346d82366537e3657a7c55881fd6928111b1b9.jpg",
+        "image_caption": [
+            "(f)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            299,
+            295,
+            437,
+            395
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "image",
+        "img_path": "images/c955d6ec611f257a6accf1a6bcb61a4d743ae1402e902355749282c3449e3049.jpg",
+        "image_caption": [
+            "(d)",
+            "(g)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            439,
+            294,
+            566,
+            395
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "image",
+        "img_path": "images/a5b19319254fcc9ce38817ec9ef86bbfd625592254c7aeb4689f88fdc6289429.jpg",
+        "image_caption": [
+            "(e)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            570,
+            295,
+            694,
+            397
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "image",
+        "img_path": "images/5e9da92f272a2109cc2acf57fff5286d9b1101433800b3aabeb75b56d8dc2ce0.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "bbox": [
+            173,
+            415,
+            305,
+            515
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "image",
+        "img_path": "images/d85e06402e4d4ed75d6f69bd228d5fe8b5dafa0d667b6d2f60b7c66ef055120b.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "bbox": [
+            692,
+            295,
+            823,
+            395
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "image",
+        "img_path": "images/70aa9e2bbd8219ef383e7e566da5f297502cc85ca43f869108e5036d18f09d55.jpg",
+        "image_caption": [
+            "(k)",
+            "(l)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            303,
+            415,
+            431,
+            517
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "image",
+        "img_path": "images/1a923c30c072cfc0d10d74bff80c4610ce7396d9c7b741bd21d112af20f56f05.jpg",
+        "image_caption": [
+            "(h)",
+            "(m)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            433,
+            415,
+            570,
+            517
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "image",
+        "img_path": "images/018a2b8bb53d46784460237dc1468368c8830e490735346c4e37a5ac2ed875cc.jpg",
+        "image_caption": [
+            "(i)",
+            "(n)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            566,
+            415,
+            694,
+            517
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "image",
+        "img_path": "images/84fb375751d748d9146526d58ff1be02b09175a4bfddd24caa63c103e9e0593d.jpg",
+        "image_caption": [
+            "(j)",
+            "(o)",
+            "Figure 7: An illustration of the dynamic landmark prediction capability of our system. All images are selected from the WFLW test set which implements the 98-point face template. We anchor the landmarks to the following face parts: left and right eyes, eyebrows, and pupils, inner and outer lips, face contour, nose bridge and boundary. For (e), we split the face contour, lips, and nose boundary into left, center, and right sub-parts. Landmark predictions per face part are depicted using (a)(f)(k) a granularity multiplier of 0.5, (b)(g)(l) a granularity multiplier of 1, (c)(h)(m) a granularity multiplier of 4, (d)(i)(n) 4 landmarks per face part, and (e)(j)(o) a granularity multiplier of 0.5, 1, and 2 for left, center, and right sub-parts whose landmarks are color coded as red, green, and blue respectively."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            692,
+            416,
+            823,
+            517
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "text",
+        "text": "A.17 Showcasing Dynamic Landmark Prediction: Additional Visualizations",
+        "text_level": 2,
+        "bbox": [
+            171,
+            681,
+            715,
+            696
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "text",
+        "text": "As in Figure 6 within Sec. 4.3 of our main paper, we qualitatively assess the output of our Generalized Dynamic Face Landmark Detection system by depicting a variety of dynamic landmark prediction configurations on images from the WFLW test set in Figure 7. Further, in order to depict the robustness of our system, we visualize our landmark prediction configurations on the challenging cases of occlusion in Figure 8 and extreme poses in Figure 9 from the WFLW test set. From the visualizations, we observe that our framework is able to successfully reason and predict the most likely positions for the landmarks despite the (partial and complete) occlusion of face parts, atypical facial expressions, and extreme poses.",
+        "bbox": [
+            169,
+            707,
+            826,
+            819
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "page_number",
+        "text": "20",
+        "bbox": [
+            488,
+            935,
+            509,
+            948
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "image",
+        "img_path": "images/466494d8db11b5996a251dacf7affc04f11dce8ad4c9d82d9c3d573184fd2479.jpg",
+        "image_caption": [
+            "(a)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            174,
+            135,
+            308,
+            236
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "image",
+        "img_path": "images/83837701740b615e08340d322fb9f5f63d79d144cb5dbf19c45e60457e4ea0a5.jpg",
+        "image_caption": [
+            "(b)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            308,
+            136,
+            437,
+            236
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "image",
+        "img_path": "images/74d5fd87e426df844962ae37ba1e4100aa1e431ff5289740488c57d639b03360.jpg",
+        "image_caption": [
+            "(c)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            439,
+            136,
+            565,
+            236
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "image",
+        "img_path": "images/cb1f9db8847d3da28dd82184f24ebd86175638f32b3ddbbd64a6623697dcba97.jpg",
+        "image_caption": [
+            "(d)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            566,
+            136,
+            694,
+            236
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "image",
+        "img_path": "images/08b092eb05cced2c9ffdef7042a792213598a1278c87635d6a6b8b847b0a554b.jpg",
+        "image_caption": [
+            "(e)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            694,
+            133,
+            823,
+            236
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "image",
+        "img_path": "images/c92aee7848d0208c56c007bb14f8057b1d097ead0e9fe37b70214c9be135e509.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "bbox": [
+            173,
+            257,
+            305,
+            358
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "image",
+        "img_path": "images/489dfc05e49a58438fa2551cd67aa21433a15c8672cd93cf7f47f7a9f9e1fa93.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "bbox": [
+            302,
+            261,
+            433,
+            357
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "image",
+        "img_path": "images/16e1850252aa78693c2e4b7c6439712bcc11a20cd0e6b902d09c4c34175d1ead.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "bbox": [
+            433,
+            260,
+            562,
+            358
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "image",
+        "img_path": "images/4819357dfdbad84928127bac16e0149e2fee6afd9b9f034f36f71dc1c745a8b2.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "bbox": [
+            562,
+            261,
+            692,
+            358
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "image",
+        "img_path": "images/71cde032354b0623c65a12f2ac8daed1805e44ece143cad8c8c9cfed668089d2.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "bbox": [
+            691,
+            257,
+            823,
+            358
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "image",
+        "img_path": "images/9f3efa75e8f269078e742d2f715679901cf4654f744715865ca4c423ccae2d0e.jpg",
+        "image_caption": [
+            "(f)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            173,
+            380,
+            307,
+            479
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "image",
+        "img_path": "images/e588bf6775005e6a9d63f76dbb946bb3af0e366c3da85a9dec7dc3a52c589841.jpg",
+        "image_caption": [
+            "(g)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            310,
+            385,
+            436,
+            481
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "image",
+        "img_path": "images/6edf79fb6a35ff872204730be3c514da8fa8cf46f2d325856c587bd90a577370.jpg",
+        "image_caption": [
+            "(h)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            439,
+            382,
+            565,
+            481
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "image",
+        "img_path": "images/5aeeb4a908aef4a2cbea5446deec31db113cc45b04eb6db8dd3e35d8055a2c16.jpg",
+        "image_caption": [
+            "(i)",
+            "(j)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            568,
+            382,
+            696,
+            481
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "image",
+        "img_path": "images/75c95832f12f90b0fb3273187abef478e392b0566484bbc2dd2f086cf937d0d7.jpg",
+        "image_caption": [
+            "(k)",
+            "(l)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            173,
+            500,
+            305,
+            599
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "image",
+        "img_path": "images/a3cf62abbc9a25baa5327bb4970f161b74e06806e80be30bae53e21623447e2e.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "bbox": [
+            696,
+            380,
+            825,
+            479
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "image",
+        "img_path": "images/2d856bdda073e587a24aaf6a72b86fc6f9bc69c49ab06abc7cfee2b9788b2d86.jpg",
+        "image_caption": [
+            "(p)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            305,
+            500,
+            429,
+            601
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "image",
+        "img_path": "images/9d864b15ec0c4d5b8910b602fca136a23c8396646d85b059a9d982e1666264bf.jpg",
+        "image_caption": [
+            "(m)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            433,
+            501,
+            562,
+            601
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "image",
+        "img_path": "images/58b26701e5f04f03ec2637476b78db1999402a86a6ee4b73d4caf4c64d21c6eb.jpg",
+        "image_caption": [
+            "(n)",
+            "(q)",
+            "(r)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            562,
+            501,
+            689,
+            601
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "image",
+        "img_path": "images/68e0dcc770fa636ffeef1eee5d57661a876eb75cbeca04eec5bb2900f8d48778.jpg",
+        "image_caption": [
+            "(o)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            687,
+            500,
+            828,
+            601
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "image",
+        "img_path": "images/b15ca92fd75bc986aabb2fc96b1c7aea189062afc260f5b5e8c34220abe4d33b.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "bbox": [
+            173,
+            621,
+            303,
+            720
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "image",
+        "img_path": "images/b8aa4bb14be57fc61a5aff1af723678a2e4a4de06629aafeff9dbe79251aa133.jpg",
+        "image_caption": [
+            "(t)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            305,
+            622,
+            431,
+            722
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "image",
+        "img_path": "images/d4dd8aa2ab76bbac163c074af42e8a70495dc6a9122ae666612f447bd314d60a.jpg",
+        "image_caption": [
+            "(u)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            436,
+            622,
+            562,
+            722
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "image",
+        "img_path": "images/1217efdfc6d620fbcef2e72b2b548516703186af92105a2ad12994e21544f7ff.jpg",
+        "image_caption": [
+            "(v)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            565,
+            622,
+            692,
+            722
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "image",
+        "img_path": "images/80ccf27a88340f57b5951cdd8e3e8560088234a36ea859c85d1c96757c15b39c.jpg",
+        "image_caption": [
+            "(s)",
+            "(w)",
+            "Figure 8: An illustration of the dynamic landmark prediction capability of our system on challenging occlusion cases from the WFLW test set. We anchor the landmarks to the following face parts: left and right eyes, eyebrows, and pupils, inner and outer lips, face contour, nose bridge and boundary. For (e), we split the face contour, lips, and nose boundary into left, center, and right sub-parts. Landmark predictions per face part are depicted using (a)(f)(k) a granularity multiplier of 0.5, (b)(g)(l) a granularity multiplier of 1, (c)(h)(m) a granularity multiplier of 4, (d)(i)(n) 4 landmarks per face part, and (e)(j)(o) a granularity multiplier of 0.5, 1, and 2 for left, center, and right sub-parts whose landmarks are color coded as red, green, and blue respectively."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            694,
+            622,
+            825,
+            722
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "page_number",
+        "text": "21",
+        "bbox": [
+            488,
+            935,
+            508,
+            948
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "image",
+        "img_path": "images/aa6b46097495f000f70db7342a8460f352f6ca13b02485199a74e1aa1ace2fe0.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "bbox": [
+            302,
+            256,
+            397,
+            358
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "image",
+        "img_path": "images/a843e373f1454250dcb6a2198b9c291b1372e3b59b80128dc641251dedd3a184.jpg",
+        "image_caption": [
+            "(a)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            174,
+            133,
+            305,
+            237
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "image",
+        "img_path": "images/18a1b1133fdf9360d4423814442e6b1bc71dc20ac57b16e4b875b522f681489a.jpg",
+        "image_caption": [
+            "(b)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            303,
+            136,
+            434,
+            237
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "image",
+        "img_path": "images/69d5f776befc09529de3eb3e226ab283b16f61e0a3cd5138ec3a035c4b39c01e.jpg",
+        "image_caption": [
+            "(c)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            434,
+            135,
+            562,
+            238
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "image",
+        "img_path": "images/87ea2bdc8badd5336fbb583a5a23515f48b9d17c871ba6172e7f3cb37b974f1b.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "bbox": [
+            562,
+            135,
+            692,
+            238
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "image",
+        "img_path": "images/2a57748d6ca89eacb2e7a400a44308eca3732e73cbf862406456fef386c51745.jpg",
+        "image_caption": [
+            "(d)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            692,
+            135,
+            823,
+            237
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "image",
+        "img_path": "images/e2449c90f74123f26193f72e28ee3681264b2508650b81e0bb3a70fb72a053cd.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "bbox": [
+            173,
+            256,
+            297,
+            358
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "image",
+        "img_path": "images/9d92f15d87813633f7f6d6f7b7496e7091e4dc1a1fc1f8677533402c7eff8fb4.jpg",
+        "image_caption": [
+            "(e)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            431,
+            256,
+            555,
+            358
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "image",
+        "img_path": "images/d9647953b18a5d5fffeeca8365c403b1b00c9af36ad562330752515aa804c025.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "bbox": [
+            566,
+            256,
+            658,
+            358
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "image",
+        "img_path": "images/4cf7b1e0bbc9d28108918614af3c701c4c6856937f43be264a7c51125ccd3cbf.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "bbox": [
+            687,
+            256,
+            823,
+            358
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "image",
+        "img_path": "images/0c03ae9865cee965ab339be439ef55df41b3ca314bc61378d290c3bbffd8d34d.jpg",
+        "image_caption": [
+            "(f)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            174,
+            378,
+            299,
+            478
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "image",
+        "img_path": "images/06ad08ad13e072ff12fa8082101be798da8ef1b219f6f394ca3d885830f15a95.jpg",
+        "image_caption": [
+            "(g)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            318,
+            381,
+            411,
+            477
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "image",
+        "img_path": "images/3df60e57da007cd714a9c0e0fb59af23fef840f6ae2fd9be54533325aabcb099.jpg",
+        "image_caption": [
+            "(h)",
+            "(k)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            446,
+            380,
+            563,
+            478
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "image",
+        "img_path": "images/324d480566eb1420a6fae20c7b20fedb9330bf03f4afdec9a35dabf4908723a4.jpg",
+        "image_caption": [
+            "(i)",
+            "(j)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            580,
+            381,
+            671,
+            478
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "image",
+        "img_path": "images/4999eb5555a0870240dae8140085c18debd348e903419f3cd61b7a180a70473b.jpg",
+        "image_caption": [
+            "(l)",
+            "(m)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            174,
+            500,
+            305,
+            601
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "image",
+        "img_path": "images/ecf57b1fe4b9e53e77af410f1dbf89243acd2fcc4677435818e74f9c8260cc60.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "bbox": [
+            705,
+            380,
+            823,
+            478
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "image",
+        "img_path": "images/11f64fbaeefa4cbf361a646722f12f236301aedb2a34e65e31e8e243ed143401.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "bbox": [
+            308,
+            501,
+            436,
+            601
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "image",
+        "img_path": "images/fe432898b0a13c431756a8c9ba849ed05d5ac901797833565293ec729d718394.jpg",
+        "image_caption": [
+            "(n)",
+            "(p)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            446,
+            501,
+            566,
+            601
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "image",
+        "img_path": "images/22a9d90e2e974e000df71ce1a2d948c2956cf84f4f201962337b002a8ebb69fa.jpg",
+        "image_caption": [
+            "(o)",
+            "(q)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            576,
+            501,
+            696,
+            601
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "image",
+        "img_path": "images/77242f2d36645152936176526a3916477fda3f52b36d5dd4ba7b1ee3e89a00b9.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "bbox": [
+            173,
+            621,
+            305,
+            720
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "image",
+        "img_path": "images/8fb70c3fa881fbd48d15cec8a49807cc51dc3f61b1877ceb794a75d1e755f96a.jpg",
+        "image_caption": [
+            "(r)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            705,
+            501,
+            826,
+            601
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "image",
+        "img_path": "images/da14012bdc8e7bcc935266cbf54a5815592a30c5ea0329006c7c4bafa8384c06.jpg",
+        "image_caption": [
+            "(t)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            305,
+            622,
+            436,
+            722
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "image",
+        "img_path": "images/e15ba9787c4f69402444a9e9bc8be4852f3998282811f8eed4fd2a8b1b8356ea.jpg",
+        "image_caption": [
+            "(u)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            434,
+            622,
+            563,
+            722
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "image",
+        "img_path": "images/47212526e440e0e74eb81de87f48e0a593a498c2946f3288d7bfb77383cac449.jpg",
+        "image_caption": [
+            "(v)"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            562,
+            622,
+            697,
+            722
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "image",
+        "img_path": "images/26cdb2d1772855aa9a695e55d1d9ac349f17dc8f48882435f9803615b7c23e65.jpg",
+        "image_caption": [
+            "(s)",
+            "(w)",
+            "Figure 9: An illustration of the dynamic landmark prediction capability of our system on challenging extreme pose cases from the WFLW test set. We anchor the landmarks to the following face parts: left and right eyes, eyebrows, and pupils, inner and outer lips, face contour, nose bridge and boundary. For (e), we split the face contour, lips, and nose boundary into left, center, and right sub-parts. Landmark predictions per face part are depicted using (a)(f)(k) a granularity multiplier of 0.5, (b)(g)(l) a granularity multiplier of 1, (c)(h)(m) a granularity multiplier of 4, (d)(i)(n) 4 landmarks per face part, and (e)(j)(o) a granularity multiplier of 0.5, 1, and 2 for left, center, and right sub-parts whose landmarks are color coded as red, green, and blue respectively."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            694,
+            622,
+            826,
+            722
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "page_number",
+        "text": "22",
+        "bbox": [
+            488,
+            935,
+            509,
+            948
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "table",
+        "img_path": "images/b77f339143096d20dd071ce407d3329544091d9bc2e25affff3956de31357c5c.jpg",
+        "table_caption": [
+            "Table 10: Mapping of AFLW’s 19 landmarks to their face parts and Face Part-Anchored Landmark Positions (FPALPs)."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td rowspan=1 colspan=1>Landmark ID</td><td rowspan=1 colspan=1>Face Part</td><td rowspan=1 colspan=1>FPALP</td></tr><tr><td rowspan=1 colspan=1>1</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>16/32</td></tr><tr><td rowspan=1 colspan=1>2</td><td rowspan=1 colspan=1>Left Eyebrow</td><td rowspan=1 colspan=1>0/9 or 0/2</td></tr><tr><td rowspan=1 colspan=1>3</td><td rowspan=1 colspan=1>Left Eyebrow</td><td rowspan=1 colspan=1>4.5/9 or 1/2</td></tr><tr><td rowspan=1 colspan=1>4</td><td rowspan=1 colspan=1>Right Eyebrow</td><td rowspan=1 colspan=1>0/9 or 0/2</td></tr><tr><td rowspan=1 colspan=1>5</td><td rowspan=1 colspan=1>Right Eyebrow</td><td rowspan=1 colspan=1>4.5/9 or 1/2</td></tr><tr><td rowspan=1 colspan=1>6</td><td rowspan=1 colspan=1>Middle of Left Eyebrow</td><td rowspan=1 colspan=1>0/1</td></tr><tr><td rowspan=1 colspan=1>7</td><td rowspan=1 colspan=1>Middle of Right Eyebrow</td><td rowspan=1 colspan=1>0/1</td></tr><tr><td rowspan=1 colspan=1>8</td><td rowspan=1 colspan=1>Nose Bridge</td><td rowspan=1 colspan=1>3/3</td></tr><tr><td rowspan=1 colspan=1>9</td><td rowspan=1 colspan=1>Nose Boundary</td><td rowspan=1 colspan=1>0/6</td></tr><tr><td rowspan=1 colspan=1>10</td><td rowspan=1 colspan=1>Nose Boundary</td><td rowspan=1 colspan=1>6/6</td></tr><tr><td rowspan=1 colspan=1>11</td><td rowspan=1 colspan=1>Left Eye</td><td rowspan=1 colspan=1>0/6</td></tr><tr><td rowspan=1 colspan=1>12</td><td rowspan=1 colspan=1>Left Eye</td><td rowspan=1 colspan=1>3/6 or 1/2</td></tr><tr><td rowspan=1 colspan=1>13</td><td rowspan=1 colspan=1>Right Eye</td><td rowspan=1 colspan=1>0/6</td></tr><tr><td rowspan=1 colspan=1>14</td><td rowspan=1 colspan=1>Right Eye</td><td rowspan=1 colspan=1>3/6 or 1/2</td></tr><tr><td rowspan=1 colspan=1>15</td><td rowspan=1 colspan=1>Outer Lip</td><td rowspan=1 colspan=1>0/12</td></tr><tr><td rowspan=1 colspan=1>16</td><td rowspan=1 colspan=1>Outer Lip</td><td rowspan=1 colspan=1>6/12</td></tr><tr><td rowspan=1 colspan=1>17</td><td rowspan=1 colspan=1>Middle of Mouth</td><td rowspan=1 colspan=1>0/1</td></tr><tr><td rowspan=1 colspan=1>18</td><td rowspan=1 colspan=1>Left Eye Pupil</td><td rowspan=1 colspan=1>0/1</td></tr><tr><td rowspan=1 colspan=1>19</td><td rowspan=1 colspan=1>Right Eye Pupil</td><td rowspan=1 colspan=1>0/1</td></tr></table>",
+        "bbox": [
+            316,
+            130,
+            681,
+            419
+        ],
+        "page_idx": 22
+    },
+    {
+        "type": "table",
+        "img_path": "images/b378214447af0ae2607c57f3fd35c353562fadbe445e302951720fb48add0b81.jpg",
+        "table_caption": [
+            "Table 11: Mapping of COFW’s 29 landmarks to their face parts and Face Part-Anchored Landmark Positions (FPALPs)."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td rowspan=1 colspan=1>Landmark ID</td><td rowspan=1 colspan=1>Face Part</td><td rowspan=1 colspan=1>FPALP</td></tr><tr><td rowspan=1 colspan=1>1</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>16/32</td></tr><tr><td rowspan=1 colspan=1>2</td><td rowspan=1 colspan=1>Left Eyebrow</td><td rowspan=1 colspan=1>0/9</td></tr><tr><td rowspan=1 colspan=1>3</td><td rowspan=1 colspan=1>Left Eyebrow</td><td rowspan=1 colspan=1>2/9</td></tr><tr><td rowspan=1 colspan=1>4</td><td rowspan=1 colspan=1>Left Eyebrow</td><td rowspan=1 colspan=1>1/2</td></tr><tr><td rowspan=1 colspan=1>5</td><td rowspan=1 colspan=1>Left Eyebrow</td><td rowspan=1 colspan=1>7/9</td></tr><tr><td rowspan=1 colspan=1>6</td><td rowspan=1 colspan=1>Right Eyebrow</td><td rowspan=1 colspan=1>0/9</td></tr><tr><td rowspan=1 colspan=1>7</td><td rowspan=1 colspan=1>Right Eyebrow</td><td rowspan=1 colspan=1>2/9</td></tr><tr><td rowspan=1 colspan=1>8</td><td rowspan=1 colspan=1>Right Eyebrow</td><td rowspan=1 colspan=1>1/2</td></tr><tr><td rowspan=1 colspan=1>9</td><td rowspan=1 colspan=1>Right Eyebrow</td><td rowspan=1 colspan=1>7/9</td></tr><tr><td rowspan=1 colspan=1>10</td><td rowspan=1 colspan=1>Nose Bridge</td><td rowspan=1 colspan=1>3/3</td></tr><tr><td rowspan=1 colspan=1>11</td><td rowspan=1 colspan=1>Nose Boundary</td><td rowspan=1 colspan=1>0/6</td></tr><tr><td rowspan=1 colspan=1>12</td><td rowspan=1 colspan=1>Nose Boundary</td><td rowspan=1 colspan=1>3/6</td></tr><tr><td rowspan=1 colspan=1>13</td><td rowspan=1 colspan=1>Nose Boundary</td><td rowspan=1 colspan=1>6/6</td></tr><tr><td rowspan=1 colspan=1>14</td><td rowspan=1 colspan=1>Left Eye</td><td rowspan=1 colspan=1>0/8</td></tr><tr><td rowspan=1 colspan=1>15</td><td rowspan=1 colspan=1>Left Eye</td><td rowspan=1 colspan=1>2/8</td></tr><tr><td rowspan=1 colspan=1>16</td><td rowspan=1 colspan=1>Left Eye</td><td rowspan=1 colspan=1>4/8</td></tr><tr><td rowspan=1 colspan=1>17</td><td rowspan=1 colspan=1>Left Eye</td><td rowspan=1 colspan=1>6/8</td></tr><tr><td rowspan=1 colspan=1>18</td><td rowspan=1 colspan=1>Right Eye</td><td rowspan=1 colspan=1>0/8</td></tr><tr><td rowspan=1 colspan=1>19</td><td rowspan=1 colspan=1>Right Eye</td><td rowspan=1 colspan=1>2/8</td></tr><tr><td rowspan=1 colspan=1>20</td><td rowspan=1 colspan=1>Right Eye</td><td rowspan=1 colspan=1>4/8</td></tr><tr><td rowspan=1 colspan=1>21</td><td rowspan=1 colspan=1>Right Eye</td><td rowspan=1 colspan=1>6/8</td></tr><tr><td rowspan=1 colspan=1>22</td><td rowspan=1 colspan=1>Outer Lip</td><td rowspan=1 colspan=1>0/12</td></tr><tr><td rowspan=1 colspan=1>23</td><td rowspan=1 colspan=1>Outer Lip</td><td rowspan=1 colspan=1>3/12</td></tr><tr><td rowspan=1 colspan=1>24</td><td rowspan=1 colspan=1>Outer Lip</td><td rowspan=1 colspan=1>6/12</td></tr><tr><td rowspan=1 colspan=1>25</td><td rowspan=1 colspan=1>Outer Lip</td><td rowspan=1 colspan=1>9/12</td></tr><tr><td rowspan=1 colspan=1>26</td><td rowspan=1 colspan=1>Inner Lip</td><td rowspan=1 colspan=1>2/8</td></tr><tr><td rowspan=1 colspan=1>27</td><td rowspan=1 colspan=1>Inner Lip</td><td rowspan=1 colspan=1>6/8</td></tr><tr><td rowspan=1 colspan=1>28</td><td rowspan=1 colspan=1>Left Eye Pupil</td><td rowspan=1 colspan=1>0/1</td></tr><tr><td rowspan=1 colspan=1>29</td><td rowspan=1 colspan=1>Right Eye Pupil</td><td rowspan=1 colspan=1>0/1</td></tr></table>",
+        "bbox": [
+            361,
+            473,
+            637,
+            902
+        ],
+        "page_idx": 22
+    },
+    {
+        "type": "page_number",
+        "text": "23",
+        "bbox": [
+            488,
+            935,
+            509,
+            948
+        ],
+        "page_idx": 22
+    },
+    {
+        "type": "table",
+        "img_path": "images/43f2b843758b56c535c34375e6a7e6227acf40203377c0e1ea680a15f6dc5b4f.jpg",
+        "table_caption": [
+            "Table 12: Mapping of 300W’s 68 landmarks to their face parts and Face Part-Anchored Landmark Positions (FPALPs)."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td rowspan=1 colspan=1>Landmark IDFace</td><td rowspan=1 colspan=1>Part</td><td rowspan=1 colspan=1>FPALP L</td><td rowspan=1 colspan=1>andmark ID</td><td rowspan=1 colspan=1>Face Part</td><td rowspan=1 colspan=1>FPALP</td></tr><tr><td rowspan=1 colspan=1>1</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>0/32</td><td rowspan=1 colspan=1>35</td><td rowspan=1 colspan=1>Nose Boundary</td><td rowspan=1 colspan=1>4/6</td></tr><tr><td rowspan=1 colspan=1>2</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>2/32</td><td rowspan=1 colspan=1>36</td><td rowspan=1 colspan=1>Nose Boundary</td><td rowspan=1 colspan=1>5/6</td></tr><tr><td rowspan=1 colspan=1>3</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>4/32</td><td rowspan=1 colspan=1>37</td><td rowspan=1 colspan=1>Left Eye</td><td rowspan=1 colspan=1>0/6</td></tr><tr><td rowspan=1 colspan=1>4</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>6/32</td><td rowspan=1 colspan=1>38</td><td rowspan=1 colspan=1>Left Eye</td><td rowspan=1 colspan=1>1/6</td></tr><tr><td rowspan=1 colspan=1>5</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>8/32</td><td rowspan=1 colspan=1>39</td><td rowspan=1 colspan=1>Left Eye</td><td rowspan=1 colspan=1>2/6</td></tr><tr><td rowspan=1 colspan=1>6</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>10/32</td><td rowspan=1 colspan=1>40</td><td rowspan=1 colspan=1>Left Eye</td><td rowspan=1 colspan=1>3/6</td></tr><tr><td rowspan=1 colspan=1>7</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>12/32</td><td rowspan=1 colspan=1>41</td><td rowspan=1 colspan=1>Left Eye</td><td rowspan=1 colspan=1>4/6</td></tr><tr><td rowspan=1 colspan=1>8</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>14/32</td><td rowspan=1 colspan=1>42</td><td rowspan=1 colspan=1>Left Eye</td><td rowspan=1 colspan=1>5/6</td></tr><tr><td rowspan=1 colspan=1>9</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>16/32</td><td rowspan=1 colspan=1>43</td><td rowspan=1 colspan=1>Right Eye</td><td rowspan=1 colspan=1>0/6</td></tr><tr><td rowspan=1 colspan=1>10</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>18/32</td><td rowspan=1 colspan=1>44</td><td rowspan=1 colspan=1>Right Eye</td><td rowspan=1 colspan=1>1/6</td></tr><tr><td rowspan=1 colspan=1>11</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>20/32</td><td rowspan=1 colspan=1>45</td><td rowspan=1 colspan=1>Right Eye</td><td rowspan=1 colspan=1>2/6</td></tr><tr><td rowspan=1 colspan=1>12</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>22/32</td><td rowspan=1 colspan=1>46</td><td rowspan=1 colspan=1>Right Eye</td><td rowspan=1 colspan=1>3/6</td></tr><tr><td rowspan=1 colspan=1>13</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>24/32</td><td rowspan=1 colspan=1>47</td><td rowspan=1 colspan=1>Right Eye</td><td rowspan=1 colspan=1>4/6</td></tr><tr><td rowspan=1 colspan=1>14</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>26/32</td><td rowspan=1 colspan=1>48</td><td rowspan=1 colspan=1>Right Eye</td><td rowspan=1 colspan=1>5/6</td></tr><tr><td rowspan=1 colspan=1>15</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>28/32</td><td rowspan=1 colspan=1>49</td><td rowspan=1 colspan=1>Outer Lip</td><td rowspan=1 colspan=1>0/12</td></tr><tr><td rowspan=1 colspan=1>16</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>30/32</td><td rowspan=1 colspan=1>50</td><td rowspan=1 colspan=1>Outer Lip</td><td rowspan=1 colspan=1>1/12</td></tr><tr><td rowspan=1 colspan=1>17</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>32/32</td><td rowspan=1 colspan=1>51</td><td rowspan=1 colspan=1>Outer Lip</td><td rowspan=1 colspan=1>2/12</td></tr><tr><td rowspan=1 colspan=1>18</td><td rowspan=1 colspan=1>Left Eyebrow</td><td rowspan=1 colspan=1>0/9</td><td rowspan=1 colspan=1>52</td><td rowspan=1 colspan=1>Outer Lip</td><td rowspan=1 colspan=1>3/12</td></tr><tr><td rowspan=1 colspan=1>19</td><td rowspan=1 colspan=1>Left Eyebrow</td><td rowspan=1 colspan=1>1/9</td><td rowspan=1 colspan=1>53</td><td rowspan=1 colspan=1>Outer Lip</td><td rowspan=1 colspan=1>4/12</td></tr><tr><td rowspan=1 colspan=1>20</td><td rowspan=1 colspan=1>Left Eyebrow</td><td rowspan=1 colspan=1>2/9</td><td rowspan=1 colspan=1>54</td><td rowspan=1 colspan=1>Outer Lip</td><td rowspan=1 colspan=1>5/12</td></tr><tr><td rowspan=1 colspan=1>21</td><td rowspan=1 colspan=1>Left Eyebrow</td><td rowspan=1 colspan=1>3/9</td><td rowspan=1 colspan=1>55</td><td rowspan=1 colspan=1>Outer Lip</td><td rowspan=1 colspan=1>6/12</td></tr><tr><td rowspan=1 colspan=1>22</td><td rowspan=1 colspan=1>Left Eyebrow</td><td rowspan=1 colspan=1>4/9</td><td rowspan=1 colspan=1>56</td><td rowspan=1 colspan=1>Outer Lip</td><td rowspan=1 colspan=1>7/12</td></tr><tr><td rowspan=1 colspan=1>23</td><td rowspan=1 colspan=1>Right Eyebrow</td><td rowspan=1 colspan=1>0/9</td><td rowspan=1 colspan=1>57</td><td rowspan=1 colspan=1>Outer Lip</td><td rowspan=1 colspan=1>8/12</td></tr><tr><td rowspan=1 colspan=1>24</td><td rowspan=1 colspan=1>Right Eyebrow</td><td rowspan=1 colspan=1>1/9</td><td rowspan=1 colspan=1>58</td><td rowspan=1 colspan=1>Outer Lip</td><td rowspan=1 colspan=1>9/12</td></tr><tr><td rowspan=1 colspan=1>25</td><td rowspan=1 colspan=1>Right Eyebrow</td><td rowspan=1 colspan=1>2/9</td><td rowspan=1 colspan=1>59</td><td rowspan=1 colspan=1>Outer Lip</td><td rowspan=1 colspan=1>10/12</td></tr><tr><td rowspan=1 colspan=1>26</td><td rowspan=1 colspan=1>Right Eyebrow</td><td rowspan=1 colspan=1>3/9</td><td rowspan=1 colspan=1>60</td><td rowspan=1 colspan=1>Outer Lip</td><td rowspan=1 colspan=1>11/12</td></tr><tr><td rowspan=1 colspan=1>27</td><td rowspan=1 colspan=1>Right Eyebrow</td><td rowspan=1 colspan=1>4/9</td><td rowspan=1 colspan=1>61</td><td rowspan=1 colspan=1>Inner Lip</td><td rowspan=1 colspan=1>0/8</td></tr><tr><td rowspan=1 colspan=1>28</td><td rowspan=1 colspan=1>Nose Bridge</td><td rowspan=1 colspan=1>0/3</td><td rowspan=1 colspan=1>62</td><td rowspan=1 colspan=1>Inner Lip</td><td rowspan=1 colspan=1>1/8</td></tr><tr><td rowspan=1 colspan=1>29</td><td rowspan=1 colspan=1>Nose Bridge</td><td rowspan=1 colspan=1>1/3</td><td rowspan=1 colspan=1>63</td><td rowspan=1 colspan=1>Inner Lip</td><td rowspan=1 colspan=1>2/8</td></tr><tr><td rowspan=1 colspan=1>30</td><td rowspan=1 colspan=1>Nose Bridge</td><td rowspan=1 colspan=1>2/3</td><td rowspan=1 colspan=1>64</td><td rowspan=1 colspan=1>Inner Lip</td><td rowspan=1 colspan=1>3/8</td></tr><tr><td rowspan=1 colspan=1>31</td><td rowspan=1 colspan=1>Nose Bridge</td><td rowspan=1 colspan=1>3/3</td><td rowspan=1 colspan=1>65</td><td rowspan=1 colspan=1>Inner Lip</td><td rowspan=1 colspan=1>4/8</td></tr><tr><td rowspan=1 colspan=1>32</td><td rowspan=1 colspan=1>Nose Boundary</td><td rowspan=1 colspan=1>1/6</td><td rowspan=1 colspan=1>66</td><td rowspan=1 colspan=1>Inner Lip</td><td rowspan=1 colspan=1>5/8</td></tr><tr><td rowspan=1 colspan=1>33</td><td rowspan=1 colspan=1>Nose Boundary</td><td rowspan=1 colspan=1>2/6</td><td rowspan=1 colspan=1>67</td><td rowspan=1 colspan=1>Inner Lip</td><td rowspan=1 colspan=1>6/8</td></tr><tr><td rowspan=1 colspan=1>34</td><td rowspan=1 colspan=1>Nose Boundary</td><td rowspan=1 colspan=1>3/6</td><td rowspan=1 colspan=1>68</td><td rowspan=1 colspan=1>Inner Lip</td><td rowspan=1 colspan=1>7/8</td></tr></table>",
+        "bbox": [
+            225,
+            266,
+            772,
+            767
+        ],
+        "page_idx": 23
+    },
+    {
+        "type": "page_number",
+        "text": "24",
+        "bbox": [
+            488,
+            935,
+            509,
+            946
+        ],
+        "page_idx": 23
+    },
+    {
+        "type": "table",
+        "img_path": "images/d169448c200fe99235ed655b1fb326a758e4b523e62957ed5c2bfdb1523a32de.jpg",
+        "table_caption": [
+            "Table 13: Mapping of WFLW’s 98 landmarks to their face parts and Face Part-Anchored Landmark Positions (FPALPs)."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td rowspan=1 colspan=1>Landmark ID</td><td rowspan=1 colspan=1>Face Part</td><td rowspan=1 colspan=1>FPALPLandmark</td><td rowspan=1 colspan=1>ID</td><td rowspan=1 colspan=1>Face Part</td><td rowspan=1 colspan=1>FPALP</td></tr><tr><td rowspan=1 colspan=1>1</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>0/32</td><td rowspan=1 colspan=1>50</td><td rowspan=1 colspan=1>Right Eyebrow</td><td rowspan=1 colspan=1>7/9</td></tr><tr><td rowspan=1 colspan=1>2</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>1/32</td><td rowspan=1 colspan=1>51</td><td rowspan=1 colspan=1>Right Eyebrow</td><td rowspan=1 colspan=1>8/9</td></tr><tr><td rowspan=1 colspan=1>3</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>2/32</td><td rowspan=1 colspan=1>52</td><td rowspan=1 colspan=1>Nose Bridge</td><td rowspan=1 colspan=1>0/3</td></tr><tr><td rowspan=1 colspan=1>4</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>3/32</td><td rowspan=1 colspan=1>53</td><td rowspan=1 colspan=1>Nose Bridge</td><td rowspan=1 colspan=1>1/3</td></tr><tr><td rowspan=1 colspan=1>5</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>4/32</td><td rowspan=1 colspan=1>54</td><td rowspan=1 colspan=1>Nose Bridge</td><td rowspan=1 colspan=1>2/3</td></tr><tr><td rowspan=1 colspan=1>6</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>5/32</td><td rowspan=1 colspan=1>55</td><td rowspan=1 colspan=1>Nose Bridge</td><td rowspan=1 colspan=1>3/3</td></tr><tr><td rowspan=1 colspan=1>7</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>6/32</td><td rowspan=1 colspan=1>56</td><td rowspan=1 colspan=1>Nose Boundary</td><td rowspan=1 colspan=1>1/6</td></tr><tr><td rowspan=1 colspan=1>8</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>7/32</td><td rowspan=1 colspan=1>57</td><td rowspan=1 colspan=1>Nose Boundary</td><td rowspan=1 colspan=1>2/6</td></tr><tr><td rowspan=1 colspan=1>9</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>8/32</td><td rowspan=1 colspan=1>58</td><td rowspan=1 colspan=1>Nose Boundary</td><td rowspan=1 colspan=1>3/6</td></tr><tr><td rowspan=1 colspan=1>10</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>9/32</td><td rowspan=1 colspan=1>59</td><td rowspan=1 colspan=1>Nose Boundary</td><td rowspan=1 colspan=1>4/6</td></tr><tr><td rowspan=1 colspan=1>11</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>10/32</td><td rowspan=1 colspan=1>60</td><td rowspan=1 colspan=1>Nose Boundary</td><td rowspan=1 colspan=1>5/6</td></tr><tr><td rowspan=1 colspan=1>12</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>11/32</td><td rowspan=1 colspan=1>61</td><td rowspan=1 colspan=1>Left Eye</td><td rowspan=1 colspan=1>0/8</td></tr><tr><td rowspan=1 colspan=1>13</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>12/32</td><td rowspan=1 colspan=1>62</td><td rowspan=1 colspan=1>Left Eye</td><td rowspan=1 colspan=1>1/8</td></tr><tr><td rowspan=1 colspan=1>14</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>13/32</td><td rowspan=1 colspan=1>63</td><td rowspan=1 colspan=1>Left Eye</td><td rowspan=1 colspan=1>2/8</td></tr><tr><td rowspan=1 colspan=1>15</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>14/32</td><td rowspan=1 colspan=1>64</td><td rowspan=1 colspan=1>Left Eye</td><td rowspan=1 colspan=1>3/8</td></tr><tr><td rowspan=1 colspan=1>16</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>15/32</td><td rowspan=1 colspan=1>65</td><td rowspan=1 colspan=1>Left Eye</td><td rowspan=1 colspan=1>4/8</td></tr><tr><td rowspan=1 colspan=1>17</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>16/32</td><td rowspan=1 colspan=1>66</td><td rowspan=1 colspan=1>Left Eye</td><td rowspan=1 colspan=1>5/8</td></tr><tr><td rowspan=1 colspan=1>18</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>17/32</td><td rowspan=1 colspan=1>67</td><td rowspan=1 colspan=1>Left Eye</td><td rowspan=1 colspan=1>6/8</td></tr><tr><td rowspan=1 colspan=1>19</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>18/32</td><td rowspan=1 colspan=1>68</td><td rowspan=1 colspan=1>Left Eye</td><td rowspan=1 colspan=1>7/8</td></tr><tr><td rowspan=1 colspan=1>20</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>19/32</td><td rowspan=1 colspan=1>69</td><td rowspan=1 colspan=1>Right Eye</td><td rowspan=1 colspan=1>0/8</td></tr><tr><td rowspan=1 colspan=1>21</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>20/32</td><td rowspan=1 colspan=1>70</td><td rowspan=1 colspan=1>Right Eye</td><td rowspan=1 colspan=1>1/8</td></tr><tr><td rowspan=1 colspan=1>22</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>21/32</td><td rowspan=1 colspan=1>71</td><td rowspan=1 colspan=1>Right Eye</td><td rowspan=1 colspan=1>2/8</td></tr><tr><td rowspan=1 colspan=1>23</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>22/32</td><td rowspan=1 colspan=1>72</td><td rowspan=1 colspan=1>Right Eye</td><td rowspan=1 colspan=1>3/8</td></tr><tr><td rowspan=1 colspan=1>24</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>23/32</td><td rowspan=1 colspan=1>73</td><td rowspan=1 colspan=1>Right Eye</td><td rowspan=1 colspan=1>4/8</td></tr><tr><td rowspan=1 colspan=1>25</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>24/32</td><td rowspan=1 colspan=1>74</td><td rowspan=1 colspan=1>Right Eye</td><td rowspan=1 colspan=1>5/8</td></tr><tr><td rowspan=1 colspan=1>26</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>25/32</td><td rowspan=1 colspan=1>75</td><td rowspan=1 colspan=1>Right Eye</td><td rowspan=1 colspan=1>6/8</td></tr><tr><td rowspan=1 colspan=1>27</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>26/32</td><td rowspan=1 colspan=1>76</td><td rowspan=1 colspan=1>Right Eye</td><td rowspan=1 colspan=1>7/8</td></tr><tr><td rowspan=1 colspan=1>28</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>27/32</td><td rowspan=1 colspan=1>77</td><td rowspan=1 colspan=1>Outer Lip</td><td rowspan=1 colspan=1>0/12</td></tr><tr><td rowspan=1 colspan=1>29</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>28/32</td><td rowspan=1 colspan=1>78</td><td rowspan=1 colspan=1>Outer Lip</td><td rowspan=1 colspan=1>1/12</td></tr><tr><td rowspan=1 colspan=1>30</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>29/32</td><td rowspan=1 colspan=1>79</td><td rowspan=1 colspan=1>Outer Lip</td><td rowspan=1 colspan=1>2/12</td></tr><tr><td rowspan=1 colspan=1>31</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>30/32</td><td rowspan=1 colspan=1>80</td><td rowspan=1 colspan=1>Outer Lip</td><td rowspan=1 colspan=1>3/12</td></tr><tr><td rowspan=1 colspan=1>32</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>31/32</td><td rowspan=1 colspan=1>81</td><td rowspan=1 colspan=1>Outer Lip</td><td rowspan=1 colspan=1>4/12</td></tr><tr><td rowspan=1 colspan=1>33</td><td rowspan=1 colspan=1>Face Contour</td><td rowspan=1 colspan=1>32/32</td><td rowspan=1 colspan=1>82</td><td rowspan=1 colspan=1>Outer Lip</td><td rowspan=1 colspan=1>5/12</td></tr><tr><td rowspan=1 colspan=1>34</td><td rowspan=1 colspan=1>Left Eyebrow</td><td rowspan=1 colspan=1>0/9</td><td rowspan=1 colspan=1>83</td><td rowspan=1 colspan=1>Outer Lip</td><td rowspan=1 colspan=1>6/12</td></tr><tr><td rowspan=1 colspan=1>35</td><td rowspan=1 colspan=1>Left Eyebrow</td><td rowspan=1 colspan=1>1/9</td><td rowspan=1 colspan=1>84</td><td rowspan=1 colspan=1>Outer Lip</td><td rowspan=1 colspan=1>7/12</td></tr><tr><td rowspan=1 colspan=1>36</td><td rowspan=1 colspan=1>Left Eyebrow</td><td rowspan=1 colspan=1>2/9</td><td rowspan=1 colspan=1>85</td><td rowspan=1 colspan=1>Outer Lip</td><td rowspan=1 colspan=1>8/12</td></tr><tr><td rowspan=1 colspan=1>37</td><td rowspan=1 colspan=1>Left Eyebrow</td><td rowspan=1 colspan=1>3/9</td><td rowspan=1 colspan=1>86</td><td rowspan=1 colspan=1>Outer Lip</td><td rowspan=1 colspan=1>9/12</td></tr><tr><td rowspan=1 colspan=1>38</td><td rowspan=1 colspan=1>Left Eyebrow</td><td rowspan=1 colspan=1>4/9</td><td rowspan=1 colspan=1>87</td><td rowspan=1 colspan=1>Outer Lip</td><td rowspan=1 colspan=1>10/12</td></tr><tr><td rowspan=1 colspan=1>39</td><td rowspan=1 colspan=1>Left Eyebrow</td><td rowspan=1 colspan=1>5/9</td><td rowspan=1 colspan=1>88</td><td rowspan=1 colspan=1>Outer Lip</td><td rowspan=1 colspan=1>11/12</td></tr><tr><td rowspan=1 colspan=1>40</td><td rowspan=1 colspan=1>Left Eyebrow</td><td rowspan=1 colspan=1>6/9</td><td rowspan=1 colspan=1>89</td><td rowspan=1 colspan=1>Inner Lip</td><td rowspan=1 colspan=1>0/8</td></tr><tr><td rowspan=1 colspan=1>41</td><td rowspan=1 colspan=1>Left Eyebrow</td><td rowspan=1 colspan=1>7/9</td><td rowspan=1 colspan=1>90</td><td rowspan=1 colspan=1>Inner Lip</td><td rowspan=1 colspan=1>1/8</td></tr><tr><td rowspan=1 colspan=1>42</td><td rowspan=1 colspan=1>Left Eyebrow</td><td rowspan=1 colspan=1>8/9</td><td rowspan=1 colspan=1>91</td><td rowspan=1 colspan=1>Inner Lip</td><td rowspan=1 colspan=1>2/8</td></tr><tr><td rowspan=1 colspan=1>43</td><td rowspan=1 colspan=1>Right Eyebrow</td><td rowspan=1 colspan=1>0/9</td><td rowspan=1 colspan=1>92</td><td rowspan=1 colspan=1>Inner Lip</td><td rowspan=1 colspan=1>3/8</td></tr><tr><td rowspan=1 colspan=1>44</td><td rowspan=1 colspan=1>Right Eyebrow</td><td rowspan=1 colspan=1>1/9</td><td rowspan=1 colspan=1>93</td><td rowspan=1 colspan=1>Inner Lip</td><td rowspan=1 colspan=1>4/8</td></tr><tr><td rowspan=1 colspan=1>45</td><td rowspan=1 colspan=1>Right Eyebrow</td><td rowspan=1 colspan=1>2/9</td><td rowspan=1 colspan=1>94</td><td rowspan=1 colspan=1>Inner Lip</td><td rowspan=1 colspan=1>5/8</td></tr><tr><td rowspan=1 colspan=1>46</td><td rowspan=1 colspan=1>Right Eyebrow</td><td rowspan=1 colspan=1>3/9</td><td rowspan=1 colspan=1>95</td><td rowspan=1 colspan=1>Inner Lip</td><td rowspan=1 colspan=1>6/8</td></tr><tr><td rowspan=1 colspan=1>47</td><td rowspan=1 colspan=1>Right Eyebrow</td><td rowspan=1 colspan=1>4/9</td><td rowspan=1 colspan=1>96</td><td rowspan=1 colspan=1>Inner Lip</td><td rowspan=1 colspan=1>7/8</td></tr><tr><td rowspan=1 colspan=1>48</td><td rowspan=1 colspan=1>Right Eyebrow</td><td rowspan=1 colspan=1>5/9</td><td rowspan=1 colspan=1>97</td><td rowspan=1 colspan=1>Left Eye Pupil</td><td rowspan=1 colspan=1>0/1</td></tr><tr><td rowspan=1 colspan=1>49</td><td rowspan=1 colspan=1>Right Eyebrow</td><td rowspan=1 colspan=1>6/9</td><td rowspan=1 colspan=1>98</td><td rowspan=1 colspan=1>Right Eye Pupil</td><td rowspan=1 colspan=1>0/1</td></tr></table>",
+        "bbox": [
+            225,
+            160,
+            772,
+            875
+        ],
+        "page_idx": 24
+    },
+    {
+        "type": "page_number",
+        "text": "25",
+        "bbox": [
+            488,
+            935,
+            509,
+            948
+        ],
+        "page_idx": 24
+    }
+]
