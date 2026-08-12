@@ -1,0 +1,1007 @@
+[
+    {
+        "type": "text",
+        "text": "FUSE: Frame-Unified Stress Estimation from Facial Video",
+        "text_level": 1,
+        "bbox": [
+            76,
+            63,
+            918,
+            127
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Stefanos Gkikas   \nHonda Research Institute Japan Wako City, Japan   \nstefanos.gkikas@jp.honda-ri.com",
+        "bbox": [
+            83,
+            151,
+            310,
+            215
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Thomas Kassiotis",
+        "bbox": [
+            380,
+            151,
+            519,
+            167
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Department of Electronic Engineering Hellenic Mediterranean University Chania, Greece ddk305@edu.hmu.gr",
+        "bbox": [
+            316,
+            167,
+            576,
+            229
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Guangliang Li Faculty of Information Science and Engineering Ocean University of China Qingdao, China guangliangli@ouc.edu.cn",
+        "bbox": [
+            75,
+            244,
+            403,
+            324
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Yang Guo",
+        "bbox": [
+            714,
+            151,
+            797,
+            167
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Faculty of Information Science and Engineering",
+        "bbox": [
+            588,
+            167,
+            916,
+            184
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Ocean University of China",
+        "bbox": [
+            661,
+            184,
+            849,
+            199
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Qingdao, China",
+        "bbox": [
+            694,
+            199,
+            810,
+            215
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "diw85827@gmail.com",
+        "bbox": [
+            676,
+            214,
+            834,
+            231
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Giorgos Giannakakis Department of Electronic Engineering Hellenic Mediterranean University Chania, Greece ggian@hmu.gr",
+        "bbox": [
+            529,
+            244,
+            790,
+            325
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Abstract—Automatic stress detection from facial video offers a practical path to non-intrusive affect monitoring, yet existing video-based approaches commonly decompose full recordings into short temporal windows before classification. This design introduces additional choices regarding window length, overlap, and aggregation, while limiting direct analysis of temporal information across the entire recording. In this study, we present FUSE (Frame-Unified Stress Estimation), a facial-video stress detection framework that processes complete recordings as a single input without temporal windowing or external segmentation. The name reflects the defining operation of the method: rather than dividing a recording into short clips, all frames are fused into one unified two-dimensional representation from which the stress state is estimated. This unification is realized by folding the temporal dimension into the channel dimension of the spatial representation, and the resulting high-dimensional input is processed using a unified asymmetric-attention architecture. At a temporal stride of τ = 1, FUSE retains the full 120-second recording as one input, corresponding to 3,600 frames at 30 fps. Experiments on a 58-subject stress dataset using a stratified subject-level protocol evaluate seven temporal-stride configurations, ranging from full-frame input to sparse subsampling. FUSE achieves the highest test accuracy of 69.44% at τ = 15, while the fullframe configuration remains competitive at 69.03%. Across the stride range, computational cost varies from 12.48 to 348.78 GFLOPs, showing the trade-off between temporal density and efficiency. These results demonstrate that temporal windowing is not required for effective facial-video stress detection in this setting, and that complete-recording inference can be achieved within a single unified architecture.",
+        "bbox": [
+            75,
+            364,
+            493,
+            743
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Index Terms—Stress recognition, mental health, affective computing, transformer",
+        "bbox": [
+            75,
+            742,
+            491,
+            771
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "I. INTRODUCTION",
+        "text_level": 2,
+        "bbox": [
+            217,
+            791,
+            349,
+            805
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Stress arises as a coordinated physiological and psychological response to perceived demands, engaging the autonomic nervous system and triggering neuroendocrine cascades that vary in intensity and duration [1], [2]. Its manifestations range from brief, situationally bounded episodes to prolonged chronic states, each associated with distinct physiological signatures and long-term health consequences. Questionnairebased instruments such as the Perceived Stress Scale are widely used in clinical and research settings to quantify subjective stress burden [3], but retrospective self-reports are susceptible to recall bias and poorly suited to capturing fine-grained temporal variation in stress levels [4]. Salivary cortisol serves as a validated neuroendocrine index of the stress response, yet the invasive nature of sample collection and the delayed temporal dynamics of cortisol secretion limit its applicability for continuous, real-time monitoring [2].",
+        "bbox": [
+            73,
+            816,
+            493,
+            909
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            503,
+            363,
+            924,
+            515
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "The scale of stress as a public health problem has grown substantially over recent decades. A large-scale analysis of nationally representative survey data spanning 146 countries found that reported stress levels roughly doubled over an 18- year period, with disparities widening across demographic and socioeconomic groups [5]. In occupational contexts, psychosocial work-related exposures have been estimated to account for a measurable share of cardiovascular disease and depression cases across European countries [6]. At the biological level, chronic psychological stress has been linked to disruption of immune regulation, elevated cardiovascular risk, and depressive disorder, underscoring the broader clinical relevance of reliable stress monitoring [7].",
+        "bbox": [
+            503,
+            515,
+            924,
+            712
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Reliable stress monitoring is most valuable precisely in the contexts where existing assessment methods are least practical. In clinical, occupational, and operational settings, selfreport is often delayed, incomplete, or systematically biased by social desirability and demand characteristics. Contactbased wearable devices provide a continuous physiological alternative, but face persistent challenges around user compliance, motion-induced signal degradation, and scalability to diverse deployment environments [8]. Field deployments of such systems have consistently identified data quality and signal integrity as limiting factors that constrain generalization beyond laboratory conditions [9]. These considerations motivate the development of passive, non-intrusive automated systems capable of objectively recognizing stress from signals naturally available in everyday environments [10].",
+        "bbox": [
+            501,
+            710,
+            924,
+            910
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "aside_text",
+        "text": "arXiv:2608.10442v1 [cs.CV] 11 Aug 2026",
+        "bbox": [
+            29,
+            352,
+            63,
+            800
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            73,
+            63,
+            491,
+            93
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "Among non-intrusive modalities, facial video recorded by standard cameras offers a particularly practical channel for automated stress monitoring, requiring no physical contact, specialized hardware, or user compliance beyond proximity to a camera. Stress-related changes in facial behavior, including eye activity, mouth movements, and head dynamics, carry discriminative information for separating stressed from neutral and relaxed states [11], and Facial Action Unit representations provide a structured encoding of these signals for automatic recognition [12]. Deep learning has substantially advanced the state of the art in video-based stress recognition, with spatiotemporal architectures and AU-based pipelines achieving consistent improvements over handcrafted feature approaches [13]. A shared limitation of existing methods, however, is their reliance on fixed-length temporal windows or short clips as the unit of analysis: full recordings are partitioned into segments of a few seconds before classification, introducing additional design choices and discarding the temporal context that spans the window boundaries [14]–[16].",
+        "bbox": [
+            73,
+            92,
+            493,
+            380
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "In this work, we present FUSE, a framework for automatic stress detection in facial video that processes entire recordings as a single input, without any temporal windowing or external segmentation. The full video sequence is encoded through axis folding and processed by a unified asymmetric attention model, whose internal spatial token segmentation handles the resulting high-dimensional representation without imposing any temporal partitioning on the input. Experiments on a 58-subject stress dataset, evaluated under a stratified subjectlevel protocol, assess performance across temporal stride configurations ranging from dense sampling to full-frame input, demonstrating that the architecture natively accommodates complete recordings without modification. Automatic humanstate recognition has been investigated across a range of signals, including stress and pain estimation from electrodermal activity and other biosignals [17]–[20], emotion recognition from EEG [21], and cognitive workload assessment [22], complementing the facial-video stress detection addressed here.",
+        "bbox": [
+            73,
+            380,
+            493,
+            652
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "II. RELATED WORK",
+        "text_level": 2,
+        "bbox": [
+            209,
+            661,
+            357,
+            675
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "Video-based approaches to stress recognition have been explored as a contact-free alternative to physiological monitoring, leveraging the behavioral information encoded in facial dynamics. Initial methods extracted handcrafted features from facial regions, including eye-related activity, mouth movements, head-motion statistics, and camera-based heart rate estimates, demonstrating their discriminative power in distinguishing stressed from neutral and anxious states [11]. Deep learning methods replaced handcrafted pipelines by jointly learning face- and action-level representations from video, achieving improved accuracy over feature-engineering baselines on a purpose-built video stress dataset [14]. Spatiotemporal architectures extended this direction by modeling both spatial regions and temporal changes in facial appearance, using fixedlength clips as the input unit for learning stress-related facial dynamics [15]. Beyond laboratory-induced stress protocols, recent work has investigated facial video-based stress detection under naturalistic conditions, collecting data without artificial contextual constraints to improve ecological validity [23].",
+        "bbox": [
+            73,
+            681,
+            495,
+            910
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            501,
+            61,
+            923,
+            125
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "Facial Action Units provide a physiologically grounded encoding of facial muscle activity and have been adopted as an interpretable intermediate representation for automatic stress recognition from video. AU-based classifiers have been applied to distinguish stressed from neutral states in a contact-free setting, with specific action unit patterns consistently emerging as discriminative across subjects and stressor types [12]. Deep learning pipelines for automatic AU recognition have been adapted to the stress domain, combining geometric deformation features with deep appearance descriptors extracted from facial video to classify affective states [24]. Explainable AI methods have been integrated into AU-based stress recognition to identify the facial muscle activations that are most predictive of stress, thereby providing interpretable evidence alongside model outputs [25]. An explainable graph attention network operating on differential facial action units has been proposed for stress recognition [26]. Comprehensive surveys of deep learning for stress detection identify facial video analysis as a prominent research direction, with video-based approaches showing consistent improvements alongside advances in spatiotemporal representation learning [13].",
+        "bbox": [
+            503,
+            132,
+            924,
+            452
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "A common design choice in video-based stress recognition is to convert continuous recordings into predefined temporal units before classification. For example, Zhang et al. [14] partitioned each 2-min recording into 15-s samples, while Jeon et al. [15] modeled stress from short 2-s facial clips. More recent work has followed a similar temporal-reduction strategy, including nonoverlapping windows for Transformer-based stress estimation [16], or frame-level facial feature extraction followed by temporal and frequency-domain aggregation [23]. Although these strategies make learning computationally tractable, they introduce additional design choices, such as clip duration, window length, overlap, and aggregation strategy. These choices are dataset- and context-dependent and may limit the model’s ability to exploit temporal information that spans predefined boundaries. Recent surveys confirm the growing role of deep learning in stress detection across facial, behavioral, physiological, and multimodal signals [13], but full-recording video analysis without external temporal windowing remains underexplored.",
+        "bbox": [
+            501,
+            459,
+            924,
+            748
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "Efficient long-video modeling has been widely studied through spatiotemporal token designs, such as the tubelet embedding of ViViT [27], which nonetheless retain an explicit temporal axis. FUSE instead adapts the asymmetric-attention principle of the Perceiver [28], folding time into the channel dimension so that the full recording is processed as a single spatial representation rather than a growing spatiotemporal token set. Transformer-based and modality-agnostic architectures have similarly been employed for affective assessment from facial video and physiological signals [29]–[32].",
+        "bbox": [
+            501,
+            756,
+            924,
+            910
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "III. METHODOLOGY",
+        "text_level": 2,
+        "bbox": [
+            207,
+            63,
+            359,
+            77
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "A. Video Tokenization",
+        "text_level": 2,
+        "bbox": [
+            75,
+            83,
+            230,
+            97
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "The proposed framework encodes facial video input into a token representation without temporal segmentation or modality-specific components, enabling a single model to process complete recordings of varying length. For a video of T frames captured at 30 fps and subsampled at temporal stride τ, the retained sequence contains $L = \\lfloor T / \\tau \\rfloor$ frames, each a 224 × 224 RGB image. At a stride $\\tau = 1$ applied to a 120-second recording, this yields $L \\ = \\ 3 { , } 6 0 0$ frames, corresponding to the complete recording without any external windowing or temporal segmentation. The temporal dimension is folded into the channel dimension—a step referred to as axis folding—creating a tensor of shape $H \\times W \\times 3 L$ . This preserves the spatial structure of each frame while packing the entire temporal sequence into a single 2D representation:",
+        "bbox": [
+            73,
+            102,
+            493,
+            315
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "equation",
+        "img_path": "images/8c8beef599fef746a2939a8020a59d095c8d716c2f858bd51f5de4837d15e8a6.jpg",
+        "text": "$$\n\\mathbf { X } \\in \\mathbb { R } ^ { B \\times H \\times W \\times 3 L } ,\\tag{1}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            212,
+            320,
+            352,
+            338
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "where B denotes the batch size and $H = W = 2 2 4$ . Geometric information is incorporated by encoding each spatial position $\\mathbf { p } \\in [ - 1 , 1 ] ^ { 2 }$ using Fourier features. The model uses $K = 6$ frequency bands and a maximum frequency $f _ { \\mathrm { m a x } } = 1 0$ . Since the input has $D = 2$ spatial axes, the Fourier encoding adds $D ( 2 K + 1 ) = 2 6$ positional features. The encoding is:",
+        "bbox": [
+            73,
+            348,
+            493,
+            440
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "equation",
+        "img_path": "images/da932d22c1a6b47db6284f91d00e7a7ed9c11d1e0c95df33ce96efe6635e4814.jpg",
+        "text": "$$\n\\begin{array} { r } { \\gamma ( { \\bf p } ) = [ \\sin ( \\pi s _ { 1 } { \\bf p } ) , \\cos ( \\pi s _ { 1 } { \\bf p } ) , \\ \\cdot \\cdot \\cdot , } \\\\ { \\sin ( \\pi s _ { K } { \\bf p } ) , \\ \\cos ( \\pi s _ { K } { \\bf p } ) , \\ { \\bf p } ] , } \\end{array}\\tag{2}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            150,
+            446,
+            415,
+            483
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "where $\\{ s _ { k } \\} _ { k = 1 } ^ { K }$ spans $[ 1 , f _ { \\mathrm { m a x } } / 2 ]$ . The spatial axes are flattened into a sequence of $N = H \\times W = 5 0 1 7 6$ tokens, with data channels and positional features concatenated per token to form the token matrix:",
+        "bbox": [
+            73,
+            489,
+            491,
+            551
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "equation",
+        "img_path": "images/ae4a089406650174d09ecace0c4b7b2db4261376422551797c927499e6b425d6.jpg",
+        "text": "$$\n\\begin{array} { r } { \\mathbf { T } \\in \\mathbb { R } ^ { B \\times N \\times C ^ { \\prime } } , \\quad C ^ { \\prime } = 3 L + D ( 2 K + 1 ) , } \\end{array}\\tag{3}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            135,
+            559,
+            429,
+            577
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "where $D = 2$ denotes the number of spatial axes. Since $D = 2$ and $K = 6 .$ , the token dimension becomes:",
+        "bbox": [
+            73,
+            585,
+            491,
+            617
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "equation",
+        "img_path": "images/3dc77b1aaafd351b4298bd428032fb0e01c400844939eb904e734840e7fd413d.jpg",
+        "text": "$$\nC ^ { \\prime } = 3 L + 2 6 .\\tag{4}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            230,
+            625,
+            334,
+            640
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "The token sequence is partitioned into $S = 4$ contiguous spatial groups of length $n _ { s } = N / S = 1 2 5 4 4$ tokens. These spatial token groups, referred to as segments throughout, divide the folded 2D representation along the token axis and carry no correspondence to temporal windows of the input video. The tokens of spatial segment s are denoted $\\tilde { \\mathbf { T } } _ { s } \\in \\dot { \\mathbb { R } } ^ { B \\times n _ { s } \\times C ^ { \\prime } }$",
+        "bbox": [
+            73,
+            650,
+            493,
+            742
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "B. Asymmetric Attention",
+        "text_level": 2,
+        "bbox": [
+            75,
+            752,
+            246,
+            767
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "The model processes the segmented token sequence through four layers, each comprising a cross-attention block followed by $R _ { \\ell }$ self-attention blocks. A single latent state is associated with each spatial segment, instantiated at runtime by replicating a shared initialization vector derived from a set of $M _ { 0 } = 3 2$ learnable global parameters $\\{ \\ell _ { m } \\} _ { m = 1 } ^ { M _ { 0 } }$",
+        "bbox": [
+            73,
+            772,
+            493,
+            864
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "equation",
+        "img_path": "images/b61dbf48ae55b5a4c88101ec22052aa54c8bf582c46f0c2bf5e05c1e67df0681.jpg",
+        "text": "$$\n\\ell _ { \\mathrm { i n i t } } = \\frac { 1 } { M _ { 0 } } \\sum _ { m = 1 } ^ { M _ { 0 } } \\ell _ { m } \\in \\mathbb { R } ^ { d _ { 0 } } ,\\tag{5}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            189,
+            871,
+            377,
+            912
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "where $d _ { 0 } = 1 2 8$ . These segment states are not independently learnable; segment-specific representations emerge through the attention updates.",
+        "bbox": [
+            503,
+            63,
+            923,
+            107
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Cross-attention. At each layer ℓ, each segment state aggregates information exclusively from its corresponding token subset through cross-attention:",
+        "bbox": [
+            503,
+            107,
+            924,
+            152
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "equation",
+        "img_path": "images/bfccbf2e4c844738e9c005cb657ec3247298ca7d233a646ecf4c8ff2791f7294.jpg",
+        "text": "$$\n{ \\bf e } _ { s } ^ { ( \\ell ) } = { \\bf e } _ { s } ^ { ( \\ell - 1 ) } + \\mathrm { A t t n } \\big ( { \\bf e } _ { s } ^ { ( \\ell - 1 ) } , ~ \\tilde { \\mathbf { T } } _ { s } \\big ) ,\\tag{6}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            589,
+            157,
+            834,
+            178
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "where $\\mathbf { e } _ { s } ^ { ( \\ell - 1 ) } ~ \\in ~ \\mathbb { R } ^ { B \\times 1 \\times d _ { \\ell } }$ provides the queries and $\\tilde { \\mathbf { T } } _ { s } \\in$ $\\mathbb { R } ^ { B \\times n _ { s } \\times C ^ { \\prime } }$ provides the keys and values. This operation is asymmetric: the query side consists of a single vector of dimension $d _ { \\ell } .$ , while the key-value side spans $n _ { s } \\gg 1$ token vectors of dimension $C ^ { \\prime } .$ . The resulting attention matrix is $1 \\times n _ { s } ,$ , not square, and the query and key-value spaces differ in both size and dimensionality. All S segments are processed in parallel by packing into the batch dimension, without altering the underlying computation. Cross-attention uses a single head at all layers, with per-layer head dimensions of {64, 48, 32, 16}.",
+        "bbox": [
+            503,
+            184,
+            923,
+            338
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Self-attention. After cross-attention, all segment states are stacked to form the segment-state matrix $\\mathbf { E } ^ { \\mathsf { ( \\ell ) } } \\in \\mathbb { R } ^ { B \\times S \\times d _ { \\ell } }$ Self-attention is applied across all S segment states, enabling global information exchange:",
+        "bbox": [
+            503,
+            338,
+            923,
+            398
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "equation",
+        "img_path": "images/153dfe9ec714f3f857ef26ac9f129737c51989c762d8d460265e0f30e1fd57c6.jpg",
+        "text": "$$\n\\mathbf { E } ^ { ( \\ell ) }  \\mathbf { E } ^ { ( \\ell ) } + \\mathrm { A t t n } \\big ( \\mathbf { E } ^ { ( \\ell ) } , ~ \\mathbf { E } ^ { ( \\ell ) } \\big ) ,\\tag{7}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            596,
+            404,
+            828,
+            422
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "repeated $R _ { \\ell } \\in \\{ 8 , 6 , 4 , 2 \\}$ times per layer for $\\ell = 0 , \\ldots , 3 .$ . Selfattention uses multi-head attention with per-layer head counts of $\\{ 8 , 6 , 4 , 2 \\}$ and per-layer head dimensions of {64, 48, 32, 16}.",
+        "bbox": [
+            503,
+            429,
+            923,
+            476
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Hierarchical segment-state compression. Across the four layers, the segment-state dimensionality decreases progressively as $d _ { \\ell } ~ \\in ~ \\{ 1 2 8 , 1 1 2 , 9 6 , 8 0 \\}$ . At each layer transition, the segment representations are projected to the new dimensionality through a linear transformation when required. The number of spatial segment states remains fixed at $S = 4$ throughout all layers, with one state per token group. After the final layer, the final segment states $\\mathbf { E } ^ { ( 4 ) } \\in \\breve { \\mathbb { R } } ^ { B \\times \\breve { S } \\times 8 0 }$ are averaged across segments and passed through a linear classification head. Both attention operations use pre-layer normalization and residual connections, with attention and feedforward dropout of 0.10 applied uniformly. The complete set of architectural hyperparameters is reported in Table I and the layer structure is illustrated in Fig. 1.",
+        "bbox": [
+            501,
+            474,
+            923,
+            688
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "IV. EXPERIMENTAL EVALUATION & RESULTS",
+        "text_level": 2,
+        "bbox": [
+            549,
+            694,
+            877,
+            709
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "This section presents the experimental evaluation of FUSE across multiple temporal stride configurations. All experiments are evaluated under a binary classification setting. Validation performance is reported using macro-averaged accuracy, precision, and F1 score. Test performance is reported using macroaveraged accuracy.",
+        "bbox": [
+            503,
+            713,
+            924,
+            805
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "A. Dataset and Protocol",
+        "text_level": 2,
+        "bbox": [
+            503,
+            813,
+            678,
+            827
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "A stress dataset comprising 58 adults (24 men, 34 women) aged $2 6 . 9 \\pm 4 . 8$ years was used in this study. The experimental protocol comprised four stress-induction phases: social exposure, emotional recall, mental workload, and stressful video stimuli. Each participant completed 11 tasks in total, comprising 4 neutral, 6 stress-inducing, and 1 relaxation task, as detailed in Table II. The social exposure phase included a psychologist-led interview emphasizing negative personality traits. The emotional recall phase required participants to relive a past stressful event in real time. Mental workload was induced through a modified Stroop Color-Word Test [33] and the Paced Auditory Serial Addition Test [34]. The stressful stimuli phase presented videos depicting accidents and acrophobia; a relaxing video served as a physiological recovery baseline between induction phases to minimize carryover effects and was excluded from classification. Stress induction was verified through heart rate monitoring, which showed a statistically significant increase during stress tasks $( p \\ : < \\ : 0 . 0 5 )$ . Subjective validation was further confirmed using Self-Assessment Manikin scales, with participants reporting significantly higher arousal and lower valence during stressful phases compared with neutral baselines. The facial video was recorded at 60 fps and subsampled to 30 fps with a resolution of $6 0 8 \\times 8 0 0$ pixels. ECG was recorded continuously on a single channel at a sampling rate of 1 kHz. This study uses facial video as the sole input modality. Binary classification is applied to distinguish neutral from stress conditions. The study received approval from the local Research Ethics Committee (approval no. 155/12- 09-2022). All participants provided informed consent. The dataset is available for non-commercial research upon request. Subjects are partitioned into training, validation, and testing sets at the subject level, ensuring no participant appears in more than one set. To avoid performance inflation due to subject-difficulty imbalance, a stratified split protocol is used. Leave-one-subject-out cross-validation is conducted across all recorded modalities to estimate per-subject difficulty, providing a ranking that is not biased toward any single signal source. Subjects are ranked by the combined z-score and assigned to four quartiles. The final split comprises 38 training, 8 validation, and 12 testing subjects, with each set containing subjects from all four groups in proportion. The exact subject-level partition is reported in Table III to support reproducibility and direct comparison with future work.",
+        "bbox": [
+            501,
+            832,
+            924,
+            909
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "table",
+        "img_path": "images/9de68761b1e0638f8ae75a11fa1d8296bc83581e189e8711e2e048583dd4bd0c.jpg",
+        "table_caption": [
+            "TABLE I: Architectural hyperparameters of FUSE."
+        ],
+        "table_footnote": [
+            "Per-layer values are listed from layer 1 to layer 4."
+        ],
+        "table_body": "<table><tr><td>Hyperparameter</td><td>Value</td></tr><tr><td>Depth</td><td>4</td></tr><tr><td>Latent pool size (M0)</td><td>32</td></tr><tr><td>Latent dimension (de)</td><td>128, 112, 96, 80</td></tr><tr><td>Cross-attention heads</td><td>1, 1, 1, 1</td></tr><tr><td>Cross-attention head dimension</td><td>64, 48, 32, 16</td></tr><tr><td>Self-attention heads</td><td>8, 6, 4, 2</td></tr><tr><td>Self-attention head dimension</td><td>64, 48, 32, 16</td></tr><tr><td>Self-attention blocks per cross (Re)</td><td>8, 6, 4, 2</td></tr><tr><td>Spatial segments (S)</td><td>4</td></tr><tr><td>Attention dropout</td><td>0.10</td></tr><tr><td>Feedforward dropout</td><td>0.10</td></tr><tr><td>Fourier frequency bands (K)</td><td>6</td></tr><tr><td>Maximum frequency (fmax)</td><td>10</td></tr></table>",
+        "bbox": [
+            88,
+            87,
+            478,
+            255
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "image",
+        "img_path": "images/f9425b6907a0c8a76717852692576ecefa149b4f2bceb50c4e25e6b3762a3e5a.jpg",
+        "image_caption": [
+            "Fig. 1: FUSE layer block, repeated four times. Each layer comprises a cross-attention sub-block, in which a single latent segment state attends over its corresponding spatial token group, followed by R<sub>ℓ</sub> self-attention sub-blocks that exchange information globally across all segment states. All sub-blocks use pre-layer normalization and residual connections."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            191,
+            290,
+            361,
+            547
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            73,
+            680,
+            495,
+            910
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "table",
+        "img_path": "images/519216aacfb97f02c80c66fd104437c56b5b59a42ed31769c5ae68acc17d2258.jpg",
+        "table_caption": [
+            "TABLE II: Experimental tasks employed in this study."
+        ],
+        "table_footnote": [
+            "N = neutral S = stress R = relaxed. \\*: Used as a physiological recovery baseline between induction phases; excluded from binary classification."
+        ],
+        "table_body": "<table><tr><td>#</td><td>Task</td><td>Duration (sec)</td><td>State</td></tr><tr><td>Social Exposure</td><td></td><td></td><td></td></tr><tr><td>1</td><td>Neutral reference</td><td>120</td><td>N</td></tr><tr><td>2</td><td>Baseline description</td><td>120</td><td>N</td></tr><tr><td>3</td><td>Interview</td><td>120</td><td>S</td></tr><tr><td>Emotional Recall</td><td></td><td></td><td></td></tr><tr><td>4</td><td>Neutral reference</td><td>120</td><td>N</td></tr><tr><td>5</td><td>Recall stressful event</td><td>120</td><td>S</td></tr><tr><td>Mental Workload</td><td></td><td></td><td></td></tr><tr><td>6</td><td>Reading reference</td><td>120</td><td>N</td></tr><tr><td>7</td><td>Stroop Colour-Word Test</td><td>120</td><td>S</td></tr><tr><td>8</td><td>PASAT task</td><td>120</td><td>S</td></tr><tr><td>Stressful Stimuli</td><td></td><td></td><td></td></tr><tr><td>9</td><td>Relaxing video*</td><td>120</td><td>R</td></tr><tr><td>10</td><td>Adventure video</td><td>120</td><td>S</td></tr><tr><td>11</td><td>Psychological pressure</td><td>120</td><td>S</td></tr></table>",
+        "bbox": [
+            509,
+            87,
+            916,
+            311
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            501,
+            372,
+            924,
+            722
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "B. Video",
+        "text_level": 2,
+        "bbox": [
+            504,
+            734,
+            571,
+            750
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "Table IV reports performance and computational cost across all seven temporal stride configurations; Fig. 2 visualizes the accuracy and efficiency trends jointly. At the densest setting $( \\tau = 1 )$ , the full 120-second recording is retained at 30 fps, yielding $L = 3 { , } 6 0 0$ frames and a token channel dimension of $C ^ { \\prime } = 1 0 { , } 8 2 6$ . This configuration has the highest parameter count (9.16M), computational cost (348.78 GFLOPs), and inference latency (133.02 ms), with a corresponding throughput of 7.52 samples per second, yet achieves a test accuracy of 69.03%.",
+        "bbox": [
+            501,
+            756,
+            924,
+            880
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "page_footnote",
+        "text": "<sup>1</sup>https://github.com/ggian/stress dataset",
+        "bbox": [
+            517,
+            892,
+            733,
+            909
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "table",
+        "img_path": "images/e4199bc2c76e5c69922942dd57bb8ff8f96cfe6efb1ae7b6e153859e7c23fd47.jpg",
+        "table_caption": [
+            "TABLE III: Subject-level split by difficulty group. Subjects are ranked by combined z-score and assigned to four quartile-based groups (Q1 = hardest, $\\mathrm { Q 4 = e a s i e s t ) }$"
+        ],
+        "table_footnote": [
+            "Q1: z < −0.46; Q2: −0.46 ≤ z < −0.05; Q3: −0.05 ≤ z < +0.40; Q4: z ≥ +0.40."
+        ],
+        "table_body": "<table><tr><td rowspan=\"2\">Split</td><td colspan=\"4\">Difficulty Group</td></tr><tr><td>Q1 - Hard</td><td>Q2 – Med-Hard</td><td>Q3 – Med-Easy</td><td>Q4 – Easy</td></tr><tr><td>Training (38)</td><td>P017, P018, P022, P026, P034.</td><td>P001, P002, P003, P007, P012,</td><td>P004, P014, P016, P032, P036,</td><td>P005, P010, P020, P028, P029,</td></tr><tr><td>Validation (8)</td><td>P035, P042, P045, P050, P056 P038, P055</td><td>P021, P033, P040, P048</td><td>P046, P047, P052, P053, P054</td><td>P037, P039, P041, P057</td></tr><tr><td>Testing (12)</td><td>P008, P025, P044</td><td>P009, P023 P011, P024, P043</td><td>P006, P013 P015, P031, P058</td><td>P019, P030 P027, P051, P059</td></tr><tr><td></td><td></td><td></td><td></td><td></td></tr></table>",
+        "bbox": [
+            75,
+            102,
+            919,
+            196
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            73,
+            244,
+            493,
+            273
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Increasing the stride reduces L proportionally, which contracts the token channel dimension $C ^ { \\prime } = 3 L + 2 6$ and the associated input projection weights. At $\\tau = 3 0$ , only 120 frames are retained, reducing the parameter count to 5.82M, GFLOPs to 12.48, and latency to 14.77 ms, corresponding to an approximately 28-fold reduction in compute relative to $\\tau = 1$ . As shown in Fig. 2(b), computational cost decreases sharply as the stride increases, while latency drops rapidly up to $\\tau = 1 0$ and then changes more gradually. Throughput similarly increases steeply at lower strides before saturating near 62–63 samples per second for $\\tau \\geq 1 5$",
+        "bbox": [
+            73,
+            273,
+            493,
+            440
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Test accuracy does not decrease monotonically with stride. The highest test accuracy is reached at $\\tau = 1 5 ( 6 9 . 4 4 \\% )$ , with $\\tau = 1$ yielding the second-best result (69.03%). Validation accuracy peaks at $\\tau = 2 0 \\ ( 7 0 . 4 2 \\% )$ . The configuration $\\tau = 5$ produces the lowest test accuracy (60.56%) despite its secondhighest validation accuracy (68.80%), reflecting per-stride generalization variability over the 12-subject test partition. The remaining configurations fall between 63.75% and 66.25% on the test set. These results indicate that temporal density beyond a moderate threshold does not yield consistent discriminative benefit, and that FUSE accommodates the full stride range without structural modification.",
+        "bbox": [
+            73,
+            440,
+            493,
+            622
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "C. Overall Analysis & Discussion",
+        "text_level": 2,
+        "bbox": [
+            75,
+            631,
+            312,
+            646
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "The central capability demonstrated by this evaluation is that FUSE processes the complete facial recording as a single input, without temporal windowing or external segmentation. $\\mathbf { A t } { \\boldsymbol { \\tau } } = 1 { \\boldsymbol { \\mathbf { \\mathit { t } } } } $ , this corresponds to 3,600 frames from a 120- second recording ingested in one model pass. This differs from common video-based stress-recognition pipelines that first decompose recordings into short clips or predefined temporal windows before classification. In FUSE, the full sequence is encoded via axis folding and processed with asymmetric attention, whereas the internal spatial token segmentation does not correspond to temporal windows. The reorganization of the temporal axis is consistent with prior evidence that restructuring facial spatiotemporal representations can benefit affective assessment [35].",
+        "bbox": [
+            73,
+            650,
+            493,
+            862
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "The stride sweep shows that this capability is not limited to dense sampling. The same architecture accommodates inputs ranging from 120 frames at $\\tau = 3 0$ to 3,600 frames at $\\tau =$",
+        "bbox": [
+            73,
+            862,
+            493,
+            909
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "chart",
+        "img_path": "images/396f34df331ecb37264c56848c698e561cc22723e83aed1d7f975393e3586274.jpg",
+        "content": "",
+        "chart_caption": [
+            "Fig. 2: Performance and computational cost of FUSE across temporal stride configurations. (a) Test accuracy and parameter count as a function of stride $\\tau ;$ circle area encodes the number of parameters, with the smallest and largest sizes corresponding to 5.82 M $( \\tau ~ = ~ 3 0 )$ and 9.16 M $( \\tau ~ = ~ 1 )$ , respectively. (b) GFLOPs (solid red, left axis) and inference latency in milliseconds (dashed green, right axis) as a function of stride, shown on logarithmic axes; throughput in samples per second is annotated for each configuration. Inference cost is measured on an NVIDIA A100 GPU."
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            504,
+            242,
+            926,
+            496
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "1, with the token channel dimension $C ^ { \\prime } = 3 L + 2 6$ scaling with the retained sequence length. No clip-level aggregation, temporal pooling, or external segmentation is introduced. This supports the main design goal of FUSE: any-length facial video processing without changing the model structure across temporal-stride settings.",
+        "bbox": [
+            501,
+            693,
+            923,
+            785
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "The best test accuracy is obtained at $\\tau = 1 5 ~ ( 6 9 . 4 4 \\% )$ using 24.07 GFLOPs, compared with 348.78 GFLOPs at $\\tau =$ 1. The full-frame configuration still achieves a competitive test accuracy of 69.03% while processing the entire 3,600- frame sequence. The non-monotonic relationship between stride and test accuracy, visible in Fig. 2(a), indicates that denser temporal sampling does not necessarily improve generalization. Instead, moderate subsampling can preserve stress-relevant facial information while substantially reducing computational cost. The higher strides likely perform comparably because consecutive frames at 30 fps are largely redundant, so retaining every frame mainly enlarges the input projection (5.82M to 9.16M parameters) without adding useful information.",
+        "bbox": [
+            501,
+            786,
+            924,
+            909
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "table",
+        "img_path": "images/1d4d2aef0c0a916632fd5a1c545be82f71384bec700b4a30c95b07aff93a8abf.jpg",
+        "table_caption": [
+            "TABLE IV: Performance and computational cost using the video modality."
+        ],
+        "table_footnote": [
+            "Inference Cost measured on an NVIDIA A100 GPU."
+        ],
+        "table_body": "<table><tr><td colspan=\"2\">Input</td><td colspan=\"2\">Computational Cost</td><td colspan=\"2\">Inference Cost</td><td colspan=\"3\">Validation</td><td>Testing</td></tr><tr><td>Modality</td><td>Stride</td><td>Params (M)</td><td>GFLOPs</td><td>Latency (ms) GPU↓</td><td>Samples/s GPU↑</td><td>Accuracy</td><td>Precision</td><td>F1</td><td>Accuracy</td></tr><tr><td>Video</td><td>1</td><td>9.16</td><td>348.78</td><td>133.02</td><td>7.52</td><td>63.90</td><td>66.70</td><td>60.48</td><td>69.03</td></tr><tr><td>Video</td><td>2</td><td>7.43</td><td>174.83</td><td>64.00</td><td>15.63</td><td>66.42</td><td>67.13</td><td>66.52</td><td>66.25</td></tr><tr><td>Video</td><td>5</td><td>6.39</td><td>70.46</td><td>27.84</td><td>35.92</td><td>68.80</td><td>69.39</td><td>67.39</td><td>60.56</td></tr><tr><td>Video</td><td>10</td><td>6.05</td><td>35.67</td><td>16.97</td><td>58.92</td><td>66.39</td><td>66.20</td><td>66.14</td><td>63.75</td></tr><tr><td>Video</td><td>15</td><td>5.93</td><td>24.07</td><td>16.39</td><td>61.01</td><td>67.77</td><td>68.33</td><td>67.89</td><td>69.44</td></tr><tr><td>Video</td><td>20</td><td>5.87</td><td>18.27</td><td>15.03</td><td>62.47</td><td>70.42</td><td>71.86</td><td>68.45</td><td>65.97</td></tr><tr><td>Video</td><td>30</td><td>5.82</td><td>12.48</td><td>14.77</td><td>63.14</td><td>68.60</td><td>69.91</td><td>68.72</td><td>64.86</td></tr></table>",
+        "bbox": [
+            112,
+            87,
+            883,
+            218
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            73,
+            265,
+            493,
+            340
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "A limitation of the current evaluation is that it uses a single dataset and a binary neutral-versus-stress classification setting. In addition, the study does not include a direct comparison against windowed baselines under the same subject-level split, which is left for future work. Windowing itself offers a practical benefit, as fixed-length clips yield a smaller and uniform input that avoids the growing channel dimension of the full-recording formulation. Consequently, the results support the feasibility of full-recording inference, but they should not be interpreted as a complete replacement for all window-based video stressrecognition strategies.",
+        "bbox": [
+            73,
+            342,
+            495,
+            508
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "V. CONCLUSION",
+        "text_level": 2,
+        "bbox": [
+            222,
+            531,
+            344,
+            545
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "This paper presented FUSE, a facial-video stress detection framework designed to process complete recordings without temporal windowing or external segmentation. The proposed approach folds the temporal dimension into the channel dimension and uses asymmetric attention to process the resulting highdimensional representation through a compact set of segment states. This enables the same architecture to operate across a wide range of temporal stride settings, from sparse subsampling to full-frame input. Experiments on a 58-subject stress dataset show that FUSE can process a full 120-second recording at τ = 1, corresponding to 3,600 frames, while also supporting more efficient stride configurations without structural changes. The best test accuracy is achieved at $\\tau = 1 5 ( 6 9 . 4 4 \\% )$ , whereas the full-frame configuration remains competitive at 69.03%. These results indicate that temporal windowing is not required for effective facial-video stress detection in this setting, and that complete-recording inference can be achieved within a single unified architecture. Overall, FUSE shifts the unit of analysis from short temporal clips to complete facial recordings. This provides a simpler evaluation pipeline, avoids choices about window length and aggregation, and preserves the ability to model stress-related facial information over the full duration of the recording.",
+        "bbox": [
+            73,
+            560,
+            493,
+            909
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "ACKNOWLEDGMENTS",
+        "text_level": 2,
+        "bbox": [
+            635,
+            265,
+            790,
+            279
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "The authors used large language model (LLM)-based tools for language editing and improvement. All scientific content, results, and conclusions are solely the work of the authors.",
+        "bbox": [
+            503,
+            286,
+            923,
+            332
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "REFERENCES",
+        "text_level": 2,
+        "bbox": [
+            665,
+            345,
+            763,
+            359
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "[1] D. S. Goldstein, “Stress and the autonomic nervous system,” Autonomic Neuroscience, vol. 247, p. 103096, 2023.",
+            "[2] D. H. Hellhammer, S. Wust, and B. M. Kudielka, “Salivary cortisol as a¨ biomarker in stress research,” Psychoneuroendocrinology, vol. 34, no. 2, pp. 163–171, 2009.",
+            "[3] S. Cohen, T. Kamarck, and R. Mermelstein, “A global measure of perceived stress,” Journal of Health and Social Behavior, vol. 24, no. 4, pp. 385–396, 1983.",
+            "[4] S. Shiffman, A. A. Stone, and M. R. Hufford, “Ecological momentary assessment,” Annual Review of Clinical Psychology, vol. 4, pp. 1–32, 2008.",
+            "[5] E. F. Canaletti, P. Lun, L. D. Stutzman, M. Chan, and F. Cheung, “Rising tide of stress: Global trends and structural predictors over 18 years,” Wellbeing, Space and Society, vol. 10, p. 100319, 2026.",
+            "[6] H. Sultan-Ta¨ıeb, T. Villeneuve, J.-F. Chastang, and I. Niedhammer, “Burden of cardiovascular diseases and depression attributable to psychosocial work exposures in 28 European countries,” European Journal of Public Health, vol. 32, no. 4, pp. 586–592, 2022.",
+            "[7] S. Cohen, D. Janicki-Deverts, and G. E. Miller, “Psychological stress and disease,” JAMA, vol. 298, no. 14, pp. 1685–1687, 2007.",
+            "[8] M. Hosseini, R. Gottumukkala, R. Bhupatiraju, A. Maida, and H. Chu, “Wearable-based stress detection for real-world data: Perspective on challenges and recommendations,” 2026, JMIR Preprints, Preprint ID: 93741.",
+            "[9] P. Neigel, A. Vargo, B. Tag, and K. Kise, “Unobtrusive stress detection using wearables: application and challenges in a university setting,” Frontiers in Computer Science, vol. 7, p. 1575404, 2025.",
+            "[10] G. Giannakakis, D. Grigoriadis, K. Giannakaki, O. Simantiraki, A. Roniotis, and M. Tsiknakis, “Review on psychological stress detection using biosignals,” IEEE Transactions on Affective Computing, vol. 13, no. 1, pp. 440–460, 2022.",
+            "[11] G. Giannakakis, M. Pediaditis, D. Manousos, E. Kazantzaki, F. Chiarugi, P. G. Simos, K. Marias, and M. Tsiknakis, “Stress and anxiety detection using facial cues from videos,” Biomedical Signal Processing and Control, vol. 31, pp. 89–101, 2017.",
+            "[12] G. Giannakakis, M. R. Koujan, A. Roussos, and K. Marias, “Automatic stress detection evaluating models of facial action units,” in 2020 15th IEEE International Conference on Automatic Face and Gesture Recognition (FG 2020), 2020, pp. 728–733.",
+            "[13] M. Kyrou, I. Kompatsiaris, and P. C. Petrantonakis, “Deep learning approaches for stress detection: a survey,” IEEE Transactions on Affective Computing, vol. 16, no. 2, pp. 499–517, 2025.",
+            "[14] H. Zhang, L. Feng, N. Li, Z. Jin, and L. Cao, “Video-based stress detection through deep learning,” Sensors, vol. 20, no. 19, p. 5552, 2020.",
+            "[15] T. Jeon, H. B. Bae, Y. Lee, S. Jang, and S. Lee, “Deep-learning-based stress recognition with spatial-temporal facial information,” Sensors, vol. 21, no. 22, p. 7498, 2021."
+        ],
+        "bbox": [
+            513,
+            369,
+            921,
+            392
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "[16] P. Valergaki, V. C. Nicodemou, I. Oikonomidis, A. Argyros, and A. Roussos, “Combining facial videos and biosignals for stress estimation during driving,” 2026.",
+            "[17] S. Gkikas, T. Kassiotis, Y. Guo, G. Li, E. Nichols, H. Asadi, N. Smyrnis, and G. Giannakakis, “Beyond the Raw Waveform: Fusing Visual Representations of EDA for Stress Detection,” in 2026 International Conference on Pattern Recognition and Artificial Intelligence (PRAI), 2026, accepted for publication.",
+            "[18] S. Gkikas, I. Kyprakis, and M. Tsiknakis, “Multi-representation diagrams for pain recognition: Integrating various electrodermal activity signals into a single image,” in Companion Proceedings of the 27th International Conference on Multimodal Interaction, ser. ICMI Companion ’25. New York, NY, USA: Association for Computing Machinery, 2025, p. 162–171.",
+            "[19] ——, “Tiny-biomoe: a lightweight embedding model for biosignal analysis,” in Companion Proceedings ofthe 27th International Conference on Multimodal Interaction, ser. ICMI Companion ’25. New York, NY, USA: Association for Computing Machinery, 2025, p. 117–126.",
+            "[20] ——, “Efficient pain recognition via respiration signals: A single crossattention transformer multi-window fusion pipeline,” in Companion Proceedings of the 27th International Conference on Multimodal Interaction, ser. ICMI Companion ’25. New York, NY, USA: Association for Computing Machinery, 2025, p. 70–79.",
+            "[21] S. Gkikas, Y. Guo, G. Li, R. F. Rojas, G. Giannakakis, and R. Gomez, “A Multi-Scale Temporal Framework with Dynamic Fusion for EEG-Based Emotion Recognition,” in 2026 International Conference on Pattern Recognition and Artificial Intelligence (PRAI), 2026, accepted for publication.",
+            "[22] S. Gkikas, C. A. Cruz, C. Joseph, G. Giannakakis, and R. F. Rojas, “Towards a Unified Modality-Agnostic Multimodal Framework for Cognitive Workload Assessment,” in 2026 14th International Conference on Affective Computing and Intelligent Interaction (ACII). IEEE, 2026.",
+            "[23] D. Ding, W. Xu, X. Liu, and T. Zhu, “Facial video based stress detection for enhancing ecological validity,” Acta Psychologica, vol. 255, p. 104877, 2025.",
+            "[24] G. Giannakakis, M. R. Koujan, A. Roussos, and K. Marias, “Automatic stress analysis from facial videos based on deep facial action units recognition,” Pattern Analysis and Applications, vol. 25, no. 3, pp. 521– 535, 2022.",
+            "[25] G. Giannakakis, A. Roussos, C. Andreou, S. Borgwardt, and A. I. Korda, “Stress recognition identifying relevant facial action units through explainable artificial intelligence and machine learning,” Computer Methods and Programs in Biomedicine, vol. 259, p. 108507, 2025.",
+            "[26] T. Kassiotis, S. Gkikas, N. Smyrnis, and G. Giannakakis, “Explainable Graph Attention Network for Stress Recognition (StressGAT) via Differential Action Units,” in 2026 14th International Conference on Affective Computing and Intelligent Interaction (ACII). IEEE, 2026.",
+            "[27] A. Arnab, M. Dehghani, G. Heigold, C. Sun, M. Luciˇ c, and C. Schmid,´ “ViViT: A video vision transformer,” in Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV), 2021, pp. 6836– 6846.",
+            "[28] A. Jaegle, F. Gimeno, A. Brock, O. Vinyals, A. Zisserman, and J. Carreira, “Perceiver: General perception with iterative attention,” in Proceedings of the 38th International Conference on Machine Learning, ser. Proceedings of Machine Learning Research, vol. 139. PMLR, 2021, pp. 4651–4664.",
+            "[29] S. Gkikas and M. Tsiknakis, “A full transformer-based framework for automatic pain estimation using videos,” in 2023 45th Annual International Conference of the IEEE Engineering in Medicine & Biology Society (EMBC), 2023, pp. 1–6.",
+            "[30] S. Gkikas, N. S. Tachos, S. Andreadis, V. C. Pezoulas, D. Zaridis, G. Gkois, A. Matonaki, T. G. Stavropoulos, and D. I. Fotiadis, “Multimodal automatic assessment of acute pain through facial videos and heart rate signals utilizing transformer-based architectures,” Frontiers in Pain Research, vol. 5, 2024.",
+            "[31] S. Gkikas and M. Tsiknakis, “Twins-painvit: Towards a modality-agnostic vision transformer framework for multimodal automatic pain assessment using facial videos and fnirs,” in 2024 12th International Conference on Affective Computing and Intelligent Interaction Workshops and Demos (ACIIW), 2024, pp. 13–21.",
+            "[32] S. Gkikas, R. F. Rojas, and M. Tsiknakis, “Painformer: A vision foundation model for automatic pain assessment,” IEEE Transactions on Affective Computing, vol. 16, no. 4, pp. 3369–3386, 2025.",
+            "[33] J. R. Stroop, “Studies of interference in serial verbal reactions,” Journal of Experimental Psychology, vol. 18, no. 6, pp. 643–662, 1935.",
+            "[34] T. N. Tombaugh, “A comprehensive review of the paced auditory serial addition test (pasat),” Archives of Clinical Neuropsychology, vol. 21, no. 1, pp. 53–76, 2006.",
+            "[35] S. Gkikas, Y. Fang, C. A. Cruz, M. U. Khan, and R. F. Rojas, “ReFace: Reorganizing Facial Spatiotemporal Representations for Improved Pain Assessment,” in 2026 14th International Conference on Affective Computing and Intelligent Interaction (ACII). IEEE, 2026."
+        ],
+        "bbox": [
+            76,
+            64,
+            491,
+            98
+        ],
+        "page_idx": 6
+    }
+]

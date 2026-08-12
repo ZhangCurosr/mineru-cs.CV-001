@@ -1,0 +1,3477 @@
+[
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "ENCORE: Efficient Noise Context-Aware Representation for Low-Dose CT Denoising"
+                    }
+                ],
+                "level": 1
+            },
+            "bbox": [
+                142,
+                70,
+                856,
+                138
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Minwoo Yu, N. Robert Bennett, Jongduk Baek, and Adam S. Wang"
+                    }
+                ]
+            },
+            "bbox": [
+                222,
+                148,
+                732,
+                165
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Abstract—While deep learning-based denoising has become widely adopted in low-dose CT, conventional models use generic architectures designed for natural images, failing to account for non-stationary and spatially correlated CT noise characteristics. To address this, we propose an Efficient Noise COntext-aware REpresentation (ENCORE) framework that explicitly leverages CT noise characteristics and anatomical features. First, we reformulate the noise synthesis procedure based on a realistic noise distribution beyond the conventional Gaussian approximation, establishing a rigorous foundation for training pair generation. Next, we extract local noise power and correlation contexts to guide the denoising process. To fully leverage the potential of noise context, we propose a FlyingConv module, which adaptively changes convolution weights for each local image region. Notably, our approach demonstrates substantial gains in both denoising quality and computational efficiency. Furthermore, manipulating the intensity of the noise context maps at inference time enables zero-shot conditional denoising, allowing for dynamic control over the output image texture. The entire pipeline is available at https://github.com/minwoo-yu/ENCORE.git."
+                    }
+                ]
+            },
+            "bbox": [
+                75,
+                220,
+                493,
+                474
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Index Terms—Convolution with Adaptive Weight, CT image denoising, Noise Correlation and Power Contexts."
+                    }
+                ]
+            },
+            "bbox": [
+                75,
+                478,
+                491,
+                507
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "I. INTRODUCTION"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                217,
+                529,
+                349,
+                542
+            ]
+        },
+        {
+            "type": "list",
+            "content": {
+                "list_type": "text_list",
+                "attribute": "unordered",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "S deep learning (DL)-based denoising has become widely adopted in low-dose CT imaging, extensive research has focused on building training frameworks that reflect CT-specific characteristics. This involves either enhancing perceptual quality through specialized loss functions [1], [2] or exploring self-supervised learning pipelines for clinical settings where paired data are difficult to obtain [3]–[5]. However, from an architectural perspective, relatively few attempts have been made to design or modify denoising networks specifically tailored for CT imaging. Fundamentally, the raw projection data exhibit a mixed noise structure: Poisson quantum noise"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                73,
+                549,
+                493,
+                717
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "stemming from photon-counting statistics and Gaussian electronic noise introduced by system components. In addition, during reconstruction, the backprojection operation induces complex spatial correlations, thereby modulating and amplifying the noise spectrum in the reconstructed image domain. However, standard denoising architectures typically take only a single noisy image as input and perform best under the assumption of independent and identically distributed (i.i.d.) noise [6]. Consequently, their performance is limited on CT images, where this i.i.d. assumption is violated due to spatial correlation and scan-dependent variability. This underscores the critical need for a model-side approach capable of directly exploiting CT noise properties."
+                    }
+                ]
+            },
+            "bbox": [
+                503,
+                219,
+                923,
+                416
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "One notable attempt to exploit unique CT noise properties is the noise-augmented deep denoising (NADD) approach [7]. Rather than relying solely on the low-dose (LD) image, NADD incorporates synthesized noise maps to better capture non-stationary CT noise characteristics. However, since noise augmentation is stochastic by nature, substantial statistical variance may occur between different noise realizations. Therefore, simply concatenating stochastic noise maps without any proper preprocessing to stabilize the fluctuations may introduce unwanted variance, potentially making it challenging for the network to accurately capture CT noise characteristics. Furthermore, from a structural perspective, NADD primarily utilizes input channel expansion, suggesting that architectural modifications could further improve denoising performance."
+                    }
+                ]
+            },
+            "bbox": [
+                503,
+                416,
+                923,
+                628
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Accordingly, we propose an Efficient Noise COntext-aware REpresentation (ENCORE) structure for CT image denoising, in which the model adaptively exploits the noise characteristics of the given data to enhance both restoration performance and computational efficiency. While our ENCORE addresses the clinical scarcity of paired training data by adopting a Noise2Noise (N2N)-based self-supervised learning pipeline, it focuses on enhancing physical fidelity. Specifically, rather than relying on a standard Gaussian approximation [5], we reformulate the noise synthesis procedure based on the Cornish-Fisher expansion [8] to achieve more accurate CT noise simulation. Subsequently, to provide the model with more direct and stable context guidance than NADD’s raw stochastic noise augmentations [7], we introduce an efficient autocovariance estimation step to explicitly extract local noise correlation and power. In addition, our framework natively supports zeroshot conditional denoising, allowing the model to dynamically balance noise reduction and texture preservation during inference by simply scaling the context maps. Furthermore, to mitigate the latency overhead in noise augmentation and context estimation, we customize the reconstruction kernels to enhance throughput compared to conventional open-source FBP algorithms. Finally, to embed the noise context directly within the model, we redesign the network layers by introducing an on-the-fly weight-modulated convolution (FlyingConv) operation."
+                    }
+                ]
+            },
+            "bbox": [
+                501,
+                627,
+                924,
+                945
+            ]
+        },
+        {
+            "type": "page_footnote",
+            "content": {
+                "page_footnote_content": [
+                    {
+                        "type": "text",
+                        "content": "Jongduk Baek and Adam S. Wang are Co-corresponding authors."
+                    }
+                ]
+            },
+            "bbox": [
+                88,
+                931,
+                444,
+                945
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "1"
+                    }
+                ]
+            },
+            "bbox": [
+                911,
+                30,
+                919,
+                41
+            ]
+        },
+        {
+            "type": "page_aside_text",
+            "content": {
+                "page_aside_text_content": [
+                    {
+                        "type": "text",
+                        "content": "arXiv:2608.10343v1 [cs.CV] 11 Aug 2026"
+                    }
+                ]
+            },
+            "bbox": [
+                29,
+                352,
+                63,
+                800
+            ]
+        },
+        {
+            "type": "page_footnote",
+            "content": {
+                "page_footnote_content": [
+                    {
+                        "type": "text",
+                        "content": "Minwoo Yu is with the Department of Artificial Intelligence, Yonsei University, South Korea, and was also a visiting researcher with the Department of Radiology, Stanford University, Stanford, CA 94305 USA (e-mail: ymw9754@yonsei.ac.kr)."
+                    }
+                ]
+            },
+            "bbox": [
+                75,
+                806,
+                491,
+                853
+            ]
+        },
+        {
+            "type": "page_footnote",
+            "content": {
+                "page_footnote_content": [
+                    {
+                        "type": "text",
+                        "content": "National Research Foundation of Korea (NRF): RS-2023-00240135; National Research Foundation of Korea (NRF): RS-2025-00553670; MSIT — Institute for Information and Communications Technology Promotion (IITP): RS-2020-II201361"
+                    }
+                ]
+            },
+            "bbox": [
+                75,
+                761,
+                491,
+                808
+            ]
+        },
+        {
+            "type": "page_footnote",
+            "content": {
+                "page_footnote_content": [
+                    {
+                        "type": "text",
+                        "content": "Jongduk Baek is with the Department of Artificial Intelligence, Yonsei University, South Korea (e-mail: jongdukbaek@yonsei.ac.kr)."
+                    }
+                ]
+            },
+            "bbox": [
+                75,
+                852,
+                491,
+                876
+            ]
+        },
+        {
+            "type": "page_footnote",
+            "content": {
+                "page_footnote_content": [
+                    {
+                        "type": "text",
+                        "content": "This work has been submitted to the IEEE for possible publication. Copyright may be transferred without notice, after which this version may no longer be accessible."
+                    }
+                ]
+            },
+            "bbox": [
+                73,
+                727,
+                491,
+                762
+            ]
+        },
+        {
+            "type": "page_footnote",
+            "content": {
+                "page_footnote_content": [
+                    {
+                        "type": "text",
+                        "content": "N. Robert Bennett is with the Department of Radiology, Stanford University, Stanford, CA 94305 USA (e-mail: bennett6@stanford.edu)."
+                    }
+                ]
+            },
+            "bbox": [
+                75,
+                875,
+                491,
+                898
+            ]
+        },
+        {
+            "type": "page_footnote",
+            "content": {
+                "page_footnote_content": [
+                    {
+                        "type": "text",
+                        "content": "Adam S. Wang is with the Department of Radiology and the Department of Electrical Engineering, Stanford University, Stanford, CA 94305 USA (e-mail: adamwang@stanford.edu)."
+                    }
+                ]
+            },
+            "bbox": [
+                75,
+                897,
+                491,
+                931
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                73,
+                69,
+                493,
+                145
+            ]
+        },
+        {
+            "type": "chart",
+            "content": {
+                "image_source": {
+                    "path": "images/45df4409ddfd82f83677bf5c814aa0859079e4d7d677a984568216fb34654326.jpg"
+                },
+                "content": "",
+                "chart_caption": [],
+                "chart_footnote": []
+            },
+            "bbox": [
+                81,
+                161,
+                287,
+                315
+            ]
+        },
+        {
+            "type": "chart",
+            "content": {
+                "image_source": {
+                    "path": "images/8c32892636b4f158335dc1c95f549da69b6b26f9c28c0e5a8bae078880dcb99b.jpg"
+                },
+                "content": "",
+                "chart_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 1. Performance comparison of PSNR against MACs (left) and latency (right) evaluated on Mayo2016 dataset at a 10% dose level. Each method is evaluated on two UNet variants of different model scales."
+                    }
+                ],
+                "chart_footnote": []
+            },
+            "bbox": [
+                287,
+                161,
+                485,
+                316
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Rather than simply expanding the denoising model to achieve performance gains, our ENCORE demonstrates that integrating noise context serves as a more effective paradigm for low-dose CT denoising. Furthermore, by optimizing the entire denoising pipeline instead of focusing solely on theoretical computational complexity (e.g., multiply-accumulate operations (MACs)), our approach improves practical latency, as visually highlighted in Fig. 1."
+                    }
+                ]
+            },
+            "bbox": [
+                73,
+                377,
+                493,
+                497
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "In summary, our primary contributions are listed as follows:"
+                    }
+                ]
+            },
+            "bbox": [
+                89,
+                497,
+                490,
+                513
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• We reformulate a self-supervised training pipeline based on the Cornish-Fisher expansion, providing more realistic noise simulation compared to the conventional Gaussian approximation."
+                    }
+                ]
+            },
+            "bbox": [
+                91,
+                515,
+                491,
+                574
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• We propose noise autocovariance preprocessing for model-friendly noise context estimation. By customizing the overall kernels, we minimize the computational overhead while boosting throughput several-fold."
+                    }
+                ]
+            },
+            "bbox": [
+                91,
+                575,
+                491,
+                635
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• We propose the FlyingConv module, which adaptively adjusts the weight values based on the local anatomy and noise context information. This dynamic modulation enhances both denoising quality and zero-shot robustness with minimal inference latency overhead."
+                    }
+                ]
+            },
+            "bbox": [
+                91,
+                636,
+                493,
+                712
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "II. RELATED WORKS"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                205,
+                726,
+                362,
+                739
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "A. Noise Synthesis for CT Imaging"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                73,
+                744,
+                318,
+                760
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "In X-ray CT imaging, noise in the reconstructed image is fundamentally non-stationary and spatially correlated. While anatomy-dependent attenuation introduces nonstationary noise variance, backprojection induces complex spatial correlations, causing the noise power spectrum (NPS) to vary across local regions [9]. To analyze these complex properties, pixel-wise noise statistics estimation from projection data has been proposed [10]. Furthermore, because acquiring clinically clean, noise-free CT scans is infeasible, training DLbased denoising models heavily relies on synthesizing realistic training pairs. Conventionally, supervised models are trained on synthesized LD-to-ND pairs by injecting simulated noise into clinical ND targets; however, they tend to inherit the residual noise remaining in the ND targets, limiting their denoising performance [4]. To avoid inheriting this residual noise, Half2Half [4] generates training pairs from a single CT scan while ensuring statistical independence. Furthermore, a training pair generation method based on a Gaussian approximation of the Poisson quantum noise has been proposed [5], offering the flexibility to simulate arbitrary dose levels."
+                    }
+                ]
+            },
+            "bbox": [
+                73,
+                763,
+                493,
+                946
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                503,
+                69,
+                923,
+                191
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "B. CT Image Denoising Methods"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                504,
+                207,
+                735,
+                223
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Most studies on DL-based CT denoising have focused on preserving fine structures and preventing over-smoothing. To this end, several studies have designed specialized loss functions to enhance texture realism and sharpness [1], [2]. Although modifying loss functions improves visual quality, it still poses a risk of introducing artifacts or hallucinations [11]. This risk arises because these loss functions primarily focus on the visual appearance or perceptual features of the output image, without explicitly modeling the underlying CT noise characteristics. To bridge this gap, NADD [7] has attempted to incorporate noise power and correlation information into the denoising model. Nevertheless, it remains limited by training instability and suboptimal utilization of such noise characteristics. To address these limitations, a preprocessing stage is required to transform noise information into a model-friendly format. Simultaneously, the fundamental model architecture can be redesigned to adaptively reflect noise properties that are highly dependent on patient anatomy and scan geometry. Accordingly, we propose a comprehensive denoising pipeline to maximize both denoising quality and computational efficiency."
+                    }
+                ]
+            },
+            "bbox": [
+                501,
+                226,
+                924,
+                545
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "C. Modifying Convolution Operation for Denoising"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                504,
+                560,
+                857,
+                575
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "To achieve high computational efficiency and superior denoising performance, there have been various attempts to modify the fundamental convolution operation. As a pioneering approach, bilateral filtering has long been widely used in natural image denoising to prevent over-smoothing around edges by adaptively adjusting the filter weights based on the local image information [12]. This core concept of adaptive filtering has carried over to DL-based denoising architectures. For instance, Malleable Convolution (MalleConv) improves computational efficiency and representation power by dynamically varying convolution weights depending on the image context [13]. This adaptive mechanism offers superior image quality at an equivalent computational complexity compared to conventional convolution layers that rely on static weights. Inspired by these prior works, we aim to maximize the denoising quality while minimizing computational overhead by dynamically varying weights based on the local characteristics. Specifically, while previous methods rely solely on local image context, our proposed FlyingConv incorporates estimated noise context information."
+                    }
+                ]
+            },
+            "bbox": [
+                503,
+                579,
+                924,
+                882
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "III. METHODS"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                658,
+                895,
+                767,
+                910
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The proposed denoising framework begins with noise augmentation using the given low-dose projection data. This is followed by the estimation of the local noise autocovariance and its integration into the FlyingConv module. This overall scheme is illustrated in Fig. 2, where each shaded region represents a key contribution of this work."
+                    }
+                ]
+            },
+            "bbox": [
+                503,
+                915,
+                923,
+                945
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "2"
+                    }
+                ]
+            },
+            "bbox": [
+                75,
+                30,
+                88,
+                41
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/89740c9415718cb88dba8906da8ba8898ecd2631355ddefaeea2e9fa8f8ce3a9.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 2. Overall scheme of our proposed ENCORE framework for low-dose CT denoising. The ENCORE framework is built upon two core components: noise autocovariance estimation and FlyingConv modules constituting the denoising model."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                165,
+                66,
+                833,
+                340
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                73,
+                405,
+                491,
+                467
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "A. Noise Synthesis for Context Integration"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                73,
+                484,
+                367,
+                500
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "In general, CT noise can be modeled as a combination of quantum noise and electronic noise, which follow Poisson and Gaussian distributions, respectively. In ND settings, the number of detected photons "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "P _ { \\mathrm { N D } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "can be modeled as:"
+                    }
+                ]
+            },
+            "bbox": [
+                73,
+                503,
+                493,
+                565
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "P _ { \\mathrm { N D } } = \\mathrm { P o i s } ( P _ { \\mathrm { c l e a n } } ) + \\mathcal { N } ( 0 , \\sigma _ { \\mathrm { e } } ^ { 2 } ) ,\\tag{1}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/1836f7121eb61d69c8222b8ccf579dc9ed852ec685edd02c6c02ae44f2e565d6.jpg"
+                }
+            },
+            "bbox": [
+                173,
+                571,
+                392,
+                588
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "P _ { \\mathrm { c l e a n } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is the expected number of detected photons, "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathrm { P o i s } ( P _ { \\mathrm { c l e a n } } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "represents the photon count corrupted by quantum noise, and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathcal { N } ( 0 , \\sigma _ { \\mathrm { e } } ^ { 2 } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "represents the Gaussian electronic noise. Estimating "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "P _ { \\mathrm { L D } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "for a target dose reduction level d from a given P<sub>ND</sub> can be approximated by adding noise to the P<sub>ND</sub> as follows:"
+                    }
+                ]
+            },
+            "bbox": [
+                73,
+                594,
+                493,
+                685
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\begin{array} { r l } & { P _ { \\mathrm { L D } } = \\mathrm { P o i s } ( d P _ { \\mathrm { c l e a n } } ) + \\mathcal { N } ( 0 , \\sigma _ { \\mathrm { e } } ^ { 2 } ) } \\\\ & { ~ \\approx d ( P _ { \\mathrm { N D } } + a ( \\mathrm { P o i s } ( P _ { \\mathrm { N D } } ) - P _ { \\mathrm { N D } } + b \\mathcal { N } ( 0 , \\sigma _ { \\mathrm { e } } ^ { 2 } ) ) ) , } \\\\ & { ~ \\mathrm { w h e r e ~ } a = \\sqrt { 1 / d - 1 } ~ \\mathrm { a n d ~ } b = \\sqrt { 1 / d + 1 } . } \\end{array}\\tag{2}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/485f627dd1278a2954e576e61b4576a4bab3e1c37b07f1f6a5299b191bd3cad2.jpg"
+                }
+            },
+            "bbox": [
+                96,
+                689,
+                450,
+                746
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "1) Training pair generation and noise augmentation: To enable N2N training from a single ND scan data, a paired dataset consisting of "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "P _ { \\mathrm { s L D } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "P _ { \\mathrm { I D } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is generated. Here, "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "P _ { \\mathrm { s L D } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is formulated to emulate the target LD distribution, while "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "P _ { \\mathrm { I D } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "serves as a statistically independent counterpart to "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "P _ { \\mathrm { s L D } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". By approximating the Poisson quantum noise as Gaussian noise [5], this training pair can be formulated as follows:"
+                    }
+                ]
+            },
+            "bbox": [
+                73,
+                751,
+                493,
+                858
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\begin{array} { l } { { P _ { s L D } = d ( P _ { \\mathrm { N D } } + a ( \\mathcal { N } ( 0 , P _ { \\mathrm { N D } } ) + b \\mathcal { N } ( 0 , \\sigma _ { \\mathrm { e } } ^ { 2 } ) ) ) } } \\\\ { { P _ { I D } = d ( P _ { \\mathrm { N D } } - \\displaystyle \\frac { 1 } { a } ( \\mathcal { N } ( 0 , P _ { \\mathrm { N D } } ) + \\displaystyle \\frac { 1 } { b } \\mathcal { N } ( 0 , \\sigma _ { \\mathrm { e } } ^ { 2 } ) ) ) . } } \\end{array}\\tag{3}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/36f87e82c264051fc55aa3393fb8773c95abb193929438b0919f03841c11b739.jpg"
+                }
+            },
+            "bbox": [
+                119,
+                862,
+                447,
+                911
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Subsequently, a set of "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "N"
+                    },
+                    {
+                        "type": "text",
+                        "content": "independent noise maps X is constructed, where each map "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "{ \\bf X } _ { n }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "estimates the difference"
+                    }
+                ]
+            },
+            "bbox": [
+                73,
+                915,
+                493,
+                945
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "between the low-dose image "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "I _ { \\mathrm { L D } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and the ideal clean image "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "I _ { \\mathrm { c l e a n } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". Using only the available "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "P _ { \\mathrm { L D } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "(or "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "P _ { \\mathrm { s L D } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "during training to prevent train-test discrepancy), "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "{ \\bf X } _ { n }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is formulated as follows:"
+                    }
+                ]
+            },
+            "bbox": [
+                503,
+                405,
+                921,
+                450
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\begin{array} { r l } & { X _ { n } \\sim \\mathrm { F B P } ( - \\log ( P _ { \\mathrm { L D } } / d P _ { \\mathrm { c l e a n } } ) ) } \\\\ & { \\qquad \\approx \\mathrm { F B P } ( - \\log ( P _ { \\mathrm { L o w e r } } / P _ { \\mathrm { L D } } ) ) , } \\\\ & { \\qquad \\mathrm { w h e r e } \\ P _ { \\mathrm { L o w e r } } = P _ { \\mathrm { L D } } + \\mathcal { N } ( 0 , P _ { \\mathrm { L D } } ) + \\mathcal { N } ( 0 , \\sigma _ { \\mathrm { e } } ^ { 2 } ) , } \\\\ & { \\qquad \\mathrm { f o r } \\ n = 1 , \\ldots , N . } \\end{array}\\tag{4}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/3697cc63d78a061dec293a072d03aaba76314715549541f0ab075a77dcab9bd1.jpg"
+                }
+            },
+            "bbox": [
+                540,
+                457,
+                882,
+                530
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "P _ { \\mathrm { L o w e r } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "denotes the simulated lower-dose projection, and FBP denotes the 2D FBP reconstruction. Note that simulated photon counts in all noise models (Eqs. (1) to (4)) are clipped to "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "P \\geq 1"
+                    },
+                    {
+                        "type": "text",
+                        "content": "prior to logarithmic transformation, preventing nonpositive photon counts as in real CT acquisitions."
+                    }
+                ]
+            },
+            "bbox": [
+                503,
+                536,
+                923,
+                613
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "However, both formulations in Eqs. (3) and (4) hinge on the Gaussian approximation of Poisson quantum noise. This assumption fails in LD settings or when the scanned anatomy contains dense structures (e.g., thick bones) that severely attenuate photons and lead to photon starvation. Consequently, this approximation induces a statistical discrepancy between the synthesized "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "P _ { \\mathrm { s L D } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "used in N2N-based training and the actual "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "P _ { \\mathrm { L D } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "encountered in clinical practice. To overcome this, we apply a Cornish-Fisher expansion [8] specifically during the training phase, a mathematical technique that transforms Gaussian variables to match a target distribution skewness. In detail, we reformulate the Gaussian noise term "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathcal { N } ( 0 , P )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "used in Eq. (3) into a skewness-corrected term W(0, P). This allows us to explicitly inject the physical skewness of the Poisson distribution into the training pair generation while still satisfying statistical independence. The detailed derivation of "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathcal { W } ( 0 , P )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is provided in the Appendix."
+                    }
+                ]
+            },
+            "bbox": [
+                501,
+                612,
+                923,
+                869
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "2) Inference-time extension for zero-shot control: Focusing on the model’s capability to locally guide its denoising level based on the estimated noise context, we propose extending the noise augmentation formulation Eq. (4). During inference, this extension enables zero-shot control over the residual noise level by scaling the estimated noise intensity from "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "P _ { \\mathrm { L D } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "according to the target dose level we want the output image to exhibit, denoted as "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "d _ { \\mathrm { t a r g e t } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". Specifically, by enforcing the constraint "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "d _ { \\mathrm { t a r g e t } } > d"
+                    },
+                    {
+                        "type": "text",
+                        "content": "(where d is the input low-dose level), this formulation simulates a higher-dose setting, effectively scaling the noise intensity to modulate the denoising strength. The scaled "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "P _ { \\mathrm { L o w e r } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "can be expressed using the scaling ratio "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "r = d / d _ { \\mathrm { t a r g e t } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "as:"
+                    }
+                ]
+            },
+            "bbox": [
+                503,
+                869,
+                923,
+                945
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "3"
+                    }
+                ]
+            },
+            "bbox": [
+                910,
+                30,
+                921,
+                41
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                73,
+                69,
+                493,
+                191
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\begin{array} { r } { P _ { \\mathrm { L o w e r } } = P _ { \\mathrm { L D } } + \\mathcal { W } ( 0 , P _ { \\mathrm { L D } } ( 1 - r ) ) + \\mathcal { N } ( 0 , \\sigma _ { \\mathrm { e } } ^ { 2 } ( 1 - r ^ { 2 } ) ) . } \\end{array}\\tag{5}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/b62792b22426ca50b7b8f68a7ce8889b04ea74e9d8a89d47f75b2874c1eb356f.jpg"
+                }
+            },
+            "bbox": [
+                84,
+                195,
+                459,
+                213
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Note that setting "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "d _ { \\mathrm { t a r g e t } } = \\infty"
+                    },
+                    {
+                        "type": "text",
+                        "content": "yields noise maps identical to Eq. (4) (with the Gaussian approximated term "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathcal { N }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "replaced by W), whereas "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "d _ { \\mathrm { t a r g e t } } = 1"
+                    },
+                    {
+                        "type": "text",
+                        "content": "matches the residual noise in the output image to the normal-dose level. Thanks to this flexibility in noise augmentation, our framework can dynamically modulate the residual noise level in a zero-shot manner, allowing for interactive texture adjustments without requiring any additional training or multiple separate models."
+                    }
+                ]
+            },
+            "bbox": [
+                73,
+                218,
+                493,
+                342
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "B. Noise Autocovariance Estimation"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                75,
+                353,
+                326,
+                368
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "NADD utilizes augmented noise maps X as model inputs without any pre-processing. However, because noise maps vary stochastically with each simulation, feeding raw noise realizations forces the network to implicitly extract noise statistics from fluctuating data. Consequently, this instability can constrain both the performance and robustness of the denoising model. To address this issue, we estimate autocovariance maps "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbf { V } \\in \\mathbb { R } ^ { p \\times p \\times H \\times W }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "as a preprocessing step, where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "p"
+                    },
+                    {
+                        "type": "text",
+                        "content": "denotes the spatial lag patch size. Assuming the noise maps have a zero mean, the autocovariance maps are calculated from "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "{ \\bf X } _ { n }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "as follows:"
+                    }
+                ]
+            },
+            "bbox": [
+                73,
+                372,
+                493,
+                539
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\begin{array} { l } { { { \\bf { V } } ( i , j , x , y ) = \\displaystyle \\frac { 1 } { N w ^ { 2 } } \\sum _ { n = 1 } ^ { N } \\sum _ { ( u , v ) \\in \\Omega } { { \\bf { X } } _ { n } } ( x + u , y + v ) } } \\\\ { { \\quad \\cdot { { \\bf { X } } _ { n } } ( x + u + i - \\lfloor { p / 2 } \\rfloor , y + v + j - \\lfloor { p / 2 } \\rfloor ) , } } \\\\ { { \\mathrm { w h e r e ~ } \\Omega = \\{ - \\lfloor { w / 2 } \\rfloor , . . . , \\lfloor { w / 2 } \\rfloor \\} ^ { 2 } , } } \\end{array}\\tag{6}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/73bf44bb8f57a1d33d8905999a0b3efd85736e9105a32dd8706d40cdc1679f7f.jpg"
+                }
+            },
+            "bbox": [
+                101,
+                541,
+                446,
+                625
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where w denotes the spatial window size defining the local neighborhood for aggregating noise samples. Note that the noise autocovariance is strictly defined with "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "w ~ = ~ 1"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "p = \\operatorname* { m a x } ( H , W )"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". However, a large N is required for accurate estimation, which leads to an infeasible computational burden. To address this limitation, we leverage the localized nature of CT noise correlation and employ a small patch size p to capture the essential noise spatial correlation while substantially reducing overhead. Furthermore, while a large N requires repetitive executions of the FBP reconstruction process, we set "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "N \\ = \\ 1"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and increase the spatial window size w. This adaptation is based on the empirical findings that CT noise can be approximated as a stationary process in a small region of interest (ROI) on the scale of a few millimeters [9]. By default, we set "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "p = 5 , w = 5"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "N = 1"
+                    },
+                    {
+                        "type": "text",
+                        "content": "in this work. Finally, the autocovariance map is normalized to suppress severe value variations and compress the dynamic range, especially in lowdose settings. In detail, we apply a signed-log normalization— computing sign "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( \\mathbf { V } ) { \\cdot } \\log ( 1 { + } | \\mathbf { V } | )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "—which scales down extreme peak values and stabilizes the model training. This overall procedure is illustrated in the blue-shaded region of Fig. 2."
+                    }
+                ]
+            },
+            "bbox": [
+                73,
+                627,
+                493,
+                946
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "C. On-the-Fly Weight-Modulated Convolution"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                504,
+                69,
+                820,
+                84
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Although estimating autocovariance maps V provides a more model-friendly representation, we observed that simply concatenating V to the model input is insufficient to fully exploit the underlying noise context. CT noise power and correlation exhibit strong spatial and anatomical dependency, varying dynamically across ROIs even under a constant X-ray tube current. Because conventional denoising models employ static weights during inference, they struggle to adapt to such spatially and anatomically varying noise contexts."
+                    }
+                ]
+            },
+            "bbox": [
+                503,
+                88,
+                923,
+                224
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "As a solution, we develop the FlyingConv module, which dynamically adjusts the convolution weights based on both anatomical features and autocovariance maps. To achieve high computational efficiency and a large receptive field, our module backbone initially fuses "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "4 \\times 4"
+                    },
+                    {
+                        "type": "text",
+                        "content": "average-pooled feature maps F and autocovariance maps V. This fused representation is then processed by a lightweight Predictor— composed of two FasterNet blocks [14], with an intermediate "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "2 \\times 2"
+                    },
+                    {
+                        "type": "text",
+                        "content": "average pooling layer—followed by "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\textbf { a } 1 \\times 1"
+                    },
+                    {
+                        "type": "text",
+                        "content": "convolution layer. Although this structure effectively predicts spatially adaptive kernels, generating per-channel dynamic weights introduces heavy memory access costs. To mitigate this overhead, we adopt a grouped depthwise convolution strategy that shares each predicted weight across "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "g"
+                    },
+                    {
+                        "type": "text",
+                        "content": "consecutive inputoutput feature channels "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( g \\ = \\ 2"
+                    },
+                    {
+                        "type": "text",
+                        "content": "by default). Consequently, the Predictor yields a compact adaptive kernel weight tensor W "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\in \\mathbb { R } ^ { k ^ { 2 } \\times C ^ { \\bullet } / g \\times H / 8 \\times W / 8 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", where C denotes the number of input channels."
+                    }
+                ]
+            },
+            "bbox": [
+                501,
+                224,
+                923,
+                496
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Next, because the pooling layers introduce a resolution mismatch between the adaptive kernel and the feature maps, the adaptive kernel should be interpolated. However, separately interpolating the kernel weights prior to the weighted-sum operation results in an excessive memory footprint, causing bottlenecks in both inference latency and memory usage. Our FlyingConv addresses this memory overhead by fusing the interpolation and convolution steps into a single execution loop. While similar to MalleConv [13], our implementation is optimized for modern GPU architectures more efficiently (detailed in section III-D). After that, a "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "1 \\times 1"
+                    },
+                    {
+                        "type": "text",
+                        "content": "convolution layer is incorporated to fuse feature representations across the channel dimension, thereby compensating for the limited interchannel interaction. This overall procedure of the FlyingConv module is illustrated in the red shaded region of Fig. 2. Although the "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "1 \\times 1"
+                    },
+                    {
+                        "type": "text",
+                        "content": "convolution layer is included at the end, relying solely on the FlyingConv module still tends to under-represent inter-channel relationships. Therefore, we sequentially alternate between the FlyingConv and standard convolution layers throughout the network."
+                    }
+                ]
+            },
+            "bbox": [
+                501,
+                496,
+                924,
+                800
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "D. Implementation ofAcceleration Kernelsfor Proposed Modules"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                503,
+                819,
+                921,
+                849
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The proposed ENCORE framework encompasses the entire process from reconstruction to post-processing, with all stages executed on the GPU for hardware acceleration. Any localized inefficiency within this pipeline can propagate and increase the total inference latency. To prevent this, all stages are accelerated via custom kernels using C++ and CUDA."
+                    }
+                ]
+            },
+            "bbox": [
+                501,
+                853,
+                923,
+                945
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "4"
+                    }
+                ]
+            },
+            "bbox": [
+                76,
+                30,
+                88,
+                40
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Specifically, there are several open-source CT image reconstruction toolboxes such as LEAP [15] and TIGRE [16]. However, they may not be fully optimized for maximizing GPU utilization in parallelized FBP workflows. As a solution, we develop custom reconstruction kernels designed to minimize the computational overhead between FBP stages. Our custom kernels are built upon the LEAP library, reengineered specifically to maximize GPU cache efficiency. They minimize the memory transfer overhead between the FBP and subsequent denoising stages."
+                    }
+                ]
+            },
+            "bbox": [
+                73,
+                69,
+                491,
+                220
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Similarly, the computation of noise autocovariance and the FlyingConv modules are also accelerated via custom kernels. Specifically, we leverage the texture memory units (TMUs) during the on-the-fly interpolation process of FlyingConv. Because TMUs provide hardware-accelerated interpolation, the need to explicitly access four neighboring memory addresses for a manual weighted-sum calculation is circumvented. Consequently, our implementation reduces memory access latency and mitigates the computational bottleneck during adaptive kernel generation."
+                    }
+                ]
+            },
+            "bbox": [
+                73,
+                220,
+                493,
+                372
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "IV. EXPERIMENTS"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                390,
+                351,
+                404
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "A. Datasets"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                75,
+                411,
+                161,
+                425
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "First, we utilized the ”2016 NIH-AAPM-Mayo Clinic Low-Dose CT Grand Challenge” dataset (Mayo2016) for training and testing [17]. We used 1-mm thickness normal-dose CT images (NDCT) from 10 patients, partitioning such that 4,773 slices from 8 patients were used as training and validation, while the remaining 1,093 slices from 2 patients served as the test dataset. Specifically, these clinical NDCT images were treated as noiseless reference images. To simulate the raw CT data acquisition process under a monoenergetic X-ray beam assumption, we first performed fan-beam geometry forward projection on the reference images to generate ground-truth (GT) clean data "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "P _ { \\mathrm { c l e a n } } ."
+                    },
+                    {
+                        "type": "text",
+                        "content": ". Subsequently, simulated ND projection data "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "P _ { \\mathrm { N D } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "were generated by adding noise according to Eq. (1). Following a widely used setup in CT noise simulation studies [18], the number of incident photons "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "N _ { \\mathrm { i n } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and the electronic noise variance "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\sigma _ { \\mathrm { e } } ^ { 2 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "were set to "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "5 \\times 1 0 ^ { 5 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and 4, respectively. For low-dose CT image (LDCT) data, simulated LD projection data "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "P _ { \\mathrm { L D } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "were generated with two dose levels, "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "d \\in \\{ 0 . 2 5 , 0 . 1 \\}"
+                    },
+                    {
+                        "type": "text",
+                        "content": "according to Eq. (2). Notably, only the d = 0.25 configuration was used for training the denoising model, leaving the d = 0.1 configuration to evaluate the robustness of denoisers against an unseen noise distribution."
+                    }
+                ]
+            },
+            "bbox": [
+                73,
+                430,
+                493,
+                763
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "To evaluate generalization performance, we also utilized the ”Low Dose CT Image and Projection Data” dataset released by the Mayo Clinic in 2020 (Mayo2020) [19]. While the Mayo2016 dataset consists exclusively of data acquired from Siemens Healthineers scanners (SOMATOM Definition AS+ and SOMATOM Definition Flash), the Mayo2020 dataset encompasses patients scanned across multiple CT systems. To evaluate denoising performance under the cross-vendor condition, we selected 663 abdomen scan slices from 5 patients scanned with a GE Healthcare Discovery CT750 HD system. For both Mayo2016 and Mayo2020 datasets, projections were acquired using 1024 projection views, while the remaining geometry parameters (e.g., source-to-isocenter and source-to-detector distance) were configured according to their respective DICOM header metadata."
+                    }
+                ]
+            },
+            "bbox": [
+                73,
+                763,
+                493,
+                946
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                503,
+                69,
+                923,
+                114
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "To further validate the practical utility of our method beyond simulated datasets, we also evaluated our method on real-world raw data. We scanned an anthropomorphic chest phantom using our in-house tabletop cone-beam CT system, which is equipped with a Varex G-1593BI rotating anode X-ray tube and a Varex PaxScan 4030CB flat-panel detector. To mitigate scatter artifacts, the X-ray beam was collimated to 4 cm along the axial direction during acquisition. A total of 720 projection views were acquired in a "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "2 \\times 2"
+                    },
+                    {
+                        "type": "text",
+                        "content": "binning mode with a binned resolution of 1024 detector columns. The scan was acquired at a tube voltage of 120 kVp and a tube current of 10 mA, utilizing a pulsed exposure of 20 ms per projection. In addition, to accurately model electronic and quantum noise characteristics, dark field, flood field, and 20 cm acrylic slab scans were pre-acquired for system calibration and noise augmentation."
+                    }
+                ]
+            },
+            "bbox": [
+                503,
+                114,
+                923,
+                358
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "B. Training and Evaluation Details"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                504,
+                380,
+                751,
+                395
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Our ENCORE was integrated into non-hierarchical DnCNN [20] and hierarchical UNet [21] backbones to validate its effectiveness compared to other variants. In detail, we compared four configurations for each backbone: (1) the Vanilla baseline, (2) NADD integration (+NADD), (3) NADD with the noise maps replaced by the autocovariance map (+COV), and (4) ENCORE integration (+ENCORE). When implementing ENCORE, the odd-indexed layers of the Vanilla model were replaced with the FlyingConv modules, retaining their original specifications (e.g., kernel size). In addition, NAFNet [22] and Uformer [23] were evaluated in their Vanilla configurations to serve as representative attention-based baselines. All models were trained for 300 epochs on 256×256 cropped patches with a batch size of 32, using the Adam optimizer with an initial learning rate of "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "2 \\times 1 0 ^ { - 4 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "that was halved every 60 epochs. Due to the constraints of the N2N framework, the loss function was restricted to mean squared error (MSE)."
+                    }
+                ]
+            },
+            "bbox": [
+                503,
+                400,
+                923,
+                657
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Each model was analyzed across two scale variants: Lite and Base configurations. Specifically, UNet variants were scaled by adjusting the number of feature channels, whereas DnCNN variants were scaled by modifying the number of intermediate layers. We measured the MACs and actual inference latency for all configurations using an NVIDIA RTX A6000 GPU. Note that during the latency measurement, evaluating NAFNet and Uformer using their official implementations yielded a substantially higher latency compared to the other models, even under comparable computational budgets. This discrepancy arises because the attention mechanisms underlying both models introduce a severe memory bandwidth bottleneck. To address this issue and ensure a fair benchmark, we applied kernel fusion via torch.compile() to both models prior to evaluation."
+                    }
+                ]
+            },
+            "bbox": [
+                503,
+                657,
+                923,
+                883
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "For quantitative evaluation, we computed peak signal-tonoise ratio (PSNR), structural similarity (SSIM), and the area under the hallucination operating characteristic curve (AUHOC) [24] after clipping the image values to [−160, 240]"
+                    }
+                ]
+            },
+            "bbox": [
+                503,
+                883,
+                923,
+                945
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "5"
+                    }
+                ]
+            },
+            "bbox": [
+                911,
+                31,
+                919,
+                40
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/7895d9e4c79baa80cd31ab140693c09b8e197eb91d2f3ef220b8219008e7420c.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 3. Qualitative comparison of each configuration with zoomed-in ROI patches. For Mayo2016 (first row) and Mayo2020 (second row), results are evaluated at a 10% dose level using the Base UNet and Lite UNet variants, respectively, with a display window of [-120, 180] HU. For the real-world Tabletop dataset (third row), results are evaluated using the Lite UNet variant with a display window of [-200, 40] HU. Note that the clean GT image is unavailable for the Tabletop dataset due to hardware dose limits."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                76,
+                80,
+                918,
+                417
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Hounsfield Units (HU). While PSNR and SSIM measure overall fidelity and structural similarity, AUHOC specifically focuses on the presence of structural hallucinations by computing patch-wise similarity in the frequency domain. Unlike PSNR and SSIM, a lower AUHOC value signifies superior denoising performance with fewer structural hallucinations. Regarding statistical evaluation, simply comparing mean ± std is insufficient because quality metrics vary considerably across slice locations even within the same patient. Therefore, to verify whether the best-performing configuration achieves statistically significant superiority over all remaining variants, paired Wilcoxon signed-rank tests with Holm’s p-value adjustment (p < 0.01) were conducted."
+                    }
+                ]
+            },
+            "bbox": [
+                73,
+                496,
+                493,
+                694
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "V. RESULTS"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                236,
+                709,
+                330,
+                724
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "A. Qualitative Evaluation"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                75,
+                729,
+                254,
+                743
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 3 shows a qualitative comparison of each configuration. In the first row, the thick bilateral pelvic bones induce strong horizontal noise correlation and elevated noise power within the prostate region compared to other slices. Although these characteristics are present within the training dataset, models that solely rely on the noisy LDCT input, or those failing to estimate the noise context accurately, struggle to adapt to such spatially-varying noise properties. Consequently, as shown in the zoomed ROIs (indicated by the yellow circles), alternative configurations suffer from severe detail loss or introduce structural blurring. In contrast, our proposed +ENCORE reconstructs the fine structures with high fidelity, demonstrating superior capability in handling complex noise patterns."
+                    }
+                ]
+            },
+            "bbox": [
+                73,
+                747,
+                493,
+                946
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "To evaluate generalization capability, the second row shows results on the Mayo2020 dataset acquired from GE Healthcare scanners, contrasting with the Mayo2016 dataset acquired from Siemens Healthineers scanners in the first row. Unlike the Siemens dataset which shares the same scanning geometry as the training dataset, the GE dataset is characterized by different geometry parameters, spectrum, and reconstruction kernel. Consequently, even at equivalent dose levels, the noise context deviates from the training distribution, causing Vanilla denoisers to introduce noticeable artifacts as highlighted in the yellow circles of zoomed ROIs. In contrast, other configurations that incorporate the noise context information mitigate these artifacts. In particular, our +ENCORE achieves the most effective artifact suppression and demonstrates superior robustness under cross-vendor domain shifts."
+                    }
+                ]
+            },
+            "bbox": [
+                503,
+                496,
+                923,
+                723
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Finally, the third row displays the evaluation on real-world Tabletop scan data. This dataset not only differs in scanning geometry from the training setup, but also involves complex physical interactions absent in the simulated datasets. For instance, remaining scatter even after collimation causes the reconstructed HU values to be lower than simulated ones. Additionally, pixel crosstalk within the flat-panel detector amplifies the spatial correlation of noise, while the absence of explicit beam-hardening correction introduces noticeable shading artifacts. These discrepancies from the simulated training distribution serve as a primary cause of denoising performance degradation. Although the scanned phantom is known to consist of a uniform material without internal textures around the bone structures, the Vanilla baseline exhibits severe artifacts across these regions in the zoomed ROI. Conversely, methods that incorporate noise context information suppress artifacts thanks to their enhanced robustness, with our +ENCORE demonstrating the best alignment with the expected uniform characteristics of the phantom."
+                    }
+                ]
+            },
+            "bbox": [
+                501,
+                733,
+                924,
+                945
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "6"
+                    }
+                ]
+            },
+            "bbox": [
+                76,
+                31,
+                86,
+                40
+            ]
+        }
+    ],
+    [
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/145bd3c790453c6ec66d9a87906a967372b64e29ce0dbd145b3d9ce22cde4a89.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "TABLE I"
+                    },
+                    {
+                        "type": "text",
+                        "content": "QUANTITATIVE EVALUATION OF CONFIGURATIONS ACROSS IMAGE QUALITY METRICS (PSNR ↑, SSIM ↑, AND AUHOC ↓) AND COMPUTATIONAL EFFICIENCY (MACS (G) AND LATENCY (MS)) INCLUDING THE FBP PROCESS. BEST RESULTS ARE INDICATED IN BOLD, AND UNDERLINED VALUES DENOTE STATISTICALLY SIGNIFICANT SUPERIORITY OVER ALL CONFIGURATIONS."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td></td><td></td><td></td><td colspan=\"2\">Mayo2016</td><td colspan=\"2\">Mayo2020</td><td colspan=\"2\">Complexity</td></tr><tr><td>Network</td><td>Variant</td><td>Configuration</td><td>10%</td><td>25%</td><td>10%</td><td>25%</td><td>MACs</td><td>Latency</td></tr><tr><td>LDCT</td><td></td><td></td><td>10.50 / 0.5490 / 0.6509</td><td>13.86 / 0.6137 / 0.5615</td><td>11.03 / 0.5964 / 0.6538</td><td>14.33 / 0.6514 / 0.5703</td><td>3.88</td><td>0.68</td></tr><tr><td rowspan=\"7\">DnCNN</td><td rowspan=\"7\">Lite</td><td>Vanilla</td><td>22.24 / 0.7843 / 0.4638</td><td>24.70 / 0.8349 / 0.3721</td><td>24.10 / 0.8325 / 0.4552</td><td>26.40 / 0.8723 / 0.3767</td><td>13.88</td><td>2.69</td></tr><tr><td>+NADD</td><td>22.51 / 0.7875 / 0.4584</td><td>24.77 / 0.8353 / 0.3704</td><td>24.35 / 0.8365 / 0.4496</td><td>26.52 / 0.8738 / 0.3733</td><td>17.93</td><td>3.61</td></tr><tr><td>+COV</td><td>22.77 / 0.7930 / 0.4458</td><td>24.93 / 0.8383 / 0.3625</td><td>24.53 / 0.8394 / 0.4412</td><td>26.67 / 0.8755 / 0.3671</td><td>21.72</td><td>3.93</td></tr><tr><td>+ENCORE</td><td>23.55 / 0.8030 / 0.4233</td><td>25.35 / 0.8436 / 0.3451</td><td>25.32 / 0.8521 / 0.4192</td><td>27.12 / 0.8817 / 0.3510</td><td>10.19</td><td>4.13</td></tr><tr><td>Vanilla</td><td>23.67 / 0.8063 / 0.4124</td><td>25.42 / 0.8415 / 0.3428</td><td>25.50 / 0.8545 / 0.4130</td><td>27.23 / 0.8816 / 0.3510</td><td>62.37</td><td>7.62</td></tr><tr><td>+NADD</td><td>23.76 / 0.8080 / 0.4111</td><td>25.46 / 0.8438 / 0.3414</td><td>25.57 / 0.8552 / 0.4092</td><td>27.31 / 0.8829 / 0.3474</td><td>66.42</td><td>8.55</td></tr><tr><td>Base +COV</td><td>23.79 / 0.8088 / 0.4072</td><td>25.49 / 0.8439 / 0.3395</td><td>25.63 / 0.8566 / 0.4058</td><td>27.36 / 0.8835 / 0.3441</td><td>70.21</td><td>8.90</td></tr><tr><td rowspan=\"8\">UNet</td><td></td><td>+ENCORE</td><td>24.07  / / 0.8119 / 0.3985</td><td>25.62 / 0.8471 / 0.3334</td><td>25.94  / 0.8610 / 0.3959</td><td>27.54 / 0.8862 0.3383</td><td>43.17</td><td>10.14</td></tr><tr><td></td><td>Vanilla</td><td>24.21 / 0.8153 / 0.3913</td><td>25.74 / 0.8475 / 0.3289</td><td>26.07 / 0.8635 / 0.3868</td><td>27.66 / 0.8875 /0.3327</td><td>18.39</td><td>4.29</td></tr><tr><td>Lite</td><td>+NADD</td><td>24.28 / 0.8154 / 0.3888</td><td>25.75 / 0.8485 / 0.3287</td><td>26.20 / 0.8650 / 0.3840</td><td>27.71 / 0.8877 / 0.3324</td><td>22.36</td><td>5.31</td></tr><tr><td></td><td>+COV</td><td>24.33 / 0.8156 / 0.3862</td><td>25.76 / 0.8465 / 0.3285</td><td>26.25 / 0.8659 / 0.3826</td><td>27.73 / 0.8887 / 0.3315</td><td>24.28</td><td>6.05</td></tr><tr><td></td><td>+ENCORE</td><td>24.38 / 0.8167 / 0.3831</td><td>25.78 / 0.8467 / 0.3265</td><td>26.29 / 0.866 / 0.3807</td><td>27.77 / 0.8888 / 0.3304</td><td>17.57</td><td>5.93</td></tr><tr><td>Base</td><td>Vanilla</td><td>24.27 / 0.8169 / 0.3877</td><td>25.80 / 0.8485 / 0.3261</td><td>26.24 / 0.8656 / 0.3809</td><td>27.76 / 0.8885 / 0.3294</td><td>61.75</td><td>8.38</td></tr><tr><td></td><td>+NADD</td><td>24.31 / 0.8168 / 0.3869</td><td>25.81 / 0.8488 / 0.3261</td><td>26.25 / 0.8658 / 0.3808</td><td>27.78 / 0.8886 / 0.3293</td><td>65.79</td><td>9.53</td></tr><tr><td></td><td>+COV</td><td>24.39 / 0.8174 / 0.3817</td><td>25.81 / 0.8474 / 0.3258</td><td>26.28 / 0.8665 / 0.3788</td><td>27.80 / 0.8895 / 0.3273</td><td>69.47</td><td>10.32</td></tr><tr><td rowspan=\"3\">NAFNet</td><td>Lite</td><td>+ENCORE Vanilla</td><td>24.42 / 0.8177 / 0.3812 24.15 / 0.8151 / 0.3942</td><td>25.84 / 0.8483  / 0.3243 25.75 / 0.8481 / 0.3288</td><td>26.29 / 0.8667 / 0.3785 26.10 / 0.8633 / 0.3877</td><td>27.81 / 0.8895 / 0.3276 27.67 / 0.8880 / 0.3331</td><td>45.05 19.32</td><td>10.24</td></tr><tr><td>Base</td><td>Vanilla</td><td>24.16 / 0.8148 / 0.3948</td><td>25.82 / 0.8490 / 0.3256</td><td>26.10 / 0.8636 / 0.3847</td><td>27.74 / 0.8887 / 0.3297</td><td>64.45</td><td>9.61 18.94</td></tr><tr><td>Lite</td><td>Vanilla</td><td>24.27 / 0.8165 / 0.3882</td><td>25.77 / 0.8484 / 0.3274</td><td>26.29 / 0.8666 / 0.3807</td><td>27.78 / 0.8889 / 0.3294</td><td>17.83</td><td>19.43</td></tr><tr><td rowspan=\"2\">Uformer</td><td>Base</td><td></td><td>24.30 / 0.8175 / 0.3871</td><td>25.83 / 0.8489 / 0.3250</td><td>26.32 / 0.8667 / 0.3780</td><td>27.83 / 0.8895 / 0.3271</td><td>51.65</td><td></td></tr><tr><td></td><td>Vanilla</td><td></td><td></td><td></td><td></td><td></td><td>30.52</td></tr></table>",
+                "table_type": "complex_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                78,
+                125,
+                913,
+                421
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                73,
+                448,
+                493,
+                525
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "B. Quantitative Evaluation"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                75,
+                546,
+                263,
+                561
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Table I presents the quantitative results for each configuration. In terms of theoretical computational complexity, incorporating our proposed ENCORE framework yields a substantial reduction in MACs compared to the other configurations. Additionally, the actual inference latency remains comparable to that of the +COV variant, indicating that the proposed structure does not impose excessive latency overhead. A detailed discussion on the hardware-level translation gap is provided in section VI. Regarding the image quality metrics, the hierarchical design of UNet [21] provides superior denoising quality compared to DnCNN [20] across cases, as its multi-scale architecture is more effective at capturing complex CT noise patterns. However, deploying attentiondriven models (e.g., NAFNet [22] and Uformer [23]) demands higher latency, whereas the quality gains are marginal or even fall slightly below those of a standard UNet. This result suggests that these advanced models struggle with distinct CT noise characteristics, which fundamentally differ from those of natural images, highlighting the critical necessity for a model tailored specifically to CT noise contexts. In contrast, incorporating noise context profiles yields quality gains with only a minimal latency increase. Specifically, the results of +COV, which incorporates autocovariance estimation as a pre-processing step, outperform +NADD in most cases. This tendency indicates that the autocovariance map provides more effective and model-assimilable noise context information. Moreover, thanks to the FlyingConv structure that unlocks the latent potential of the autocovariance map, the integration of our proposed ENCORE further improves denoising quality, outperforming the +COV configuration. Statistical testing "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( p \\ < \\ 0 . 0 1 )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "confirms the superiority of +ENCORE over all alternative variants in most cases. Notably, this denoising quality gain becomes even more pronounced in the ultra-lowdose regime at a 10% dose level—which is not seen during the training phase—and within Lite variants featuring fewer model parameters."
+                    }
+                ]
+            },
+            "bbox": [
+                73,
+                568,
+                493,
+                946
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                501,
+                448,
+                923,
+                614
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "On the other hand, the Vanilla and NADD variants exhibit significantly higher SSIM scores than ENCORE in the UNet on the 25% dose level of the Mayo2016 dataset. This inferior SSIM score under the default "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "d _ { \\mathrm { t a r g e t } } = \\infty"
+                    },
+                    {
+                        "type": "text",
+                        "content": "setting stems from a trade-off between pixel-wise accuracy and texture smoothness, which can be dynamically resolved by adjusting "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "d _ { \\mathrm { t a r g e t } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "during inference (see the subsequent ablation study section V-C2)."
+                    }
+                ]
+            },
+            "bbox": [
+                503,
+                614,
+                923,
+                722
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "C. Ablation Studies"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                504,
+                743,
+                645,
+                757
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "1) Skewness-corrected noise modeling: We evaluate the impact of replacing the Gaussian approximated term "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathcal { N } ( 0 , P _ { \\mathrm { N D } } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "in Eq. (3) with the skewness-corrected term W derived from the Cornish-Fisher expansion to generate "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "P _ { \\mathrm { s L D } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "for N2N training. As shown in the upper region of Table II, the Gaussian approximation (which has zero skewness) is valid only as the Poisson noise skewness approaches zero at high photon counts, but fails at low photon counts. In contrast, our formulation closely tracks the target Poisson skewness across all photon counts. This theoretical consistency is mirrored in the actual denoising performance shown in the lower region of Table II. Here, test slices are categorized based on anatomical structures: slices containing dense and thick bone structures (e.g., pelvic and femur bones) are grouped into the highattenuation subset, while the remaining slices form the lowattenuation subset. The gain in PSNR remains marginal across all regions because global pixel-wise "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "L _ { 2 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "error is relatively insensitive to higher-order noise statistics such as skewness. Conversely, SSIM exhibits a noticeable improvement specifically in high-attenuation slices, where severe photon starvation causes the conventional Gaussian approximation to fail. In low-attenuation regions, where photon counts are sufficiently high for the Gaussian approximation to remain valid, the benefit of skewness correction becomes less pronounced."
+                    }
+                ]
+            },
+            "bbox": [
+                501,
+                763,
+                923,
+                945
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "7"
+                    }
+                ]
+            },
+            "bbox": [
+                911,
+                31,
+                921,
+                41
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                73,
+                69,
+                493,
+                251
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/8750caf01bb8739c30953f2158e0dafa226bb20ac6288a04855604fea29663b1.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "TABLE II"
+                    },
+                    {
+                        "type": "text",
+                        "content": "THEORETICAL SKEWNESS AND QUALITY METRICS (PSNR / SSIM) ON LOW/HIGH-ATTENUATION SLICES EVALUATED WITH THE BASE UNET+ENCORE ON THE MAYO2016 DATASET."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Photon Count</td><td>25</td><td>250</td><td>2,500</td><td>25,000</td></tr><tr><td>Poisson (Target)</td><td>0.1501</td><td>0.0579</td><td>0.0187</td><td>0.0059</td></tr><tr><td>Ours</td><td>0.1499</td><td>0.0579</td><td>0.0187</td><td>0.0059</td></tr><tr><td>Denoising Method</td><td>Low-Atten.</td><td></td><td>High-Atten.</td><td></td></tr><tr><td>Gaussian</td><td>25.93 / 0.8515</td><td></td><td> $2 5 . 4 5 \\mathrm { ~ / ~ } 0 . 8 3 2 8$ </td><td></td></tr><tr><td>Ours</td><td>25.93 / 0.8518</td><td></td><td>25.46 / 0.8342</td><td></td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                111,
+                321,
+                455,
+                400
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "2) Zero-shot denoising evaluation: Our proposed ENCORE framework not only boosts denoising quality, but also grants architectural flexibility, enabling zero-shot adjustments tailored to clinical preferences. As shown in Fig. 4(a), sweeping the "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "d _ { \\mathrm { t a r g e t } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "value reveals a clear trade-off between metrics. In detail, while targeting noise-free images "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( d _ { \\mathrm { t a r g e t } } = \\infty )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "yields the best PSNR and AUHOC, SSIM improves when targeting noise-containing images "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( d _ { \\mathrm { t a r g e t } } ~ < ~ \\infty )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "because the residual noise can prevent over-smoothing. This enables dynamic modulation of output texture during inference without any additional training or post-processing. Although the GT image is treated as noise-free in our experiment, the clinical NDCT references still contain a small amount of noise; thus, setting "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "d _ { \\mathrm { t a r g e t } } = \\infty"
+                    },
+                    {
+                        "type": "text",
+                        "content": "shows minimum pixel-level errors but leads to over-smoothing. On the other hand, setting "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "d _ { \\mathrm { t a r g e t } } \\in [ 0 . 7 5 , 1 . 0 ]"
+                    },
+                    {
+                        "type": "text",
+                        "content": "yields visually superior results by matching the realistic texture and noise level of clinical scans as demonstrated in Fig. 4(b). Furthermore, when the SSIM of all variants is aligned to a similar level, ENCORE exhibits superior quality in terms of PSNR and AUHOC, minimizing the intrinsic trade-off. This interactive zero-shot capability also resolves the marginal SSIM degradation observed under the default "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "d _ { \\mathrm { t a r g e t } } = \\infty"
+                    },
+                    {
+                        "type": "text",
+                        "content": "setting in Table I."
+                    }
+                ]
+            },
+            "bbox": [
+                73,
+                415,
+                493,
+                762
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "3) Noise context estimation configurations: Table III shows the results of different noise context configurations. Regarding the window size, using "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "w = 5"
+                    },
+                    {
+                        "type": "text",
+                        "content": "yields the best performance, outperforming the baseline "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( w = 1 )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "which strictly adheres to the original autocovariance definition. This improvement is consistent with the prior finding that CT noise distribution can be approximated as a stationary process within a small ROI [9]. In terms of patch size, "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "p = 5"
+                    },
+                    {
+                        "type": "text",
+                        "content": "yields the best results, as it spans an area that is neither too localized nor overly broad for "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "3 \\times 3"
+                    },
+                    {
+                        "type": "text",
+                        "content": "convolution kernels. Finally, for the number of noise augmentations "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "N ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "a larger value theoretically improves the autocovariance estimation accuracy. However, it requires additional FBP executions and increases the computational overhead. Since no noticeable performance gain is observed, setting "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "N = 1"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is sufficient to capture the noise context."
+                    }
+                ]
+            },
+            "bbox": [
+                73,
+                763,
+                493,
+                945
+            ]
+        },
+        {
+            "type": "chart",
+            "content": {
+                "image_source": {
+                    "path": "images/827d38a01c03ab3e46f49d436ff6a21aae5cf4978d53f8884fb1d27c5712ac74.jpg"
+                },
+                "content": "",
+                "chart_caption": [
+                    {
+                        "type": "text",
+                        "content": "(a)"
+                    }
+                ],
+                "chart_footnote": []
+            },
+            "bbox": [
+                508,
+                66,
+                918,
+                180
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/355ba7c78b1a7c1ee2afeb1bd9ead30bf447ae65b16b545900f4a76d638cdf50.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "(b)"
+                    },
+                    {
+                        "type": "text",
+                        "content": "Fig. 4. Result for sweeping "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "d _ { \\mathrm { t a r g e t } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "values, evaluated on the Mayo2016 dataset at a 25% dose level with the Base UNet+ENCORE. (a) Image quality metrics (b) ROI patches."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                506,
+                204,
+                919,
+                396
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                503,
+                473,
+                921,
+                520
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/9815c469c0d8229a3680605a6f570856c9160c5832f8450815b0e7efa71a3927.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "TABLE III"
+                    },
+                    {
+                        "type": "text",
+                        "content": "ABLATION STUDY ON THE NOISE CONTEXT ESTIMATION PARAMETERS ONTHE MAYO2016 DATASET (25% DOSE LEVEL) WITH THE BASEUNET+ENCORE, WHERE LATENCY EXCLUDES MODEL INFERENCE."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>w</td><td>p</td><td>N</td><td>PSNR</td><td>Latency (ms)</td></tr><tr><td>1</td><td>5</td><td>1</td><td>25.82</td><td>1.58</td></tr><tr><td>5</td><td>5</td><td>1</td><td>25.84</td><td>1.68</td></tr><tr><td>9</td><td>5</td><td>1</td><td>25.83</td><td>1.80</td></tr><tr><td>5</td><td>3</td><td>1</td><td>25.81</td><td>1.57</td></tr><tr><td>5</td><td>7</td><td>1</td><td>25.82</td><td>2.10</td></tr><tr><td>5</td><td>5</td><td>3</td><td>25.84</td><td>3.25</td></tr><tr><td>5</td><td>5</td><td>10</td><td>25.83</td><td>8.88</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                578,
+                592,
+                848,
+                699
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "4) FlyingConv module configurations: As previously mentioned, increasing the group size g reduces the memory access overhead during the FlyingConv operations, substantially lowering latency. Furthermore, moderately increasing g enhances training stability. However, an excessively large g restricts the independence of the kernel weights, limiting the model’s representational capacity. This trade-off is clearly demonstrated in Table IV, where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "g \\ = \\ 2"
+                    },
+                    {
+                        "type": "text",
+                        "content": "achieves the optimal balance between computational efficiency and denoising performance. Consequently, we adopt "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "g = 2"
+                    },
+                    {
+                        "type": "text",
+                        "content": "as the default configuration throughout this study."
+                    }
+                ]
+            },
+            "bbox": [
+                503,
+                712,
+                923,
+                880
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "D. Benchmark for customized kernels"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                503,
+                895,
+                766,
+                910
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 5 presents the computational benchmark results, comparing efficiency gains achieved by our customized CUDA kernels. Here, the unoptimized baselines correspond to naive PyTorch implementations for autocovariance estimation and FlyingConv, and vanilla LEAP for FBP reconstruction. Specifically, in terms of execution latency, our customized CUDA kernels provide a remarkable throughput boost; the FBP module achieves a 4.8× acceleration compared to LEAPbased FBP, while the covariance estimation and FlyingConvbased denoiser modules deliver 2.9× and 3.2× speedups over their naive PyTorch baselines, respectively. Furthermore, our customized kernels reduce the memory footprints of the covariance estimation and denoiser modules by 4.0× and 5.6×, respectively."
+                    }
+                ]
+            },
+            "bbox": [
+                503,
+                915,
+                923,
+                946
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "8"
+                    }
+                ]
+            },
+            "bbox": [
+                76,
+                30,
+                86,
+                41
+            ]
+        }
+    ],
+    [
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/838f134ba8c212676e25b3b8040c9b84519d57481e0fc1b3d71be6ac93e178c4.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "TABLE IV"
+                    },
+                    {
+                        "type": "text",
+                        "content": "ABLATION STUDY ON GROUP SIZE g IN FLYINGCONV, EVALUATED ONMAYO2016 (25% DOSE) USING BASE UNET+ENCORE. LATENCYCOVERS MODEL INFERENCE ONLY."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td> $g$ </td><td>PSNR</td><td>MACs (G)</td><td>Latency (ms)</td><td>Peak Memory (MB)</td></tr><tr><td>1</td><td>25.83</td><td>38.23</td><td>8.97</td><td>379.64</td></tr><tr><td>2</td><td>25.84</td><td>37.10</td><td>8.56</td><td>370.64</td></tr><tr><td>4</td><td>25.82</td><td>36.54</td><td>8.49</td><td>366.14</td></tr><tr><td>8</td><td>25.81</td><td>36.26</td><td>8.42</td><td>363.89</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                111,
+                125,
+                455,
+                195
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                73,
+                222,
+                493,
+                404
+            ]
+        },
+        {
+            "type": "chart",
+            "content": {
+                "image_source": {
+                    "path": "images/0d3fd2dfac17623c13c0098111b664f704505581ba7fd8a866b2168eefd6de96.jpg"
+                },
+                "content": "",
+                "chart_caption": [],
+                "chart_footnote": []
+            },
+            "bbox": [
+                78,
+                424,
+                276,
+                558
+            ]
+        },
+        {
+            "type": "chart",
+            "content": {
+                "image_source": {
+                    "path": "images/2fbf4b6d781aaa920a3ae3b2991c48625eab34157a04ae42f9b4b03f956ab8b2.jpg"
+                },
+                "content": "",
+                "chart_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 5. Benchmark comparison between customized CUDA kernels and the naive implementations for the Base UNet+ENCORE, measured a batch size 16 and normalized per single axial slice."
+                    }
+                ],
+                "chart_footnote": []
+            },
+            "bbox": [
+                279,
+                424,
+                485,
+                558
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "VI. DISCUSSION"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                222,
+                638,
+                346,
+                652
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "While our approach generally exhibits superior performance compared to other configurations, it is worth discussing why the Vanilla baseline or +NADD occasionally achieves higher SSIM values within Table I. Specifically, under the default setting "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( d _ { \\mathrm { t a r g e t } } = \\infty )"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", ENCORE achieves superior PSNR by minimizing pixel-wise errors, but can exhibit lower SSIM scores on slices dominated by homogeneous anatomical structures such as the liver. This degradation in SSIM is primarily caused by an over-smoothing of the denoised image texture in these homogeneous regions. This stems from the model’s overreliance on the autocovariance maps, which serve as strong cues for minimizing pixel-wise errors but lead to excessive smoothing. Paradoxically, this over-reliance offers a unique advantage: by adjusting "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "d _ { \\mathrm { t a r g e t } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", the balance between texture preservation and denoising strength can be flexibly tuned without requiring fine-tuning, separate models, or extra inference steps. Importantly, this capability is highly valuable in selfsupervised learning environments such as N2N. Since N2Nbased training lacks clean GT target images, the application of conventional perceptual loss functions (e.g., VGG loss [25]) is fundamentally restricted. Consequently, balancing noise reduction and texture preservation has been a persistent challenge. Our framework addresses this limitation by enabling zeroshot control over the denoising texture, providing a level of flexibility that is limited through loss function modifications."
+                    }
+                ]
+            },
+            "bbox": [
+                73,
+                657,
+                493,
+                946
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                501,
+                69,
+                923,
+                160
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "While our proposed ENCORE yields a substantial reduction in MACs, this reduction is not fully translated into latency gains, as observed in Fig. 1 and Table I. Specifically, the actual inference latency of the +ENCORE variant remains comparable to that of the +COV variant. This discrepancy arises because the FlyingConv module manipulates weight values dynamically, which increases the memory access overhead and strains the GPU memory bandwidth. Consequently, the execution time is dominated by memory bandwidth bottlenecks rather than arithmetic operations. Nevertheless, this hardwarelevel constraint is expected to be mitigated when deploying the model on advanced GPU devices with higher memory bandwidth. Furthermore, implementing dedicated backend optimizations such as restructuring the memory access patterns of the FlyingConv module holds promise for unlocking additional efficiency margins of our ENCORE framework."
+                    }
+                ]
+            },
+            "bbox": [
+                503,
+                160,
+                923,
+                401
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Regarding practical applicability, our ENCORE was trained exclusively on simulated datasets. Nevertheless, it demonstrates outstanding performance on the real-world dataset acquired via a tabletop scanner, validating its robustness under physical imaging conditions. This success is particularly notable given that the noise context estimation relies on a simplified noise model; it does not incorporate every single physical factor, such as scatter and beam hardening. In future work, accounting for these missing physical factors will help bridge the gap between simulation and real clinical data, leading to an even more faithful CT denoiser."
+                    }
+                ]
+            },
+            "bbox": [
+                503,
+                401,
+                923,
+                569
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "VII. CONCLUSION"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                645,
+                584,
+                782,
+                598
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "In this study, we propose an ENCORE framework that integrates noise context into the denoising pipeline. To maximize computational efficiency, we perform a full-stack optimization across the entire imaging chain, from image reconstruction to the denoising model. Furthermore, we highlight the multifaceted benefits of embedding noise context into the denoiser, showcasing its computational efficiency and zero-shot denoising capability."
+                    }
+                ]
+            },
+            "bbox": [
+                503,
+                603,
+                923,
+                726
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "APPENDIX"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                674,
+                741,
+                753,
+                756
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "While the Poisson quantum noise term can be modeled using a Gaussian approximation, it fails to capture the physical skewness of the Poisson distribution under the low photon counts. To emulate the noise characteristics more accurately, we construct a noise distribution W that satisfies both the target variance "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "V _ { \\mathrm { t a r g e t } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and skewness "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "S _ { \\mathrm { t a r g e t } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". Specifically, the synthesized quantum noise W is defined using Cornish-Fisher expansion [8] as follows:"
+                    }
+                ]
+            },
+            "bbox": [
+                503,
+                761,
+                923,
+                882
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathcal { W } ( 0 , V _ { \\mathrm { t a r g e t } } ) = \\sqrt { V _ { \\mathrm { t a r g e t } } } ( \\alpha \\mathcal { N } ( 0 , 1 ) + \\beta ( \\mathcal { N } ( 0 , 1 ) ^ { 2 } - 1 ) ) ,\\tag{7}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/4cc6c406a6069ece754691737e19cf88ea87e24949fb4802e992012e783542e0.jpg"
+                }
+            },
+            "bbox": [
+                516,
+                888,
+                885,
+                906
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\beta"
+                    },
+                    {
+                        "type": "text",
+                        "content": "controls the skewness, and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\alpha = \\sqrt { \\operatorname* { m a x } ( 1 - 2 \\beta ^ { 2 } , 0 ) }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "ensures "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathrm { V a r } ( { \\mathcal { W } } ( 0 , V _ { \\mathrm { t a r g e t } } ) ) ~ = ~ V _ { \\mathrm { t a r g e t } } ."
+                    },
+                    {
+                        "type": "text",
+                        "content": ". By equating the third"
+                    }
+                ]
+            },
+            "bbox": [
+                504,
+                914,
+                921,
+                946
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "9"
+                    }
+                ]
+            },
+            "bbox": [
+                910,
+                30,
+                921,
+                40
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "central moment of "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathscr { W } ( 0 , V _ { \\mathrm { t a r g e t } } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "to the target skewness "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "S _ { \\mathrm { t a r g e t } } ,"
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\beta"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is derived as:"
+                    }
+                ]
+            },
+            "bbox": [
+                73,
+                69,
+                490,
+                99
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\begin{array} { r l } & { E [ \\mathcal { W } ( 0 , V _ { \\mathrm { t a r g e t } } ) ^ { 3 } ] = V _ { \\mathrm { t a r g e t } } ^ { 3 / 2 } ( 6 \\alpha ^ { 2 } \\beta + 8 \\beta ^ { 3 } ) } \\\\ & { \\approx 6 \\beta V _ { \\mathrm { t a r g e t } } ^ { 3 / 2 } = S _ { \\mathrm { t a r g e t } } \\implies \\beta \\approx \\frac { S _ { \\mathrm { t a r g e t } } } { 6 V _ { \\mathrm { t a r g e t } } ^ { 3 / 2 } } , } \\end{array}\\tag{8}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/c1bc858339bebbdab0036a014d4b4f6dcce4da3a2e6672e9ff2ec9195a205b12.jpg"
+                }
+            },
+            "bbox": [
+                148,
+                106,
+                418,
+                162
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where we assume that the "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\beta"
+                    },
+                    {
+                        "type": "text",
+                        "content": "value is small. Then, the synthesized noise distribution W is defined by substituting "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "V _ { \\mathrm { t a r g e t } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "S _ { \\mathrm { t a r g e t } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "values according to the desired imaging conditions."
+                    }
+                ]
+            },
+            "bbox": [
+                73,
+                167,
+                491,
+                215
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "A. Noise2Noise Pair Generation for Training"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                75,
+                234,
+                385,
+                248
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "In order to generate N2N pair data, the variance and skewness of the noise to be added should be calculated, excluding the variance and skewness already contained in "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "P _ { \\mathrm { N D } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "The variance and skewness to be added are defined as follows:"
+                    }
+                ]
+            },
+            "bbox": [
+                73,
+                253,
+                491,
+                314
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\begin{array} { r l } & { V _ { \\mathrm { t a r g e t } } = d ( 1 - d ) P _ { \\mathrm { N D } } } \\\\ & { S _ { \\mathrm { t a r g e t } } = d ( 1 - d ^ { 2 } ) P _ { \\mathrm { N D } } . } \\end{array}\\tag{9}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/ffa1a6f4b47aef3d6026dc0b6033baecdc04fcf17b0bbcb0f4521deb5d5e0a2d.jpg"
+                }
+            },
+            "bbox": [
+                202,
+                318,
+                362,
+                353
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "By substituting "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "V _ { \\mathrm { t a r g e t } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "S _ { \\mathrm { t a r g e t } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "values into Eq. (8), we obtain "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\begin{array} { r } { \\beta \\approx \\frac { 1 + d ^ { - } } { 6 \\sqrt { d ( 1 - d ) { P _ { \\mathrm { N D } } } } } } \\end{array}"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". The synthesized quantum noise "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathcal { W } ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "derived from the calculated α and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\beta"
+                    },
+                    {
+                        "type": "text",
+                        "content": "values, can replace the term "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathcal { N } ( 0 , P _ { \\mathrm { N D } } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "in Eq. (3). This allows the synthesized noise to reflect real-world physics compared to the conventional Gaussian approximation."
+                    }
+                ]
+            },
+            "bbox": [
+                73,
+                359,
+                491,
+                455
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "B. Noise Map Generation for Noise Augmentation"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                75,
+                474,
+                419,
+                489
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "To synthesize lower-dose data for noise augmentation, additional noise W is injected into "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "P _ { \\mathrm { L D } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "to accurately emulate actual low-dose noise statistics: In this case, the "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "V _ { \\mathrm { t a r g e t } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "S _ { \\mathrm { t a r g e t } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "are defined as follows:"
+                    }
+                ]
+            },
+            "bbox": [
+                75,
+                494,
+                491,
+                555
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "V _ { \\mathrm { t a r g e t } } = P _ { \\mathrm { L D } } , S _ { \\mathrm { t a r g e t } } = P _ { \\mathrm { L D } } , \\beta \\approx { \\frac { 1 } { 6 { \\sqrt { P _ { \\mathrm { L D } } } } } } .\\tag{10}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/926523b8cffd4e48a4a4ca812956505b6b627c84ba8cb15346f97a4bcf0cd358.jpg"
+                }
+            },
+            "bbox": [
+                143,
+                561,
+                421,
+                593
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Similar to the previous section, "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathcal { W }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is estimated using the calculated α and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\beta"
+                    },
+                    {
+                        "type": "text",
+                        "content": "values, and is utilized to replace "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathcal { N } ( 0 , P _ { \\mathrm { L D } } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "in Eq. (4) to improve the noise augmentation process."
+                    }
+                ]
+            },
+            "bbox": [
+                73,
+                598,
+                490,
+                645
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "REFERENCES"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                235,
+                661,
+                331,
+                674
+            ]
+        },
+        {
+            "type": "list",
+            "content": {
+                "list_type": "reference_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[1] C. You, G. Li, Y. Zhang, X. Zhang, H. Shan, M. Li, S. Ju, Z. Zhao, Z. Zhang, W. Cong et al., “Ct super-resolution gan constrained by the identical, residual, and cycle learning ensemble (gan-circle),” IEEE transactions on medical imaging, vol. 39, no. 1, pp. 188–203, 2019."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[2] M. Han, H. Shim, and J. Baek, “Low-dose ct denoising via convolutional neural network with an observer loss function,” Medical physics, vol. 48, no. 10, pp. 5727–5742, 2021."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[3] J. Lehtinen, J. Munkberg, J. Hasselgren, S. Laine, T. Karras, M. Aittala, and T. Aila, “Noise2noise: Learning image restoration without clean data,” arXiv preprint arXiv:1803.04189, 2018."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[4] N. Yuan, J. Zhou, and J. Qi, “Half2half: deep neural network based ct image denoising without independent reference data,” Physics in Medicine & Biology, vol. 65, no. 21, p. 215020, 2020."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[5] S. Wang and A. S. Wang, “Simulating arbitrary dose levels and independent noise image pairs from a single ct scan,” in 7th International Conference on Image Formation in X-Ray Computed Tomography, vol. 12304. SPIE, 2022, pp. 460–466."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[6] T. Plotz and S. Roth, “Benchmarking denoising algorithms with real photographs,” in Proceedings ofthe IEEE conference on computer vision and pattern recognition, 2017, pp. 1586–1595."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[7] G. Kristof, E. Eulig, and M. Kachelrieß, “Noise-augmented deep denoising: A method to boost ct image denoising networks,” Medical Physics, vol. 52, no. 10, p. e18121, 2025."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[8] E. A. Cornish and R. A. Fisher, “Moments and cumulants in the specification of distributions,” Revue de l’Institut international de Statistique, pp. 307–320, 1938."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[9] J. Baek and N. J. Pelc, “The noise power spectrum in ct with direct fan beam reconstruction,” Medical physics, vol. 37, no. 5, pp. 2074–2081, 2010."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[10] T. Wang and L. Zhu, “Pixel-wise estimation of noise statistics on iterative ct reconstruction from a single scan,” Medical physics, vol. 44, no. 7, pp. 3525–3533, 2017."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[11] E. Eulig, J. Maier, B. Ommer, and M. Kachelrieß, “May denoising remove structures? how to reconstruct invariances of ct denoising algorithms,” in Medical Imaging 2024: Physics of Medical Imaging, vol. 12925. SPIE, 2024, pp. 23–28."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[12] C. Tomasi and R. Manduchi, “Bilateral filtering for gray and color images,” in Sixth international conference on computer vision (IEEE Cat. No. 98CH36271). IEEE, 1998, pp. 839–846."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[13] Y. Jiang, B. Wronski, B. Mildenhall, J. T. Barron, Z. Wang, and T. Xue, “Fast and high quality image denoising via malleable convolution,” in European Conference on Computer Vision. Springer, 2022, pp. 429– 446."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[14] J. Chen, S.-h. Kao, H. He, W. Zhuo, S. Wen, C.-H. Lee, and S.-H. G. Chan, “Run, don’t walk: chasing higher flops for faster neural networks,” in Proceedings of the IEEE/CVF conference on computer vision and pattern recognition, 2023, pp. 12 021–12 031."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[15] H. Kim and K. Champley, “Differentiable forward projector for x-ray computed tomography,” arXiv preprint arXiv:2307.05801, 2023."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[16] A. Biguri, M. Dosanjh, S. Hancock, and M. Soleimani, “Tigre: a matlabgpu toolbox for cbct image reconstruction,” Biomedical Physics & Engineering Express, vol. 2, no. 5, p. 055010, 2016."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[17] C. H. McCollough, A. C. Bartley, R. E. Carter, B. Chen, T. A. Drees, P. Edwards, D. R. Holmes III, A. E. Huang, F. Khan, S. Leng et al., “Low-dose ct for the detection and classification of metastatic liver lesions: results of the 2016 low dose ct grand challenge,” Medical physics, vol. 44, no. 10, pp. e339–e352, 2017."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[18] J. Ma, Z. Liang, Y. Fan, Y. Liu, J. Huang, W. Chen, and H. Lu, “Variance analysis of x-ray ct sinograms in the presence of electronic noise background,” Medical physics, vol. 39, no. 7Part1, pp. 4051–4065, 2012."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[19] T. R. Moen, B. Chen, D. R. Holmes, X. Duan, Z. Yu, L. Yu, S. Leng, J. G. Fletcher, and C. H. McCollough, “Low-dose ct image and projection dataset,” Medical Physics, vol. 48, no. 2, pp. 902–911, Feb. 2021, epub 2020 Dec 16."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[20] K. Zhang, W. Zuo, Y. Chen, D. Meng, and L. Zhang, “Beyond a gaussian denoiser: Residual learning of deep cnn for image denoising,” IEEE transactions on image processing, vol. 26, no. 7, pp. 3142–3155, 2017."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[21] O. Ronneberger, P. Fischer, and T. Brox, “U-net: Convolutional networks for biomedical image segmentation,” in International Conference on Medical image computing and computer-assisted intervention. Springer, 2015, pp. 234–241."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[22] L. Chen, X. Chu, X. Zhang, and J. Sun, “Simple baselines for image restoration,” in European conference on computer vision. Springer, 2022, pp. 17–33."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[23] Z. Wang, X. Cun, J. Bao, W. Zhou, J. Liu, and H. Li, “Uformer: A general u-shaped transformer for image restoration,” in Proceedings of the IEEE/CVF conference on computer vision and pattern recognition, 2022, pp. 17 683–17 693."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[24] P. Kc, R. Zeng, N. Soni, and A. Badano, “sfrc for assessing hallucinations in medical image restoration,” arXiv preprint arXiv:2603.04673, 2026."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[25] J. Johnson, A. Alahi, and L. Fei-Fei, “Perceptual losses for real-time style transfer and super-resolution,” in European conference on computer vision. Springer, 2016, pp. 694–711."
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                83,
+                681,
+                490,
+                728
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "10"
+                    }
+                ]
+            },
+            "bbox": [
+                76,
+                30,
+                93,
+                41
+            ]
+        }
+    ]
+]

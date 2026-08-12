@@ -1,0 +1,2646 @@
+[
+    [
+        {
+            "type": "page_aside_text",
+            "content": {
+                "page_aside_text_content": [
+                    {
+                        "type": "text",
+                        "content": "arXiv:2608.10765v1 [cs.AI] 11 Aug 2026"
+                    }
+                ]
+            },
+            "bbox": [
+                30,
+                360,
+                68,
+                802
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Graphical Abstract"
+                    }
+                ]
+            },
+            "bbox": [
+                82,
+                66,
+                265,
+                85
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Compositional Benchmark Synthesis for Hierarchical Human Action Recognition"
+                    }
+                ]
+            },
+            "bbox": [
+                82,
+                98,
+                784,
+                117
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Farnaz Soleimani, Abdelghani Chibani, Yacine Amirat, Ghazaleh Khodabandelou"
+                    }
+                ]
+            },
+            "bbox": [
+                80,
+                122,
+                638,
+                138
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Compositional Benchmark Synthesis for Hierarchical Human Action Recognition"
+                    }
+                ]
+            },
+            "bbox": [
+                105,
+                165,
+                878,
+                181
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "A benchmark-generation and evaluation framework that builds a four-level intention hierarchy from a flat, single-label action corpus. FOUR-LEVEL EPISODE GRAPH VALIDITY & EVALUATION FLAT SOURCE CORPUS ONTOLOGY COVERAGE-AWARE SAMPLER HLI Anti-circularity à subject-usage Gini generation rules kept apart from eval. logic LLI è source 0.57 Compositional split benchmar 0.25 activity held-out intentions · gap ≈ 0.15 F1 85 atomic classes isolated clips, 1 label each 8 HLI · 35 LLI · 50 act. + transitions subject-consistent episodes action <sup>Order</sup> <sup>control</sup>sequence at low levels; composition at intentions"
+                    }
+                ]
+            },
+            "bbox": [
+                105,
+                185,
+                889,
+                273
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "AT A GLANCE"
+                    }
+                ]
+            },
+            "bbox": [
+                107,
+                320,
+                176,
+                330
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "15,002 labeled episodes"
+                    }
+                ]
+            },
+            "bbox": [
+                117,
+                335,
+                186,
+                355
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "4 levels action · activity · LLI · HLI"
+                    }
+                ]
+            },
+            "bbox": [
+                272,
+                335,
+                381,
+                355
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "0.57 → 0.25 subject-usage Gini (sampler)"
+                    }
+                ]
+            },
+            "bbox": [
+                430,
+                334,
+                547,
+                355
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "~0.15 F1 compositional gap (held-out)"
+                    }
+                ]
+            },
+            "bbox": [
+                586,
+                335,
+                704,
+                355
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "order-aware low levels seq., intentions comp."
+                    }
+                ]
+            },
+            "bbox": [
+                744,
+                336,
+                873,
+                355
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Regenerable from source, no data redistributed ·"
+                    }
+                ]
+            },
+            "bbox": [
+                119,
+                375,
+                364,
+                384
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "contribution is the benchmark protocol, validity design, and compositional setting — not a new architecture."
+                    }
+                ]
+            },
+            "bbox": [
+                388,
+                375,
+                875,
+                384
+            ]
+        }
+    ],
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Highlights"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                80,
+                66,
+                186,
+                87
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Compositional Benchmark Synthesis for Hierarchical Human Action Recognition"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                80,
+                98,
+                784,
+                117
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Farnaz Soleimani, Abdelghani Chibani, Yacine Amirat, Ghazaleh Khodabandelou"
+                    }
+                ]
+            },
+            "bbox": [
+                80,
+                122,
+                638,
+                138
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• Framework synthesizes a 4-level intention benchmark from flat action corpora"
+                    }
+                ]
+            },
+            "bbox": [
+                105,
+                162,
+                653,
+                179
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• Coverage-aware sampler cuts subject-usage Gini from 0.57 to 0.25"
+                    }
+                ]
+            },
+            "bbox": [
+                105,
+                187,
+                578,
+                204
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• Generation rules kept disjoint from evaluation logic to avoid circular supervision"
+                    }
+                ]
+            },
+            "bbox": [
+                105,
+                213,
+                672,
+                229
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• Order-destroying control changes macro-F1 within seed noise, a generator-consistency check"
+                    }
+                ]
+            },
+            "bbox": [
+                105,
+                238,
+                751,
+                253
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• Compositional gap of 0.13 to 0.17 macro-F1 holds across four baseline families including a graph model, showing it is structural"
+                    }
+                ]
+            },
+            "bbox": [
+                105,
+                263,
+                917,
+                293
+            ]
+        }
+    ],
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Compositional Benchmark Synthesis for Hierarchical Human Action Recognition"
+                    }
+                ],
+                "level": 1
+            },
+            "bbox": [
+                80,
+                64,
+                884,
+                116
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Farnaz Soleimani<sup>a,∗</sup>, Abdelghani Chibani<sup>a</sup>, Yacine Amirat<sup>a</sup> and Ghazaleh Khodabandelou<sup>a</sup>"
+                    }
+                ]
+            },
+            "bbox": [
+                80,
+                131,
+                831,
+                147
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "<sup>a</sup>LISSI Laboratory, University ofParis-Est Créteil (UPEC), 122 Rue Paul Armangot, Vitry-sur-Seine, 94400, France"
+                    }
+                ]
+            },
+            "bbox": [
+                80,
+                161,
+                714,
+                174
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "A R T I C L E I N F O"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                82,
+                192,
+                231,
+                206
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Keywords: hierarchical action recognition benchmark synthesis compositional generalization neuro-symbolic learning first-order logic constraints hierarchical transformer multimodal action recognition"
+                    }
+                ]
+            },
+            "bbox": [
+                80,
+                218,
+                252,
+                315
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "A BS T RA C T"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                373,
+                194,
+                485,
+                209
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Recognizing human behavior across levels of abstraction, from atomic actions to long-horizon intentions, requires data annotated along a semantic hierarchy. Large corpora provide isolated, atomically labeled clips without temporal composition, whereas recorded composite-activity corpora ofer shallow, domain-narrow, fixed hierarchies. A benchmark-generation and evaluation framework is proposed that synthesizes a four-level hierarchical-intention benchmark, spanning actions, activities, low-level intentions (LLIs), and high-level intentions (HLIs), from a flat single-label action corpus while retaining real pre-extracted features at the action level. Episodes are assembled by a transition model under a subject-consistency constraint, and a coverage-aware sampler reduces the subjectusage Gini from 0.566 to 0.248. Synthesizing such a benchmark raises a circular-supervision risk that recorded datasets avoid: if the rules generating the episodes also govern the evaluation, models can succeed by recovering the generator rather than through genuine reasoning. Validity is addressed by design, holding sequence-generation rules disjoint from the first-order-logic rules used at evaluation. The instantiation yields 15,002 episodes. Four reference baselines from diferent model families characterize dificulty, not as recognition methods. A compositional held-out gap of 0.13 to 0.17 macro-F1 appears across all baselines, including a graph-aware model that recognizes best yet does not close the gap, indicating a structural property of the benchmark rather than a model artifact. A logic-free baseline still violates the held-out semantic rules above their intrinsic data rate, and the order-destroying control changes macro-F1 within seed variation, serving as a generator-consistency check. The ontology, transition model, and generator are released so the benchmark can be regenerated and extended."
+                    }
+                ]
+            },
+            "bbox": [
+                369,
+                216,
+                917,
+                457
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "1. Introduction"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                80,
+                484,
+                223,
+                500
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Recognizing human behavior at multiple abstraction levels underpins applications from assistive robotics to human– robot collaboration. In these settings, inferring the instant atomic action (what) is insuficient; the long-horizon intention (why) driving the sequence must also be inferred. This reasoning organizes naturally into a semantic hierarchy: atomic actions compose into activities, activities express short-horizon intentions, and these form behavioral episodes. While flat action classification has matured, it fails to exercise the compositional and hierarchical reasoning required at higher levels."
+                    }
+                ]
+            },
+            "bbox": [
+                78,
+                505,
+                487,
+                672
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Progress on multi-level reasoning remains constrained by data fragmentation. Large single-label corpora [11] provide scale but lack structure above isolated clips. Conversely, recorded composite corpora provide temporal segmentation [18], hierarchical daily-living annotations [2], or multitier localization [12], but their hierarchies remain shallow, domain-narrow, and fixed. No existing resource pairs a deep intention hierarchy with the scale and subject structure of a large single-label corpus."
+                    }
+                ]
+            },
+            "bbox": [
+                78,
+                672,
+                487,
+                808
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Instead of introducing a newly recorded dataset, this work proposes a framework to synthesize hierarchical benchmarks from existing flat action corpora by composing atomic clips, an approach grounded in grammar-based models [17] and synthetic data generation [5]. However, synthesis introduces a critical circular supervision risk absent from recorded data: if generation rules also define evaluation, models can shortcut the task by recovering the generator rather than reasoning [7]. Cross-subject protocols further complicate synthesis; enforcing performer consistency across disjoint subject subsets makes sampling non-uniform, causing naive generation to collapse either diversity or structural representation."
+                    }
+                ]
+            },
+            "bbox": [
+                78,
+                808,
+                489,
+                868
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                509,
+                482,
+                917,
+                617
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "In response, we propose a framework that constructs a four-level hierarchical-intention benchmark while addressing validity and coverage by design. The protocol retains real pre-extracted features at the action level and assembles episodes using a transition model with a coverageaware sampler under strict subject consistency. To prevent circularity, sequence-generation rules remain disjoint from evaluation-time first-order-logic constraints. Finally, compositional held-out partitions at the intention level are combined with subject-disjoint splits to separate generalization from memorization [14]."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                619,
+                917,
+                784
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "To characterize benchmark dificulty, we evaluate four baselines from distinct model families (a hierarchical transformer, a sequential transformer, an order-free bag-of-actions model, and a relational graph network over the typed episode graph) using ordinary cross-entropy without logical constraints. The evaluation logs recognition accuracy, an orderdestroying control, and first-order-logic violation rates. Crucially, this paper does not propose a new recognition architecture; the central contribution is a novel benchmarkconstruction and validation protocol for hierarchical pattern recognition."
+                    }
+                ]
+            },
+            "bbox": [
+                509,
+                784,
+                919,
+                846
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "Page 1 of 7"
+                    }
+                ]
+            },
+            "bbox": [
+                835,
+                954,
+                915,
+                968
+            ]
+        },
+        {
+            "type": "page_footnote",
+            "content": {
+                "page_footnote_content": [
+                    {
+                        "type": "text",
+                        "content": "<sup>∗</sup>Corresponding author"
+                    }
+                ]
+            },
+            "bbox": [
+                105,
+                876,
+                236,
+                889
+            ]
+        },
+        {
+            "type": "page_footnote",
+            "content": {
+                "page_footnote_content": [
+                    {
+                        "type": "text",
+                        "content": "farnaz.soleimani@u-pec.fr (F. Soleimani); abdelghani.chibani@u-pec.fr (A. Chibani); amirat@u-pec.fr (Y. Amirat); ghazaleh.khodabandelou@u-pec.fr (G. Khodabandelou)"
+                    }
+                ]
+            },
+            "bbox": [
+                78,
+                890,
+                473,
+                926
+            ]
+        },
+        {
+            "type": "page_footnote",
+            "content": {
+                "page_footnote_content": [
+                    {
+                        "type": "text",
+                        "content": "ORCID(s): 0009-0008-8960-4869 (F. Soleimani)"
+                    }
+                ]
+            },
+            "bbox": [
+                110,
+                926,
+                363,
+                938
+            ]
+        },
+        {
+            "type": "page_footer",
+            "content": {
+                "page_footer_content": [
+                    {
+                        "type": "text",
+                        "content": "Soleimani et al.: Preprint submitted to Elsevier"
+                    }
+                ]
+            },
+            "bbox": [
+                80,
+                954,
+                381,
+                968
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                78,
+                70,
+                489,
+                175
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Novelty and contributions. The novelty lies in thejoint protocol: converting a flat, isolated-clip action corpus into a four-level hierarchical intention benchmark while simultaneously enforcing subject consistency, coverage balancing, disjoint generation and evaluation rules, and compositional held-out testing. To the best of our knowledge these elements have not previously been integrated into a single benchmark framework for hierarchical human action recognition. The contributions are (i) a regenerable synthesis protocol that preserves real action-level features while adding activity, LLI, and HLI structure; (ii) a coverage-aware subject sampler that reduces performer imbalance under cross-subject constraints; (iii) an anti-circularity validation design separating the generator from evaluation-time semantic rules; (iv) a compositional held-out split at the LLI–HLI association level; and (v) an empirical protocol combining recognition, logical-violation rates, and order-destroying controls. The framework is instantiated on a skeleton action corpus, producing 15,002 episodes; the ontology, transition model, and generator are released so that the benchmark can be reconstructed and extended under the source corpus’s native license rather than redistributed directly."
+                    }
+                ]
+            },
+            "bbox": [
+                78,
+                175,
+                489,
+                509
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "2. Related Work"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                78,
+                529,
+                233,
+                547
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Composite and Procedural Activity Datasets Long, structured human behavior is primarily studied on recorded corpora (e.g., Breakfast, 50 Salads, GTEA, Assembly101 [18], FineAction [12]). Despite recent additions of hierarchical daily-living annotations [2], these resources share three limitations: their hierarchies are shallow (typically two levels instead of four reaching intention), they are confined to narrow domains, and their recorded sequences are fixed. Table 1 summarizes these structural diferences along our core evaluation axes."
+                    }
+                ]
+            },
+            "bbox": [
+                78,
+                551,
+                489,
+                704
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Synthetic and Generated Activity Data Synthetic generation often alleviates recorded data scarcity by rendering photo-realistic clips [5] or virtual household activities [15]. While these synthesize visual appearance or motion, our work difers fundamentally: we recombine real pre-extracted skeleton features into a multi-level semantic label structure, targeting compositional hierarchy rather than visual realism."
+                    }
+                ]
+            },
+            "bbox": [
+                78,
+                715,
+                489,
+                823
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Grammar-Based and Compositional Activity Modeling Compositional behavior is widely captured via generative grammars, And–Or graphs [17], adversarial rules [16], and probabilistic automata [4, 19]. While we adopt a transition model from this family, it serves purely as a controllable benchmark generator whose rules are kept strictly disjoint"
+                    }
+                ]
+            },
+            "bbox": [
+                78,
+                832,
+                489,
+                925
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Table 1"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                509,
+                73,
+                568,
+                87
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Composite- and procedural-activity datasets compared along the axes relevant to this work. “Levels” counts annotated semantic tiers; “Label types” lists the highest semantic label available; “Regen.” indicates whether the resource can be regenerated or recombined; “Comp. split” indicates a heldout compositional partition. No existing resource reaches the intention level with a regenerable, compositionally-splittable structure."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                88,
+                917,
+                199
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/6fdd67666a1e4f72779a37d8dbc554184612f85445c2697cd961d4868ec6c753.jpg"
+                },
+                "table_caption": [],
+                "table_footnote": [],
+                "html": "<table><tr><td>Dataset</td><td>LevelsLabel types</td><td>Regen.</td><td>Comp. split</td></tr><tr><td>Breakfast</td><td>2 Action, activity</td><td>No</td><td>No</td></tr><tr><td>50 Salads</td><td>2 Action, activity</td><td>No</td><td>No</td></tr><tr><td>GTEA</td><td>2 Action, activity</td><td>No</td><td>No</td></tr><tr><td>Assembly101</td><td>2 Action, coarse segment</td><td>No</td><td>No</td></tr><tr><td>Hierarchical ADL</td><td>2 Activity (coarse/fine)</td><td>No</td><td>No</td></tr><tr><td>FineAction</td><td>3 Action (3 granularities)</td><td>No</td><td>No</td></tr><tr><td>This work</td><td>4 Action, activity, LLI, HLI</td><td>Yes</td><td>Yes</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                509,
+                201,
+                921,
+                334
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "from evaluation constraints, rather than acting as a recognizer."
+                    }
+                ]
+            },
+            "bbox": [
+                509,
+                346,
+                915,
+                377
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Intention and Goal-Conditioned Anticipation Modeling intention typically focuses on anticipation [3, 13, 24]. These works establish intention as a useful supervisory signal but operate on shallow, two-level egocentric hierarchies. They do not address the four-level, graph-structured hierarchy and typed logical validation proposed here."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                388,
+                917,
+                482
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Neuro-Symbolic and Logic-Constrained Recognition Injecting symbolic knowledge into neural training is wellestablished, utilizing diferentiable penalties [20], logic tensors [1], mean-field inference [21], and hierarchical constraints [23]. We utilize standard logical machinery, but uniquely deploy typed constraints strictly for evaluationtime validation—measuring benchmark anti-circularity via violation rates—rather than relying on them to artificially boost model accuracy."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                491,
+                919,
+                630
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Heterogeneous Graph Transformers Graph- and transformerbased encoders are standard for structured network and skeleton-based recognition [8, 22, 25]. Our benchmark is encoder-agnostic (Section 4). To characterize structural difficulty without proposing a new architecture, our evaluation relies on generic baselines across model families (a hierarchical transformer, sequential transformer, bag-of-actions MLP, and relational graph network), ensuring the reported dificulty reflects dataset properties rather than backbone specifics."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                640,
+                949,
+                794
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Compositional Generalization and Benchmark Validity Holding out unseen combinations is standard for probing compositional generalization [9, 10, 14]. We apply this at the intention level, alongside subject-disjoint splits, to separate generalization from memorization. Furthermore, synthetic evaluations risk shortcut learning [7]. We operationalize benchmark validity [6] for hierarchical activity via a novel anti-circularity protocol: separating generation from"
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                803,
+                919,
+                926
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Compositional Benchmark Synthesis for Hierarchical Action Recognition"
+                    }
+                ]
+            },
+            "bbox": [
+                262,
+                42,
+                734,
+                58
+            ]
+        },
+        {
+            "type": "page_footer",
+            "content": {
+                "page_footer_content": [
+                    {
+                        "type": "text",
+                        "content": "Soleimani et al.: Preprint submitted to Elsevier"
+                    }
+                ]
+            },
+            "bbox": [
+                80,
+                953,
+                381,
+                967
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "Page 2 of 7"
+                    }
+                ]
+            },
+            "bbox": [
+                835,
+                953,
+                915,
+                968
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/36b4a6c2ba8eaf05b5ca025b3343dde3c4ae6616420d08e62e5a97a2ea189eef.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 1: Overview of the experiment. (A) Benchmark synthesis: a flat, single-label action corpus is composed into four-leve hierarchical-intention episodes through an ontology and transition model, a coverage-aware subject-consistent sampler that reduces the subject-usage Gini from 0.566 to 0.248, and a heterogeneous-graph representation with decoupled subject-disjoint and compositional splits. (B) Evaluation protocol: reference baselines from diferent model families are probed for compositional generalization, sensitivity to temporal order, and first-order-logic violation rates. Validity is enforced by holding the generation rules (Group X only) disjoint from the evaluation logic (Group X plus the 22 semantic Group Y rules), so that exploiting the semantic rules reflects learning the generator did not encode."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                85,
+                70,
+                910,
+                194
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/2b26801b72508c4b9cc033b4683687b4abf5630d097e3c74549ee31a9c19305b.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 2"
+                    },
+                    {
+                        "type": "text",
+                        "content": "The instantiated four-level ontology."
+                    }
+                ],
+                "table_footnote": [
+                    {
+                        "type": "text",
+                        "content": "evaluation rules, introducing order controls, and tracking semantic violations."
+                    }
+                ],
+                "html": "<table><tr><td>Level</td><td># Categories Composed of</td></tr><tr><td>High-level intention (HLI) 8</td><td>2-5 LLIs</td></tr><tr><td>Low-level intention (LLI) 35</td><td>2-4 activities</td></tr><tr><td>Activity</td><td>1–2 actions</td></tr><tr><td>Action</td><td>atomic source clips</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                80,
+                366,
+                485,
+                450
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3. Hierarchical Ontology"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                80,
+                513,
+                304,
+                529
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Behavior is organized over four typed levels. An action is an atomic, single-label clip from the source corpus; an activity is a short composition of actions; a low-level intention (LLI) is a goal-directed unit of activities; and a high-level intention (HLI) is a long-horizon episode of LLIs. The instantiated ontology comprises 8 HLIs, 35 LLIs, 50 activities, and 85 source action classes (Table 2); the catalog is released with the generator."
+                    }
+                ]
+            },
+            "bbox": [
+                78,
+                534,
+                487,
+                655
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The ontology follows four principles. Semantic realism governs grouping: actions are grouped only when the group ing reflects a coherent behavior. Full coverage is required: every source action class appears in at least one activity. Activities are modality-agnostic, so further modalities attach without revising the ontology. Finally, templates are flexible: each parent declares a candidate pool and the generator samples a subset per occurrence, which keeps subject-eligibility pools healthy."
+                    }
+                ]
+            },
+            "bbox": [
+                78,
+                655,
+                487,
+                790
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Multi-parent LLIs. Four situational LLIs (a brief drink break, a phone check, a walking transit, and a seated rest) are attached to several HLIs. This multi-parent structure renders the compositional held-out evaluation (Section 5) non-degenerate: a single-parent ontology would reduce the compositional test to memorization. The remaining LLIs stay single-parent where semantically appropriate."
+                    }
+                ]
+            },
+            "bbox": [
+                78,
+                790,
+                487,
+                897
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4. Synthesis Framework"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                509,
+                334,
+                727,
+                350
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Each episode is a tree of typed nodes rooted at one HLI, expanded recursively: an HLI samples 2–5 LLIs, each LLI samples 2–4 activities, and each activity samples 1– 2 source action clips. The novel aspect of the synthesis is the combination of real action-level features with generated higher-level semantic structure, so that models are evaluated on hierarchical pattern recognition without requiring a new recording campaign. The pipeline links source features, the ontology and transition model, the coverage-aware subject sampler, heterogeneous-graph episode construction, and decoupled split generation."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                355,
+                917,
+                522
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Action-level features. Each source action clip is represented by features pre-extracted once and thereafter referenced rather than recomputed. Skeleton sequences (3 channels, up to 300 frames, 25 joints, 2 bodies) are encoded with a PoseC3D SlowOnly-R50 backbone pretrained on the NTU120 cross-subject split into a 2048-dimensional descriptor, and the RGB, depth, and infrared streams each with a VideoMAE-family extractor into a 1024-dimensional descriptor. These four vectors define every action node; higher-level nodes carry no raw features and aggregate their children. Because descriptors are referenced by clip key, episodes remain lightweight and no source data are duplicated."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                522,
+                917,
+                716
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Transition-governed generation. Rather than concatenating clips at random, the ordering of units within each parent follows a transition model that encodes preferred temporal orderings declared in the ontology (e.g. approach precedes greeting) as soft constraints, and controlled labelpreserving perturbations (activity substitution, order perturbation, and filler insertion, each fired per episode with probability 0.1) inject realistic variation."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                717,
+                917,
+                838
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Subject-consistent, coverage-aware sampling. All clips in an episode share one performer, preserving motion continuity. For each HLI template, the performers able to instantiate at least two LLIs (each with at least two viable activities) form the eligible pool; pools range from 40 to 60 of the 60 source performers. Because source coverage is non-uniform, performers are sampled inversely to prior usage, and the constraint relaxes adaptively to a floor of 2 eligible performers when needed."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                838,
+                919,
+                930
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Compositional Benchmark Synthesis for Hierarchical Action Recognition"
+                    }
+                ]
+            },
+            "bbox": [
+                263,
+                42,
+                734,
+                58
+            ]
+        },
+        {
+            "type": "page_footer",
+            "content": {
+                "page_footer_content": [
+                    {
+                        "type": "text",
+                        "content": "Soleimani et al.: Preprint submitted to Elsevier"
+                    }
+                ]
+            },
+            "bbox": [
+                80,
+                953,
+                381,
+                967
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "Page 3 of 7"
+                    }
+                ]
+            },
+            "bbox": [
+                835,
+                953,
+                915,
+                967
+            ]
+        }
+    ],
+    [
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/c32b3e66db0290c780f3ba84b9c93085be2e1bf78346fee71a0c9e894d53170e.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 3"
+                    },
+                    {
+                        "type": "text",
+                        "content": "First-order-logic rules by level and group. Group X is shared with the generator; Group Y is semantic and evaluation-only."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Level</td><td> $\\#$  Rules</td><td>Group X</td><td>Group Y</td></tr><tr><td>Action</td><td>6</td><td>1</td><td>5</td></tr><tr><td>Activity</td><td>7</td><td>1</td><td>6</td></tr><tr><td>LLI</td><td>8</td><td>1</td><td>7</td></tr><tr><td>HLI</td><td>4</td><td>0</td><td>4</td></tr><tr><td>Total</td><td>25</td><td>3</td><td>22</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                80,
+                121,
+                487,
+                223
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                78,
+                234,
+                487,
+                281
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Heterogeneous graph construction. Each episode is materialized as a heterogeneous graph with four node types and six typed edge relations: three compositional (action → activity, activity → LLI, LLI → HLI) and three temporal (NEXT among siblings at the action, activity, and LLI levels); reverse edges are added inside the model for top-down message passing. Action nodes carry the real pre-extracted features, referenced by source clip key (which also encodes the performer), so features are not copied into the graphs."
+                    }
+                ]
+            },
+            "bbox": [
+                78,
+                279,
+                489,
+                416
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Decoupled splitting. Synthesis writes episodes with unique identifiers and no split assignment; a separate procedure produces the splits, so split ratios and held-out compositions can be revised without regenerating data."
+                    }
+                ]
+            },
+            "bbox": [
+                78,
+                416,
+                487,
+                477
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "5. Validity by Design"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                80,
+                498,
+                270,
+                517
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "A synthesized benchmark whose generator, labels, and evaluation rules coincide can be solved by recovering the generator. The novel validity principle in this work is to make this shortcut testable: generation, logic-based evaluation, compositional splitting, and order destruction are kept as separate components. Two mechanisms guard against circular supervision."
+                    }
+                ]
+            },
+            "bbox": [
+                78,
+                520,
+                487,
+                625
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Disjoint generation and evaluation rules. Evaluation uses 25 typed first-order-logic rules across the four levels (Table 3), in two groups. Group X (3 rules) are hierarchycompatibility rules the generator also enforces, limited to cross-level consistency. Group Y (22 rules) are semantic constraints the generator does not use (temporal precedence, mutual exclusion, cardinality, and co-occurrence implications) that any annotator would apply independently of how the data were produced. Because the generator never enforces Group Y, the rate at which an ordinary logic-free model violates these rules is a property of the benchmark rather than of any model: a non-trivial Group Y rate shows the data are not already rule-consistent by construction, so the benchmark cannot be solved by recovering the generator (Section 7). The rule set is included because one design goal is to support neuro-symbolic reasoning; here it serves only as an evaluation-time validity instrument, and integrating logical constraints into training is left to future work."
+                    }
+                ]
+            },
+            "bbox": [
+                78,
+                625,
+                489,
+                897
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Compositional held-out protocol. Beyond subject-disjoint partitioning, one parent association is withheld from training"
+                    }
+                ]
+            },
+            "bbox": [
+                78,
+                896,
+                505,
+                929
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/06895809cfb88999254e5be89c40096450746b305203dbb244cae7e742838507.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 4"
+                    },
+                    {
+                        "type": "text",
+                        "content": "Benchmark composition (instantiated from a skeleton corpus)."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Quantity</td><td>Value</td></tr><tr><td>Episodes (HLI samples)</td><td>15,002</td></tr><tr><td>Node counts Action nodes</td><td>104,310</td></tr><tr><td>Activity nodes</td><td>94,455</td></tr><tr><td>LLI nodes</td><td>42,072</td></tr><tr><td>HLI nodes</td><td>15,002</td></tr><tr><td>Edge counts Compositional edges Temporal edges Total forward typed edges</td><td>240,837 89,308</td></tr><tr><td>Distinct performers used</td><td>330,145 60</td></tr><tr><td>Mean / median episode length</td><td>6.95 / 6 actions</td></tr><tr><td>Source availability Gini</td><td>0.566</td></tr><tr><td>Realized subject-usage Gini</td><td>0.248</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                519,
+                104,
+                904,
+                348
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "for each multi-parent LLI, so the concept must transfer to an unseen high-level context at test time. This yields a dedicated compositional test split alongside the standard split."
+                    }
+                ]
+            },
+            "bbox": [
+                509,
+                359,
+                917,
+                404
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Order-destroying control. To test how much of the benchmark’s signal depends on hierarchical temporal order, a matched control is constructed by taking each synthesized episode and permuting only the order of its siblings (LLIs within the episode, activities within each LLI, actions within each activity) while holding every label, performer, clip, length, and parent–child membership fixed. The six typed edges are rebuilt over the shufled order. A model that still scores well on the control is recovering label co-occurrence rather than sequence. Because short episodes contain unshufleable single-child parents, the control is conservative: order was altered in 96% of episodes at the action level and 71% at the LLI level."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                404,
+                917,
+                600
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Scope of validation. The present validation focuses on structural coverage, compositional generalization, order sensitivity, and logical consistency. As a lightweight plausibility check, five independent annotators judged whether the action sequences of 150 sampled episodes form coherent behavior; the majority-vote plausibility rate was 0.86 (43∕50) with Fleiss’ "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\kappa = 0 . 7 2 5"
+                    },
+                    {
+                        "type": "text",
+                        "content": "(substantial agreement), indicating that the synthesized episodes are generally judged plausible."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                600,
+                917,
+                723
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "6. Benchmark Statistics"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                509,
+                742,
+                726,
+                760
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The instantiated benchmark contains 15,002 episodes with 330,145 forward typed edges (full counts in Table 4). Episodes average 6.95 actions (median 6, range 4–17), 2.80 LLIs, and 6.30 activities; each LLI averages 2.25 activities and each activity 1.10 actions. The eight HLIs are populated nearly uniformly (2,188 episodes for the two largest versus 1,771 for the rest)."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                764,
+                919,
+                870
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Coverage and the sampler. The source corpus is markedly skewed: across 60 performers the mean coverage is 44.7 of 85 classes (range 32–85), a clip-availability Gini of 0.566."
+                    }
+                ]
+            },
+            "bbox": [
+                509,
+                870,
+                931,
+                916
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Compositional Benchmark Synthesis for Hierarchical Action Recognition"
+                    }
+                ]
+            },
+            "bbox": [
+                262,
+                42,
+                734,
+                58
+            ]
+        },
+        {
+            "type": "page_footer",
+            "content": {
+                "page_footer_content": [
+                    {
+                        "type": "text",
+                        "content": "Soleimani et al.: Preprint submitted to Elsevier"
+                    }
+                ]
+            },
+            "bbox": [
+                80,
+                953,
+                381,
+                967
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "Page 4 of 7"
+                    }
+                ]
+            },
+            "bbox": [
+                835,
+                953,
+                915,
+                968
+            ]
+        }
+    ],
+    [
+        {
+            "type": "chart",
+            "content": {
+                "image_source": {
+                    "path": "images/9a5768dbca6d085a0164bd6396209c31375e4c648cc4fabeb9d1f5497126171e.jpg"
+                },
+                "content": "",
+                "chart_caption": [
+                    {
+                        "type": "text",
+                        "content": "(a) Subject–action availability."
+                    }
+                ],
+                "chart_footnote": []
+            },
+            "bbox": [
+                97,
+                100,
+                329,
+                216
+            ]
+        },
+        {
+            "type": "chart",
+            "content": {
+                "image_source": {
+                    "path": "images/a1eb94835bb46b4f87b8a671ede7475aa9dfa0d03d722629aa4d48acf272b1a4.jpg"
+                },
+                "content": "",
+                "chart_caption": [
+                    {
+                        "type": "text",
+                        "content": "(b) Source and realized usage Gini."
+                    }
+                ],
+                "chart_footnote": []
+            },
+            "bbox": [
+                396,
+                69,
+                601,
+                214
+            ]
+        },
+        {
+            "type": "chart",
+            "content": {
+                "image_source": {
+                    "path": "images/838c3714986a4f6e6854678c5d7287be7a6e0b61244faa6e13e5a687ba16fc90.jpg"
+                },
+                "content": "",
+                "chart_caption": [],
+                "chart_footnote": []
+            },
+            "bbox": [
+                655,
+                148,
+                749,
+                216
+            ]
+        },
+        {
+            "type": "chart",
+            "content": {
+                "image_source": {
+                    "path": "images/547bbc072738447c988224e6d3f8d4fbb8c4ce3986cdaaf0cc5d6460867a87d0.jpg"
+                },
+                "content": "",
+                "chart_caption": [
+                    {
+                        "type": "text",
+                        "content": "(c) Branching distributions."
+                    }
+                ],
+                "chart_footnote": []
+            },
+            "bbox": [
+                749,
+                150,
+                843,
+                215
+            ]
+        },
+        {
+            "type": "chart",
+            "content": {
+                "image_source": {
+                    "path": "images/5dea67f244a5fef46bc4400c2c99a9487f11c79003cdd46a152b5c935e6f94d9.jpg"
+                },
+                "content": "",
+                "chart_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 2: Compact benchmark statistics. The panels show (a) source subject-by-class availability, (b) Lorenz curves of source availability versus realized subject usage, and (c) per-level branching distributions of the synthesized episodes."
+                    }
+                ],
+                "chart_footnote": []
+            },
+            "bbox": [
+                843,
+                150,
+                937,
+                216
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The coverage-aware sampler reduces the realized subjectusage Gini to 0.248 (most-used performer in 364 episodes, least in 64). Eligible-subject pools per HLI range from 40 to 60, reflecting that medical, social, and exercise templates demand rarer source classes."
+                    }
+                ]
+            },
+            "bbox": [
+                78,
+                302,
+                487,
+                378
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Structure and long tail. Structural statistics are summarized in Fig. 2. The action level is long-tailed: the most frequent class supplies 10,996 nodes whereas the rarest dozen supply fewer than 30 each. This tail bounds macroaveraged recognition: across all four baselines the action level yields the lowest per-level macro-F1 (Table 5), consistent with the rare-class tail limiting action-level performance independently of architecture."
+                    }
+                ]
+            },
+            "bbox": [
+                78,
+                378,
+                489,
+                499
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "7. Reference Evaluation"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                80,
+                520,
+                297,
+                537
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Four reference baselines from diferent model families characterize benchmark dificulty; none is a methodological contribution, and all use ordinary cross-entropy without logical constraints. The primary baseline is a non-graph hierarchical transformer (HT) with level-by-level attention pooling. Three further baselines test whether dificulty is design-specific: a sequential transformer (seq-T) with mean pooling, an order-free bag-of-actions MLP (bag-MLP), and a relational graph network (R-GCN) that consumes the typed episode graph through relation-specific message passing, included to test whether a graph-aware model closes the compositional gap. All reuse the same features, splits, and graphs. Numbers are means over three to five seeds with standard deviations on the cross-subject split. Per-level macro-F1 is reported because the action level is long-tailed."
+                    }
+                ]
+            },
+            "bbox": [
+                78,
+                542,
+                489,
+                769
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Recognition across baseline families. Across seeds (Table 5), the graph-aware R-GCN is the strongest recognizer at the HLI level (0.754), ahead of the hierarchical and sequential transformers and well ahead of the bag-ofactions model; the action level is the lowest of the four for every baseline, consistent with its long tail. The benchmark is thus solvable but not saturated, and discriminates between architectures rather than being trivially easy or impossibly hard."
+                    }
+                ]
+            },
+            "bbox": [
+                78,
+                769,
+                489,
+                904
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Compositional generalization. On the compositional held-out split, HLI macro-F1 falls by 0.13 to 0.17 across all"
+                    }
+                ]
+            },
+            "bbox": [
+                78,
+                904,
+                487,
+                935
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Table 5"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                510,
+                306,
+                568,
+                320
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Reference recognition on the cross-subject test split (test macro-F1 in %, mean ± standard deviation; HT and R-GCN over five seeds, seq-T over three, bag-MLP over four). Four logic-free baselines from diferent model families characterize dificulty; the R-GCN recognizes best and the action level is the lowest for all four."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                320,
+                917,
+                403
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/3c91d1732be4fcc3f8ac1bbaed2f4a0a6b1ca00717f2695c252fc18f29429f20.jpg"
+                },
+                "table_caption": [],
+                "table_footnote": [],
+                "html": "<table><tr><td>Baseline</td><td>Action</td><td>Activity</td><td>LLI</td><td>HLI</td></tr><tr><td>Hierarchical transformer</td><td>59.0(3.4)</td><td>69.5(2.2)</td><td>75.7(0.8)</td><td>73.2(1.1)</td></tr><tr><td>Sequential transformer</td><td>60.7(1.3)</td><td>66.7(1.4)</td><td>78.4(1.4)</td><td>70.7(1.2)</td></tr><tr><td>Bag-of-actions MLP</td><td>44.0(4.0)</td><td>50.3(3.5)</td><td>63.2(5.0)</td><td>56.3(2.6)</td></tr><tr><td>R-GCN (graph)</td><td>62.3(2.9)</td><td>74.8(3.0)</td><td>77.1(2.7)</td><td>75.4(2.2)</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                509,
+                406,
+                915,
+                477
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Table 6"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                510,
+                491,
+                568,
+                505
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/d6890c599813b2ff6db33c83f61aeaf43ef267022fdfd20b8280670c7c9d9500.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Compositional generalization: HLI macro-F1 (%) on the standard versus compositional held-out split (mean with standard deviation in parentheses; HT and R-GCN over five seeds, seq-T over three, bag-MLP over four). The gap is consistent across model families, and the graph-aware R-GCN does not close it."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Baseline</td><td>Standard</td><td>Compositional</td><td>Gap</td></tr><tr><td>Hierarchical transformer</td><td>73.2(1.1)</td><td>56.5(1.4)</td><td>16.7(0.5)</td></tr><tr><td>Sequential transformer</td><td>70.7(1.2)</td><td>56.4(1.5)</td><td>14.3(0.7)</td></tr><tr><td>Bag-of-actions MLP</td><td>56.3(2.6)</td><td>43.5(0.9)</td><td>12.7(1.8)</td></tr><tr><td>R-GCN (graph)</td><td>75.4(2.2)</td><td>58.2(3.1)</td><td>17.2(1.1)</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                509,
+                581,
+                915,
+                662
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "four model families and every seed (Table 6); the bootstrap 95% confidence interval on the hierarchical-transformer gap over five seeds is [0.161, 0.171], excluding zero. Crucially, the graph-aware R-GCN is the strongest recognizer yet shows the largest gap, so a model built for the typed graph structure does not close it; the gap is a structural property of the benchmark rather than a capacity artifact. A decomposition confirms genuine composition rather than distribution shift: the drop is far larger on the 1,854 episodes containing a held-out LLI→HLI pairing in novel context (0.47 on average) than on the 321 episodes held out by ordering pattern alone (0.30), both far above the near-zero chance level. This architecture-independent gap, concentrated on genuine novel compositions, is the central empirical result."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                674,
+                917,
+                886
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Logic-violation rates as a benchmark property. Because the generator never enforces the Group Y semantic rules, the rate at which a logic-free baseline violates them"
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                886,
+                917,
+                931
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Compositional Benchmark Synthesis for Hierarchical Action Recognition"
+                    }
+                ]
+            },
+            "bbox": [
+                262,
+                42,
+                734,
+                58
+            ]
+        },
+        {
+            "type": "page_footer",
+            "content": {
+                "page_footer_content": [
+                    {
+                        "type": "text",
+                        "content": "Soleimani et al.: Preprint submitted to Elsevier"
+                    }
+                ]
+            },
+            "bbox": [
+                80,
+                953,
+                381,
+                967
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "Page 5 of 7"
+                    }
+                ]
+            },
+            "bbox": [
+                835,
+                953,
+                915,
+                967
+            ]
+        }
+    ],
+    [
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/f6491b2a9e47ae46cb99ba6dc62df261d6bf0379a36e2f7240312df8fc0184d0.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 7"
+                    },
+                    {
+                        "type": "text",
+                        "content": "First-order-logic violation rates(%) on the test split (mean with standard deviation in parentheses; HT and R-GCN over five seeds, seq-T over three, bag-MLP over four). Group X rules are shared with the generator; Group Y rules are semantic and evaluation-only. The data row is the intrinsic violation rate of the generated ground-truth labels; every model exceeds the 2.5% Group Y data floor, confirming genuine error rather than generator recovery."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td colspan=\"2\">Baseline Group X (shared)Group Y (semantic)</td></tr><tr><td>Hierarchical transformer</td><td>9.6(0.5) 3.5(0.2)</td></tr><tr><td>Sequential transformer</td><td>10.1(0.1) 3.2(0.1)</td></tr><tr><td>Bag-of-actions MLP</td><td>24.2(2.5) 4.2(0.5)</td></tr><tr><td>R-GCN (graph)</td><td>9.4(0.9) 2.8(0.1)</td></tr><tr><td>Data (ground-truth labels)</td><td>≈ 0% 2.5%</td></tr></table>",
+                "table_type": "complex_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                80,
+                204,
+                499,
+                306
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Table 8"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                82,
+                319,
+                137,
+                332
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/d68defe270adff012213ca0b6976f388aced80b6c68f26d14dad8c4987a1b0e2.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Order-destroying control: drop in test macro-F1 (structured minus order-destroyed; positive means order helps), mean ± standard deviation in parentheses over three seeds. Every value is within one standard deviation of zero; the small positive drops at the lower levels and the near-zero drop at the intention level show order carries only weak signal below and none above."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Baseline</td><td>Action</td><td>Activity</td><td>LLI</td><td>HLI</td></tr><tr><td>Hierarchical transformer</td><td>+2.9(2.0)</td><td>+2.3(2.0)</td><td>+4.4(4.9)</td><td>+0.3(2.7)</td></tr><tr><td>Sequential transformer</td><td>+5.2(5.5)</td><td>+4.0(6.1)</td><td>+4.8(3.5)</td><td>+1.4(2.8)</td></tr><tr><td>Bag-of-actions MLP</td><td>+1.9(2.8)</td><td>+2.1(1.3)</td><td>+0.9(2.6)</td><td>+1.3(4.5)</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                80,
+                421,
+                485,
+                481
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "measures how far the data depart from those rules. Across seeds this held-out Group Y rate is low but stable for every baseline (0.028 to 0.042, Table 7), while the generatorshared Group X rate is higher, as expected. Critically, the generated ground-truth labels themselves violate Group Y at an intrinsic rate of 0.025 while satisfying Group X at essentially zero; the Group Y rules are therefore genuinely independent of the generator rather than satisfied by construction, and every model sits above this 0.025 data floor, so the excess is genuine prediction error rather than reproduction of the generator. The benchmark cannot be solved by recovering the generator."
+                    }
+                ]
+            },
+            "bbox": [
+                78,
+                494,
+                487,
+                675
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Order-destroying control: a generator-consistency check. Destroying temporal order (permuting siblings while holding every label, performer, clip, length, and membership fixed) changes macro-F1 by less than one standard deviation at every level and baseline (Table 8): a small positive drop at the lower levels (around 0.02 to 0.04, where short within-action orderings carry weak signal) and essentially zero at the intention level. The control is therefore a generator-consistency check: the benchmark encodes order only weakly below and not at all at the intention levels, so high-level intention is recoverable from which sub-behaviors co-occur rather than their order. This order flexibility at the intention level is a designed property of the current benchmark, not an empirical claim about intention; the compositional held-out split, not the order control, is the appropriate stress test for the intention levels."
+                    }
+                ]
+            },
+            "bbox": [
+                78,
+                675,
+                489,
+                919
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "8. Discussion and Conclusion"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                509,
+                71,
+                773,
+                88
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "A benchmark-generation and evaluation framework has been presented that synthesizes a four-level hierarchicalintention benchmark from a flat single-label action corpus, addressing benchmark validity and non-uniform subject coverage by design, and instantiated into a 15,002-episode benchmark. The evaluation establishes three things. First, the compositional held-out split yields a generalization gap of 0.13 to 0.17 macro-F1, consistent across four baseline families and concentrated on genuinely novel compositions rather than distribution shift; the graph-aware R-GCN recognizes best yet shows the largest gap, so the gap is a structural property of the benchmark, not a model artifact. This is the central empirical result. Second, logic-free baselines violate the held-out semantic (Group Y) rules above their 0.025 intrinsic data rate, confirming the rules are not satisfied by construction and the benchmark resists circular shortcuts. Third, an order-destroying control changes macro-F1 by less than seed variation at every level, functioning as a generatorconsistency check rather than evidence about temporal order; order flexibility at the intention level is a designed property. Overall, the novelty is not any isolated component but their integration into a reproducible protocol that makes hierarchy, coverage, circularity, and compositional generalization measurable in one setting."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                93,
+                917,
+                456
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "A recurring concern in ontology-driven benchmarks is that the defined hierarchy may be idiosyncratic. This concern applies equally to recorded datasets, where scenario designers choose which activities to enact and how to structure them. The present ontology is defined by domain experts, released in full for inspection and critique, and supported by the plausibility check of Section 5. What synthesis adds over recording is not immunity to ontology bias but transparency: the hierarchy is explicit and modifiable rather than implicit in a recording protocol."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                456,
+                917,
+                606
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Several limitations are acknowledged. The intentions are imposed by construction rather than observed, so the benchmark measures structured reasoning over a defined hierarchy rather than recovery of naturally occurring intent; the validity protocol is what makes results on it interpretable. The order-destroying control is conservative because short episodes contain unshufleable single-child parents. For two-person source actions, subject consistency is anchored to one performer, and the action level is longtailed, both reported transparently. Although instantiated on one corpus, the framework transfers to other flat single-label action corpora that satisfy three properties: per-performer (subject) metadata, so that subject-consistent episodes can be assembled; suficient per-subject class coverage to form non-degenerate eligible pools for the coverage-aware sampler; and action granularity fine enough that classes can be composed into meaningful higher-level units. A formal demonstration on a second source corpus, the integration of logical constraints into models trained on the benchmark (neuro-symbolic recognition), and enrichment of the transition model with a directed weighted action-succession graph to strengthen temporal signal at the action level, are left for future work. The intended use is controlled evaluation of hierarchical and compositional action-recognition models, not deployment for inferring real human intentions in sensitive settings."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                606,
+                919,
+                940
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Compositional Benchmark Synthesis for Hierarchical Action Recognition"
+                    }
+                ]
+            },
+            "bbox": [
+                262,
+                42,
+                734,
+                58
+            ]
+        },
+        {
+            "type": "page_footer",
+            "content": {
+                "page_footer_content": [
+                    {
+                        "type": "text",
+                        "content": "Soleimani et al.: Preprint submitted to Elsevier"
+                    }
+                ]
+            },
+            "bbox": [
+                80,
+                953,
+                381,
+                967
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "Page 6 of 7"
+                    }
+                ]
+            },
+            "bbox": [
+                835,
+                953,
+                915,
+                967
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                78,
+                70,
+                487,
+                131
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Data Availability"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                80,
+                152,
+                231,
+                170
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "NTU RGB+D 120 licensing prohibits redistribution of source data or extracted features. The release therefore comprises the ontology, synthesis code, FOL rule set, and analysis scripts; the benchmark can be regenerated by any user with NTU RGB+D 120 access. The repository will be made available upon publication."
+                    }
+                ]
+            },
+            "bbox": [
+                78,
+                174,
+                487,
+                267
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Declaration of generative AI and AI-assisted technologies in the manuscript preparation process"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                80,
+                287,
+                467,
+                340
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "AI tools were used to assist with drafting, editing, and analysis scripting. All content was reviewed and revised by the authors, who take full responsibility for the published work."
+                    }
+                ]
+            },
+            "bbox": [
+                80,
+                344,
+                487,
+                404
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "CRediT authorship contribution statement"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                80,
+                423,
+                455,
+                441
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Farnaz Soleimani: Conceptualization, Methodology, Software, Data curation, Investigation, Formal analysis, Visualization, Validation, Writing, original draft. Abdelghani Chibani: Writing, review and editing. Yacine Amirat: Writing, review and editing. Ghazaleh Khodabandelou: Conceptualization, Methodology, Supervision, Writing, review and editing."
+                    }
+                ]
+            },
+            "bbox": [
+                78,
+                446,
+                487,
+                553
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "References"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                82,
+                573,
+                181,
+                590
+            ]
+        },
+        {
+            "type": "list",
+            "content": {
+                "list_type": "reference_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[1] Badreddine, S., Garcez, A.d., Serafini, L., Spranger, M., 2022. Logic tensor networks. Artificial Intelligence 303, 103649."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[2] Benavent-Lledo, M., Mulero-Pérez, D., Ortiz-Perez, D., Garcia-Rodriguez, J., Argyros, A., 2025. Enhancing action recognition by leveraging the hierarchical structure of actions and textual context. Computer Vision and Image Understanding , 104560."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[3] Cao, C., Hu, L., Yu, Y., Zhang, Y., 2025. Vision and intention boost large language model in long-term action anticipation. arXiv preprint arXiv:2505.01713 ."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[4] Cruz, R.S., Cherian, A., Fernando, B., Campbell, D., Gould, S., 2020. Inferring temporal compositions of actions using probabilistic automata, in: Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition Workshops, pp. 368–369."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[5] De Souza, C.R., Gaidon, A., Cabon, Y., López, A.M., 2017. Procedural generation of videos to train deep action recognition networks, in: 2017 IEEE Conference on Computer Vision and Pattern Recognition (CVPR), pp. 2594–2604. doi:10.1109/CVPR.2017.278."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[6] Gebru, T., Morgenstern, J., Vecchione, B., Vaughan, J.W., Wallach, H., Iii, H.D., Crawford, K., 2021. Datasheets for datasets. Communications of the ACM 64, 86–92."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[7] Gill, A., Ravichander, A., Marasović, A., 2025. What has been lost with synthetic evaluation? arXiv preprint arXiv:2505.22830 ."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[8] Hu, Z., Dong, Y., Wang, K., Sun, Y., 2020. Heterogeneous graph transformer, in: Proceedings of the web conference 2020, pp. 2704– 2710."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[9] Kim, N., Linzen, T., 2020. Cogs: A compositional generalization challenge based on semantic interpretation, in: Proceedings of the"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "2020 conference on empirical methods in natural language processing (emnlp), pp. 9087–9105."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[10] Li, R., Feng, Z., Xu, T., Li, L., Wu, X.J., Awais, M., Atito, S., Kittler, J., 2024. C2c: Component-to-composition learning for zeroshot compositional action recognition, in: European Conference on Computer Vision, Springer. pp. 369–388."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[11] Liu, J., Shahroudy, A., Perez, M., Wang, G., Duan, L.Y., Kot, A.C., 2019. Ntu rgb+ d 120: A large-scale benchmark for 3d human activity understanding. IEEE transactions on pattern analysis and machine intelligence 42, 2684–2701."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[12] Liu, Y., Wang, L., Wang, Y., Ma, X., Qiao, Y., 2022. Fineaction: A fine-grained video dataset for temporal action localization. IEEE transactions on image processing 31, 6937–6950."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[13] Mascaró, E.V., Ahn, H., Lee, D., 2023. Intention-conditioned longterm human egocentric action anticipation, in: Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision, pp. 6048–6057."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[14] Materzynska, J., Xiao, T., Herzig, R., Xu, H., Wang, X., Darrell, T., 2020. Something-else: Compositional action recognition with spatialtemporal interaction networks, in: Proceedings of the IEEE/CVF conference on computer vision and pattern recognition, pp. 1049– 1059."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[15] Özdel, S., Rong, Y., Albaba, B.M., Kuo, Y.L., Wang, X., Kasneci, E., 2024. Gaze-guided graph neural network for action anticipation conditioned on intention, in: Proceedings of the 2024 Symposium on Eye Tracking Research and Applications, pp. 1–9."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[16] Piergiovanni, A., Angelova, A., Toshev, A., Ryoo, M.S., 2020. Adversarial generative grammars for human activity prediction, in: European Conference on Computer Vision, Springer. pp. 507–523."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[17] Qi, S., Huang, S., Wei, P., Zhu, S.C., 2017. Predicting human activities using stochastic grammar, in: Proceedings of the IEEE International Conference on Computer Vision, pp. 1164–1172."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[18] Sener, F., Chatterjee, D., Shelepov, D., He, K., Singhania, D., Wang, R., Yao, A., 2022. Assembly101: A large-scale multi-view video dataset for understanding procedural activities, in: Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pp. 21096–21106."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[19] Todorovic, S., 2012. Human activities as stochastic kronecker graphs, in: European Conference on Computer Vision, Springer. pp. 130–143."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[20] Xu, J., Zhang, Z., Friedman, T., Liang, Y., Broeck, G., 2018. A semantic loss function for deep learning with symbolic knowledge, in: International conference on machine learning, PMLR. pp. 5502– 5511."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[21] Xu, W., Wang, J., Xie, L., He, J., Zhou, H., Wang, T., Wan, X., Chen, J., Qu, C., Chu, W., 2024. Logicmp: A neuro-symbolic approach for encoding first-order logic constraints, in: International Conference on Learning Representations, pp. 4181–4209."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[22] Yan, J., Zhang, X., Tan, C., Li, D., 2026. Skelformer: An adaptive hierarchical transformer-based approach on skeleton graphs for human action recognition in video sequences. PloS one 21, e0340390."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[23] Ye, G., Li, L., Li, K., Xiao, J., Chen, L., 2025. Zero-shot compositional action recognition with neural logic constraints, in: Proceedings of the 33rd ACM International Conference on Multimedia, pp. 3625– 3634."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[24] Zatsarynna, O., Gall, J., 2023. Action anticipation with goal consistency, in: 2023 IEEE International Conference on Image Processing (ICIP), IEEE. pp. 1630–1634."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[25] Zhu, Q., Zhang, L., Xu, Q., Liu, K., Long, C., Wang, X., 2025. Hhgt: hierarchical heterogeneous graph transformer for heterogeneous graph representation learning, in: Proceedings of the Eighteenth ACM International Conference on Web Search and Data Mining, pp. 318–326."
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                89,
+                595,
+                485,
+                620
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Compositional Benchmark Synthesis for Hierarchical Action Recognition"
+                    }
+                ]
+            },
+            "bbox": [
+                262,
+                42,
+                734,
+                58
+            ]
+        },
+        {
+            "type": "page_footer",
+            "content": {
+                "page_footer_content": [
+                    {
+                        "type": "text",
+                        "content": "Soleimani et al.: Preprint submitted to Elsevier"
+                    }
+                ]
+            },
+            "bbox": [
+                82,
+                953,
+                381,
+                967
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "Page 7 of 7"
+                    }
+                ]
+            },
+            "bbox": [
+                835,
+                953,
+                915,
+                967
+            ]
+        }
+    ]
+]

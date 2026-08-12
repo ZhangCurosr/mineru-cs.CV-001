@@ -1,0 +1,1520 @@
+[
+    {
+        "type": "text",
+        "text": "MMArt: A Multi-Perspective Multimodal Dataset for Visual Art Understanding",
+        "text_level": 1,
+        "bbox": [
+            256,
+            140,
+            745,
+            184
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Shuai Wang10, Wangyuan Ding10, Yixian Shen10, Jia-Hong Huang1,20, Stevan Rudinac10, Monika Kackovic10, Nachoem Wijnberg1,30, and Marcel Worring1",
+        "bbox": [
+            223,
+            212,
+            777,
+            258
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "1 University of Amsterdam, Amsterdam, The Netherlands",
+        "bbox": [
+            303,
+            268,
+            699,
+            284
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "{s.wang3,w.ding,y.shen,j.huang,s.rudinac,m.kackovic,",
+        "bbox": [
+            300,
+            284,
+            702,
+            299
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "n.m.wijnberg,m.worring}@uva.nl",
+        "bbox": [
+            380,
+            299,
+            620,
+            313
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "2 Amazon AGI, United States of America",
+        "bbox": [
+            361,
+            311,
+            643,
+            325
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "3 College of Business and Economics, University of Johannesburg, South Africa",
+        "bbox": [
+            235,
+            325,
+            767,
+            340
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Abstract. Recent vision-language models demonstrate impressive general visual understanding, yet their art interpretation remains shallow: they describe surface content but struggle with formal analysis, grounded historical interpretation, or affective characterization. We argue this is not only a model but also a dataset limitation. Existing art datasets are single perspective resources, where no dataset provides narrative, formal, emotional, and historical perspectives simultaneously for the same artworks. We introduce MMArt, a large-scale dataset of 74,234 WikiArt paintings, each annotated with four independently annotated perspectives plus a harmonized unified caption, produced by specialized vision-language models or human annotation and validated through complementary quality evaluations. Two complementarity analyses establish that perspectives encode genuinely distinct information. A generative analysis shows that formal analysis descriptions best preserve compositional style, and historical descriptions carry strong affective signal in reconstructed images. A discriminative retrieval analysis reveals task-asymmetry: narrative descriptions drive retrieval (R@1 = 44.0%), while formal descriptions, strongest for reconstruction, are nearly nondiscriminative at retrieval scale (R@1 = 7.8%). Leave-one-out analysis further confirms that historical descriptions are the least replaceable perspective across both tasks. Together, the two analyses establish that no single perspective suffices for all tasks, directly motivating MMArt's multi-perspective design. The dataset, code, and additional information are available at https://shuaiwang97.github.io/MMArt/.",
+        "bbox": [
+            259,
+            369,
+            741,
+            703
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Keywords: Artwork Analysis · Multi-perspective Dataset · Multimodal Reasoning · Vision-Language Models · Art Understanding",
+        "bbox": [
+            261,
+            714,
+            740,
+            743
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "1 Introduction",
+        "text_level": 2,
+        "bbox": [
+            217,
+            765,
+            375,
+            781
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Understanding a painting is not a simple act of perception. It is a layered process that draws simultaneously on visual attention [27,18,24], affective response [16,25], formal knowledge [29,4,38], and historical memory [41,37]. A viewer encountering Vermeer's Girl with a Pearl Earring4 may first register the luminous skin and direct gaze: a narrative observation. A trained eye may then notice the sfumato technique and restricted palette: a formal judgment. The same viewer may feel unease or intimacy: an emotional response. And an art historian will situate the work within the Dutch Golden Age domestic portrait tradition: a contextual interpretation. These four acts of understanding are concurrent and interacting perspectives on a single visual object.",
+        "bbox": [
+            214,
+            794,
+            787,
+            842
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "aside_text",
+        "text": "r 0011[000:06",
+        "bbox": [
+            27,
+            351,
+            66,
+            800
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "image",
+        "img_path": "images/da69130efa8356f8e0b7851d77ee5b6d010f2c54b84f605ebce218eedebd323b.jpg",
+        "image_caption": [
+            "Fig. 1. Overview of the MMArt dataset. Each painting is annotated with four sourcespecialized perspectives: Narrative and Scene Interpretation, Formal Visual Analysis, Emotional Response, and Historical and Contextual Analysis, plus a harmonized unified caption. Perspective validity is evaluated through a text-to-image reconstruction and perspective guided retrieval experiment measuring fidelity."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            222,
+            148,
+            781,
+            267
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            214,
+            388,
+            787,
+            494
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "Recent vision-language models have demonstrated impressive capabilities in general visual understanding [21,9,2,30,44,39], yet their performance on art interpretation remains shallow: they describe surface content competently but struggle to produce formal analysis, grounded historical interpretation, or affective characterization [5,43,28,40,19]. Existing computational art datasets are single-perspective resources, each capturing one interpretive dimension in isolation (Tab. 1): SemArt [12] provides iconographic and historical commentary; ArtEmis [1] covers affective response; ExpArt [14] contributes expert formal analysis for a small subset; OmniArt [34] offers broad metadata coverage but no natural-language perspectives. No existing resource provides multiple interpretive dimensions simultaneously for the same artworks. As a result, models trained on these resources learn to describe paintings, but not to interpret them in the full sense.",
+        "bbox": [
+            214,
+            496,
+            787,
+            690
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "We introduce MMArt, a large-scale multi-perspective dataset of 74,234 paintings designed to close this gap. Each painting is annotated with four independently annotated perspectives: Narrative and Scene Interpretation, Formal Visual Analysis, Emotional Response, and Historical and Contextual Analysis, plus a harmonized unified caption. A key design principle is perspective specialization: ensuring each perspective reflects genuine domain expertise rather than a single generalist model output. MMArt uses GalleryGPT [5] for formal analysis, ArtRAG [37] for historically grounded context, and ArtEmis annotationconditioned generation [1] for emotional response. Perspectives are collected independently to preserve interpretive diversity and harmonized into a unified caption through an explanation synthesis step.",
+        "bbox": [
+            214,
+            691,
+            789,
+            814
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "page_number",
+        "text": "2",
+        "bbox": [
+            217,
+            116,
+            228,
+            126
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "header",
+        "text": "S. Wang et al.",
+        "bbox": [
+            269,
+            114,
+            367,
+            128
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "page_footnote",
+        "text": "https://en.wikipedia.org/wiki/Girl\\_with\\_a\\_Pearl\\_Earring",
+        "bbox": [
+            218,
+            824,
+            661,
+            840
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            214,
+            146,
+            785,
+            191
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "We validate MMArt's multi-perspective design through two complementarity analyses probing perspective distinctiveness from opposite directions. A generative complementarity analysis tests whether each perspective recovers a distinct visual dimension: given only text, we measure which perspectives best reconstruct style, composition, and affective tone via text-to-image generation. A discriminative complementarity analysis evaluates each perspective(s) as a retrieval query against the full 74k gallery. Perspective contributions prove taskasymmetric: the narrative perspective drives retrieval $( \\mathrm { R @ 1 } = 4 4 . 0 \\% )$ , while formal descriptions, which achieve the highest generative fidelity, are nearly nondiscriminative at retrieval scale (R@1 = 7.8%). Together, they establish that no single perspective suffices for all tasks, directly motivating MMArt's multiperspective design. MMArt is designed to support perspective-conditioned model training, affective computing on visual art, knowledge-intensive art question answering, and retrieval-augmented generation tasks that current single perspective datasets cannot support simultaneously. Our contributions are:",
+        "bbox": [
+            214,
+            191,
+            787,
+            420
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "\\- Multi-Perspective Visual Art Dataset. We introduce MMArt, a largescale dataset of 74,234 WikiArt paintings each annotated with four independently generated interpretive perspectives of narrative, formal, emotional, historical, via specialized human annotation or vision-language models, and a harmonized unified caption.",
+        "bbox": [
+            225,
+            431,
+            787,
+            507
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Perspective Complementarity Analyses. We propose a two-directional evaluation framework for multi-perspective art datasets: a generative perspectiveto-painting reconstruction and a discriminative perspective-guided crossmodal retrieval, jointly probing whether perspectives encode distinct and complementary visual information.",
+        "bbox": [
+            238,
+            507,
+            815,
+            583
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "\\- Public Release. MMArt is fully open: dataset, generation and validation pipeline are publicly available to ensure reproducible research in multimedia art understanding.",
+        "bbox": [
+            225,
+            583,
+            787,
+            628
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "2 Related Work",
+        "text_level": 2,
+        "bbox": [
+            215,
+            652,
+            388,
+            669
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "We discuss related work along two key relevant dimensions: existing visual art understanding datasets and methods for multi-perspective art explanation.",
+        "bbox": [
+            214,
+            684,
+            785,
+            717
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "2.1 Visual Art Understanding Datasets",
+        "text_level": 2,
+        "bbox": [
+            215,
+            738,
+            555,
+            753
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Existing datasets for computational art understanding are predominantly singleperspective resources, each typically capturing a single interpretive dimension. SemArt [12] provides Web Gallery of Art (WGA) paintings paired with museumcatalog commentaries that blend iconographic and historical content, enabling cross-modal retrieval but offering no formal, emotional, or narrative perspective.",
+        "bbox": [
+            214,
+            765,
+            787,
+            842
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "header",
+        "text": "Abbreviated paper title",
+        "bbox": [
+            571,
+            114,
+            732,
+            128
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "page_number",
+        "text": "3",
+        "bbox": [
+            774,
+            116,
+            785,
+            127
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "ArtEmis [1] collected 439K crowd-sourced affective utterances across WikiArt paintings — the largest coverage of emotional response to art — but contains no formal, historical, or scene-level descriptions. ExpArt [14] contributes expert formal and historical explanations for approximately 3,500 artworks, while Artpedia [33] separates visual sentences from contextual ones for 2,930 paintings. ArtCaps [22] and earlier captioning datasets [31,8] target general or iconographic descriptions at smaller scale. OmniArt [34] offers the broadest coverage (432K artworks) but provides only structured metadata rather than natural-language perspectives. For visual question answering on art, AQUA [13] and ArtQuest [7] introduce benchmarks that probe factual and semantic understanding but again operate within a single question-answering register. The common limitation of these datasets is that each captures one slice of art interpretation: studying the interplay of formal analysis and affective response typically requires combining incompatible datasets with different scales, annotation conventions, and artwork populations. MMArt addresses this gap by providing four complementary perspectives narrative, formal, emotional, and historical simultaneously for the same 74,234 paintings, with a unified caption integrating four explicitly defined perspectives. Table 1 summarizes the interpretive coverage of existing datasets.",
+        "bbox": [
+            214,
+            146,
+            789,
+            421
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "table",
+        "img_path": "images/b68b1230e4e177fa62f3f9f3ada1b22a570f44503014da996f7014ccb3706d09.jpg",
+        "table_caption": [
+            "Table 1. Comparison of art understanding datasets across interpretive dimensions: Narr. = Narrative, Form. = Formal Analysis, Emot. = Emotion, Hist. = Historical Context. √ = dedicated annotation; \\~ = partial or metadata only; − = absent."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Dataset</td><td>Size</td><td></td><td>Narr. Form.</td><td>Emot.</td><td>Hist.</td><td>Unified</td></tr><tr><td>SemArt [12]</td><td>21K</td><td>√</td><td>2</td><td></td><td>√</td><td></td></tr><tr><td>ArtEmis [1]</td><td>80K</td><td></td><td>一</td><td>√</td><td>一</td><td></td></tr><tr><td>Artpedia [33]</td><td>3K</td><td>√</td><td></td><td></td><td>2</td><td></td></tr><tr><td>ExpArt [14]</td><td>3.5K</td><td></td><td>√</td><td></td><td>√</td><td></td></tr><tr><td>ArtCaps [22]</td><td>4K</td><td>√</td><td></td><td></td><td></td><td></td></tr><tr><td>OmniArt [34]</td><td>432K</td><td>一</td><td>一</td><td></td><td>2</td><td></td></tr><tr><td>MMArt (ours)</td><td>74K</td><td>√</td><td>√</td><td>√</td><td>√</td><td>√</td></tr></table>",
+        "bbox": [
+            269,
+            491,
+            732,
+            621
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "2.2 Perspective-conditioned Art Explanation",
+        "text_level": 2,
+        "bbox": [
+            215,
+            661,
+            599,
+            678
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "Prior work has addressed art explanation from individual interpretive perspectives. Bai et al. [3] come closest, generating separate content, form, and context descriptions augmented with Wikipedia knowledge retrieval. However, their framework is trained on SemArt [12], whose museum-catalog commentaries blend multiple topics without dedicated per-perspective annotation — with more than 80% of paintings missing at least one perspective. GalleryGPT [5] fine-tunes a vision-language model for formal compositional analysis on the PaintingForm dataset; ArtGPT-4 [43] targets general artistic understanding via an LLaVA adapter. Both confirm that specialized models outperform generalists on individual perspectives, yet neither combines multiple perspectives into a unified dataset. Knowledge grounding is equally critical for historical interpretation, where pure visual inference leads to frequent factual confabulation [15]. ArtRAG and VL-KGE [37,10] demonstrates that art-historical knowledge graphs substantially improve factual accuracy and interpretive depth. The key departure of MMArt from all prior work is scale and coverage: where existing resources capture one interpretive dimension independently, MMArt provides all four simultaneously for 74k paintings, enabling the cross-perspective complementarity analyses that form the core of our validation.",
+        "bbox": [
+            214,
+            689,
+            789,
+            842
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "page_number",
+        "text": "4",
+        "bbox": [
+            217,
+            116,
+            228,
+            126
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "header",
+        "text": "S. Wang et al.",
+        "bbox": [
+            269,
+            114,
+            367,
+            128
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            214,
+            146,
+            787,
+            268
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "image",
+        "img_path": "images/6472a0dc04003b71be2b5e411a2472111671cd8ca0f071fcd8f4102b873f8b04.jpg",
+        "image_caption": [
+            "Fig. 2. Overview of the MMArt dataset construction pipeline. Each painting is processed through four specialized vision-language models to produce independently annotated perspectives (narrative, formal, emotional, historical), which are then harmonized into a unified caption."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            228,
+            297,
+            769,
+            468
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "3 MMArt Dataset Construction",
+        "text_level": 2,
+        "bbox": [
+            215,
+            585,
+            544,
+            602
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "The four-perspective architecture is grounded in Panofsky's framework [25] for layered art interpretation, which distinguishes factual description, formal analysis, and symbolic meaning as distinct and non-reducible acts of understanding. We operationalize this as four computational perspectives: narrative description, which supports scene-level retrieval and VQA; formal analysis, which enables style transfer and compositional modeling; emotional response, which grounds affective computing research; and historical context, which supports knowledgeintensive generation and RAG benchmarks. Each perspective targets a distinct downstream task family that no existing single-perspective dataset can support simultaneously — this is the core design rationale for MMArt. MMArt is built on WikiArt⁵, a publicly accessible repository that has served as the foundation for numerous computational art understanding benchmarks [11,1,38]. It covers approximately 75k artworks across 20 style categories spanning the 15th through the 21st century, each associated with structured metadata including title, artist name, production date, style, and school. The remainder of this section describes the four-perspective architecture, generation pipeline, and quality control procedures.",
+        "bbox": [
+            214,
+            618,
+            787,
+            818
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "header",
+        "text": "Abbreviated paper title",
+        "bbox": [
+            571,
+            114,
+            732,
+            128
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "page_number",
+        "text": "5",
+        "bbox": [
+            774,
+            116,
+            785,
+            127
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "page_footnote",
+        "text": "5https://www.wikiart.org",
+        "bbox": [
+            218,
+            824,
+            415,
+            840
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            214,
+            146,
+            787,
+            207
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "3.1 Four-Perspective Architecture",
+        "text_level": 2,
+        "bbox": [
+            215,
+            238,
+            511,
+            252
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Rather than generating a single descriptive caption, MMArt decomposes each artwork's annotation into four independently generated perspectives and one unified description:",
+        "bbox": [
+            214,
+            271,
+            787,
+            316
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "equation",
+        "img_path": "images/7e620ba5282193b0e7fbe25f6bda06868d9bb7fbe6423da4810a76616671bb17.jpg",
+        "text": "$$\nP ( i ) = \\{ e ^ { \\mathrm { n a r r } } , \\ e ^ { \\mathrm { f o r m } } , \\ e ^ { \\mathrm { e m o t } } , \\ e ^ { \\mathrm { h i s t } } e ^ { \\mathrm { u n i f } } \\} ,\\tag{1}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            359,
+            335,
+            642,
+            354
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "where i denotes a painting and each component captures a distinct interpretive dimension. Narrative and Scene Interpretation $( e ^ { n a r r } ) .$ : A factual account of the depicted entities, figures, scene composition, and visual elements as they appear in the image. This perspective answers what is shown, without invoking symbolic or historical interpretation. Formal Visual Analysis $( e ^ { f o r m } )$ : An analysis of the painting's compositional structure, including spatial organization, color palette, brushwork, use of light and shadow, and visual rhythm. This perspective corresponds to the vocabulary of formal art criticism, focusing on how the work is constructed. Emotional Response $( e ^ { e m o t } )$ : An affective characterization of the painting's perceived mood, atmosphere, and psychological tone by a viewer. This perspective captures the phenomenological dimension of art encounter—what it feels like to look at the work. Historical and Contextual Analysis $( e ^ { h i s t } )$ : An arthistorical interpretation situating the work within its cultural context: movement affiliation, iconographic codes, period-specific symbolic meaning, and relevant biographical or historical circumstances. This perspective answers why the work looks and means as it does.",
+        "bbox": [
+            214,
+            367,
+            787,
+            608
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "In addition to the four independent perspectives, each painting receives a unified caption $e ^ { \\mathrm { u n i f } }$ produced by harmonizing all four into a single coherent description. This unified caption serves as a strong single-text baseline in benchmark evaluations.",
+        "bbox": [
+            214,
+            609,
+            787,
+            671
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "3.2 Annotation Pipeline",
+        "text_level": 2,
+        "bbox": [
+            215,
+            700,
+            429,
+            717
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "A central design principle of MMArt is perspective specialization: each perspective is generated by a model chosen for its demonstrated strength in the corresponding interpretive task. This is a deliberate data construction strategy, not a fragmentation of interpretation. Generating perspectives independently with specialized models ensures each dimension reflects genuine domain expertise, providing the clean per-perspective supervision that joint multi-perspective VLM training requires.",
+        "bbox": [
+            214,
+            733,
+            787,
+            842
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "page_number",
+        "text": "6",
+        "bbox": [
+            217,
+            116,
+            228,
+            126
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "header",
+        "text": "S. Wang et al.",
+        "bbox": [
+            269,
+            114,
+            367,
+            128
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Narrative perspective. Qwen3-VL-8B-Instruct [2] is selected for its broad visual pretraining that minimizes art-domain bias, keeping output anchored in observable scene content. Narrative captions are generated from the painting image and metadata alone using a prompt $\\left( \\pi _ { \\mathrm { n a r r } } \\right)$ that explicitly prohibits symbolic, historical, or emotional reference, constraining output to visually observable entities, figures, and spatial relationships.",
+        "bbox": [
+            214,
+            145,
+            787,
+            239
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "Formal analysis. Formal perspectives are generated using specialized GalleryGPT a LLaVA-7B [21] model fine-tuned on its PaintingForm dataset specifically for formal art analysis. No general-purpose VLM matches GalleryGPT's adherence to formal criticism vocabulary on this task. Its supervised fine-tuning on expert-annotated PaintingForm data makes it the only publicly available model purpose-built for this perspective. The prompt $( \\pi _ { \\mathrm { f o r m } }$ )instructs the model to analyze compositional structure, palette, brushwork, and spatial organization while suppressing narrative or interpretive content.",
+        "bbox": [
+            214,
+            251,
+            790,
+            375
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "Emotional response. Emotional perspectives are generated using Qwen3-VL-8B-Instruct [2], conditioned on the painting image together with human-written affective utterances from ArtEmis [1,23], a large-scale emotion dataset collected over the same WikiArt corpus, providing on average 5.7 authentic human responses per painting. Unlike ArtEmis, which provides fragmented affective utterances, MMArt synthesizes these viewer responses into coherent emotional characterizations aligned with narrative, formal, and historical perspectives for the same paintings. This ensures that affective grounding draws on real viewer reactions to the exact paintings in MMArt rather than out-of-domain sentiment signals. Qwen3-VL is chosen here because its instruction-following capability allows reliable conditioning on the ArtEmis utterances as affective anchors. The prompt $\\left( \\pi _ { \\mathrm { e m o t } } \\right)$ instructs the model to characterize perceived mood and psychological tone grounded in the provided human utterances, without describing scene or historical context.",
+        "bbox": [
+            214,
+            387,
+            789,
+            601
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "Historical and contextual analysis. Historical perspectives are generated using ArtRAG [37] augmented with structured art-historical context retrieved via its art context knowledge documents. For each artwork, the top-5 context documents covering artist biography, movement affiliation, and relevant historical events are retrieved by embedding ranking and concatenated as generation context. This retrieval-augmented approach is chosen over direct VLM generation because historical and biographical facts are not recoverable from visual appearance alone [37]. Instead, grounding generation in verified external knowledge substantially reduces factual error. The prompt $\\left( \\pi _ { \\mathrm { h i s t } } \\right)$ instructs the model to situate the work within its cultural and art-historical context using the retrieved documents, explicitly suppressing scene description and subjective affect.",
+        "bbox": [
+            214,
+            613,
+            787,
+            782
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "Unified caption. Given the four independently generated perspectives $\\{ e ^ { \\mathrm { n a r r } } , e ^ { \\mathrm { f o r m } }$ $e ^ { \\mathrm { e m o t } } , e ^ { \\mathrm { h i s t } } \\}$ , a unified caption $e ^ { \\mathrm { u n i f } }$ is produced via Qwen3-8B [2] using a harmonization prompt that synthesizes the four perspectives into a single coherent, non-redundant description of approximately 150 words. The unified caption preserves interpretive breadth while eliminating cross-perspective repetition, and is designed for downstream tasks such as retrieval and language-model grounding where a holistic single-text representation is preferred. Formally, the generation of perspective v for painting w with image I, metadata M, and optional retrieved context $s$ is:",
+        "bbox": [
+            215,
+            792,
+            794,
+            842
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "header",
+        "text": "Abbreviated paper title",
+        "bbox": [
+            571,
+            114,
+            733,
+            128
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "page_number",
+        "text": "7",
+        "bbox": [
+            774,
+            116,
+            785,
+            127
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            214,
+            146,
+            787,
+            238
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "equation",
+        "img_path": "images/4ddc2e5db4709b6f0603ee0a2b00ed7eaa847f488f90b3bade15dfc1758f71e4.jpg",
+        "text": "$$\ne ^ { v } = \\mathrm { V L M } _ { v } ( I , ~ M , ~ S , ~ \\pi _ { v } ) ,\\tag{2}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            400,
+            251,
+            601,
+            267
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "where $\\pi _ { v }$ is a perspective-specific prompt template designed to enforce interpretive focus and minimize cross-perspective overlap. All perspectives are generated with model's default decoding temperature and max\\_tokens = 256. Full prompt templates for all five generation steps are provided in the supplementary website.",
+        "bbox": [
+            214,
+            272,
+            787,
+            349
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "3.3 Quality Control and Data Validation",
+        "text_level": 2,
+        "bbox": [
+            215,
+            368,
+            565,
+            385
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "Text quality filtering. We apply four automated cleaning steps to the raw generated output. (i) Script contamination: perspectives containing non-Latin characters are filtered out, as these indicate generation failure in which the model switches output language rather than describing the painting. (ii) Length fltering: e length under 30 words are nulled and filtered out as uninformative, and explanations exceeding 150 words is truncated at the nearest sentence boundary to remove generation runoff without discarding content. (iii) Duplicate detection: exact-duplicate descriptions values across paintings are nulled, as these indicate model collapse on visually similar inputs. The full dataset retains all 75,336 paintings with nulls preserved; the experiment-ready subset requires all four perspectives to be non-null, yielding 74,234 paintings. A core claim of MMArt is that the four perspectives encode distinct information rather than stylistic paraphrases of each other. We validate this at two levels.",
+        "bbox": [
+            214,
+            391,
+            787,
+            590
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "Semantic distinctiveness. To quantify the degree of overlap between perspectives for the same painting, we compute pairwise cosine similarity between perspective embeddings using CLIP ViT-L/14 text encodings on a random sample of 1,000 paintings. Table 2 reports the mean pairwise similarity between all perspective pairs. All pairs exhibit low cosine similarity (<0.55), with the narrative-formal pair showing the greatest divergence and narrative-historical showing the most overlap, consistent with the shared factual grounding of both perspectives. These results confirm that the perspectives are semantically non-redundant.",
+        "bbox": [
+            214,
+            599,
+            787,
+            723
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "LLM-as-judge evaluation. We evaluate all five perspectives using Gemma-3- 27B [35] as an independent vision-language judge on 300 randomly stratified paintings. As a model from a different family than all generation models used in dataset construction, Gemma-3-27B mitigates self-evaluation bias. Each perspective is rated on three dimensions (1–5 scale): perspective fidelity (if the text focuses on the correct aspect), factual accuracy (if the content is correct, assessed against both the painting image and metadata), and depth (if it provides substantive detail beyond generic description). Each perspective is rated independently in a single zero-shot pass; the rating prompt instructs the judge to assess only the specified dimension without reference to other perspectives. The full judge prompt is provided in the supplementary materials. Table 3 reports the results. Three patterns are notable. First, $e ^ { \\mathrm { e m o t } }$ achieves near-perfect fidelity (4.99±0.12) with the lowest variance of any perspective, reflecting the accurate information of ArtEmis affective labels. Second, $e ^ { \\mathrm { f o r m } }$ receives lower scores, especially in depth (3.03±0.74), reflecting the broader valid explanation space of formal analysis, where composition, brushwork, palette, and style can be emphasized in different ways. This does not imply low utility: later reconstruction results show that formal descriptions best preserve style and composition. Third, $e ^ { \\mathrm { u n i f i e d } }$ achieves the highest depth score (4.08±0.43) of any perspective, confirming that the harmonization step produces captions with richer substantive detail than any single-perspective source. Figure. 3 reports the data distribution of MMArt.",
+        "bbox": [
+            214,
+            733,
+            787,
+            842
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "page_number",
+        "text": "8",
+        "bbox": [
+            217,
+            116,
+            228,
+            127
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "header",
+        "text": "S. Wang et al.",
+        "bbox": [
+            269,
+            114,
+            367,
+            128
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "table",
+        "img_path": "images/be671422889990d1b1cd7200265545e6e25c731ddec9bad2364d1c5efd603559.jpg",
+        "table_caption": [
+            "Table 2. Mean pairwise CLIP-text cosine similarity across perspectives. Lower indicate greater semantic distinctiveness."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td> $e ^ { \\mathrm { n a r r } }$ </td><td> $e ^ { \\mathrm { f o r m } }$ </td><td> $e ^ { \\mathrm { e m o t } }$ </td><td> $e ^ { \\mathrm { h i s t } }$ </td></tr><tr><td> $e ^ { \\mathrm { n a r r } }$ </td><td>1.000.41</td><td>0.480.52</td><td rowspan=\"4\"></td></tr><tr><td> $e ^ { \\mathrm { f o r m } }$ </td><td>0.41 1.00</td><td>0.43 0.44</td></tr><tr><td> $e ^ { \\mathrm { e m o t } }$ </td><td>0.480.43</td><td>1.000.46</td></tr><tr><td> $e ^ { \\mathrm { h i s t } }$ </td><td>0.52 0.44</td><td>0.461.00</td></tr></table>",
+        "bbox": [
+            410,
+            165,
+            591,
+            244
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "table",
+        "img_path": "images/8a0680a70dab8f1f70a8883767097be794fde19a070ea4a14a4c9bb4c768da02.jpg",
+        "table_caption": [
+            "Table 3. LLM-as-judge quality ratings (1-5 scale, mean±std.)"
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Perspective Fidelity Accuracy</td><td></td><td></td><td>Depth</td></tr><tr><td>Narrative</td><td> $4 . 4 9 { \\pm } 0 . 8 0 $ </td><td> $4 . 3 3 { \\pm } 0 . 9 5 $ </td><td> $3 . 7 7 { \\pm } 0 . 4 5$ </td></tr><tr><td>Formal</td><td> $3 . 7 0 { \\pm } 1 . 1 7$ </td><td> $3 . 6 2 { \\pm } 1 . 3 2 $ </td><td> $3 . 0 3 { \\pm } 0 . 7 4 $ </td></tr><tr><td>Emotional</td><td> $4 . 9 9 { \\pm } 0 . 1 2 $ </td><td> $4 . 4 1 { \\pm } 0 . 7 1 $ </td><td> $3 . 9 8 { \\pm } 0 . 1 7 $ </td></tr><tr><td>Historical</td><td> $4 . 8 6 { \\pm } 0 . 4 2$ </td><td> $4 . 2 8 { \\pm } 0 . 7 6 $ </td><td> $3 . 7 8 { \\pm } 0 . 4 3$ </td></tr><tr><td>Unified</td><td> $4 . 6 4 { \\pm } 0 . 6 8$ </td><td> $4 . 1 3 { \\pm } 1 . 0 4 $ </td><td> $4 . 0 8 { \\pm } 0 . 4 3$ </td></tr></table>",
+        "bbox": [
+            331,
+            258,
+            671,
+            354
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            214,
+            368,
+            787,
+            597
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "Ethical Considerations and License. MMArt is built entirely from WikiArt, a publicly accessible repository of artworks whose copyright has expired or which have been made available for educational use. The dataset contains no personal data, private images, or crowd-sourced human annotations beyond the published ArtEmis dataset [1], which was collected under institutional review. All generated perspectives describe artworks, not individuals. No licence terms of the source materials are violated. MMArt is released under the Creative Commons Attribution 4.0 International license (CC BY 4.0) for academic and research use.",
+        "bbox": [
+            214,
+            608,
+            787,
+            731
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "4 Perspective Complementarity Analyses",
+        "text_level": 2,
+        "bbox": [
+            215,
+            750,
+            632,
+            768
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "Having established that the four perspectives are semantically non-redundant in Section 3.3, a deeper question remains: Do they contribute differently across tasks? A perspective may encode distinct information yet still be uninformative for a particular downstream application. We introduce a two-directional analysis framework to probe precisely this: whether each perspective's utility is task-asymmetric. Both analyses evaluate nine conditions: four singles $( e ^ { \\mathrm { n a r r } }$ ， $e ^ { \\mathrm { f o r m } } , \\ e ^ { \\mathrm { e m o t } } , \\ e ^ { \\mathrm { h i s t } } )$ , four leave-one-out triples (each omitting one perspective), and the unified caption $e ^ { \\mathrm { u n i f } }$ . Conditions are evaluated on the same stratified 1,000 painting samples.",
+        "bbox": [
+            214,
+            779,
+            787,
+            842
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "header",
+        "text": "Abbreviated paper title",
+        "bbox": [
+            571,
+            114,
+            733,
+            128
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "page_number",
+        "text": "9",
+        "bbox": [
+            774,
+            114,
+            785,
+            127
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "chart",
+        "img_path": "images/88c12a75a97395d4af334ca5ef0c5841563781d9abe74e009b9d5e71754f4d04.jpg",
+        "content": "",
+        "chart_caption": [
+            "Fig. 3. Top: Characteristic vocabularies for different perspectives, using TF-IDF weighted word clouds. Bottom: Chronological distribution and volume of art styles."
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            225,
+            147,
+            779,
+            410
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            214,
+            458,
+            785,
+            535
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "4.1 Generative and Discriminative Evaluation",
+        "text_level": 2,
+        "bbox": [
+            215,
+            558,
+            607,
+            571
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "We designed two-directional analysis framework for the experiment. The generative analysis investigates whether a perspective can reconstruct a painting, which probing what visual information each perspective encodes. We use reconstruction not as an artwork restoration task, but as a diagnostic probe of which visual compositional, and affective cues each textual perspective preserves. Given text from one or more perspectives without the original image, a text-to-image model generates a reconstruction of the original painting. Multi-perspective conditions are first synthesized into a single coherent \\~80-word prompt using Qwen3-8B, ensuring all conditions enter the image generator in the same text format so that differences in fidelity are attributable to perspective content rather than formatting. Two text-to-image models including FLUX.2-Klein-4B [6] and Qwen-Image-2512 [42] are used to confirm that findings are model-agnostic. Reconstruction fidelity is measured against the original painting across three complementary metrics: (9)",
+        "bbox": [
+            214,
+            582,
+            787,
+            794
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "equation",
+        "img_path": "images/03275772ff592a06be26c71c52e251d989a3213d6675dd2dbc7d838daf82f28a.jpg",
+        "text": "$$\n\\mathcal { F } ( w , \\hat { w } ) = \\big ( \\delta _ { \\mathrm { s t y l e } } , ~ \\delta _ { \\mathrm { c o m p } } , ~ \\delta _ { \\mathrm { e m o t } } \\big ) ,\\tag{3}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            380,
+            786,
+            619,
+            804
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "where $\\delta _ { \\mathrm { s t y l e } }$ is CLIP ViT-L/14 [26] cosine similarity and $\\delta _ { \\mathrm { c o m p } }$ is DINOv3- vitl16-pretrain-lvd1689m embedding cosine similarity. The two metrics are complementary by design: CLIP's image-text contrastive training makes it sensitive to global style and semantic content, while DINOv3's self-supervised imageonly training yields representations more attuned to local spatial structure and compositional layout [32]. Together they capture different visual dimensions of reconstruction fidelity that a single metric would conflate [36]. $\\delta _ { \\mathrm { e m o t } }$ is CLIP zero-shot emotion agreement, measuring the proportion of paintings for which the regenerated image and the original share the same top-1 ArtEmis emotion label.",
+        "bbox": [
+            214,
+            809,
+            785,
+            840
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "page_number",
+        "text": "10",
+        "bbox": [
+            217,
+            114,
+            236,
+            127
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "header",
+        "text": "S. Wang et al.",
+        "bbox": [
+            269,
+            114,
+            367,
+            128
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "chart",
+        "img_path": "images/b45e34c689d3c7a450299e60fc2e6b280a3b8bc1bb80ac687678debceb718849.jpg",
+        "content": "",
+        "chart_caption": [],
+        "chart_footnote": [],
+        "bbox": [
+            222,
+            146,
+            401,
+            291
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "chart",
+        "img_path": "images/fc677657695b32cb8ec85067d77a87c7074a218d8b86ea1a49c2e8f1a5d6624e.jpg",
+        "content": "",
+        "chart_caption": [],
+        "chart_footnote": [],
+        "bbox": [
+            411,
+            146,
+            593,
+            301
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "chart",
+        "img_path": "images/243570eeb8f7c1d17490b6489c3dab0bc9b9bc03a223088ef2f5dca1640e9660.jpg",
+        "content": "",
+        "chart_caption": [
+            "Fig. 4. Reconstruction fidelity across nine perspective conditions for FLUX.2-Klein (blue) and Qwen-Image (red). Shaded regions separate singles, leave-one-out triples, and the full four-perspective condition. Error bars show ±1 standard deviation."
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            602,
+            146,
+            782,
+            292
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            214,
+            366,
+            787,
+            487
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "The discriminative direction asks whether a perspective can identify a painting among all MMArt candidates, probing how unique the encoded information is. A perspective that reconstructs well may still fail to discriminate, and vice versa; only together do the two directions establish genuine complementarity. We embed all 74,234 MMArt paintings as a fixed gallery using Qwen3- VL-Embedding-2B [20] and Jina-CLIP-v2 [17], two architecturally distinct embedding models, to confirm that findings are model-agnostic. Given a textual perspective as a query, we evaluate description to painting retrieval on the same stratified 1,000-painting sample and nine perspective conditions. Retrieval performance is measured by Recall at k (R@k for $k \\in \\{ 1 , 5 , 1 0 \\} ,$ ), Precision at k (P@k for $k \\in \\{ 1 , 5 , 1 0 \\} )$ and NDCG, Mean Reciprocal Rank (MRR), all computed over the full 74k painting gallery.",
+        "bbox": [
+            214,
+            489,
+            787,
+            671
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "Painting Reconstruction Analysis Results. Figure 4 reports reconstruction fidelity across all nine conditions for image generators. The unified perspective condition $e ^ { \\mathrm { u n i f } }$ outperforms all single perspectives on both CLIP style similarity and DINOv3 composition, confirming that combining perspectives yields richer visual grounding than any individual caption. Among singles, $e ^ { \\mathrm { f o r m } }$ achieves the highest CLIP fidelity, while FEH leads on emotion agreement, indicating that $e ^ { \\mathrm { n a r r } }$ contributes less to affective tone than the remaining perspectives. Leave-one-out analysis confirms that $e ^ { \\mathrm { h i s t } }$ is the hardest perspective to replace, contributing the largest marginal gain across all three metrics. Together, these results show that each perspective recovers a distinct subset of fidelity dimensions, and reconstruction improves as perspectives are combined.",
+        "bbox": [
+            214,
+            674,
+            787,
+            842
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "header",
+        "text": "Abbreviated paper title",
+        "bbox": [
+            573,
+            114,
+            732,
+            128
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "page_number",
+        "text": "11",
+        "bbox": [
+            767,
+            116,
+            784,
+            127
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "chart",
+        "img_path": "images/c0f15070eb6c186d61a485544a9793bdee68fde9c529903fea1705c837fd9953.jpg",
+        "content": "",
+        "chart_caption": [
+            "Fig. 5. Description to painting retrieval performance across perspective conditions from the full MMArt gallery."
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            222,
+            148,
+            777,
+            424
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Perspective-Guided Painting Retrieval Results Figure 5 reports retrieval performance across all nine conditions. $e ^ { \\mathrm { n a r r } }$ is the strongest single perspective $( \\mathrm { R @ 1 } = 4 4 . 0 \\%$ 2 $\\mathrm { M R R } = 0 . 5 3 7 )$ , while $e ^ { \\mathrm { h i s t } }$ is nearly non-functional as a retrieval query $( \\mathrm { R @ 1 = 2 . 2 \\% }$ $\\mathrm { M R R } = 0 . 0 3 7 )$",
+        "bbox": [
+            214,
+            474,
+            787,
+            536
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "This does not contradict its reconstruction value: movement, period, and biographical cues are shared across many paintings and are therefore weak identifiers, but they provide complementary priors for style, composition, and $\\mathrm { a f - }$ fective tone. Interestingly, this ordering is the inverse of the regeneration results in Figure 4, where $e ^ { \\mathrm { f o r m } }$ achieves the highest CLIP fidelity and $e ^ { \\mathrm { n a r r } }$ the lowest. Leave-one-out analysis further reveals that $e ^ { \\mathrm { h i s t } }$ is the least replaceable perspective across all three fidelity metrics, whileenarr's contribution to style and composition is partially redundant when the other three perspectives are present. The unified caption eunified (R@1 = 45.1%, MRR = 0.548) marginally outperforms $e ^ { \\mathrm { n a r r } }$ by incorporating complementary scene detail from all four perspectives.",
+        "bbox": [
+            214,
+            536,
+            789,
+            703
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "4.2 Qualitative examples",
+        "text_level": 2,
+        "bbox": [
+            215,
+            723,
+            437,
+            739
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "The Rembrandt example shows a complementary pattern for portraiture. Narrative and emotional prompts recover a flower-crowned female figure and the contemplative mood, but they only partially preserve the Baroque portrait structure. The formal prompt more strongly recovers chiaroscuro, the three-quarter pose, and the sitter's staged presentation, although it changes identity-specific details. The historical prompt introduces Dutch Golden Age portrait conventions but drifts toward a male sitter, illustrating that historical context alone can be discriminative at the level of period and genre while remaining underspecified for the depicted subject. The all-perspective reconstruction integrates the floral iconography, dark background, portrait lighting, and period cues most effectively Together, these cases support the central claim that the four perspectives encode complementary information: narrative anchors depicted content, emotional language captures mood, formal analysis preserves composition and technique, and historical context supplies movement- and period-level priors.",
+        "bbox": [
+            214,
+            748,
+            787,
+            842
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "page_number",
+        "text": "12",
+        "bbox": [
+            217,
+            114,
+            236,
+            127
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "header",
+        "text": "S. Wang et al.",
+        "bbox": [
+            269,
+            114,
+            367,
+            128
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "image",
+        "img_path": "images/ac5efdbd0902a2e380300554cc4c1205d177bed335b9d934dfecb1fba7a6f274.jpg",
+        "image_caption": [],
+        "image_footnote": [],
+        "bbox": [
+            217,
+            142,
+            784,
+            275
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "image",
+        "img_path": "images/8c3f8c63425c2e2a25a82e64ce7709bb5f4c0fb9dba4bc5ed2e630b8a4badc98.jpg",
+        "image_caption": [
+            "Fig. 6. Claude Monet, Fishing Boats off Pourville (Impressionism). The loose brushwork and coastal atmosphere are partially recovered under N and E, but the formal description best preserves the painting's hazy light and compositional structure. NFEH produces the most faithful reconstruction, capturing both style and scene.",
+            "Fig. 7. Rembrandt, Saskia as Flora (1634, Baroque). The portrait character is strongly recovered under F, especially in chiaroscuro and three-quarter pose, and under NFEH. The historical perspective drifts toward a generic Dutch Golden Age portrait, while E captures the contemplative tone. NFEH integrates all cues into the closest match to the original."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            217,
+            354,
+            784,
+            488
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            214,
+            598,
+            787,
+            722
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "4.3 Human Evaluation",
+        "text_level": 2,
+        "bbox": [
+            215,
+            741,
+            419,
+            756
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "To complement automatic metrics and LLM-as-judge scores, we conducted a blinded pairwise human evaluation against a strong general-purpose languagemodel baseline. We have nince annotators participated included researchers with graduate-level training in visual cultural and art understanding. For each trial, annotators saw the painting image and two anonymized descriptions: one from",
+        "bbox": [
+            214,
+            763,
+            789,
+            842
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "header",
+        "text": "Abbreviated paper title",
+        "bbox": [
+            573,
+            114,
+            732,
+            128
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "page_number",
+        "text": "13",
+        "bbox": [
+            767,
+            116,
+            785,
+            127
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "MMArt and one generated by Claude 4.5 Sonnet. The two descriptions were displayed with randomly assigned $\\mathrm { A } / \\mathrm { B }$ labels, and annotators were not told which system produced either description. For each criterion, annotators selected one of three options: MMArt description is better, Claude description is better, or Equal / Cannot decide. We evaluated 25 paintings across the four criteria, yielding 100 image-perspective pairs. Nine annotators participated, and each pair received at least three independent judgments, resulting in 312 total pairwise judgments.",
+        "bbox": [
+            214,
+            146,
+            787,
+            267
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "Figure 8 shows that annotators consistently preferred MMArt descriptions over the Claude 4.5 Sonnet baseline. Across all 312 judgments, MMArt was selected in 208 cases (67%), compared with 87 selections for Claude (28%) and 17 ties (5%). The preference holds for every perspective: MMArt wins 64% of narrative judgments, 72% of formal-analysis judgments, 71% of emotional-response judgments, and 60% of historical-context judgments. The strongest margins occur for formal and emotional descriptions, suggesting that MMArt's perspectivespecific construction produces descriptions that better match the intended interpretive criterion. Historical context is the most competitive category, but MMArt remains preferred, indicating that retrieval-grounded historical descriptions provide useful contextual specificity beyond a general-purpose baseline.",
+        "bbox": [
+            214,
+            267,
+            787,
+            434
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "chart",
+        "img_path": "images/cf245a9175933383acbfe4079ea8076f9a802fe7f303cb867048d091c29c34d7.jpg",
+        "content": "",
+        "chart_caption": [
+            "\\* p<0.05 \\*\\* p<0.01 \\*\\*\\* p<0.001 | Significance tested on win rate excluding ties. All percentages are out of total judgements (sums to 100%). 25 paintings, 9 annotators, 312 total judgements."
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            245,
+            449,
+            596,
+            613
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "chart",
+        "img_path": "images/8259f0b444c59b26cc95499d4617f90745eaef4f1882a06605604ab45809f2ac.jpg",
+        "content": "",
+        "chart_caption": [
+            "Fig. 8. Human evaluation results. Left: pairwise win counts per evaluation perspective, with MMArt in blue, Claude 4.5 Sonnet in yellow, and ties in gray. Win rates and significance p-values are shown above each MMArt bar. Right: overall win rate."
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            611,
+            444,
+            751,
+            608
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "5 Conclusion",
+        "text_level": 2,
+        "bbox": [
+            215,
+            707,
+            359,
+            723
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "We presented ${ \\mathrm { M M A r t } } ,$ a large-scale dataset of 74,234 WikiArt paintings, each annotated with four independently generated interpretive perspectives and a harmonized unified caption. Two complementarity analyses establish that perspective utility is task-asymmetric. No single perspective suffices across reconstruction, retrieval, and generation, and this directly shows the effectiveness of MMArt's multi-perspective design. Leave-one-out analysis shows that historical descriptions are the least replaceable perspective across style, composition, and affective tone. The MMArt further enable perspective-conditioned VLM training, affective computing research, and knowledge-intensive art question answering and retrieval-augmented generation. Dataset, generation scripts, and pre-computed embeddings are publicly released to support reproducible research across all these applications.",
+        "bbox": [
+            214,
+            733,
+            789,
+            842
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "page_number",
+        "text": "14",
+        "bbox": [
+            217,
+            114,
+            236,
+            127
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "header",
+        "text": "S. Wang et al.",
+        "bbox": [
+            269,
+            114,
+            367,
+            128
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            214,
+            146,
+            787,
+            223
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "References",
+        "text_level": 2,
+        "bbox": [
+            215,
+            241,
+            325,
+            258
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "1. Achlioptas, P., Ovsjanikov, M., Haydarov, K., Elhoseiny, M., Guibas, L.: ArtEmis: Affective Language for Visual Art. In: 2021 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) (2021)",
+            "2. Bai, S., Cai, Y., Chen, R., Chen, K., Chen, X., Cheng, Z., Deng, L., Ding, W., Gao, C., Ge, C., Ge, W., Guo, Z., Huang, Q., Huang, J., Huang, F., Hui, B., Jiang, S., Li, Z., Li, M., Li, M., Li, K., Lin, Z., Lin, J., Liu, X., Liu, J., Liu, C., Liu, Y., Liu, D., Liu, S., Lu, D., Luo, R., Lv, C., Men, R., Meng, L., Ren, X., Ren, X., Song, S., Sun, Y., Tang, J., Tu, J., Wan, J., Wang, P., Wang, P., Wang, Q., Wang, Y., Xie, T., Xu, Y., Xu, H., Xu, J., Yang, Z., Yang, M., Yang, J., Yang, A., Yu, B., Zhang, F., Zhang, H., Zhang, X., Zheng, B., Zhong, H., Zhou, J., Zhou, F., Zhou, J., Zhu, Y., Zhu, K.: Qwen3-vl technical report (2025), https://arxiv.org/abs/2511.21631",
+            "3. Bai, Z., Nakashima, Y., García, N.: Explain me the painting: Multi-topic knowledgeable art description generation. 2021 IEEE/CVF International Conference on Computer Vision (ICCV) pp. 5402–5412 (2021), https://api.semanticscholar. org/CorpusID:237490413",
+            "4. Baxandall, M.: Painting and experience in fifteenth century Italy: a primer in the social history of pictorial style. Oxford Paperbacks (1988)",
+            "5. Bin, Y., Shi, W., Ding, Y., Hu, Z., Wang, Z., Yang, Y., Ng, S.K., Shen, H.T.: Gallerygpt: Analyzing paintings with large multimodal models. In: Proceedings of the 32nd ACM International Conference on Multimedia. (2024)",
+            "6. Black Forest Labs: Flux.2: Analyzing and enhancing the latent space of flux – representation comparison. https://bfl.ai/research/representation-comparison (2025)",
+            "7. Bleidt, T., Eslami, S., De Melo, G.: ArtQuest: Countering Hidden Language Biases in ArtVQA. In: 2024 IEEE/CVF Winter Conference on Applications of Computer Vision (WACV). Waikoloa, HI, USA (2024)",
+            "8. Cetinic, E.: Iconographic image captioning for artworks. In: Del Bimbo, A., Cucchiara, R., Sclaroff, S., Farinella, G.M., Mei, T., Bertini, M., Escalante, H.J., Vezzani, R. (eds.) Pattern Recognition. ICPR International Workshops and Challenges (2021)",
+            "9. Chen, L., Li, J., Dong, X., Zhang, P., He, C., Wang, J., Zhao, F., Lin, D.: Sharegpt4v: Improving large multi-modal models with better captions. In: European Conference on Computer Vision (2024)",
+            "10. Efthymiou, A., Rudinac, S., Kackovic, M., Wijnberg, N., Worring, M.: Vlkge: Vision-language models meet knowledge graph embeddings. arXiv preprint arXiv:2603.02435 (2026)",
+            "11. Efthymiou, A., Rudinac, S., Kackovic, M., Worring, M., Wijnberg, N.: Graph neural networks for knowledge enhanced visual representation of paintings. In: Proceedings of the 29th ACM International Conference on Multimedia (2021)",
+            "12. Garcia, N., Vogiatzis, G.: How to read paintings: Semantic art understanding with multi-modal retrieval. In: Proceedings of the European Conference in Computer Vision Workshops (2018)"
+        ],
+        "bbox": [
+            223,
+            268,
+            785,
+            309
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "header",
+        "text": "Abbreviated paper title",
+        "bbox": [
+            571,
+            114,
+            733,
+            128
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "page_number",
+        "text": "15",
+        "bbox": [
+            766,
+            116,
+            785,
+            127
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "13. Garcia, N., Ye, C., Liu, Z., Hu, Q., Otani, M., Chu, C., Nakashima, Y., Mitamura, T.: A Dataset and Baselines for Visual Question Answering on Art (Aug 2020), http://arxiv.org/abs/2008.12520",
+            "14. Hayashi, K., Sakai, Y., Kamigaito, H., Hayashi, K., Watanabe, T.: Towards artwork explanation in large-scale vision language models. In: Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics",
+            "15. Ji, Z., Lee, N., Frieske, R., Yu, T., Su, D., Xu, Y., Ishii, E., Bang, Y.J., Madotto, A., Fung, P.: Survey of hallucination in natural language generation. ACM Comput. Surv. (Mar 2023)",
+            "16. Karayev, S., Trentacoste, M., Han, H., Agarwala, A., Darrell, T., Hertzmann, A., Winnemoeller, H.: Recognizing image style. In: Proceedings of the British Machine Vision Conference. BMVA Press (2014)",
+            "17. Koukounas, A., Mastrapas, G., Eslami, S., Wang, B., Akram, M.K., Günther, M., Mohr, I., Sturua, S., Wang, N., Xiao, H.: jina-clip-v2: Multilingual multimodal embeddings for text and images (2025), https://arxiv.org/abs/2412.08802",
+            "18. Li, D., Wang, S., Zou, J., Tian, C., Nieuwburg, E., Sun, F., Kanoulas, E.: Paint4poem: A dataset for artistic visualization of classical chinese poems (2021), https://arxiv.org/abs/2109.11682",
+            "19. Li, J., Wang, S., Rudinac, S., Osseyran, A.: High-performance computing in healthcare: An automatic literature analysis perspective. Journal of Big Data 11(1), 61 (2024)",
+            "20. Li, M., Zhang, Y., Long, D., Chen, K., Song, S., Bai, S., Yang, Z., Xie, P., Yang, A., Liu, D., Zhou, J., Lin, J.: Qwen3-vl-embedding and qwen3-vl-reranker: A unified framework for state-of-the-art multimodal retrieval and ranking (2026), https: //arxiv.org/abs/2601.04720",
+            "21. Liu, H., Li, C., Wu, Q., Lee, Y.J.: Visual instruction tuning. In: Advances in Neural Information Processing Systems. vol. 36 (2023)",
+            "22. Lu, Y., Guo, C., Dai, X., Wang, F.: Artcap: A dataset for image captioning of fine art paintings. IEEE Transactions on Computational Social Systems (2024)",
+            "23. Mohamed, Y., Khan, F.F., Haydarov, K., Elhoseiny, M.: It is okay to not be okay: Overcoming emotional bias in affective image captioning by contrastive data collection. In: Proceedings of the IEEE/CVF conference on computer vision and pattern recognition. pp. 21263–21272 (2022)",
+            "24. van Noord, N., Garcia, N.: The iconicity of the generated image (2025), https: //arxiv.org/abs/2509.16473",
+            "25. Panofsky, E.: Meaning in the Visual Arts. University of Chicago Press (1955), https://books.google.nl/books?id=Qsa00QEACAAJ",
+            "26. Radford, A., Kim, J.W., Hallacy, C., Ramesh, A., Goh, G., Agarwal, S., Sastry, G., Askell, A., Mishkin, P., Clark, J., Krueger, G., Sutskever, I.: Learning transferable visual models from natural language supervision (2021), https://arxiv.org/abs/ 2103.00020",
+            "27. Riccio, P., Doh, M., Höltgen, B., Garcia, N., van Noord, N.: Gender artifacts from art history to text-to-image generation (2026), https://arxiv.org/abs/ 2606.05829",
+            "28. Riccio, P., Khan, S., Schaerf, L., Wang, S., Liu, T., Efthymiou, A., Garcia, N., van Noord, N.: Understanding Art & Culture, p. 2901–2903. Association for Computing Machinery (2026)",
+            "29. Schaerf, L., Purificato, A., Riccio, P., Silvestri, F., Garcia, N.: Art beyond semantics: Sheaf-informed contrastive learning for multi-relational representations (2026), https://arxiv.org/abs/2607.16321"
+        ],
+        "bbox": [
+            215,
+            147,
+            785,
+            189
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "page_number",
+        "text": "16",
+        "bbox": [
+            217,
+            116,
+            236,
+            127
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "header",
+        "text": "S. Wang et al.",
+        "bbox": [
+            269,
+            114,
+            369,
+            128
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "30. Shen, Y., Yang, Z., Bi, Q., Wang, C., Wang, S., Huang, J.H., Floros, G., Tiwari, P., Pathania, A.: Spectral-progressive thought flow for lightweight multimodal reasoning(2026), https://arxiv.org/abs/2606.02842",
+            "31. Sheng, S., Moens, M.F.: Generating captions for images of ancient artworks. In: Proceedings of the 27th ACM International Conference on Multimedia (2019)",
+            "32. Siméoni, O., Vo, H.V., Seitzer, M., Baldassarre, F., Oquab, M., Jose, C., Khalidov, V., Szafraniec, M., Yi, S., Ramamonjisoa, M., Massa, F., Haziza, D., Wehrstedt, L., Wang, J., Darcet, T., Moutakanni, T., Sentana, L., Roberts, C., Vedaldi, A., Tolan, J., Brandt, J., Couprie, C., Mairal, J., Jégou, H., Labatut, P., Bojanowski, P.: Dinov3 (2025), https://arxiv.org/abs/2508.10104",
+            "33. Stefanini, M., Cornia, M., Baraldi, L., Corsini, M., Cucchiara, R.: Artpedia: A new visual-semantic dataset with visual and contextual sentences in the artistic domain. In: Image Analysis and Processing – ICIAP 2019 (2019)",
+            "34. Strezoski, G., Worring, M.: Omniart: A large-scale artistic benchmark. ACM Trans. Multimedia Comput. Commun. Appl. (2018)",
+            "35. Team, G.: Gemma 3 technical report (2025), https://arxiv.org/abs/2503.19786",
+            "36. Tong, S., Liu, Z., Zhai, Y., Ma, Y., LeCun, Y., Xie, S.: Eyes wide shut? exploring the visual shortcomings of multimodal llms. In: Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR). pp. 9568–9578 (June 2024)",
+            "37. Wang, S., Najdenkoska, I., Zhu, H., Rudinac, S., Kackovic, M., Wijnberg, N., Worring, M.: Artrag: Retrieval-augmented generation with structured context for visual art understanding. In: Proceedings of the 33rd ACM International Conference on Multimedia. MM '25 (2025)",
+            "38. Wang, S., Shen, J., Efthymiou, A., Rudinac, S., Kackovic, M., Wijnberg, N., Worring, M.: Prototype-enhanced hypergraph learning for heterogeneous information networks. In: MultiMedia Modeling (2024)",
+            "39. Wang, S., Verhagen, P., Zhuge, J., Shulev, V.: Replication study of DECAF: Generating fair synthetic data using causally-aware generative networks. In: ML Reproducibility Challenge 2021 (Fall Edition) (2022), https://openreview.net/forum? id=SVx46hzmhRK",
+            "40. Wang, S., Zhang, D.W., Huang, J.H., Rudinac, S., Kackovic, M., Wijnberg, N., Worring, M.: Ada-hgnn: Adaptive sampling for scalable hypergraph neural networks(2024), https://arxiv.org/abs/2405.13372",
+            "41. Wang, S., Zhu, H., Huang, J., Shen, Y., Zeng, C., Rudinac, S., Kackovic, M., Wijnberg, N., Worring, M.: A-mar: Agent-based multimodal art retrieval for fine-grained artwork understanding. In: Proceedings of the 2026 International Conference on Multimedia Retrieval. pp. 2246–2255 (2026)",
+            "42. Wu, C., Li, J., Zhou, J., Lin, J., Gao, K., Yan, K., ming Yin, S., Bai, S., Xu, X., Chen, Y., Chen, Y., Tang, Z., Zhang, Z., Wang, Z., Yang, A., Yu, B., Cheng, C., Liu, D., Li, D., Zhang, H., Meng, H., Wei, H., Ni, J., Chen, K., Cao, K., Peng, L., Qu, L., Wu, M., Wang, P., Yu, S., Wen, T., Feng, W., Xu, X., Wang, Y., Zhang, Y., Zhu, Y., Wu, Y., Cai, Y., Liu, Z.: Qwen-image technical report (2025), https://arxiv.org/abs/2508.02324",
+            "43. Yuan, Z., Xue, H., Wang, X., Liu, Y., Zhao, Z., Wang, K.: Artgpt-4: Towards artistic-understanding large vision-language models with enhanced adapter. In: Proceedings of conference on language modelling (2024)",
+            "44. Zeng, C., Jiang, Y., Gao, G., Wang, S., Danier, D., Zhu, B., Rudinac, S., Bull, D., Zhang, F.: Sam3-litetext: An anatomical study of the sam3 text encoder for efficient vision-language segmentation. In: Proceedings of the 2026 International Conference on Multimedia Retrieval. pp. 1147–1156 (2026)"
+        ],
+        "bbox": [
+            215,
+            147,
+            785,
+            189
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "header",
+        "text": "Abbreviated paper title",
+        "bbox": [
+            571,
+            114,
+            733,
+            128
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "page_number",
+        "text": "17",
+        "bbox": [
+            766,
+            116,
+            785,
+            127
+        ],
+        "page_idx": 16
+    }
+]
