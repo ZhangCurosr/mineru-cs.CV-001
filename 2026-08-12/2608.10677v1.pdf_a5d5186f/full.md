@@ -1,0 +1,260 @@
+# Chartography: A Benchmark for Professional Chart Understanding
+
+Suhaas Garre, Chris Mutty, Sushant Mehta, Edwin Chen Surge AI<sup>\*</sup>
+
+## Abstract
+
+Professionals across medicine, engineering, finance, manufacturing, and the sciences often make consequential decisions from charts. Existing chart benchmarks do not sufficiently measure this ability: they are dominated by bar, line, and pie formats, rely on shorter reasoning chains, and are nearing saturation, with frontier models already scoring 80–90%. We introduce Chartography, a benchmark of 100 tasks that pair charts drawn from professional practice, in domain-specific formats that standard chart benchmarks rarely include, with questions written by professionals who read these charts for a living and independently verified by three additional experts. In an evaluation of 30 frontier-model configurations (20 scored trials per task), the best configuration reaches only 45.0% mean pass@1; the remainder span 9.0–39.5%. Failures concentrate in visual perception: models can miss nuanced features, misread values along sparsely labeled axes, mishandle projected 3D geometry, and violate domain conventions encoded in the chart. We release all tasks, images, provenance metadata, and evaluation code.<sup>1</sup>
+
+## 1 Introduction
+
+In many professional settings, the primary source of quantitative information is often a chart rather than a structured table. An oncologist evaluates treatment options from Kaplan-Meier survival curves; a structural engineer determines a design wind speed from a contour map; a trader reads price history from candlestick charts. The inputs these decisions require are typically not printed on the figure: obtaining them requires interpolating between contour lines, tracing a flow through a dense Sankey diagram, or reading a coordinate from a projected three-dimensional surface.
+
+AI systems deployed in these settings face the same visual interface. A model supporting clinical decisions, or a financial analysis must estimate values from a rendered figure without access to the underlying data, and it must apply the conventions that govern how a chart’s numbers may be used: which percentile curve to follow, when extrapolation beyond a plotted range is inappropriate, and how much precision a figure supports.
+
+Existing chart-understanding benchmarks measure little of this ability, and the portion they do measure is very close to saturation. ChartQA [8] was largely solved by the Claude 3.5 Sonnet generation of models; frontier models now score around 90% on CharXiv [16] and above 80% on ChartMuseum [14], and many remaining errors trace to defects in benchmark ground truth rather than meaningful model failures (§2). These benchmarks rely predominantly on simple formats (bar, line, pie, scatter), one- or two-step questions, and constrained answer formats such as multiple choice that reduce the answer space, and their grading is anchored to printed labels or uniform percentage tolerances rather than calibrated visual estimation.
+
+We introduce Chartography, a benchmark for professional chart understanding, consisting of 100 tasks across 12 professional domain labels. Each task includes a chart used in professional practice with a question representative of that domain: determining the design wind speed for a building, calculating a child’s height percentile, sizing an outlet-protection apron, or identifying out-of-control process readings. Each task was authored by a practitioner in the relevant field, accompanied by an explicit walkthrough of the visual and computational steps leading to the answer, and independently verified by three additional domain experts. Numerical answers carry expert-set acceptable ranges calibrated to the precision each chart supports, so grading rewards accurate chart reading within the limits of reasonable visual estimation.
+
+![](images/61752bec6ceee5989ccdbad922787133ca62c780f1a835a0199790913f9bee98.jpg)  
+Figure 1: Three of the 100 charts in Chartography: a Moody diagram, a three-dimensional surface plot, and a candlestick chart. More charts with their with their tasks are shown in §5.5.
+
+## Our contributions:
+
+1. Task definition and dataset. We define professional chart understanding as answering a question drawn from professional practice using only the chart and the domain knowledge a practitioner brings to it, graded against a prespecified target. We instantiate this with 100 tasks, each authored by a domain expert, independently verified by three additional experts, and screened for difficulty against frontier models (§3).
+
+2. An expert-calibrated grading protocol. Golden answers carry per-item acceptable ranges set by the authoring expert and confirmed in review, replacing blanket numeric tolerances; grading is all-or-nothing across answer parts (§3.3, §4.2).
+
+3. Evaluating all frontier model configurations. The best configuration scores 45.0% mean pass@1 over 20 trials per task; elevated reasoning effort helps in 11 of 12 matched pairs but inconsistently (§5). The same models exceed 80–90% on other chart benchmarks.
+
+4. Audited release. We release the dataset and evaluation harness with composition, provenance, and image statistics metadata, so that reported results can be independently verified (§3.2).
+
+## 2 Related Work
+
+Synthetic and template-based chart QA. FigureQA, DVQA, and PlotQA established large-scale chart evaluation with synthetic charts and templated questions [3, 4, 10], isolating operations such as retrieval, comparison, and arithmetic. ChartBench extended controlled breadth across chart families and showed large degradation when printed data labels are removed: models lean on labels rather than visual estimation [17]. These datasets’ rendering and language distributions differ from the irregular figures of professional work.
+
+Natural and diverse chart QA. ChartQA paired real bar, line, and pie charts with human-authored and machine-generated questions [8]; frontier models now score 88–90%+. Its successor ChartQAPro spans 1,341 charts from 99 sources (including dashboards and infographics) and 1,948 questions with answer-type-specific relaxed-accuracy grading [9]; Claude Sonnet 3.5 already reached 55.8% at release, and frontier models have climbed well past that since (Table 1). ChartMuseum contributes 1,162 manually authored questions over 928 real-world charts, deliberately separating visual from textual reasoning: models reached ∼90% on textual reasoning while lagging on visual, with the best release-time result near 63%; current frontier models exceed 80% [14].
+
+Scientific figures and professional documents. CharXiv drew 2,323 figures from arXiv papers and exposed a descriptive-vs-reasoning gap for the models of its era (GPT-4o: 84.5% descriptive, 47.1% reasoning), graded by an LLM judge [16]; frontier models now score around 90% (Table 1). ParseBench evaluates chart-to-table preservation during full-page PDF parsing for finance and insurance documents, scored by deterministic point matching; it measures extraction rather than interpretation and covers bar, line, pie, and combination formats [18]. Our own GDP.pdf benchmark evaluates grounded multimodal reasoning over complete professional PDF documents [2]; Chartography instead isolates a single chart image and a decision-shaped question, separating chart-reading competence from document navigation and retrieval.
+
+Chart derendering. ChartOCR, MatCha, and DePlot recover structured data or programs from charts before downstream reasoning [5–7]. Derendering is useful but neither necessary nor sufficient here: contour geometry, visual intersections, projected surfaces, and chart-family conventions can be decisive even when a data table is recoverable.
+
+Expert-authored evaluation. Chartography uses domain experts rather than crowdworkers or LLM generation to construct evaluation items, similar to other benchmarks including GPQA [12] and Humanity’s Last Exam [11], and Surge’s other expert-sourced benchmarks: Riemann-Bench for frontier mathematics [1], and GDP.pdf [2].
+
+## 3 The Chartography Benchmark
+
+Chartography is built around four design principles: charts from real professional domains, questions written by real professionals, visual reasoning beyond label lookup, and grading calibrated to each chart. Formally, each item pairs a chart image $x _ { i }$ and a free-form question $q _ { i }$ with a golden answer $a _ { i }$ (including any acceptable range), a domain label $d _ { i } ,$ a source type $s _ { i }$ (online-sourced vs. expert-created), and a provenance field $u _ { i } .$ . A model receives $( q _ { i } , x _ { i } )$ in a single user message and answers free-form; “free-form” describes the response interface, not the endpoint: every accepted task has a prespecified target and acceptance criterion. The intended answer must be recoverable from the chart plus the standing knowledge of a domain specialist; no external data, browsing, or tools are permitted.
+
+## 3.1 Task construction
+
+Expert authoring. Every task was written by a working professional in the relevant field (clinicians, engineers, scientists, and financial professionals). Authors selected or created a chart from their professional domain and wrote a question of the kind they answer in their own work. Each submission was required to include:
+
+## 1. the intended answer;
+
+<table><tr><td></td><td>Chartography</td><td>ChartQAPro</td><td>ChartMuseum</td><td>CharXiv</td><td>ParseBench</td></tr><tr><td>Scale (charts / questions) Chart types</td><td>100 / 100</td><td>1,341 / 1,948</td><td>928 / 1,162</td><td>2,323 / 11,615</td><td>568 pages / 4,864 checks Bar, line, pie,</td></tr><tr><td></td><td>Kaplan-Meier, candlesticks, contour maps, Sankeys, Bode plots, other domain-native formats</td><td>Standard bar &amp; line, dashboards, infographics</td><td>Standard types (bar, line, scatter, maps), infographics</td><td>Academic figures from arXiv papers</td><td>combo charts in PDF pages</td></tr><tr><td>Domains</td><td>manufacturing, engineering, science</td><td>Healthcare, finance, General news &amp; General web web topics</td><td>content</td><td>Academic science (8 arXiv areas)</td><td>Finance &amp; insurance PDFs</td></tr><tr><td>Expert- authored</td><td>Yes: domain experts, independently verified 3×</td><td>No: author-VLM collaboration, manually reviewed</td><td>No: research team</td><td>No: grad students + LLM</td><td>No: LLM- generated checks, human-verified</td></tr><tr><td>Requires domain expertise</td><td>Yes: niche formats, No formulas, conventions</td><td></td><td>No</td><td>No</td><td>No: extraction only</td></tr><tr><td>Grading</td><td>All-parts binary LLM judge; expert per-item ranges</td><td>Relaxed accuracy by answer type (blanket ±5%</td><td>Binary LLM judge; la- beled/comparison values answers</td><td>Binary LLM judge; labeled</td><td>Deterministic point matching (default ±1%)</td></tr><tr><td>Top model (no tools)</td><td>45% (GPT-5.6 Sol)</td><td>numeric) 72%†</td><td>86%†</td><td>93%†</td><td>65%†</td></tr></table>
+
+Table 1: Chartography compared with recent chart-understanding benchmarks. Scale, construction, and grading descriptions follow the cited papers [9, 14, 16, 18], not later live leaderboards. <sup>†</sup>Top-model figures for prior benchmarks are as reported in our launch analysis of current frontier models (July 2026); see https://surgehq.ai/blog/chartography.
+
+2. a complete walkthrough of the visual and computational steps, listing each value read off the chart and each calculation performed; and
+
+3. for visually estimated quantities, an acceptable range based on what a professional can reasonably extract from the chart.
+
+Open-ended questions were disallowed: every prompt must admit an objectively checkable answer. Questions may assume specialist domain knowledge (formulas, conventions, chart anatomy) but must not require data beyond the chart; and the answer must depend on the supplied image, so a question answerable from the prompt alone is not allowed.
+
+Pilot rounds. Task development was shaped by two structured pilot rounds of 25 submissions each, whose failure modes (open-ended sub-questions, missing acceptable ranges, insufficiently detailed walkthroughs) drove revisions to the authoring instructions and the addition of a required “answer logic” field in which
+
+<table><tr><td>Domain label</td><td>n</td><td>Onl.</td><td>Cre.</td><td>Rng.</td></tr><tr><td>STEM - General</td><td>19</td><td>15</td><td>4</td><td>13</td></tr><tr><td>Manufacturing / Supply Chain</td><td>14</td><td>12</td><td>2</td><td>2</td></tr><tr><td>STEM - General Engineering</td><td>11</td><td>10</td><td>1</td><td>6</td></tr><tr><td>STEM - Mechanical Eng.</td><td>10</td><td>8</td><td>2</td><td>7</td></tr><tr><td>Finance / Investing</td><td>10</td><td>10</td><td>0</td><td>4</td></tr><tr><td>Healthcare</td><td>10</td><td>8</td><td>2</td><td>4</td></tr><tr><td>STEM - Electrical Eng.</td><td>9</td><td>6</td><td>3</td><td>5</td></tr><tr><td>STEM - Chemistry</td><td>6</td><td>2</td><td>4</td><td>3</td></tr><tr><td>STEM - Civil/Env. Eng.</td><td>4</td><td>3</td><td>1</td><td>4</td></tr><tr><td>STEM - Geosciences</td><td>4</td><td>4</td><td>0</td><td>2</td></tr><tr><td>STEM - Biology</td><td>2</td><td>2</td><td>0</td><td>0</td></tr><tr><td>STEM - Physics</td><td>1</td><td>1</td><td>0</td><td>1</td></tr><tr><td>Total</td><td>100</td><td>81</td><td>19</td><td>51</td></tr></table>
+
+<table><tr><td>Release profile</td><td>Value 100</td></tr><tr><td>Task-image records Byte-distinct image files Answers with explicit range Answers with multiple ranges Numeric answer, exact Categorical answer</td><td>98 51 21 25</td></tr><tr><td>Prompt words, median (range) Answer words, median (range) Prompts specifying rounding</td><td>24 33.5 (5–163) 7 (1–78)</td></tr><tr><td>Image formats Landscape / portrait Median image area (MP)</td><td>31 80 PNG, 18 JPG, 2 WebP 80 / 20 0.66 990 (310–4,721)</td></tr></table>
+
+Table 2: Chartography composition. Left: tasks per released domain label; “Onl./Cre.” = online-sourced / expert-created charts; “Rng.” = golden answers containing an explicit acceptable range. Right: release profile (answer-type counts are automated classifications of golden-answer strings).
+
+authors show their calculations.
+
+Independent review. Each task was independently verified by three additional domain experts, who validated the intended reading, revised any unclear wording, and checked the acceptable range. Tasks were either revised or rejected when the prompt, figure, or target did not support a single defensible grading decision.
+
+Adversarial difficulty screening. During curation, candidate tasks were run against frontier models, and a task was retained only if it elicited a meaningful failure in at least one frontier model. This screening guarantees difficulty, and ensures that Chartography measures performance on an challenging set of realistic professional use-cases.
+
+## 3.2 Dataset composition and release
+
+Chartography contains 100 task–image records. Table 2 reports composition by domain label and a profile of the public release; all statistics below are reproducible from the released files. Chart formats include Kaplan–Meier curves, pediatric growth charts, candlestick and financial market charts, contour maps, wind roses, Sankey and material-flow diagrams, Bode plots and engineering response curves, atmospheric backtrajectories, failure-criterion and design charts, control charts, phase diagrams, and three-dimensional surface plots. Chart type is not a released task-level annotation, so this list is illustrative rather than a set of quantitative strata.
+
+Reasoning demands. Across formats, the tasks involve a recurring set of operations, such as: estimating values against sparsely labeled axes, interpolating between contours and curves, following thin or overlapping traces, mapping legend entries to the correct marks, interpreting projected geometry et cetera. A single task may require several of these, so the benchmark also targets compositional visual reasoning rather than a mutually exclusive operational taxonomy.
+
+Provenance. Eighty-one charts were sourced online and 19 were created by task authors. Every onlinesourced row carries a provenance field. The most common sources are Wikimedia projects (15), NIST publications (9), and the CDC (6), alongside NASA, BTS, and other public repositories.
+
+## 3.3 Grading design: expert-calibrated ranges
+
+Visual estimation requires chart-specific precision. A wind-speed contour map may support an answer of 150 mph only to within 140–150 mph, while a pediatric growth chart with fine gridlines supports a ±0.5 cm reading. A universal percentage tolerance cannot capture this difference, which can depend on factors such as gridline density, curve thickness, and figure resolution. In Chartography, 51 of 100 golden answers carry at least one acceptable range set by the task’s expert author and confirmed in review (21 carry more than one, for multi-quantity questions), while 25 are exact numeric values (typically printed or derivable without estimation) and 24 are categorical (an item, a set, or a ranking). Multi-part answers are graded all-or-nothing, since a professional interpretation that drops an important component should not be considered successful. Grading against these targets uses a model judge constrained by the expert-written golden answers and acceptable ranges (§4.2), following evidence that LLM judges agree well with humans when the target is well specified [19]; we report mean pass@1 over repeated trials (§4.3).
+
+## 4 Evaluation Methodology
+
+## 4.1 Protocol
+
+Each model receives a single user message containing the task prompt followed by the chart image inline: no system prompt, no few-shot examples, no image normalization, and no tools (no code execution, cropping, or zooming). The model responds free-form. We run 20 trials per task, yielding 2,000 graded trials per configuration. The harness is built on Inspect AI [15]. Generation uses Inspect’s generic generate() solver, so temperature, sampling seed, maximum output length, provider-side image processing, and reasoning controls are properties of the run configuration rather than the task definition. We evaluate 30 configurations of 18 frontier models across eight developers, including, where available, both the default and a maximumreasoning-effort configuration of the same model.
+
+## 4.2 Grading
+
+Responses are graded by Gemini 3.5 Flash, the harness’s default LLM judge, in a single model-graded call per trial. The judge receives the question, the golden answer and the model’s response, but never the chart, so it adjudicates answer equivalence rather than re-solving the task. The key judging rules are as follows:
+
+• Final-answer extraction. The judge grades the model’s last committed answer, ignoring reasoning, hedging, and formatting.
+
+• Numeric answers. Correct if the value falls within the expert range (inclusive); where no range exists, the value must match the golden answer exactly, allowing trivial rounding and equivalent notation. More-precise values inside the range are not penalized.
+
+• Categorical answers. The predicted set must match the golden set exactly: every required item present, none added. Order matters only if the prompt requests a ranking.
+
+• Multi-part answers. All-or-nothing.
+
+• Unanswerable claims. Declaring the question unanswerable is incorrect unless the golden answer is itself “cannot be determined.”
+
+The judge returns structured JSON with a binary score and a rationale per criterion; a trial passes only if every returned criterion scores 1. Malformed judge output is retried up to four times, after which the trial would be excluded from aggregation as unscored. In the launch evaluation, no trial exhausted retries: all 2,000 responses per configuration received scores.
+
+Judge validity. Two design choices help limit judge errors: the judge never sees the chart (so it cannot substitute its own visual reading for the expert target), and golden answers specify acceptable ranges explicitly (so equivalence is usually mechanical). The judge is itself an evaluated configuration; Gemini 3.5 Flash’s leaderboard row is therefore a self-judging condition.
+
+## 4.3 Metric
+
+Let $r _ { m i t } \in \{ 0 , 1 \}$ be the judge verdict for configuration m on task $i \in \{ 1 , \ldots , N \}$ and trial $t \in \{ 1 , \ldots , T \}$ , with $N { = } 1 0 0$ and $T { = } 2 0$ . The reported score is mean pass@1,
+
+$$
+\widehat { S } _ { m } = \frac { 1 0 0 } { N T } \sum _ { i = 1 } ^ { N } \sum _ { t = 1 } ^ { T } r _ { m i t } \quad ( \% ) ,\tag{1}
+$$
+
+i.e., the fraction of all graded trials passed. Because every task received the same number of scored trials, the per-task mean of means coincides with this global mean. The harness also optionally computes pass@k and pass^k metrics.
+
+## 5 Results
+
+## 5.1 Main results
+
+Table 3 reports mean pass@1 for all 30 frontier model configurations in the launch snapshot (July 2026) [13]. The best configuration, GPT-5.6 Sol at maximum reasoning effort, scores 45.0%; even the strongest configuration fails a majority of graded trials. Nine of 30 configurations score below 15%, and every model family scores far below its published results on other chart benchmarks (Table 1). Ranks are ordinal positions in the public display: equal one-decimal scores are ties at the reported precision, and entries whose 95% confidence intervals overlap should not be read as occupying distinct ranks.
+
+## 5.2 Effect of reasoning effort
+
+Twelve model families appear at both a default and an elevated reasoning setting (Table 4). Eleven of the twelve score higher at the elevated setting; the median uplift is +4.5 percentage points, ranging from +15.5pp (GPT-5.4) and +10.0pp (GPT-5.6 Luna) down to +0.8pp (Muse Spark 1.1) and −0.6pp (Grok 4.5, where high reasoning underperforms default). The dispersion is itself informative: where the binding constraint is visual perception rather than reasoning depth, additional deliberation over a wrong reading cannot repair it. Six configurations (Gemini 3.5 Flash, Gemini 3.1 Pro, Qwen 3.5 Plus, Kimi K2.5, Kimi K2.6, Mistral Large 3) have no matched pair and are excluded.
+
+## 5.3 Test-time compute
+
+Figure 2 plots score against cost per trial and against generated tokens per trial. The following observations follow: the Pareto frontier is steep at the low end (Gemini 3.5 Flash reaches 35.9% at a fraction of the cost of most competitors), then flattens: moving from roughly 40% to 45% multiplies cost per trial severalfold. Second, several models generate substantially more tokens without commensurate accuracy (some maximum-reasoning configurations emit 20,000–30,000+ tokens per trial yet trail cheaper configurations). Third, in qualitative trace review, longer reasoning often preserves an incorrect visual observation rather than correcting it: the model re-derives consequences of a misread value instead of re-reading the chart.
+
+<table><tr><td>Rank</td><td>Model (configuration)</td><td>Developer</td><td>Pass@1 (%) ± 95% CI</td></tr><tr><td>1</td><td>GPT-5.6 Sol (max reasoning)</td><td>OpenAI</td><td>45.0 ± 1.1</td></tr><tr><td>2</td><td>GPT-5.6 Sol (default)</td><td>OpenAI</td><td>39.5 ± 1.2</td></tr><tr><td>3</td><td>Gemini 3.5 Flash</td><td>Google</td><td>35.9 ± 1.3</td></tr><tr><td>4</td><td>Claude Fable 5 (adaptive/max)</td><td>Anthropic</td><td>34.8 ± 1.0</td></tr><tr><td>5</td><td>GPT-5.6 Terra (max reasoning)</td><td>OpenAI</td><td> $3 4 . 0 \pm 1 . 2$ </td></tr><tr><td>6</td><td>GPT-5.6 Luna (max reasoning)</td><td>OpenAI</td><td> $3 1 . 4 \pm 1 . 2$ </td></tr><tr><td>7</td><td>GPT-5.5 (xHigh reasoning)</td><td>OpenAI</td><td> $3 1 . 0 \pm 1 . 2$ </td></tr><tr><td>8</td><td>GPT-5.4 (xHigh reasoning)</td><td>OpenAI</td><td> $2 9 . 6 \pm 1 . 1$ </td></tr><tr><td>9</td><td>Claude Fable 5 (default)</td><td>Anthropic</td><td> $2 9 . 5 \pm 1 . 1$ </td></tr><tr><td>10</td><td>GPT-5.5 (default)</td><td>OpenAI</td><td> $2 8 . 5 \pm 1 . 3$ </td></tr><tr><td>11</td><td>GPT-5.6 Terra (default)</td><td>OpenAI</td><td> $2 6 . 6 \pm 1 . 3$ </td></tr><tr><td>12</td><td>Gemini 3.1 Pro</td><td>Google</td><td> $2 6 . 1 \pm 1 . 3$ </td></tr><tr><td>13</td><td>Muse Spark 1.1 (xHigh reasoning)</td><td>Meta</td><td> $2 4 . 4 \pm 1 . 4$ </td></tr><tr><td>14</td><td>Muse Spark 1.1 (default)</td><td>Meta</td><td> $2 3 . 6 \pm 1 . 4$ </td></tr><tr><td>15</td><td>GPT-5.6 Luna (default)</td><td>OpenAI</td><td>21.4 ± 1.2</td></tr><tr><td>16</td><td>Grok 4.5 (default)</td><td>xAI</td><td>17.3 ± 1.1</td></tr><tr><td>17</td><td>Grok 4.5 (high reasoning)</td><td>XAI</td><td>16.7 ± 1.1</td></tr><tr><td>18</td><td>Claude Sonnet 5 (adaptive/max)</td><td>Anthropic</td><td>16.6 ± 1.1</td></tr><tr><td>19</td><td>Claude Opus 4.7 (adaptive/max)</td><td>Anthropic</td><td>16.5 ± 1.0</td></tr><tr><td>20</td><td>Claude Opus 4.8 (adaptive/max)</td><td>Anthropic</td><td> $1 5 . 9 \pm 1 . 0$ </td></tr><tr><td>21</td><td>Qwen 3.5 Plus</td><td>Alibaba</td><td> $1 5 . 9 \pm 1 . 2$ </td></tr><tr><td>22</td><td>GPT-5.4 (default)</td><td>OpenAI</td><td> $1 4 . 1 \pm 0 . 9$ </td></tr><tr><td>23</td><td>Claude Opus 4.7 (default)</td><td>Anthropic</td><td> $1 3 . 6 \pm 0 . 9$ </td></tr><tr><td>24</td><td>Grok 4.3 (high reasoning)</td><td>XAI</td><td> $1 2 . 9 \pm 1 . 1$ </td></tr><tr><td>25</td><td>Kimi K2.5</td><td>Moonshot AI</td><td> $1 2 . 6 \pm 1 . 1$ </td></tr><tr><td>26</td><td>Claude Sonnet 5 (default)</td><td>Anthropic</td><td> $1 2 . 2 \pm 1 . 1$ </td></tr><tr><td>27</td><td>Kimi K2.6</td><td>Moonshot AI</td><td> $1 2 . 2 \pm 1 . 1$ </td></tr><tr><td>28</td><td>Grok 4.3 (default)</td><td>XAI</td><td> $1 1 . 7 \pm 1 . 0$ </td></tr><tr><td>29</td><td>Claude Opus 4.8 (default)</td><td>Anthropic</td><td> $1 1 . 3 \pm { 1 . 0 }$ </td></tr><tr><td>30</td><td>Mistral Large 3</td><td>Mistral</td><td> $9 . 0 \pm 1 . 0$ </td></tr></table>
+
+Table 3: Chartography launch leaderboard: mean pass@1 across 100 tasks × 20 trials with 95% confidence intervals, no tools; frozen snapshot of July 2026 (the live leaderboard may add entries). Ranks are display positions; equal one-decimal scores are ties.
+
+<table><tr><td>Family</td><td>Default</td><td>Elevated</td><td>Δ</td><td>Family</td><td>Default</td><td>Elevated</td><td>Δ</td></tr><tr><td>GPT-5.6 Sol</td><td>39.5</td><td>45.0</td><td>+5.5</td><td>GPT-5.6 Terra</td><td>26.6</td><td>34.0</td><td>+7.4</td></tr><tr><td>GPT-5.6 Luna</td><td>21.4</td><td>31.4</td><td>+10.0</td><td>GPT-5.5</td><td>28.5</td><td>31.0</td><td>+2.5</td></tr><tr><td>GPT-5.4</td><td>14.1</td><td>29.6</td><td>+15.5</td><td>Claude Fable 5</td><td>29.5</td><td>34.8</td><td>+5.3</td></tr><tr><td>Claude Sonnet 5</td><td>12.2</td><td>16.6</td><td>+4.4</td><td>Claude Opus 4.7</td><td>13.6</td><td>16.5</td><td>+2.9</td></tr><tr><td>Claude Opus 4.8</td><td>11.3</td><td>15.9</td><td>+4.6</td><td>Grok 4.3</td><td>11.7</td><td>12.9</td><td>+1.2</td></tr><tr><td>Grok 4.5</td><td>17.3</td><td>16.7</td><td>-0.6</td><td>Muse Spark 1.1</td><td>23.6</td><td>24.4</td><td>+0.8</td></tr></table>
+
+Table 4: Default vs. high-reasoning comparisons (mean pass@1, %; ∆ in percentage points, computed from displayed one-decimal scores). “Elevated” is each provider’s higher-effort label (max, xHigh, high, or adaptive/max).
+
+![](images/9c29dd122aedc1bd1ebfd696b6931fbbf55ab896a58c2897c1e23cc601abd720.jpg)  
+(a) Score vs. cost per trial (USD).
+
+![](images/4cabcb30bdace717a98483ee27513aa4e66999f5657353c665dea8d7fd41cddd.jpg)  
+(b) Score vs. generated tokens per trial.  
+Figure 2: Mean pass@1 versus inference cost (left) and generated tokens (right); ringed markers lie on the Pareto frontier (dashed).
+
+## 5.4 Failure Modes
+
+Analyzing failed trajectories across the leaderboard, most failures fall into a few recurring categories.
+
+Missed visual elements. Thin, faint, or overlapping features disappear from the model’s reading of the chart. In one Sankey task, every evaluated model identified the largest flow into a sector and missed the three thinner flows beside it; every model failed the task.
+
+Right feature, incorrect value. Models frequently select the correct curve, contour, or trace, then misjudge its position: reading a peak two gridlines too low, assigning a location to the neighboring contour band, following the correct percentile curve to a misread intersection, or confusing one nearby axis label in an otherwise correct calculation. In the growth-chart example of §5.5, one frontier model followed the correct 50th-percentile curve and still reported 101.5 cm for a value of approximately 101.0 cm. Candidate mechanisms include choosing the wrong tick interval, treating a nonlinear scale as linear, snapping to a nearby printed label, and reporting unjustified precision.
+
+Complex geometry. Three-dimensional surface plots produced some of the lowest scores in the benchmark. Answering requires reasoning in the plotted coordinate system rather than treating apparent screen distance as data-space distance; no model used the projected gridlines that make such plots readable to trained humans, and answers scattered around the truth accordingly.
+
+Domain conventions. Professional charts encode rules that are never stated in the prompt. Asked to size a riprap apron for a flow below the plotted range of the relevant pipe-diameter curve, standard practice is to use the curve’s lowest plotted value; many models extrapolated beyond the chart instead, and one invented an unrelated formula (§5.5). The chart encoded a rule about how its numbers may be used, and every model missed the rule.
+
+Compounding across correct reasoning. A frequent failure pattern combines a correct setup with a single visual error: the model selects the correct curve, formula, and procedure but misreads one input value, and the final answer falls outside the acceptable range. Premature rounding compounds the error: several models rounded intermediate reads even when the prompt requested precision. Because most steps in such traces are correct, the error is easy to miss on inspection, which matters when outputs inform professional decisions.
+
+## 5.5 Example tasks
+
+Figures 3–5 show three representative tasks with golden answers and characteristic failures.
+
+## 6 Discussion
+
+Semantic recognition vs. metric grounding. Models succeed at semantic recognition (identifying what a chart shows, which curve is relevant) but can fail at metric grounding: anchoring a numeric or categorical answer to the specific mark or axis position that determines it. Additional reasoning amplifies a correct read but can also equally elaborate a mistaken one, consistent with the positive-but-incomplete gains from elevated reasoning effort (§5.2).
+
+Perception, not reasoning, can be the bottleneck. Across the observed failure categories, the non-visual reasoning steps are usually sound and errors can often arise at the visual steps: a nuanced feature goes unseen, a position is misjudged against its axis, or a point is misplaced in projected geometry. The subsequent reasoning then operates on incorrect inputs, which is again consistent with the uneven gains from elevated reasoning effort (§5.2).
+
+Implications for deployment. Chart reading is a prerequisite for widely proposed applications of multimodal models: clinical decision support, engineering review, financial analysis, and process monitoring. The same models that score 80–90% on earlier academic chart benchmarks score below 50% here, so performance on those benchmarks is not evidence of readiness for these applications. The failure analysis of §5.4 indicates that improved visual reading alone, holding reasoning ability fixed, would raise scores substantially.
+
+What the benchmark rewards. The grading design measures several important properties. Expertcalibrated ranges reward estimation at the precision each chart supports; all-or-nothing grading of multi-part answers rewards correctness across every required component; and convention-dependent tasks reward applying a chart’s rules of use in addition to its content. We consider these properties prerequisites for realistic professional use and encourage tool-augmented and agentic systems to report results under the same no-tools protocol alongside their augmented configurations.
+
+## 7 Conclusion
+
+Chartography measures whether frontier models can read the charts that professionals stake decisions on, and specifically in the way they are used on the job. It includes 100 tasks, authored by experts, verified three times independently, and screened for difficulty against frontier models. Chartography resists saturation (the best frontier configuration passes 45.0% of graded trials), and its failure modes localize the gap in visual grounding and domain convention as opposed to just simpler reasoning over standard, more academic charts and graphs. We release all tasks, images, provenance metadata, and evaluation code through the public dataset and code repositories, and will maintain the public leaderboard as new models launch.
+
+## References
+
+[1] Suhaas Garre, Erik Knutsen, Sushant Mehta, and Edwin Chen. Riemann-Bench: A benchmark for moonshot mathematics. arXiv preprint arXiv:2604.06802, 2026.
+
+[2] Suhaas Garre, Emily Ritchie, Sushant Mehta, and Edwin Chen. GDP.pdf: Benchmarking grounded multimodal reasoning over professional PDF documents. arXiv preprint arXiv:2607.11192, 2026.
+
+[3] Kushal Kafle et al. DVQA: Understanding data visualizations via question answering. In Proceedings ofthe IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 2018.
+
+[4] Samira Ebrahimi Kahou et al. FigureQA: An annotated figure dataset for visual reasoning. arXiv preprint arXiv:1710.07300, 2018.
+
+[5] Fangyu Liu et al. DePlot: One-shot visual language reasoning by plot-to-table translation. In Findings of the Association for Computational Linguistics: ACL 2023, 2023.
+
+[6] Fangyu Liu et al. MatCha: Enhancing visual language pretraining with math reasoning and chart derendering. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics, 2023.
+
+[7] Junyu Luo et al. ChartOCR: Data extraction from charts images via a deep hybrid framework. In Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision (WACV), 2021.
+
+[8] Ahmed Masry, Do Xuan Long, Jia Qing Tan, Shafiq Joty, and Enamul Hoque. ChartQA: A benchmark for question answering about charts with visual and logical reasoning. In Findings of the Association for Computational Linguistics: ACL 2022. Association for Computational Linguistics, 2022. arXiv:2203.10244.
+
+[9] Ahmed Masry, Mohammed Saidul Islam, Mahir Ahmed, Aayush Bajaj, Firoz Kabir, Aaryaman Kartha, Md Tahmid Rahman Laskar, Mizanur Rahman, Shadikur Rahman, Mehrad Shahmohammadi, Megh Thakkar, Md Rizwan Parvez, Enamul Hoque, and Shafiq Joty. ChartQAPro: A more diverse and challenging benchmark for chart question answering. In Findings ofthe Associationfor Computational
+
+Linguistics: ACL 2025, pages 19123–19151, Vienna, Austria, 2025. Association for Computational Linguistics. doi: 10.18653/v1/2025.findings-acl.978.
+
+[10] Nitesh Methani et al. PlotQA: Reasoning over scientific plots. In Proceedings of the IEEE/CVF Winter Conference on Applications ofComputer Vision (WACV), 2020.
+
+[11] Long Phan et al. Humanity’s last exam. arXiv preprint arXiv:2501.14249, 2025.
+
+[12] David Rein, Betty Li Hou, Asa Cooper Stickland, Jackson Petty, Richard Yuanzhe Pang, Julien Dirani, Julian Michael, and Samuel R. Bowman. GPQA: A graduate-level Google-proof Q&A benchmark. arXiv preprint arXiv:2311.12022, 2023.
+
+[13] Surge AI. Chartography leaderboard. Public leaderboard, snapshot of July 16, 2026, 2026. https: //surgehq.ai/benchmarks/chartography.
+
+[14] Liyan Tang et al. ChartMuseum: Testing visual reasoning capabilities of large vision-language models. arXiv preprint arXiv:2505.13444, 2025.
+
+[15] UK AI Security Institute. Inspect AI: Framework for large language model evaluations. https: //inspect.aisi.org.uk, 2024.
+
+[16] Zirui Wang, Mengzhou Xia, Luxi He, Howard Chen, Yitao Liu, Richard Zhu, Kaiqu Liang, Xindi Wu, Haotian Liu, Sadhika Malladi, Alexis Chevalier, Sanjeev Arora, and Danqi Chen. CharXiv: Charting gaps in realistic chart understanding in multimodal LLMs. Advances in Neural Information Processing Systems, 37, 2024. arXiv:2406.18521.
+
+[17] Zhengzhuo Xu et al. ChartBench: A benchmark for complex visual reasoning in charts. arXiv preprint arXiv:2312.15915, 2023. Official project page: https://chartbench.github.io/.
+
+[18] Boyang Zhang, Sebastián G. Acosta, Preston Carlson, Sacha Bron, Pierre-Loïc Doulcet, Daniel B. Ospina, and Simon Suo. ParseBench: A document parsing benchmark for AI agents. arXiv preprint arXiv:2604.08538, 2026.
+
+[19] Lianmin Zheng, Wei-Lin Chiang, Ying Sheng, Siyuan Zhuang, Zhanghao Wu, Yonghao Zhuang, Zi Lin, Zhuohan Li, Dacheng Li, Eric P. Xing, Hao Zhang, Joseph E. Gonzalez, and Ion Stoica. Judging LLMas-a-judge with MT-Bench and chatbot arena. Advances in Neural Information Processing Systems, 36, 2023. arXiv:2306.05685.
+
+![](images/fe31b64800f3f4d1dc9310e6b049d585c102f8634a1427e85d8998038d84d7a0.jpg)  
+Figure 3: Engineering design chart (USDA-SCS). “For an outlet pipe with a diameter of48 inches and aflow of73 cubicfeet per second, what is the minimum downstream width ofthe riprap apron?” Golden answer: 30 feet (accepted 29–31). The flow lies below the 48-inch curve’s plotted range, so professional practice reads the curve’s minimum $\left( L _ { a } { = } 2 6 \operatorname { f t } \right)$ and applies $W = D _ { o } + L _ { a } = 4 + 2 6 = 3 0 \mathrm { f t }$ . A representative failure read an inflated $L _ { a } \approx 3 2 \mathrm { f t }$ by extrapolating, invented the formula $W = 3 D _ { o } + L _ { a } .$ , and answered 44 ft.
+
+![](images/ec62f60806df0b5a367bbba7bdc1576810278b6c84111b0d571b70be58cc5ff4.jpg)  
+Figure 4: Pediatric growth chart (CDC). “What height corresponds to the 50th percentile for a four-year-old girl? Round to the nearest 0.5 centimeters.” Golden answer: 101.0 cm (accepted 100–101). A representative failure followed the correct percentile curve but read the intersection as “101.5 cm (roughly 101–102),” 0.5 cm above the rounded canonical value.
+
+![](images/630032e2199ba3c292c2b02c81d840bfdeb36515f700baa66ff4cb39397ea394.jpg)  
+Figure 5: Wind rose (USDA-ARS). “In which three directions did winds above 8.5 m/s occur for the longest total duration?” Golden answer: S, SSW, W. A representative failure fixated on the lower-left of the rose and answered S, SSW, SW, yet SW has negligible time above threshold while W (omitted) shows a longer segment.
+
+## A Dataset Schema and Example Task
+
+Each row of the released dataset contains the following fields. An example task specification in the released
+
+<table><tr><td>Column</td><td>Description</td></tr><tr><td>task_id</td><td>Unique task identifier</td></tr><tr><td>prompt</td><td>The question posed to the model</td></tr><tr><td>golden_answer</td><td>Expert answer, often with an acceptable range</td></tr><tr><td>chart_path</td><td>Relative path to the chart image</td></tr><tr><td>domain_combined</td><td>Professional domain label</td></tr><tr><td>source_type</td><td>Sourced online or Expert-created</td></tr><tr><td>source_url</td><td>Original chart source (null for expert-created)</td></tr></table>
+
+Table 5: Dataset schema (Hugging Face surgeai/chartography, single test split). Author walkthroughs support construction and verification but are not public fields.
+
+## format:
+
+task\_id: sample\_task\_2
+
+prompt: Using Mg-9 wt % Al alloy, at what temperature does Mg17Al12
+
+precipitate? Round to the nearest 10 degrees.
+
+golden\_answer: 350C (acceptable range 330C to 370C)
+
+chart\_path: charts/sample\_chart\_2.jpg
+
+domain\_combined: STEM - Chemistry
+
+source\_type: Sourced online
+
+source\_url: https://www.academia.edu/figures/49700958/...

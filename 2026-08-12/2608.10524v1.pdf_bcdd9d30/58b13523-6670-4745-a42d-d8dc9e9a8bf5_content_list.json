@@ -1,0 +1,1665 @@
+[
+    {
+        "type": "text",
+        "text": "Rethinking Text-Based Image Retrieval in Specific Domain",
+        "text_level": 1,
+        "bbox": [
+            202,
+            118,
+            794,
+            142
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Jingyang Tan<sup>1∗†</sup>, Sheng Yang<sup>2†</sup>, Yuanpeng Chen<sup>4</sup>, Jian Wang<sup>2‡</sup>, Nianjin Ye<sup>3</sup>, Chen Xing<sup>3</sup>, Lanpeng Jia<sup>3‡</sup>",
+        "bbox": [
+            181,
+            156,
+            820,
+            194
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "<sup>1</sup>Department of Electronic and Communication Engineering, Harbin Institute of Technology <sup>2</sup>School of Data Science, Fudan University, <sup>3</sup>Changhong Intelligent Robot, <sup>4</sup>Independent Researcher",
+        "bbox": [
+            156,
+            198,
+            841,
+            228
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Abstract",
+        "text_level": 2,
+        "bbox": [
+            250,
+            272,
+            315,
+            287
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Driven by the rapid advancement of vision-language representation learning, Text-based Image Retrieval (TBIR) has made notable progress. However, existing benchmarks are predominantly constructed on an exclusive single-match assumption between query and images. While efective in general scenarios, this assumption fails to reflect practical system performance in specific domains (e.g., surveillance), where a single query often corresponds to multiple relevant candidate images. To address this limitation, we design a Domain-Specific Multi-Match Text-based Image Retrieval (DSMM-TBIR) data engine. Leveraging this engine, we construct Security Multi-Match TBIR (SecMM-TBIR), a benchmark comprising 50k surveillance images with 200 comprehensive queries. Furthermore, we observe that vanilla contrastive learning in specific domains sufers from severe false negatives, forcing the model to push apart semantically similar pairs and thus degrading retrieval performance. We propose the Semantic-Aware Fine-Tuning (SAFT) framework to address semantic compression in specific domains, which incorporates Semantic-Aware Soft-Label Supervision (SASS) and Intra-modal Structural Distillation (ISD) to establish a promising paradigm for domainspecific TBIR tasks. Experiments across diverse CLIP-like models demonstrate that SAFT yields an average mAP@20 gain of 7.8 points on SecMM-TBIR over standard image-text contrastive (ITC) fine-tuning, while also improving generaldomain performance. The entire benchmark will be released to facilitate further research.",
+        "bbox": [
+            98,
+            294,
+            464,
+            636
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "1 Introduction",
+        "text_level": 2,
+        "bbox": [
+            212,
+            654,
+            352,
+            669
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Text-based Image Retrieval (TBIR), which retrieves relevant images from large-scale databases given a textual query, has emerged as a fundamental vision-language task. This multimodal synergy has powered wide spectrum of real-world applications, yielding substantial benefits for scenarios where the ability to rapidly and accurately retrieve targeted visual instances from massive galleries is the core requirement.",
+        "bbox": [
+            81,
+            671,
+            480,
+            770
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "The development of robust benchmarks is fundamental to the advancement of TBIR. In the general domain, Flickr30K (Plummer et al. 2017) and MS-COCO (Lin et al. 2014) serve as the predominant testbeds, characterized by their broad semantic coverage, providing an excellent proxy for evaluating generalized cross-modal alignment capabilities. However, these benchmarks are predominantly based on the single-match query-image mapping paradigm. While highly efective in general domains, this assumption fundamentally contradicts the practical requirements of specific scenarios. As illustrated in Fig 2, in such compressed semantic domain, textual descriptions tend to be simple and often naturally correspond to multiple relevant visual instances. Evaluating models with single-match labels in specific domains inherently biases standard metrics by treating potential positives as negatives, preventing them from reflecting actual retrieval performance. To facilitate the rapid construction of benchmarks across diverse vertical scenarios for evaluation, we design the Domain-Specific Multi-Match Text-based Image Retrieval (DSMM-TBIR) data engine. It leverages the generative and comprehension capabilities of Large Language Models (LLMs) and Vision-Language Models (VLMs), complemented by verification from multiple expert universal multi-modal embedding models. Using this engine, we construct Security Multi-Match TBIR (SecMM-TBIR), a multi-match benchmark comprising 50k surveillance images and 200 comprehensive queries.",
+        "bbox": [
+            81,
+            770,
+            480,
+            840
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "chart",
+        "img_path": "images/4f13741a505b2fe9b5718b5fca9bf2a4d5e3ed6255b58db4492aecc68e60d292.jpg",
+        "content": "",
+        "chart_caption": [
+            "Figure 1: Consistent Improvement on SecMM-TBIR Benchmark Driven by SAFT. It yields an average gain of +7.8 mAP@20 over standard ITC fine-tuning, allowing MobileCLIP-S1 to outperform 2B pretrained embedders."
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            521,
+            272,
+            908,
+            415
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            514,
+            512,
+            915,
+            818
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "In the context of multi-modal contrastive learning, the prevalence of false negatives (FNs) poses a critical bottleneck. Existing research has primarily diverged into two distinct paradigms: hard negative mining (HNM) and soft-label supervision. HNM is widely used to identify informative hard negatives (HNs) for enhanced contrastive learning (Gu et al. 2025a; Yuksekgonul et al. 2023a). Empirical evidence reveals that applying HNM to specific domains often yields suboptimal performance: as illustrated in Fig. 4, semantic distributions in domain-specific settings are highly compressed, resulting in a substantially higher density of FNs which are hard to identify. To mitigate the cross-modal misleading problem where one-hot labels falsely penalize potential positives, CUSA (Huang et al. 2024) and SoftCLIP (Gao et al. 2024) leverage soft labels derived from unimodal pretrained models. However, this paradigm inherently creates a mismatch with cross-modal alignment, as unimodal similarity distributions cannot faithfully represent the cross-modal alignment required for TBIR, leading to inconsistent performance gains in domain-specific retrieval.",
+        "bbox": [
+            516,
+            819,
+            915,
+            890
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "aside_text",
+        "text": "arXiv:2608.10524v1 [cs.CV] 11 Aug 2026",
+        "bbox": [
+            29,
+            352,
+            65,
+            800
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "page_footnote",
+        "text": "<sup>∗</sup>Email: tanjingyang.wjf@gmail.com",
+        "bbox": [
+            102,
+            847,
+            326,
+            862
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "page_footnote",
+        "text": "<sup>†</sup>These authors contributed equally.",
+        "bbox": [
+            102,
+            861,
+            318,
+            876
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "page_footnote",
+        "text": "<sup>‡</sup>Corresponding author.",
+        "bbox": [
+            104,
+            875,
+            250,
+            890
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            81,
+            69,
+            480,
+            277
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "To address these limitations, we propose the Semantic-Aware Fine-Tuning (SAFT) framework. SAFT extends standard contrastive learning with two complementary components: Semantic-Aware Soft-Label Supervision (SASS), which accommodates potential positive text-image matches via a soft cross-modal alignment distribution, and Intramodal Structural Distillation (ISD), which preserves relative correlations among images within the visual modality. As shown in Fig 1, this integrated framework consistently improves domain-specific retrieval performance.",
+        "bbox": [
+            81,
+            276,
+            480,
+            415
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "In summary, the main contributions are as follows:",
+        "bbox": [
+            99,
+            415,
+            436,
+            429
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "• We introduce SecMM-TBIR, a multi-match benchmark for surveillance scenarios. Built via our DSMM-TBIR data engine, it comprises 50k images and 200 queries across pedestrian and vehicle domains, and will be publicly released to facilitate further research.",
+        "bbox": [
+            91,
+            433,
+            480,
+            502
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "• We propose SAFT, a systematic fine-tuning framework for CLIP-like (Radford et al. 2021) models to address performance degradation caused by domain-specific semantic compression. Integrating SASS and ISD, it efectively mitigates false negatives in contrastive learning.",
+        "bbox": [
+            89,
+            503,
+            480,
+            575
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "• Extensive experiments across various models demonstrate that SAFT achieves an average mAP@20 gain of 7.8 points on SecMM-TBIR, while also boosting generaldomain performance. Moreover, SAFT generalizes well to other domains and enhances compositional reasoning.",
+        "bbox": [
+            91,
+            577,
+            480,
+            647
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "2 Related Works",
+        "text_level": 2,
+        "bbox": [
+            202,
+            657,
+            362,
+            672
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "2.1 Text-Based Image Retrieval Benchmarks",
+        "text_level": 2,
+        "bbox": [
+            83,
+            676,
+            439,
+            691
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "Rigorous benchmarks lay the foundation for evaluating TBIR systems. Existing testbeds are typically categorized into general-domain and specific-domain. General-domain benchmarks, such as MS-COCO and Flickr30K, encompass an extensive range of scenes, serving as the primary standard for evaluating cross-modal representation alignment. Conversely, domain-specific benchmarks concentrate on constrained vertical scenarios. Within this category, Text-based Person Retrieval (TBPR) represents a well-established task, evaluated on datasets such as CUHK-PEDES (Li et al. 2017), RSTPReid (Zhu et al. 2021), ICFG-PEDES (Ding et al. 2021) and SYNTH-PEDES (Zuo et al. 2024).",
+        "bbox": [
+            81,
+            694,
+            480,
+            861
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "Although traditional benchmarks have driven substantial progress, they are structurally limited by rigid single-match mappings and verbose captions, diverging from industrial realities that demand task-aligned concise queries and multimatch retrieval. To bridge this gap, several benchmarks have emerged, with InQuire (Vendrow et al. 2024) and FSIR-BD (Idan et al. 2026) being the closest to our work. InQuire focuses on expert-level ecological retrieval but demands intensive manual labeling, limiting its scalability to broader scenarios. FSIR-BD, built on the general-purpose Visual Genome dataset (Krishna et al. 2017), relies heavily on manual query annotation and struggles to provide comprehensive semantic coverage required for real-world scenarios. Consequently, balancing annotation scalability, public accessibility, and diverse semantic coverage remains an open challenge in the construction of DSMM-TBIR benchmarks.",
+        "bbox": [
+            83,
+            861,
+            480,
+            890
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "image",
+        "img_path": "images/5e082f48d13808fde4a7715a09217fe884cc1cdd4d28a9d41045f16f2b0be6a3.jpg",
+        "image_caption": [
+            "Figure 2: Single-Match Benchmarks. The single-match paradigm ignores multiple potential matches, leading to biased training and evaluation, particularly in specific domain."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            517,
+            66,
+            911,
+            330
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            514,
+            412,
+            915,
+            609
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "2.2 False Negatives in Contrastive Learning",
+        "text_level": 2,
+        "bbox": [
+            516,
+            619,
+            867,
+            636
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "Foundational vision-language models, such as CLIP and ALIGN (Jia et al. 2021), establish cross-modal representation alignment via contrastive pre-training on massive data (Schuhmann et al. 2021, 2022) with large batch sizes, which inevitably introduce FNs. Recent universal embedding models (Li et al. 2026; Jian et al. 2025a) utilize thresholdbased HNM to mitigate FNs while capturing HNs. Yet, this yields suboptimal performance in domain-specific settings, as threshold-based methods struggle to disentangle HNs from FNs under concentrated semantic distributions.",
+        "bbox": [
+            516,
+            638,
+            915,
+            779
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "To address this, a prevalent alternative leverages soft-label supervision. Within specific domains, e-CLIP (Shin et al. 2022) introduced catalog-based soft labels to address duplicate products. While MedCLIP (Wang et al. 2022) proposed a soft semantic matching loss based on multi-hot labels, it is applicable only to closed-set retrieval. Ko and Park (2025) leveraged pre-trained models to extract domainspecific features and graph representations for joint supervision. Meanwhile, CellCLIP (Lu et al. 2026) employed DI-NOv2 (Oquab et al. 2023) to construct a continuous visual similarity matrix, adopting the Continuously Weighted Contrastive Loss (Srinivasa et al. 2023) for alignment guidance. Paradigms such as ICSD (Chen et al. 2025) and CUSA leverage unimodal soft labels to supervise cross-modal alignment. Notably, ICSD sufers from architectural coupling that limits deployment. In contrasct, CUSA remains architectureindependent but underperforms as unimodal statistics fail to reflect true cross-modal matching probabilities. In summary, existing methods rely heavily on rigid domain priors or approximate cross-modal relationships using unimodal statistics, leaving domain-specific TBIR still underexplored.",
+        "bbox": [
+            516,
+            777,
+            915,
+            890
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "image",
+        "img_path": "images/75645c01e55ef2ed89eef4bb4ef6b880a97766b284880cc119748f7c8210e021.jpg",
+        "image_caption": [
+            "Figure 3: DSMM-TBIR Data Engine. Phase I constructs a curated multi-modal pool through Distribution-Aware Prompting (DAP) and Centroid-Guided Diversity Sampling (CGDS). Phase II employs multiple expert embedders to pre-annotate queryimage pairs. Finally, Phase III manually filters these candidates to obtain verified multi-match labels for SecMM-TBIR."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            86,
+            65,
+            911,
+            310
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            81,
+            391,
+            482,
+            574
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "3 Methodology",
+        "text_level": 2,
+        "bbox": [
+            209,
+            585,
+            354,
+            602
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "3.1 DSMM-TBIR Data Engine",
+        "text_level": 2,
+        "bbox": [
+            83,
+            606,
+            334,
+            622
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "We introduce the DSMM-TBIR Engine, a versatile data pipeline designed for the automated construction of benchmarks across diverse vertical domains. It is designed to overcome four critical limitations in current benchmarks. General-domain benchmarks fail to represent vertical industrial scenarios; we addressed domain incompatibility by targeting constrained settings. Unlike traditional datasets that rely on detailed captions, we generate concise queries which are more compatible for practical applications to resolve caption-query disparity. We construct a large-scale testbed comprising 50k images and 200 comprehensive queries to address the evaluation saturation caused by the limited test scales of existing benchmarks. Evaluating models with single-match labels in specific domains prevents standard metrics from reflecting actual retrieval performance. To eliminate the metric bias, we utilize a multi-match paradigm and adopt mAP@K as the primary metrics.",
+        "bbox": [
+            81,
+            625,
+            480,
+            861
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "As illustrated in Fig 3, VLMs and LLMs enable eficient adaptation to specific scenarios, allowing rapid TBIR evaluation without extensive manual labeling. DSMM-TBIR data engine comprises three sequential phases:",
+        "bbox": [
+            83,
+            861,
+            480,
+            890
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            514,
+            391,
+            915,
+            421
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Phase 1: Adaptive Data Pool Curation We utilize both textual and visual branches to establish a representative domain-specific multi-modal data pool.",
+        "bbox": [
+            516,
+            429,
+            913,
+            472
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "For the textual branch, we develop Distribution-Aware Prompting (DAP) to generate queries that comprehensively cover the scenarios within the task domain. Specifically, we perform a statistical analysis of the textual distribution in the caption pool and incorporate the resulting statistics into prompt engineering to guide LLM-based query generation. Details of the prompting procedure are provided in the Supplementary Material. This process transforms raw metadata into natural queries that comprehensively reflect the semantic distributions of real-world environments.",
+        "bbox": [
+            516,
+            472,
+            915,
+            611
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "For the visual branch, Centroid-Guided Diversity Sampling (CGDS) is designed to construct a diverse image gallery. Under this strategy, the raw image pool I is projected into a high-dimensional embedding space via a versatile visual representation model (Siméoni et al. 2025), and partitioned into K<sup>˜</sup> distinct semantic regions using K-means clustering. Within each cluster, images are randomly sampled to capture intra-class variance and visual diversity, ensuring balanced and comprehensive coverage of the target domain.",
+        "bbox": [
+            514,
+            611,
+            915,
+            739
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Phase 2: Multi-Expert Collaborative Filtering (MECF) Individual VLMs sufer from limited cross-domain generalization, delivering uneven performance across domains, with each model exhibiting varying performance in diferent scenarios. To alleviate this limitation, we employ an ensemble of four diverse embedders (Li et al. 2026; Jian et al. 2025b; Günther et al. 2025; Tschannen et al. 2025).",
+        "bbox": [
+            516,
+            747,
+            915,
+            844
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "For each query q, we retrieve the top-K<sup>ˆ</sup> visual candidates with the highest cosine similarity in the corresponding embedding space. To minimize false negatives, we define the preliminary candidate set $\\mathcal { C } ( q )$ as the union of the top- $\\hat { \\mathbf { \\nabla } } \\hat { K }$ retrieval results across all M models:",
+        "bbox": [
+            516,
+            847,
+            915,
+            890
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "chart",
+        "img_path": "images/8ee7875499bf88d2895c1f385ed78e13018962d773e34b671d39d0e0c7148cc6.jpg",
+        "content": "",
+        "chart_caption": [],
+        "chart_footnote": [],
+        "bbox": [
+            96,
+            75,
+            398,
+            250
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "chart",
+        "img_path": "images/d5291ca6b7c7623c4475b7174461a90f0ae063bea2f0e4fc79fa6edc2e3f55a0.jpg",
+        "content": "",
+        "chart_caption": [
+            "Figure 4: Dataset Statistics and Semantic Compression Analysis. Left: Statistics of training set and SecMM-TBIR benchmark. Right: Visualizations of cross-sample similarities (1,000 random samples), where specific domains exhibit higher similarities."
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            415,
+            70,
+            910,
+            243
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            81,
+            328,
+            478,
+            358
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "equation",
+        "img_path": "images/7931bb59ce7748025499f051b3760748b39f77a0908c05b9aea5ba1c09e6fe1a.jpg",
+        "text": "$$\n\\mathcal { C } ( \\boldsymbol { q } ) = \\bigcup _ { i = 1 } ^ { M } \\left\\{ x \\in \\mathcal { T } \\Big \\vert \\operatorname { r a n k } _ { \\mathbb { Z } } \\left( \\sin ( \\phi _ { i } ( \\boldsymbol { q } ) , \\psi _ { i } ( x ) ) \\right) \\leq \\hat { K } \\right\\} .\\tag{1}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            91,
+            377,
+            467,
+            420
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "where $q$ denotes the query, x is a candidate image, $\\phi _ { i }$ and $\\psi _ { i }$ are the text and image embedders of the i-th model, and sim(·) denotes cosine similarity.",
+        "bbox": [
+            81,
+            431,
+            480,
+            476
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "Phase 3: Label Refinement Annotators manually inspect the visual candidates in $\\mathcal { C } ( q )$ and verify their relevance to the query $q ,$ filtering out residual false positives to obtain the final multi-match labels.",
+        "bbox": [
+            81,
+            481,
+            480,
+            539
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "3.2 Rethinking Fine-Tuning Paradigms",
+        "text_level": 2,
+        "bbox": [
+            83,
+            549,
+            398,
+            566
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "To characterize the semantic density of TBIR datasets, we randomly sample 1,000 instances from each dataset and compute pairwise cosine similarities in the embedding space. As shown in Fig 4, specific domains exhibit substantially more compressed latent spaces. Consequently, semantically related yet unpaired samples are more prevalent within a mini-batch and be treated as negatives under standard imagetext contrastive (ITC) learning. This motivates us to revisit three common fine-tuning choices in TBIR tasks:",
+        "bbox": [
+            81,
+            569,
+            480,
+            694
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "Text Encoder Joint Fine-Tuning in specific domains often induces overfitting to the textual patterns of training sets.",
+        "bbox": [
+            81,
+            694,
+            478,
+            723
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "Standard Image Self-Supervised (ISS) Objectives force the separation of unpaired images in a mini-batch which are semantically near-identical, yielding distorted rather than discriminative representations.",
+        "bbox": [
+            81,
+            722,
+            480,
+            779
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "Hard Negative Mining defines a threshold α by shifting the similarity between the query embedding $e _ { q }$ and its paired positive target embedding $e _ { t } ^ { + }$ with a margin parameter $\\beta \\colon$",
+        "bbox": [
+            81,
+            779,
+            480,
+            824
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "equation",
+        "img_path": "images/ea49be96f1d24a24d2ffa710cbcae65180262c0e6a20338abb2cf9adccef9266.jpg",
+        "text": "$$\n\\alpha = \\cos ( e _ { q } , e _ { t } ^ { + } ) + \\beta\\tag{2}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            209,
+            835,
+            354,
+            853
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "Within a batch of candidate negatives $\\{ e _ { t } ^ { - } \\}$ , any sample satisfying cos $( e _ { q } , e _ { t } ^ { - } ) > \\alpha$ is excluded as a false negative, while the remaining instances are ranked by similarity to select the top-K hard negatives. However, this thresholdbased mechanism enforces a rigid separation between FNs and HNs, failing to reliably distinguish them in semantically compressed training sets.",
+        "bbox": [
+            83,
+            858,
+            480,
+            890
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            514,
+            329,
+            915,
+            401
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "3.3 Loss Functions",
+        "text_level": 2,
+        "bbox": [
+            516,
+            410,
+            679,
+            425
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "The standard ITC loss in CLIP pre-training is formulated as:",
+        "bbox": [
+            516,
+            428,
+            913,
+            444
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "equation",
+        "img_path": "images/83f5ff411827c232856207d36524fea83abefe4e06c961b7f8dee13d8da2a4a0.jpg",
+        "text": "$$\n\\mathcal { L } _ { \\mathrm { I T C } } = - \\frac { 1 } { 2 N } \\sum _ { i = 1 } ^ { N } \\sum _ { j = 1 } ^ { N } \\left( q _ { i , j } \\log p _ { i , j } + q _ { j , i } \\log p _ { j , i } \\right)\\tag{3}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            535,
+            449,
+            872,
+            491
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "where N represents batch size, q represents rigid one-hot labels. The predicted image-to-text (I2T) probability $p _ { i , j }$ measures the probability of matching the i-th image to the j-th text, while the text-to-image (T2I) probability $p _ { j , i }$ measures the probability of matching the i-th text to the j-th image:",
+        "bbox": [
+            514,
+            497,
+            915,
+            569
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "equation",
+        "img_path": "images/cce1b6f7b35661e9b9b4a743a3a5048e464f399cb79e56d66827a770b680afea.jpg",
+        "text": "$$\n\\begin{array} { r l } & { p _ { i , j } = \\frac { \\exp \\left( ( e _ { i } ^ { \\mathrm { v } } ) ^ { \\top } e _ { j } ^ { \\mathrm { t } } / \\tau \\right) } { \\sum _ { k = 1 } ^ { N } \\exp \\left( ( e _ { i } ^ { \\mathrm { v } } ) ^ { \\top } e _ { k } ^ { \\mathrm { t } } / \\tau \\right) } , } \\\\ & { p _ { j , i } = \\frac { \\exp \\left( ( e _ { i } ^ { \\mathrm { t } } ) ^ { \\top } e _ { j } ^ { \\mathrm { v } } / \\tau \\right) } { \\sum _ { k = 1 } ^ { N } \\exp \\left( ( e _ { i } ^ { \\mathrm { t } } ) ^ { \\top } e _ { k } ^ { \\mathrm { v } } / \\tau \\right) } } \\end{array}\\tag{4}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            606,
+            577,
+            820,
+            656
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "where $e _ { i } ^ { \\mathrm { v } }$ and $e _ { j } ^ { \\mathrm { t } }$ denote the normalized visual and textual embeddings for the i-th and j-th instances within a mini batch respectively, and τ represents the temperature.",
+        "bbox": [
+            516,
+            659,
+            913,
+            702
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "We employ UniME-V2 (Gu et al. 2025b), a universal crossmodal embedder to generate reference visual embeddings $E ^ { \\mathrm { v } }$ and textual embeddings $E ^ { \\mathrm { t } }$ , which preserve deep semantic inter-dependencies. For a given training batch, these embeddings are used to derive soft-label over image-text pairs:",
+        "bbox": [
+            516,
+            700,
+            915,
+            771
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "equation",
+        "img_path": "images/77f420e088d26c4b3da728a94cb6f367e6cd558cd05f8dcda1a4f0ba1c88e8b1.jpg",
+        "text": "$$\n\\begin{array} { r l } & { r _ { i , j } = \\frac { \\exp ( ( E _ { i } ^ { \\mathrm { v } } ) ^ { \\top } E _ { j } ^ { \\mathrm { t } } / \\tau _ { o } ) } { \\sum _ { k = 1 } ^ { N } \\exp ( ( E _ { i } ^ { \\mathrm { v } } ) ^ { \\top } E _ { k } ^ { \\mathrm { t } } / \\tau _ { o } ) } , } \\\\ & { r _ { j , i } = \\frac { \\exp ( ( E _ { i } ^ { \\mathrm { t } } ) ^ { \\top } E _ { j } ^ { \\mathrm { v } } / \\tau _ { o } ) } { \\sum _ { k = 1 } ^ { N } \\exp ( ( E _ { i } ^ { \\mathrm { t } } ) ^ { \\top } E _ { k } ^ { \\mathrm { v } } / \\tau _ { o } ) } } \\end{array}\\tag{5}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            599,
+            776,
+            826,
+            856
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "Let $S _ { \\mathrm { i 2 t } } ~ = ~ [ p _ { i , j } ]$ and $S _ { \\mathrm { t 2 i } } ~ = ~ [ p _ { j , i } ]$ denote the predicted cross-modal distributions of the lightweight student model.",
+        "bbox": [
+            514,
+            859,
+            915,
+            888
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "image",
+        "img_path": "images/f419d8a3207eb97f2944701162e48d6aa98ea947a20b084fedd7534dacd27b99.jpg",
+        "image_caption": [
+            "Figure 5: Overview of SAFT Framework. A frozen universal multi-modal embedding model serves as the teacher, providing cross-modal soft targets for SASS and image-to-image structural targets for ISD, complementing the standard ITC objective."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            84,
+            64,
+            911,
+            289
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Similarly, $T _ { \\mathrm { i 2 t } } = [ r _ { i , j } ]$ and $T _ { \\mathrm { t 2 i } } = [ r _ { j , i } ]$ denote the target distributions generated by the teacher embedder. All distributions are in $\\mathbb { R } ^ { N \\times N }$ . The SASS loss is formulated as a bidirectional Kullback-Leibler (KL) divergence to encourage robust cross-modal alignment:",
+        "bbox": [
+            81,
+            354,
+            480,
+            426
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/26f3ba688d6fc910e9de9f83df98df1c4b6788dcc3bed4f0bbae175106bffde8.jpg",
+        "text": "$$\n\\begin{array} { r } { \\mathcal { L } _ { \\mathrm { S A S S } } = \\cfrac { 1 } { 4 } \\Big ( \\mathcal { D } _ { \\mathrm { K L } } ( T _ { \\mathrm { i 2 t } } \\parallel S _ { \\mathrm { i 2 t } } ) + \\mathcal { D } _ { \\mathrm { K L } } ( T _ { \\mathrm { t 2 i } } \\parallel S _ { \\mathrm { t 2 i } } ) } \\\\ { + \\mathcal { D } _ { \\mathrm { K L } } ( S _ { \\mathrm { i 2 t } } \\parallel T _ { \\mathrm { i 2 t } } ) + \\mathcal { D } _ { \\mathrm { K L } } ( S _ { \\mathrm { t 2 i } } \\parallel T _ { \\mathrm { t 2 i } } ) \\Big ) } \\end{array}\\tag{6}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            96,
+            444,
+            444,
+            498
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "While SASS improves cross-modal alignment, it does not explicitly preserve the relational structure within the visual modality. We therefore propose Intra-modal Structural Distillation (ISD), which transfers the teacher’s fine-grained image-image relationships to the student. Specifically, for each mini-batch, we use the teacher’s visual embeddings $E ^ { \\mathrm { v } }$ to construct an intra-modal soft targets:",
+        "bbox": [
+            81,
+            506,
+            480,
+            606
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/36ac7b862af189a72f85500c8889f0a12b54e11fa045c365c1bbd6c664b4bbbb.jpg",
+        "text": "$$\nr _ { i , j } ^ { \\mathrm { v } } = \\frac { \\exp ( ( E _ { i } ^ { \\mathrm { v } } ) ^ { \\top } E _ { j } ^ { \\mathrm { v } } / \\tau _ { o } ) } { \\sum _ { k = 1 } ^ { N } \\exp ( ( E _ { i } ^ { \\mathrm { v } } ) ^ { \\top } E _ { k } ^ { \\mathrm { v } } / \\tau _ { o } ) }\\tag{7}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            168,
+            614,
+            392,
+            654
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "We define the teacher’s intra-modal structural distribution as $T _ { \\mathrm { v 2 v } } = [ r _ { i , j } ^ { \\mathrm { v } } ] \\in \\mathbb { R } ^ { N \\times N }$ , the student’s predicted distribution is denoted as $S _ { \\mathrm { v 2 v } } = [ p _ { i , j } ^ { \\mathrm { v } } ] \\in \\mathbb R ^ { N \\times N }$ , where $p _ { i , j } ^ { \\mathrm { v } }$ is computed based on the visual embeddings.",
+        "bbox": [
+            81,
+            656,
+            480,
+            715
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/ba16cea938b187ed31963dfe4ed9e6de3afdf195fea10c7166ce4f8f9c32a32c.jpg",
+        "text": "$$\np _ { i , j } ^ { \\mathrm { v } } = \\frac { \\exp ( ( e _ { i } ^ { \\mathrm { v } } ) ^ { \\top } e _ { j } ^ { \\mathrm { v } } / \\tau ) } { \\sum _ { k = 1 } ^ { N } \\exp ( ( e _ { i } ^ { \\mathrm { v } } ) ^ { \\top } e _ { k } ^ { \\mathrm { v } } / \\tau ) }\\tag{8}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            174,
+            723,
+            383,
+            763
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "The ISD loss is then formulated as the KL divergence between these two intra-modal distributions:",
+        "bbox": [
+            81,
+            767,
+            478,
+            797
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/cc3e67b2fdee1a958595a938cdf6117fc0370c52f03ea824c449d8945a30b031.jpg",
+        "text": "$$\n{ \\mathcal { L } } _ { \\mathrm { I S D } } = { \\mathcal { D } } _ { \\mathrm { K L } } ( T _ { \\mathrm { v 2 v } } \\parallel S _ { \\mathrm { v 2 v } } )\\tag{9}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            189,
+            804,
+            374,
+            820
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Finally, the joint training objective is formulated as:",
+        "bbox": [
+            83,
+            828,
+            426,
+            843
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/c8726f28cf2805e05c20d835f161db83c1ac4703f3aa3f60d4ac6074bcc72ce3.jpg",
+        "text": "$$\n{ \\mathcal { L } } _ { \\mathrm { S A F T } } = { \\mathcal { L } } _ { \\mathrm { I T C } } + \\alpha \\cdot { \\mathcal { L } } _ { \\mathrm { S A S S } } + \\beta \\cdot { \\mathcal { L } } _ { \\mathrm { I S D } }\\tag{10}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            145,
+            851,
+            416,
+            867
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "where α and $\\beta$ are balancing hyperparameters.",
+        "bbox": [
+            81,
+            875,
+            393,
+            890
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Diference from Unimodal Proxy Supervision. Unlike prior works that use unimodal soft labels as proxies for crossmodal supervision, SAFT leverages cross-modal similarity distributions derived from a universal multi-modal embedder, enabling more faithful cross-modal supervision.",
+        "bbox": [
+            514,
+            354,
+            915,
+            426
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "table",
+        "img_path": "images/276db2cf003f7cab934205ce747eaa966dbd8c14ca8b42c7547cb17358429455.jpg",
+        "table_caption": [
+            "Table 1: Main Results on SecMM-TBIR Benchmark."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td rowspan=\"3\">Model</td><td colspan=\"6\">SecMM-TBIR</td></tr><tr><td colspan=\"3\">Pedestrian</td><td colspan=\"3\">Vehicle</td></tr><tr><td>m@10</td><td>m@20</td><td>m@30</td><td>m@10</td><td>m@20</td><td>m@30</td></tr><tr><td>TinyCLIP-22M/32</td><td>32.5</td><td>25.1</td><td>23.3</td><td>45.4</td><td>38.0</td><td>33.5</td></tr><tr><td>+ ITC</td><td>38.0</td><td>29.8</td><td>27.8</td><td>51.7</td><td>42.5</td><td>37.0</td></tr><tr><td>+ CUSA</td><td>36.2</td><td>29.3</td><td>27.6</td><td>48.7</td><td>40.7</td><td>34.8</td></tr><tr><td>+ SAFT (ours)</td><td>40.7</td><td>32.1</td><td>29.6</td><td>60.1</td><td>51.3</td><td>45.8</td></tr><tr><td>TinyCLIP-45M/32</td><td>40.0</td><td>32.7</td><td>30.4</td><td>53.3</td><td>45.2</td><td>40.2</td></tr><tr><td>+ITC</td><td>45.4</td><td>37.6</td><td>35.3</td><td>67.6</td><td>56.7</td><td>50.7</td></tr><tr><td>+ CUSA</td><td>42.3</td><td>34.5</td><td>32.4</td><td>60.2</td><td>51.1</td><td>46.6</td></tr><tr><td>+ SAFT (ours)</td><td>50.5</td><td>41.5</td><td>38.4</td><td>73.3</td><td>64.6</td><td>58.5</td></tr><tr><td>MobileCLIP-S0</td><td>49.7</td><td>41.0</td><td>38.5</td><td>60.1</td><td>52.2</td><td>46.5</td></tr><tr><td>+ ITC</td><td>53.1</td><td>44.2</td><td>41.3</td><td>65.8</td><td>57.4</td><td>51.6</td></tr><tr><td>+ CUSA</td><td>53.7</td><td>45.8</td><td>42.7</td><td>69.2</td><td>59.4</td><td>53.3</td></tr><tr><td>+ SAFT (ours)</td><td>59.8</td><td>49.7</td><td>46.7</td><td>77.7</td><td>67.9</td><td>61.7</td></tr><tr><td>MobileCLIP-S1</td><td>52.1</td><td>42.6</td><td>39.8</td><td>65.2</td><td>57.2</td><td>51.7</td></tr><tr><td>+ ITC</td><td>58.0</td><td>48.4</td><td>44.9</td><td>64.8</td><td>59.4</td><td>54.8</td></tr><tr><td>+ CUSA</td><td>59.6</td><td>49.1</td><td>46.3</td><td>69.0</td><td>62.2</td><td>56.8</td></tr><tr><td>+ SAFT (ours)</td><td>65.0</td><td>54.9</td><td>52.1</td><td>79.2</td><td>73.0</td><td>66.8</td></tr><tr><td>OpenCLIP-B/32</td><td>34.0</td><td>27.4</td><td>25.5</td><td>55.6</td><td>46.5</td><td>41.6</td></tr><tr><td>+ ITC</td><td>41.0</td><td>33.2</td><td>31.4</td><td>63.5</td><td>55.6</td><td>49.3</td></tr><tr><td>+ CUSA</td><td>39.2</td><td>31.6</td><td>29.3</td><td>63.0</td><td>55.6</td><td>49.7</td></tr><tr><td>+ SAFT (ours)</td><td>47.5</td><td>39.0</td><td>36.3</td><td>73.1</td><td>64.8</td><td>58.5</td></tr><tr><td>OpenCLIP-B/16</td><td>40.5</td><td>32.9</td><td>30.4</td><td>56.4</td><td>48.0</td><td>42.9</td></tr><tr><td>+ ITC</td><td>47.8</td><td>38.8</td><td>36.3</td><td>65.4</td><td>56.8</td><td>51.6</td></tr><tr><td>+ CUSA</td><td>49.3</td><td>40.1</td><td>37.6</td><td>65.8</td><td>57.0</td><td>52.2</td></tr><tr><td>+ SAFT (ours)</td><td>57.9</td><td>46.9</td><td>44.0</td><td>75.4</td><td>68.7</td><td>62.8</td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr></table>",
+        "bbox": [
+            516,
+            462,
+            924,
+            858
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "table",
+        "img_path": "images/ea8dd0d0ee399f87ea8719fa7536331eac707caed1f1e97b264c8e491cd9c137.jpg",
+        "table_caption": [
+            "Table 2: Ablation Study on Encoder Optimization. Results obtained by fine-tuning diferent encoder modules are reported."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td colspan=\"2\">Fine-tuned Encoders</td><td colspan=\"6\">Pedestrian (mAP@20 ↑)</td><td colspan=\"6\">Vehicle (mAP@20 ↑)</td></tr><tr><td>Image</td><td>Text</td><td>T-22</td><td>T-45</td><td>M-S0</td><td>M-S1</td><td>B/16</td><td>B/32</td><td>T-22</td><td>T-45</td><td>M-S0</td><td>M-S1</td><td>B/16</td><td>B/32</td></tr><tr><td></td><td></td><td>25.1</td><td>32.7</td><td>41.0</td><td>42.6</td><td>32.9</td><td>27.4</td><td>38.0</td><td>45.2</td><td>52.2</td><td>57.2</td><td>48.0</td><td>46.5</td></tr><tr><td>V</td><td>1</td><td>29.8</td><td>37.6</td><td>44.2</td><td>48.4</td><td>38.8</td><td>33.2</td><td>42.5</td><td>56.7</td><td>57.9</td><td>61.4</td><td>56.8</td><td>57.3</td></tr><tr><td>√</td><td>V</td><td>26.5 -3.3</td><td>35.8-1.8</td><td>40.0 -4.2</td><td>43.5 -4.9</td><td>38.1-0.7</td><td>29.2 -4.0</td><td>40.0 -2.5</td><td>54.5 -2.2</td><td>55.9 -2.0</td><td>59.7-1.7</td><td>56.1 -0.7</td><td>55.1-2.2</td></tr></table>",
+        "bbox": [
+            84,
+            65,
+            911,
+            150
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "table",
+        "img_path": "images/12c81e208301ae3315010d2a9b1068399dd3e509e216a5a01ea5f025973ab689.jpg",
+        "table_caption": [
+            "Table 3: Main Results on General Benchmarks."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td rowspan=\"3\">Model</td><td colspan=\"6\">General Benchmarks</td></tr><tr><td colspan=\"3\">Flickr30K</td><td colspan=\"3\">MS-COCO</td></tr><tr><td>R@1</td><td>R@5</td><td>R@10</td><td>R@1</td><td>R@5</td><td>R@10</td></tr><tr><td>TinyCLIP-22M/32</td><td>51.8</td><td>77.2</td><td>85.3</td><td>28.4</td><td>53.0</td><td>64.5</td></tr><tr><td>+ITC</td><td>56.1</td><td>80.6</td><td>88.4</td><td>31.6</td><td>58.0</td><td>69.3</td></tr><tr><td>+ CUSA</td><td>56.9</td><td>81.7</td><td>88.4</td><td>33.5</td><td>61.0</td><td>72.2</td></tr><tr><td>+ SAFT (ours)</td><td>57.3</td><td>82.9</td><td>88.7</td><td>35.0</td><td>62.6</td><td>73.7</td></tr><tr><td>TinyCLIP-45M/32</td><td>64.0</td><td>86.0</td><td>92.1</td><td>36.9</td><td>62.6</td><td>73.1</td></tr><tr><td>+ ITC</td><td>67.6</td><td>89.1</td><td>93.8</td><td>41.1</td><td>67.7</td><td>78.0</td></tr><tr><td>+ CUSA</td><td>68.4</td><td>89.6</td><td>94.5</td><td>42.2</td><td>69.5</td><td>79.7</td></tr><tr><td>+ SAFT (ours)</td><td>70.0</td><td>89.9</td><td>94.8</td><td>43.5</td><td>70.9</td><td>80.8</td></tr><tr><td>MobileCLIP-S0</td><td>66.8</td><td>88.7</td><td>93.1</td><td>39.6</td><td>65.9</td><td>75.6</td></tr><tr><td>+ ITC</td><td>70.8</td><td>90.9</td><td>93.6</td><td>44.6</td><td>72.5</td><td>81.6</td></tr><tr><td>+ CUSA</td><td>71.3</td><td>91.7</td><td>95.3</td><td>45.6</td><td>73.2</td><td>82.8</td></tr><tr><td>+ SAFT (ours)</td><td>71.9</td><td>91.8</td><td>95.5</td><td>46.3</td><td>73.3</td><td>83.0</td></tr><tr><td>MobileCLIP-S1</td><td>71.4</td><td>90.8</td><td>95.0</td><td>43.7</td><td>69.1</td><td>78.2</td></tr><tr><td>+ ITC</td><td>75.9</td><td>93.1</td><td>94.9</td><td>49.2</td><td>75.4</td><td>83.6</td></tr><tr><td>+ CUSA</td><td>76.8</td><td>93.7</td><td>96.7</td><td>50.0</td><td>76.0</td><td>84.3</td></tr><tr><td>+ SAFT (ours)</td><td>77.4</td><td>94.2</td><td>96.9</td><td>50.7</td><td>77.0</td><td>85.4</td></tr><tr><td>OpenCLIP-B/32</td><td>61.1</td><td>85.0</td><td>90.9</td><td>37.1</td><td>62.3</td><td>72.7</td></tr><tr><td>+ ITC</td><td>66.3</td><td>88.6</td><td>93.1</td><td>42.8</td><td>71.2</td><td>81.1</td></tr><tr><td>+ CUSA</td><td>69.3</td><td>90.2</td><td>94.5</td><td>43.7</td><td>71.2</td><td>80.7</td></tr><tr><td>+ SAFT (ours)</td><td>69.3</td><td>90.5</td><td>94.7</td><td>45.0</td><td>72.1</td><td>81.6</td></tr><tr><td>OpenCLIP-B/16</td><td>67.5</td><td>88.4</td><td>93.0</td><td>40.1</td><td>66.0</td><td>75.6</td></tr><tr><td>+ ITC</td><td>73.9</td><td>92.2</td><td>95.5</td><td>47.1</td><td>73.3</td><td>82.5</td></tr><tr><td>+ CUSA</td><td>75.7</td><td>93.1</td><td>96.3</td><td>48.1</td><td>74.6</td><td>83.5</td></tr><tr><td>+ SAFT (ours)</td><td>76.1</td><td>93.3</td><td>96.5</td><td>49.3</td><td>75.7</td><td>84.5</td></tr></table>",
+        "bbox": [
+            81,
+            200,
+            477,
+            598
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "4 Experiments",
+        "text_level": 2,
+        "bbox": [
+            209,
+            650,
+            352,
+            667
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "4.1 Experiment Setup",
+        "text_level": 2,
+        "bbox": [
+            83,
+            671,
+            269,
+            688
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Evaluation Benchmarks. As illustrated in Fig 4, we perform our evaluation on SecMM-TBIR, which comprises 50k surveillance images and 200 comprehensive queries across two subdomains: pedestrian and vehicle. More details are provided in the Supplementary Material.",
+        "bbox": [
+            81,
+            690,
+            480,
+            762
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Training Sets. The training sets comprise two standard general datasets, augmented by a specialized internal dataset which are decoupled from SecMM-TBIR benchmark:",
+        "bbox": [
+            81,
+            767,
+            480,
+            810
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "• General Multi-modal Dataset: Comprising Flickr30K and MS-COCO training splits to ensure data balance, this dataset is explicitly utilized to preserve robust pretrained general cross-modal alignment.",
+        "bbox": [
+            89,
+            814,
+            480,
+            871
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "• Specialized Internal Dataset: Consisting of real-world image-text pairs from surveillance scenarios, the dataset focuses on pedestrian and vehicle domains to enhance discriminability. Specifically, it’s built via Rex-Omni (Jiang et al. 2025) for video frame object detection and Qwen3- VL (Bai et al. 2025) together with Qwen-3.5 (Qwen Team 2026) for high-fidelity captions.",
+        "bbox": [
+            89,
+            873,
+            480,
+            890
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            535,
+            204,
+            915,
+            290
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Baseline Configurations. To demonstrate broad applicability, we select a broad spectrum of CLIP-like models: Tiny-CLIP (Wu et al. 2023), MobileCLIP (Faghri et al. 2025), OpenCLIP (Cherti et al. 2023). As our first baseline, we freeze the text encoder and optimize only the visual branch via the standard ITC objective. Our second comparative baseline CUSA establishes cross-modal alignment via teacherderived unimodal priors without introducing additional architectural components, and we upgrade its teacher to the stronger UniME-V2 to ensure fairness.",
+        "bbox": [
+            514,
+            292,
+            915,
+            435
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Implementation Details. All experiments are conducted on a single NVIDIA RTX 5090 GPU (32GB VRAM). The model is fine-tuned for 25k iterations via AdamW (Loshchilov and Hutter 2019) with batch size of 128. Specifically, the learning rate linearly warms up from $5 \\times 1 0 ^ { - 7 } { \\mathrm { t o } } 5 \\times { \\dot { 1 } } 0 ^ { - 6 }$ over the first 10% of steps, then follows cosine annealing with a weight decay of 0.05. Further details are provided in the Supplementary Material.",
+        "bbox": [
+            514,
+            439,
+            916,
+            553
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "4.2 Main Results",
+        "text_level": 2,
+        "bbox": [
+            516,
+            560,
+            665,
+            577
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Results on TBIR Benchmark. As summarized in Table 1, SAFT consistently outperforms both standard ITC and CUSA across all settings. The selected architectures span transformer and convolution-heavy variants, indicating that the gains of SAFT are not tied to a specific model design. Compared with ITC, SAFT improves average mAP@20 by 5.4 and 10.3 points on pedestrian and vehicle subsets, respectively. SAFT also surpasses CUSA by 5.6 points on pedestrian and",
+        "bbox": [
+            514,
+            578,
+            915,
+            693
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "table",
+        "img_path": "images/2250f6eacda599e2f3642961c35a2d2ec1536360f403be2af664c5b83c2904bf.jpg",
+        "table_caption": [
+            "Table 4: Zero-shot Generalization of Foundation Models."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td rowspan=\"2\">Model</td><td colspan=\"2\">General (R@1 ↑)</td><td colspan=\"2\">SecMM-TBIR (m@20 ↑)</td></tr><tr><td>Flickr</td><td>COCO</td><td>Pedestrian</td><td>Vehicle</td></tr><tr><td>Tiny-22M/32</td><td>51.8</td><td>28.4</td><td>25.1</td><td>38.0</td></tr><tr><td>Tiny-45M/32</td><td>64.0</td><td>36.9</td><td>32.7</td><td>45.2</td></tr><tr><td>MobileCLIP-S0</td><td>66.8</td><td>39.6</td><td>41.0</td><td>52.2</td></tr><tr><td>MobileCLIP-S1</td><td>71.4</td><td>43.7</td><td>42.6</td><td>57.2</td></tr><tr><td>OpenCLIP-B/32</td><td>61.1</td><td>37.1</td><td>27.4</td><td>46.5</td></tr><tr><td>OpenCLIP-B/16</td><td>67.5</td><td>40.1</td><td>32.9</td><td>48.0</td></tr><tr><td>Qwen3-VL-2B</td><td>90.2</td><td>77.3</td><td>45.1</td><td>64.3</td></tr><tr><td>UniMEV2-2B</td><td>89.9</td><td>65.1</td><td>57.4</td><td>68.9</td></tr></table>",
+        "bbox": [
+            519,
+            712,
+            911,
+            857
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "table",
+        "img_path": "images/6c2f3297ff78509527113b202eccb1410f156df216b177bcac908879bbf407a6.jpg",
+        "table_caption": [],
+        "table_footnote": [],
+        "table_body": "<table><tr><td rowspan=\"3\">Backbone</td><td rowspan=\"3\">Baseline</td><td colspan=\"8\">Pedestrian Dataset</td><td colspan=\"8\">Vehicle Dataset</td></tr><tr><td colspan=\"2\">K = 32</td><td colspan=\"2\">K = 64</td><td colspan=\"2\"></td><td colspan=\"2\">K = 96</td><td colspan=\"2\">K = 32</td><td colspan=\"2\"></td><td colspan=\"2\">K = 64</td><td colspan=\"2\">K = 96</td></tr><tr><td>β=−.1 β=.0 β=.1</td><td></td><td></td><td></td><td>β=−.1 β=.0 β=.1 </td><td>β=-.1</td><td>β=.0 β=.1</td><td></td><td>β=-.1</td><td>β=.0 β=.1</td><td></td><td>β=-.1</td><td>β=.0β=.1</td><td></td><td>β=-.1</td><td>β=.0 β=.1</td></tr><tr><td>TinyCLIP-22M/32</td><td>(w/o) 29.8 / 42.5</td><td></td><td>28.4 30.2</td><td>29.6</td><td>27.6</td><td>30.2</td><td></td><td>29.9</td><td>42.2</td><td></td><td>42.4</td><td></td><td></td><td>39.3</td><td>42.5</td><td>42.5</td><td>42.4</td></tr><tr><td>TinyCLIP-45M/32</td><td>37.6 /56.7</td><td>30.0 35.1</td><td>35.0</td><td>37.8</td><td>34.5 34.9</td><td>37.9</td><td>30.1 37.5</td><td>38.0</td><td>30.3 37.8</td><td>51.9</td><td>40.0 50.8</td><td>55.1</td><td>42.7 53.0</td><td>49.9</td><td>42.4 55.1</td><td>55.8</td><td>55.7 55.6</td></tr><tr><td>MobileCLIP-S0</td><td>44.2 /57.9</td><td>42.6</td><td>44.4</td><td>44.3</td><td>42.7 44.5</td><td>44.2</td><td>43.9</td><td>43.5</td><td>43.9</td><td>48.8</td><td>56.2</td><td>57.4</td><td>50.6</td><td>56.0</td><td>57.6</td><td>57.5</td><td>57.8 57.9</td></tr><tr><td>MobileCLIP-S1</td><td>48.4 / 61.4</td><td>47.8</td><td>48.4</td><td>48.2</td><td>47.2 48.6</td><td>48.2</td><td>48.0</td><td>48.0</td><td>48.1</td><td>55.6</td><td>59.4</td><td>60.4</td><td>55.0</td><td>60.6</td><td>59.8</td><td>60.1</td><td>60.0 59.8</td></tr><tr><td>OpenCLIP-B/32</td><td>33.2/57.3</td><td>30.8</td><td>33.0</td><td>33.2</td><td>33.3 32.8</td><td>33.2</td><td>32.9</td><td>32.8</td><td>32.7</td><td>53.6</td><td>51.7</td><td>57.5</td><td>56.0</td><td>52.7</td><td>57.4</td><td>56.2</td><td>56.2 56.3</td></tr><tr><td>OpenCLIP-B/16</td><td>38.8 / 56.8</td><td>37.9</td><td>38.1</td><td>38.5</td><td>38.2 38.8</td><td>38.6</td><td>39.0</td><td>38.7</td><td>38.9</td><td>56.3</td><td>56.2</td><td>56.6</td><td>56.8</td><td>56.8 57.0</td><td></td><td>56.8</td><td>57.1 57.0</td></tr></table>",
+        "bbox": [
+            81,
+            65,
+            913,
+            205
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "table",
+        "img_path": "images/1d4d9a6b70ad6bbc46477deda6082619a08113b7335b59cc7b8e6df06ce9d0a0.jpg",
+        "table_caption": [
+            "Table 5: Hyperparameter Sensitivity of HNM. We report mAP@20 (%) across varying margins β and candidate sizes K. The w/o column denotes the baseline on pedestrian and vehicle without HNM, illustrating the marginal gains of heuristic tuning.",
+            "Table 6: Ablation Study on Loss Functions. We report ITC baseline and incremental gains from adding SASS and ISD across CLIP-like models. SASS consistently improves retrieval performance, and ISD further boosts gains when combined with SASS."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td colspan=\"3\">Loss Term</td><td colspan=\"6\">Pedestrian (mAP@20 ↑)</td><td colspan=\"6\">Vehicle (mAP@20 ↑)</td></tr><tr><td>ITC</td><td>SASS</td><td>ISD</td><td>T-22</td><td>T-45</td><td>M-S0</td><td>M-S1</td><td>B/16</td><td>B/32</td><td>T-22</td><td>T-45</td><td>M-S0</td><td>M-S1</td><td>B/16</td><td>B/32</td></tr><tr><td>一</td><td></td><td></td><td>25.1</td><td>32.7</td><td>41.0</td><td>42.6</td><td>32.9</td><td>27.4</td><td>38.0</td><td>45.2</td><td>52.2</td><td>57.2</td><td>48.0</td><td>46.5</td></tr><tr><td>V</td><td>1</td><td></td><td>29.8</td><td>37.6</td><td>44.2</td><td>48.4</td><td>38.8</td><td>33.2</td><td>42.5</td><td>56.7</td><td>57.9</td><td>61.4</td><td>56.8</td><td>57.3</td></tr><tr><td>√</td><td>√</td><td></td><td>31.1</td><td>40.2</td><td>48.6</td><td>54.7</td><td>45.6</td><td>37.0</td><td>50.3</td><td>64.4</td><td>66.5</td><td>72.1</td><td>67.5</td><td>64.7</td></tr><tr><td>√</td><td>√</td><td>- √</td><td>32.1</td><td>41.5</td><td>49.7</td><td>55.0</td><td>46.9</td><td>39.0</td><td>51.3</td><td>64.6</td><td>67.9</td><td>73.0</td><td>68.7</td><td>64.8</td></tr></table>",
+        "bbox": [
+            84,
+            260,
+            913,
+            356
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "10.7 points on vehicle retrieval, demonstrating the advantage of direct cross-modal distribution supervision over unimodal proxy signals in semantically compressed domains.",
+        "bbox": [
+            81,
+            424,
+            480,
+            468
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "Results on General Benchmarks. As reported in Table 3, we report TBIR performance on Flickr30K and MS-COCO. On these general benchmarks, SAFT consistently improves over standard ITC fine-tuning across all reported metrics. It also outperforms CUSA in most settings. While CUSA yields broadly positive improvements over ITC, the gains are less stable across models and task domains.",
+        "bbox": [
+            81,
+            474,
+            480,
+            574
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "Extended Evaluations. Beyond the main results, we further validate SAFT’s general applicability on Fashion200K (Han et al. 2017) and its compositional reasoning ability on ARO (Yuksekgonul et al. 2023b). On Fashion200K, SAFT outperforms competing baselines with marked retrieval gains. On ARO, it improves reasoning on both Relation and Attribution subsets. Detailed results are provided in the Supplementary Material.",
+        "bbox": [
+            81,
+            582,
+            482,
+            695
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "table",
+        "img_path": "images/48f81609ae216e7d679c418858463b4064ed24ec72a319912b2f2c604680d745.jpg",
+        "table_caption": [
+            "Table 7: Ablation Study on Image Self-Supervision (ISS), evaluated by mAP@20."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td rowspan=\"2\">Model</td><td colspan=\"2\">Pedestrian</td><td colspan=\"2\">Vehicle</td></tr><tr><td>ITC</td><td>ITC+ISS</td><td>ITC</td><td>ITC+ISS</td></tr><tr><td>TinyCLIP-22M/32</td><td>29.8</td><td>27.2-2.6</td><td>42.5</td><td>40.9 -1.6</td></tr><tr><td>TinyCLIP-45M/32</td><td>37.6</td><td>33.9 -3.7</td><td>56.7</td><td>53.6 -3.1</td></tr><tr><td>MobileCLIP-S0</td><td>44.2</td><td>44.0−0.2</td><td>57.9</td><td>56.3- -1.6</td></tr><tr><td>MobileCLIP-S1</td><td>48.4</td><td>48.0−0.4</td><td>61.4</td><td>59.8 -1.6</td></tr><tr><td>OpenCLIP-B/32</td><td>33.2</td><td>32.0 -1.2</td><td>57.3</td><td>57.30.0</td></tr><tr><td>OpenCLIP-B/16</td><td>38.8</td><td>38.3-0.5</td><td>56.8</td><td>56.1-0.7</td></tr></table>",
+        "bbox": [
+            98,
+            717,
+            465,
+            843
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "4.3 Ablation Studies",
+        "text_level": 2,
+        "bbox": [
+            516,
+            422,
+            691,
+            439
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "We conduct ablation experiments to analyze the contributions of our framework. To verify the general applicability of our findings, we evaluate these variants across mainstream models optimized with standard ITC objective, on pedestrian and vehicle retrieval sub-tasks.",
+        "bbox": [
+            514,
+            444,
+            915,
+            516
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "Foundation Model Generalization Gap. We first evaluate the zero-shot performance of pre-trained models. As shown in Table 4, models demonstrating strong performance on general-domain retrieval benchmarks can fail to maintain efectiveness on SecMM-TBIR, underscoring the necessity of benchmarking and fine-tuning in specific domains.",
+        "bbox": [
+            514,
+            523,
+            915,
+            611
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "Impact of Text Encoder Tuning. While joint cross-modal fine-tuning is conventionally assumed to increase alignment, we find it suboptimal across all models and sub-tasks. As reported in Table 2, tuning the text encoder consistently degrades performance. We attribute this to the distortion of pretrained textual space: in semantically compressed domains, the encoder overfits local patterns and degrades the generalization capability from large-scale pretraining. In contrast, exclusively optimizing the visual branch preserves pretrained capability while adapting to domain-specific visual details.",
+        "bbox": [
+            514,
+            617,
+            915,
+            760
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "Performance Degradation of Standard ISS. As discussed in Section 3.2, conventional ISS imposes an ill-posed constraint by separating semantically near-identical images. Table 7 confirms it causes consistent performance drops across nearly all models in vehicle and pedestrian domains.",
+        "bbox": [
+            514,
+            766,
+            915,
+            839
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "Ablation of Hard Negative Mining. We evaluate the HNM strategy by integrating it into our standard ITC baseline. Table 5 shows that HNM yields only marginal gains and can even degrade retrieval performance, as its rigid decision boundaries cannot reliably distinguish genuine hard negatives from false negatives under such dense semantic overlap, potentially leading to dataset-specific overfitting.",
+        "bbox": [
+            516,
+            845,
+            916,
+            890
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            83,
+            69,
+            480,
+            126
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "Ablations of Loss Functions. As detailed in Table 6, we evaluate the contributions of the SASS and ISD components. SASS consistently improves retrieval performance over the baseline across all architectures, demonstrating the efectiveness of cross-modal soft-label supervision in alleviating false negatives. ISD further delivers additional gains, validating the complementary role of structural distillation in boosting domain-specific retrieval.",
+        "bbox": [
+            83,
+            132,
+            480,
+            244
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "5 Conclusion",
+        "text_level": 2,
+        "bbox": [
+            217,
+            256,
+            346,
+            271
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "In this paper, we propose a systematic approach for domainspecific TBIR that encompasses benchmarking model performance in specific scenarios and improving cross-modal alignment under severe semantic compression. Specifically, we design the DSMM-TBIR data engine to construct the SecMM-TBIR benchmark. Integrated with our SAFT framework, it establishes a robust training and evaluation pipeline. Extensive results demonstrate that our approach substantially improves domain-specific TBIR performance and further enhances general-domain representation capabilities.",
+        "bbox": [
+            83,
+            276,
+            480,
+            414
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "Future works may include extending this pipeline to more specialized domains, while exploring lightweight deployment on edge devices also remains an open research topic.",
+        "bbox": [
+            83,
+            415,
+            480,
+            457
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "References",
+        "text_level": 2,
+        "bbox": [
+            232,
+            66,
+            331,
+            83
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "Bai, S.; Cai, Y.; Chen, R.; Chen, K.; Chen, X.; Cheng, Z.; Deng, L.; Ding, W.; Gao, C.; Ge, C.; Ge, W.; Guo, Z.; Huang, Q.; Huang, J.; Huang, F.; Hui, B.; Jiang, S.; Li, Z.; Li, M.; Li, M.; Li, K.; Lin, Z.; Lin, J.; Liu, X.; Liu, J.; Liu, C.; Liu, Y.; Liu, D.; Liu, S.; Lu, D.; Luo, R.; Lv, C.; Men, R.; Meng, L.; Ren, X.; Ren, X.; Song, S.; Sun, Y.; Tang, J.; Tu, J.; Wan, J.; Wang, P.; Wang, P.; Wang, Q.; Wang, Y.; Xie, T.; Xu, Y.; Xu, H.; Xu, J.; Yang, Z.; Yang, M.; Yang, J.; Yang, A.; Yu, B.; Zhang, F.; Zhang, H.; Zhang, X.; Zheng, B.; Zhong, H.; Zhou, J.; Zhou, F.; Zhou, J.; Zhu, Y.; and Zhu, K. 2025. Qwen3-VL Technical Report. arXiv preprint arXiv:2511.21631.",
+            "Chen, D.; Wang, Y.; Xie, Y.; Chen, S.; Peng, W.; Tang, M.; Fang, M.; Chen, C. P.; Li, P.; and Zhang, W. 2025. Intramodal Consistency for Image-text Retrieval through Softlabel Distillation. Pattern Recognition, 112817.",
+            "Cherti, M.; Beis, R.; He, B.; Fang, A.; Schuhmann, C.; Schmidt, L.; and Jitsev, J. 2023. Reproducible scaling laws for contrastive language-image learning. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2818–2829.",
+            "Ding, Z.; Ding, C.; Shao, Z.; and Tao, D. 2021. Semantically Self-Aligned Network for Text-to-Image Part-aware Person Re-identification. arXiv preprint arXiv:2107.12666.",
+            "Faghri, F.; Vasu, P. K. A.; Koc, C.; Shankar, V.; Toshev, A. T.; Tuzel, O.; and Pouransari, H. 2025. MobileCLIP2: Improving Multi-Modal Reinforced Training. Transactions on Machine Learning Research.",
+            "Gao, Y.; Liu, J.; Xu, Z.; Wu, T.; Zhang, E.; Li, K.; Yang, J.; Liu, W.; and Sun, X. 2024. Softclip: Softer cross-modal alignment makes clip stronger. In Proceedings of the AAAI Conference onArtificial Intelligence, volume 38, 1860–1868.",
+            "Gu, T.; Yang, K.; Feng, Z.; Wang, X.; Zhang, Y.; Long, D.; Chen, Y.; Cai, W.; and Deng, J. 2025a. Breaking the Modality Barrier: Universal Embedding Learning with Multimodal LLMs. arXiv:2504.17432.",
+            "Gu, T.; Yang, K.; Zhang, K.; An, X.; Feng, Z.; Zhang, Y.; Cai, W.; Deng, J.; and Bing, L. 2025b. UniME-V2: MLLMas-a-Judge for Universal Multimodal Embedding Learning. arXiv:2510.13515.",
+            "Günther, M.; Sturua, S.; Akram, M. K.; Mohr, I.; Ungureanu, A.; Eslami, S.; Martens, S.; Wang, B.; Wang, N.; and Xiao, H. 2025. jina-embeddings-v4: Universal Embeddings for Multimodal Multilingual Retrieval. arXiv:2506.18902.",
+            "Han, X.; Wu, Z.; Huang, P. X.; Zhang, X.; Zhu, M.; Li, Y.; Zhao, Y.; and Davis, L. S. 2017. Automatic Spatially-aware Fashion Concept Discovery. arXiv:1708.01311.",
+            "Huang, H.; Nie, Z.; Wang, Z.; and Shang, Z. 2024. Crossmodal and uni-modal soft-label alignment for image-text retrieval. In Proceedings ofthe AAAI Conference on Artificial Intelligence, volume 38, 18298–18306.",
+            "Idan, O.; Vexler, V.; Lederman, G.; Sivov, D.; Zada, A. C.; and Komforti, S. N. 2026. Few Shots Text to Image Retrieval: New Benchmarking Dataset and Optimization Methods. arXiv preprint arXiv:2603.25891.",
+            "Jia, C.; Yang, Y.; Xia, Y.; Chen, Y.-T.; Parekh, Z.; Pham, H.; Le, Q.; Sung, Y.-H.; Li, Z.; and Duerig, T. 2021. Scaling up visual and vision-language representation learning with noisy text supervision. In Proceedings of the International Conference on Machine Learning (ICML), 4904–4916.",
+            "Jian, W.; Zhang, Y.; Liang, D.; Xie, C.; He, Y.; Leng, D.; and Yin, Y. 2025a. Rzenembed: Towards comprehensive multimodal retrieval. arXiv preprint arXiv:2510.27350.",
+            "Jian, W.; Zhang, Y.; Liang, D.; Xie, C.; He, Y.; Leng, D.; and Yin, Y. 2025b. RzenEmbed: Towards Comprehensive Multimodal Retrieval. arXiv:2510.27350.",
+            "Jiang, Q.; Huo, J.; Chen, X.; Xiong, Y.; Zeng, Z.; Chen, Y.; Ren, T.; Yu, J.; and Zhang, L. 2025. Detect Anything via Next Point Prediction. arXiv:2510.12798.",
+            "Ko, H.; and Park, C.-M. 2025. Bringing clip to the clinic: Dynamic soft labels and negation-aware learning for medical analysis. In Proceedings of the Computer Vision and Pattern Recognition Conference, 25897–25906.",
+            "Krishna, R.; Zhu, Y.; Groth, O.; Johnson, J.; Hata, K.; Kravitz, J.; Chen, S.; Kalantidis, Y.; Li, L.-J.; Shamma, D. A.; Bernstein, M. S.; and Fei-Fei, L. 2017. Visual Genome: Connecting Language and Vision Using Crowdsourced Dense Image Annotations. International Journal of Computer Vision, 123: 32–73.",
+            "Li, M.; Zhang, Y.; Long, D.; Keqin, C.; Song, S.; Bai, S.; Yang, Z.; Xie, P.; Yang, A.; Liu, D.; Zhou, J.; and Lin, J. 2026. Qwen3-VL-Embedding and Qwen3-VL-Reranker: A Unified Framework for State-of-the-Art Multimodal Retrieval and Ranking. arXiv preprint arXiv:2601.04720.",
+            "Li, S.; Xiao, T.; Li, H.; Zhou, B.; and Wang, X. 2017. Person Search With Natural Language Description. In Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR), 1954–1962.",
+            "Lin, T.-Y.; Maire, M.; Belongie, S.; Hays, J.; Perona, P.; Ramanan, D.; Dollár, P.; and Zitnick, C. L. 2014. Microsoft coco: Common objects in context. In Computer Vision– ECCV 2014: 13th European Conference, Zurich, Switzerland, September 6-12, 2014, Proceedings, Part V 13, 740– 755. Springer.",
+            "Loshchilov, I.; and Hutter, F. 2019. Decoupled Weight Decay Regularization. In International Conference on Learning Representations (ICLR).",
+            "Lu, M.; Weinberger, E.; Kim, C.; and Lee, S.-I. 2026. CellCLIP-Learning Perturbation Efects in Cell Painting via Text-Guided Contrastive Learning. Advances in Neural Information Processing Systems, 38: 124505–124537.",
+            "Oquab, M.; Darcet, T.; Moutakanni, T.; Vo, H.; Szafraniec, M.; Khalidov, V.; Fernandez, P.; Haziza, D.; Massa, F.; El-Nouby, A.; et al. 2023. Dinov2: Learning robust visual features without supervision. arXiv preprint arXiv:2304.07193.",
+            "Plummer, B. A.; Wang, L.; Cervantes, C. M.; Caicedo, J. C.; Hockenmaier, J.; and Lazebnik, S. 2017. Flickr30K Entities: Collecting Region-to-Phrase Correspondences for Richer Image-to-Sentence Models. IJCV, 123(1): 74–93.",
+            "Qwen Team. 2026. Qwen3.5: Towards Native Multimodal Agents."
+        ],
+        "bbox": [
+            83,
+            87,
+            480,
+            253
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "Radford, A.; Kim, J. W.; Hallacy, C.; Ramesh, A.; Goh, G.; Agarwal, S.; Sastry, G.; Askell, P., Amanda Mishkin; Clark, J.; Krueger, G.; and Sutskever, I. 2021. Learning Transferable Visual Models From Natural Language Supervision. In International Conference on Machine Learning, 8748–8763. PMLR.",
+            "Schuhmann, C.; Beaumont, R.; Vencu, R.; Gordon, C. W.; Wightman, R.; Cherti, M.; Coombes, T.; Katta, A.; Mullis, C.; Wortsman, M.; Schramowski, P.; Kundurthy, S. R.; Crowson, K.; Schmidt, L.; Kaczmarczyk, R.; and Jitsev, J. 2022. LAION-5B: An open large-scale dataset for training next generation image-text models. In Thirty-sixth Conference on Neural Information Processing Systems Datasets and Benchmarks Track.",
+            "Schuhmann, C.; Vencu, R.; Beaumont, R.; Kaczmarczyk, R.; Mullis, C.; Katta, A.; Coombes, T.; Jitsev, J.; and Komatsuzaki, A. 2021. LAION-400M: Open Dataset of CLIP-Filtered 400 Million Image-Text Pairs. In Data Centric AI Workshop, NeurIPS 2021.",
+            "Shin, W.; Park, J.; Woo, T.; Cho, Y.; Oh, K.; and Song, H. 2022. e-clip: Large-scale vision-language representation learning in e-commerce. In Proceedings of the 31st ACM international conference on information & knowledge management, 3484–3494.",
+            "Siméoni, O.; Vo, H. V.; Seitzer, M.; Baldassarre, F.; Oquab, M.; Jose, C.; Khalidov, V.; Szafraniec, M.; Yi, S.; Ramamonjisoa, M.; et al. 2025. Dinov3. arXiv preprint arXiv:2508.10104.",
+            "Srinivasa, R. S.; Cho, J.; Yang, C.; Saidutta, Y. M.; Lee, C.- H.; Shen, Y.; and Jin, H. 2023. Cwcl: Cross-modal transfer with continuously weighted contrastive loss. Advances in Neural Information Processing Systems, 36: 78496–78513.",
+            "Tschannen, M.; Gritsenko, A.; Wang, X.; Naeem, M. F.; Alabdulmohsin, I.; Parthasarathy, N.; Evans, T.; Beyer, L.; Xia, Y.; Mustafa, B.; Hénaf, O.; Harmsen, J.; Steiner, A.; and Zhai, X. 2025. SigLIP 2: Multilingual Vision-Language Encoders with Improved Semantic Understanding, Localization, and Dense Features. arXiv preprint arXiv:2502.14786.",
+            "Vendrow, E.; Pantazis, O.; Shepard, A.; Brostow, G.; Jones, K. E.; Mac Aodha, O.; Beery, S.; and Van Horn, G. 2024. INQUIRE: A Natural World Text-to-Image Retrieval Benchmark. NeurIPS.",
+            "Wang, Z.; Wu, Z.; Agarwal, D.; and Sun, J. 2022. Medclip: Contrastive learning from unpaired medical images and text. In Proceedings of the 2022 Conference on Empirical Methods in Natural Language Processing, 3876–3887.",
+            "Wu, K.; Peng, H.; Zhou, Z.; Xiao, B.; Liu, M.; Yuan, L.; Xuan, H.; Valenzuela, M.; Chen, X. S.; Wang, X.; Chao, H.; and Hu, H. 2023. TinyCLIP: CLIP Distillation via Afinity Mimicking and Weight Inheritance. In Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV), 21970–21980.",
+            "Yuksekgonul, M.; Bianchi, F.; Kalluri, P.; Jurafsky, D.; and Zou, J. 2023a. When and why Vision-Language Models behave like Bags-of-Words, and what to do about it? In International Conference on Learning Representations.",
+            "Yuksekgonul, M.; Bianchi, F.; Kalluri, P.; Jurafsky, D.; and Zou, J. 2023b. When and why vision-language models behave like bags-of-words, and what to do about it? arXiv:2210.01936.",
+            "Zhu, A.; Wang, Z.; Li, Y.; Wan, X.; Jin, J.; Wang, T.; Hu, F.; and Hua, G. 2021. DSSL: Deep Surroundings-person Separation Learning for Text-based Person Retrieval. In Proceedings of the 29th ACM International Conference on Multimedia, 1201–1209.",
+            "Zuo, J.; Hong, J.; Zhang, F.; Yu, C.; Zhou, H.; Gao, C.; Sang, N.; and Wang, J. 2024. PLIP: Language-Image Pre-training for Person Representation Learning. arXiv:2305.08386."
+        ],
+        "bbox": [
+            83,
+            69,
+            480,
+            151
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "A Benchmark Details",
+        "text_level": 2,
+        "bbox": [
+            179,
+            66,
+            382,
+            83
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "We construct SecMM-TBIR with our proposed DSMM-TBIR pipeline, with the Adaptive Data Pool Curation stage serving as the core component of our data preparation workflow. In this stage, we build the image and caption pools by aggregating multi-source data drawn from three complementary channels: self-collected domain-specific datasets, targeted web crawling ofin-domain visual-textual pairs, and a curated collection of publicly available benchmarks, notably encompassing CUHK-PEDES, RSTPReid, ICFG-PEDES, SYNTH-PEDES, and CUHK-CompCars.",
+        "bbox": [
+            81,
+            85,
+            480,
+            226
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "Textual Branch. We first analyze the text distribution of the collected data to derive corresponding statistical information, which are incorporated into prompts as detailed in Table 11. The resulting prompts are then fed into Qwen3 to generate comprehensive textual queries.",
+        "bbox": [
+            81,
+            224,
+            480,
+            295
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "Visual Branch. Images are first encoded by DINOv3 to obtain visual embeddings. CGDS then applies K-means clustering to the pedestrian and vehicle image pools separately in the embedding space, with K<sup>˜</sup> = 100 in each domain, followed by randomly sampling 100–1000 images from each cluster. Qwen3-VL subsequently filters the sampled images to retain only those relevant to the target object category.",
+        "bbox": [
+            81,
+            294,
+            480,
+            393
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "Multi-Expert Collaborative Filtering. A suite of universal multi-modal embedding models serve as expert retrievers, including Qwen3-VL-Embedding, Jina-v4, RZenv2, and SigLIP. Each expert retrieves its top-K<sup>ˆ</sup> = 1000 candidates for a given query. We then construct the final set of potential matching pairs by taking the union of all retrieved results, which proceeds to annotation.",
+        "bbox": [
+            81,
+            392,
+            480,
+            492
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "As shown in Figure 6, additional visualization examples of our SecMM-TBIR are provided for easier intuitive understanding, where each query is associated with multiple",
+        "bbox": [
+            81,
+            492,
+            480,
+            536
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "image",
+        "img_path": "images/e18f09372d357a4e5cdcb5c0f7819fa08b4af1e47c187cce922a00105ba975e1.jpg",
+        "image_caption": [
+            "Figure 6: More SecMM-TBIR Samples."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            84,
+            559,
+            477,
+            852
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "image",
+        "img_path": "images/cf978c7b88419d0a274a0da346f1542acf5a0399503e0b3f9bfab3a17a04c5e6.jpg",
+        "image_caption": [
+            "Figure 7: Mini-batch Training Strategies. Hard Negative Mining (HNM) enforces a rigid decision boundary, whereas SASS utilizes soft cross-modal distributions to preserve continuous semantic similarities."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            517,
+            65,
+            911,
+            234
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "relevant visual candidates.",
+        "bbox": [
+            516,
+            327,
+            694,
+            343
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "B Training Hyperparameters",
+        "text_level": 2,
+        "bbox": [
+            581,
+            354,
+            848,
+            371
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "For completeness and reproducibility, we explicitly provide full supplementary implementation details on the hyperparameter configurations used in our main experiments. The corresponding hyperparameter settings for diferent experiments are fully listed in Table 8.",
+        "bbox": [
+            514,
+            373,
+            915,
+            444
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "We adopt a relatively small batch size and a conservative learning rate schedule to ensure stable optimization under severe semantic compression in domain-specific TBIR tasks. The scale and aspect ratio ranges for random resized cropping are adjusted to fit the typical visual profiles of pedestrian and vehicle targets. Concretely, the scale range is empirically fixed at [0.8, 1.0] to efectively retain key foreground information, and the aspect ratio range is set to [0.2, 2.0] to handle the varied shapes and orientations of pedestrians and vehicles in the real-world.",
+        "bbox": [
+            514,
+            443,
+            915,
+            556
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "table",
+        "img_path": "images/b31e2f93b4453750217ade4bd0cd2b01b992df71c915d5ad109307d05a6deb0d.jpg",
+        "table_caption": [
+            "Table 8: Hyperparameter Configurations for the Fine-Tuning Framework."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Hyperparameter</td><td colspan=\"3\">Value TinyCLIP, MobileCLIP, OpenCLIP</td></tr><tr><td>Input resolution</td><td colspan=\"3\">2242, 2562, 2242</td></tr><tr><td>Resize Crop Scale Resize Crop Ratio</td><td colspan=\"3\">[0.8, 1.0] [0.2, 2.0]</td></tr><tr><td>Training Iterations</td><td colspan=\"3\">25k</td></tr><tr><td>Batch Size</td><td colspan=\"3\">128</td></tr><tr><td>Optimizer Min LR</td><td colspan=\"3\">AdamW</td></tr><tr><td></td><td colspan=\"3\">5e-7</td></tr><tr><td>Max LR</td><td colspan=\"3\">5e-6</td></tr><tr><td>Warmup Ratio</td><td colspan=\"3\">0.1</td></tr><tr><td>LR Decay Schedule</td><td colspan=\"3\">Cosine Annealing</td></tr><tr><td>Weight Decay Rate</td><td colspan=\"3\">0.05</td></tr><tr><td></td><td colspan=\"3\"></td></tr><tr><td>SASS Loss Weight α</td><td colspan=\"3\">1</td></tr><tr><td>ISD Loss Weight β</td><td colspan=\"3\">0.75</td></tr><tr><td>SASS Teacher</td><td colspan=\"3\">UniME-V2-7B</td></tr><tr><td>ISD Teacher</td><td colspan=\"3\">UniME-V2-7B</td></tr><tr><td>Model</td><td colspan=\"3\">Fashion200k</td></tr><tr><td></td><td>R@1</td><td>R@5</td><td>R@10</td></tr><tr><td>TinyCLIP-22M/32</td><td>35.7</td><td>65.0</td><td>76.3</td></tr><tr><td>+ITC</td><td>39.4</td><td>66.8</td><td>77.0</td></tr><tr><td>+ CUSA</td><td>39.2</td><td>68.4</td><td>77.2</td></tr><tr><td>+ SAFT (ours)</td><td>39.7</td><td>68.6</td><td>78.0</td></tr><tr><td>TinyCLIP-45M/32</td><td>42.2</td><td>71.0</td><td>80.2</td></tr><tr><td>+ ITC</td><td>44.3</td><td>71.5</td><td>80.7</td></tr><tr><td>+ CUSA</td><td>44.6</td><td>71.3</td><td>81.8</td></tr><tr><td>+ SAFT (ours)</td><td>45.7</td><td>73.7</td><td>82.8</td></tr><tr><td>MobileCLIP-S0</td><td>45.1</td><td>74.8</td><td>84.6</td></tr><tr><td>+ ITC</td><td>52.7</td><td>83.9</td><td>91.9</td></tr><tr><td>+ CUSA</td><td>52.1</td><td>83.2</td><td>91.4</td></tr><tr><td>+ SAFT (ours)</td><td>55.3</td><td>84.3</td><td>92.3</td></tr><tr><td>MobileCLIP-S1</td><td>53.7</td><td>81.7</td><td>89.4</td></tr><tr><td>+ ITC</td><td>60.8</td><td>88.6</td><td>94.7</td></tr><tr><td>+ CUSA</td><td>59.8</td><td>88.1</td><td>94.6</td></tr><tr><td>+ SAFT (ours)</td><td>61.5</td><td>88.7</td><td>95.3</td></tr><tr><td>OpenCLIP-B/32</td><td>38.3</td><td>67.5</td><td>77.3</td></tr><tr><td>+ ITC</td><td>42.4</td><td>69.1</td><td>79.4</td></tr><tr><td>+ CUSA</td><td>42.7</td><td>71.1</td><td>80.9</td></tr><tr><td>+ SAFT (ours)</td><td>42.8</td><td>71.2</td><td>81.5</td></tr><tr><td>OpenCLIP-B/16</td><td>40.2</td><td>69.1</td><td>78.2</td></tr><tr><td>+ ITC</td><td>44.7</td><td>71.1</td><td>81.8</td></tr><tr><td>+ CUSA</td><td>45.2</td><td>73.8</td><td>82.2</td></tr><tr><td>+ SAFT (ours)</td><td>46.3</td><td>74.2</td><td>82.7</td></tr></table>",
+        "bbox": [
+            527,
+            589,
+            903,
+            843
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "table",
+        "img_path": "",
+        "table_caption": [],
+        "table_footnote": [],
+        "bbox": [
+            83,
+            65,
+            478,
+            454
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Table 9: Results on Fashion200K.",
+        "bbox": [
+            163,
+            465,
+            398,
+            479
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            81,
+            508,
+            480,
+            537
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "C More Detailed Results",
+        "text_level": 2,
+        "bbox": [
+            169,
+            551,
+            393,
+            568
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Domain Generalization on Fashion200K. To further evaluate the domain generalization capability of our framework, we conduct additional experiments on the Fashion200K dataset, extending the evaluation scope from surveillance domain to commercial fashion scenarios. To adapt the benchmark to practical text-based image retrieval settings, we augment the original dataset by generating item descriptions using the Qwen3-VL together with Qwen-3.5, from which 2,000 of the resulting samples are selected to form the test set, while the remaining samples are used to form the training set.",
+        "bbox": [
+            81,
+            571,
+            482,
+            727
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Quantitative results are summarized in Table 9. Our method consistently outperforms all baselines by a significant margin in this completely diferent domain. This validation confirms the broad applicability ofour method beyond security-focused surveillance tasks and demonstrates its effectiveness and generalizability for domain-specific TBIR.",
+        "bbox": [
+            81,
+            727,
+            480,
+            811
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Compositional Reasoning Capability. We further validate the compositional reasoning capability of our method on the ARO benchmark. The model is trained using the same training set described in Experiment Section. As reported in Table 10, SAFT improves compositional reasoning performance across most evaluated models on both the Relation and Attribution subsets. While the gains vary across diferent models, the overall trend suggests that SAFT enhances the model’s ability to capture fine-grained semantic structures and complex multi-modal compositional relations.",
+        "bbox": [
+            81,
+            818,
+            480,
+            890
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "table",
+        "img_path": "images/270220407b54277ab2a25f2969befc479d9c5038d9d34fd4226e844a3e2a5269.jpg",
+        "table_caption": [
+            "Table 10: Evaluation on ARO Benchmark."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td rowspan=\"2\">Model</td><td colspan=\"2\">ARO (Acc. ↑)</td></tr><tr><td>Relation</td><td>Attribution</td></tr><tr><td>TinyCLIP-22M/32</td><td>48.2</td><td>56.0</td></tr><tr><td>+ITC</td><td>51.7</td><td>60.6</td></tr><tr><td>+ CUSA</td><td>50.8</td><td>57.2</td></tr><tr><td>+ SAFT (ours)</td><td>51.3</td><td>60.0</td></tr><tr><td>TinyCLIP-45M/32</td><td>49.8</td><td>59.1</td></tr><tr><td>+ITC</td><td>51.2</td><td>61.2</td></tr><tr><td>+ CUSA</td><td>51.8</td><td>61.6</td></tr><tr><td>+ SAFT (ours)</td><td>51.9</td><td>61.9</td></tr><tr><td>MobileCLIP-S0</td><td>49.5</td><td>62.6</td></tr><tr><td>+ ITC</td><td>51.1</td><td>63.8</td></tr><tr><td>+ CUSA</td><td>50.9</td><td>63.7</td></tr><tr><td>+ SAFT (ours)</td><td>53.5</td><td>65.7</td></tr><tr><td>MobileCLIP-S1</td><td>50.2</td><td>65.7</td></tr><tr><td>+ ITC</td><td>50.6</td><td>65.0</td></tr><tr><td>+ CUSA</td><td>50.6</td><td>65.4</td></tr><tr><td>+ SAFT (ours)</td><td>53.0</td><td>67.2</td></tr><tr><td>OpenCLIP-B/32</td><td>49.8</td><td>58.5</td></tr><tr><td>+ ITC</td><td>50.9</td><td>60.8</td></tr><tr><td>+ CUSA</td><td>50.6</td><td>60.0</td></tr><tr><td>+ SAFT (ours)</td><td>51.0</td><td>60.8</td></tr><tr><td>OpenCLIP-B/16</td><td>46.6</td><td>56.8</td></tr><tr><td>+ ITC</td><td>49.9</td><td>59.8</td></tr><tr><td>+ CUSA</td><td>50.6</td><td>60.2</td></tr><tr><td>+ SAFT (ours)</td><td>51.2</td><td>61.0</td></tr></table>",
+        "bbox": [
+            516,
+            65,
+            911,
+            454
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            514,
+            507,
+            915,
+            579
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "table",
+        "img_path": "images/dc33db708ecd3b7687fcf087177777937ba099321a98b8336d51a132ba0d10cf.jpg",
+        "table_caption": [
+            "Table 11: Prompt Engineering in Distribution-Aware Prompting (DAP)."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Task</td><td>Prompt Category</td><td>Prompt</td></tr><tr><td>Pedestrian</td><td>System</td><td>You are a data engineer responsible for constructing a text-image retrieval dataset. Based on the following requirements, please generate a batch of English text retrieval queries centered around &quot;pedestrians/people&quot; for security camera scenarios.</td></tr><tr><td></td><td></td><td>[Task Scenario] • All outputs must be English query sentences. • The content of the queries must center around &quot;people/pedestrians.&quot;</td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td>• The tone of the queries should match the realistic search behavior of security system users.</td></tr><tr><td></td><td></td><td>[Template Structure]</td></tr><tr><td></td><td></td><td>All query sentences must adhere to the following structure:</td></tr><tr><td></td><td></td><td>[person] + [specific action and/or descriptor] + (optional) second or third complementary description</td></tr><tr><td></td><td></td><td>[Stylistic Requirements]</td></tr><tr><td></td><td></td><td>• Sentence Length: Approximately 5-15 English words (MS-COCO caption style, with natural variations in query length).</td></tr><tr><td></td><td></td><td>• Tone &amp; Style: Natural, concise, and aligned with real-world surveillance search queries, avoiding overly literary or descriptive language.</td></tr><tr><td></td><td></td><td>• Diversity: Cover a wide range of human attributes, including actions, appearance, clothing, carried objects, and characteristics.</td></tr><tr><td></td><td></td><td>• Safety Guardrails: Generation of any content related to danger, violence, pornography, weapons, or illegal activities is strictly prohibited.</td></tr><tr><td></td><td></td><td>[Semantic Background]</td></tr><tr><td></td><td></td><td>Common nouns, verbs, adjectives, and adverbs related to people have been statistically extracted from relevant datasets. Please randomly select and combine elements from these semantic scopes to</td></tr><tr><td></td><td></td><td>ensure high diversity in the generated queries.</td></tr><tr><td></td><td></td><td>[Output Format]</td></tr><tr><td></td><td></td><td>• Output multiple English queries. • Each query should be on a new line, without any numbering or bullet points.</td></tr><tr><td></td><td></td><td>• Do not output any explanations or extra commentary; output the queries only.</td></tr><tr><td></td><td></td><td>[Output Examples] A little boy sitting alone on a motorcycle. A man rides a motorcycle down an empty street next to houses.</td></tr><tr><td></td><td></td><td>The woman in the kitchen is holding a huge pan.</td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td>Man in motorcycle leathers standing in front of a group of bikes.</td></tr><tr><td></td><td></td><td>A man standing in a kitchen while closing a cupboard door.</td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td>Two people riding on a moped with a bus in the next lane.</td></tr><tr><td></td><td></td><td>A girl in bikini standing with surfboard on the beach.</td></tr><tr><td></td><td></td><td>A man holds a hot dog while several people walk in the background.</td></tr><tr><td></td><td></td><td>A man with a racket on a tennis court.</td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td>A woman in a pink jacket and printed pants.</td></tr><tr><td></td><td></td><td>A man with a red shirt is holding a cell phone up to his ear.</td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td>User</td><td>Please randomly select from the following keywords and generate [part_num] pedestrian-related</td></tr><tr><td></td><td></td><td>descriptions (try to use most of the words):</td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td>Nouns: [keywords_noun_part_str]</td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td>Verbs: [keywords_verb_part_str]</td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td>Adjectives: [keywords_adj_part_str]</td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td></td><td>Please start generating queries:</td></tr></table>",
+        "bbox": [
+            86,
+            99,
+            911,
+            821
+        ],
+        "page_idx": 12
+    }
+]

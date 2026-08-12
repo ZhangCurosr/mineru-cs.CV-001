@@ -1,0 +1,428 @@
+# SapiensID 2.0: Aligning Human Recognition Foundation Models with Human Perception
+
+Yiyang Su<sup>1</sup> Jie Zhu<sup>1</sup> Feng Liu<sup>2</sup> Anil Jain<sup>1</sup> Xiaoming Liu<sup>1,3</sup>
+
+<sup>1</sup> Michigan State University <sup>2</sup> Drexel University <sup>3</sup> University of North Carolina, Chapel Hill {suyiyan1, zhujie4, jain}@msu.edu, fl397@drexel.edu, liuxm@cs.unc.edu
+
+## Abstract
+
+While foundation models have significantly advanced human recognition across diverse modalities, they predominantly rely on static, geometric feature extraction. This approach fundamentally diverges from human perception. Consequently, current models often suffer from “semantic blindness,” overfitting to transient noise while failing to leverage invariant soft biometrics, and struggle to capture temporal motion signatures. To bridge this gap, we propose SapiensID 2.0, a human recognition framework enriched with both semantic and temporal awareness. To overcome the lack of soft-biometric annotations, we transfer zero-shot semantic knowledge from Multimodal Large Language Models (MLLMs) into a discriminative embedding space. We resolve the dimensional mismatch between these spaces using Invariant Trait Alignment (ITA) to distill core persistent traits, and Transient Noise Disentanglement (TND) to decouple artifacts like clothing. Furthermore, we design a Kinematic Semantic Attention Head (K-SAH) that extends spatial attention across temporal windows. By tracking semantic patches over time, K-SAH captures rich kinematic signatures without requiring large-scale video datasets. Extensive experiments demonstrate that SapiensID 2.0 achieves state-of-the-art performance across image- and video-based person re-identification and gait recognition, while maintaining robust face recognition capabilities.
+
+## 1 Introduction
+
+Human recognition systems [39] typically isolate different modalities into distinct, modality-specific models. SapiensID [29] marked a paradigm shift by using a single model for face recognition and person re-identification (reID). In real-world scenarios, SapiensID can dynamically fall back on the other modality when extreme poses, poor visibility, or occlusions compromise a single modality (e.g., an obscured face). However, SapiensID extracts discriminative biometric features from raw visual textures of individual frames, and its embedding space inherently lacks explicit semantic awareness and kinematic continuity. In contrast, human recognition is anchored precisely by these two pillars.
+
+First, humans rely on interpretable semantic attributes [18]. We anchor identity tofixed soft biometrics—anatomically invariant traits such as race, gender, and body proportions. Also, we actively discount dynamic soft biometrics—transient, variable traits such as clothing or accessories. As shown in Fig. 1, standard metric learning models exhibit a critical “semantic blindness.” SapiensID can confidently assign high similarity to two face images of different races or to two whole-body images because they share similar clothing. The model relies on entangled visual textures rather than distinguishing between explicit, identity-preserving attributes and transient noise.
+
+Second, human perception naturally leverages kinematic continuity—the consistent, temporal evolution of a subject’s structural mechanics (e.g., gait) while in motion. SapiensID, however, operates entirely on static frames. When applied to video-based tasks such as gait recognition, it extracts features for each frame and averages the features across frames. This static formulation completely discards the rich, discriminative kinematic signatures inherent in human movement.
+
+![](images/b20e65c77d50503addbcc829b2f8f1ed1ccabc116af547d6d7ec93bdd3f8cdc9.jpg)  
+Figure 1: SapiensID [29], based on face recognition and person reID, mistakenly assigns high similarity to pairs, since it does not consider fixed soft biometrics like race and heavily relies on dynamic soft biometrics like clothing. Conversely, our approach, SapiensID 2.0, utilizes information extracted by MLLM from images to align fixed soft biometrics with biometric features and disentangle noise to achieve more robust human recognition. Additionally, we extend SapiensID to gait recognition by explicitly modeling the subject’s kinematics in videos.
+
+Elevating foundation models to capture semantic awareness and kinematic continuity presents a data scarcity challenge. On the semantic front, large-scale reID datasets like WebBody [29] lack soft biometric annotations such as race, gender, and clothing. They are collected via keyword queries and face similarities, which do not provide semantic labels. On the temporal front, WebBody consists of more than 90% static images. Compiling and labeling a video dataset of comparable scale to learn kinematic signatures from scratch is not feasible.
+
+To overcome the semantic annotation bottleneck, we leverage multimodal large language models (MLLMs, e.g., [5]), which can generate accurate pseudo-ground truths for both fixed and dynamic soft biometrics. However, deploying generative MLLMs directly at inference is computationally infeasible. We must therefore transfer their deep semantic knowledge to construct an enhanced, more discriminative feature space. This transfer introduces a structural mismatch: semantic attributes are inherently low-dimensional signals (e.g., age, a scalar, or race, categorical), whereas MLLM embeddings are highly entangled and high-dimensional. Directly aligning these spaces would force the biometric model to absorb irrelevant linguistic artifacts.
+
+To resolve this, we propose a Bipartite Subspace Alignment strategy. For fixed soft biometrics, we introduce Invariant Trait Alignment (ITA), which distills the core variance of stable identity traits into the biometric space. Conversely, to handle dynamic soft biometrics, we introduce Transient Noise Disentanglement (TND), which enforces strict orthogonality against the principal components of transient traits, effectively neutralizing clothing bias.
+
+Simultaneously, to model kinematic continuity without requiring a massive, newly labeled video dataset, we introduce the Kinematic Semantic Attention Head (K-SAH). Rather than training video architectures from scratch, K-SAH harnesses the temporal modeling potential of our image-trained model. By extending the existing semantic attention mechanism across a temporal window, the network explicitly tracks the spatial evolution of the same semantic patches (e.g., body joints) across sequential frames. Crucially, K-SAH is versatile: it exploits kinematic motion patterns when presented with video tracklets, while degenerating to spatial-only processing for static images.
+
+By successfully integrating semantic awareness and kinematic continuity, our proposed architecture, SapiensID 2.0, serves as a unified human recognition foundation model across face recognition, person reID, and gait recognition. Extensive experiments demonstrate that SapiensID 2.0 significantly outperforms the previous state of the art from video- to image-based person reID, from short- to long-term reID, and maintains robust face recognition capabilities.
+
+## Our contributions are as follows:
+
+• Semantic Subspace Alignment via Distillation: We propose a feature-based knowledge distillation framework for semantic subspace alignment using MLLMs. It employs mathematically distinct pathways—ITA and TND—to simultaneously distill fixed soft biometrics and purge dynamic soft biometric noise from the discriminative feature space.
+
+• Kinematic Semantic Attention Head (K-SAH): We adapt spatial semantic attention to process temporal sequences via tracked structural patches and window attention. This architecture elegantly captures kinematic continuity when video is available without extensive video training, while degenerating to standard static processing for individual images.
+
+• A Unified Model for Human Recognition: By integrating semantic awareness and kinematic continuity, SapiensID 2.0 provides a unified foundation model spanning face, reID, and gait recognition, achieving superior performance in generalized recognition tasks.
+
+## 2 Related Work
+
+Human Recognition. Conventional biometric systems isolate human recognition into specialized modalities, e.g., face recognition [11, 30, 31, 43, 62] and person reID [6, 9, 16, 27, 32, 34, 41, 48, 49, 52, 56, 63, 65, 71]. While multi-task frameworks attempt to fuse these domains [35, 36, 69], or explore joint video-image pretraining (e.g., VILLS [22]), they either rely on late-stage decision-level score fusion [69] or require joint video training while omitting face recognition [22]. SapiensID [29] established a unified representation paradigm by training on massive body-centric data, yielding robust, pose-invariant features across face and body. Despite this architectural unification, SapiensID remains semantically agnostic and temporally static—frequently making erroneous geometric matches that contradict obvious human attributes. SapiensID 2.0 evolves this foundation through: (1) grounding the embedding space in explicit semantics distilled from MLLMs, and (2) extending spatial attention into the temporal domain to dynamically track tokens across frames.
+
+Soft Biometrics. Soft biometrics have proven effective [1] in improving face [25, 42, 50], and fingerprint recognition [2, 24] accuracy. However, their reliance on manually annotated attributes severely limits their experimental scale. In clothing-changing person reID [15, 57], disentangling identity from transient appearance relies on clothing labels. Recently, DIFFER [34] addressed this using an adversarial Gradient Reversal Layer, which can be unstable during training. For foundation models, training stability is even more important. In contrast, our framework avoids adversarial training and transfers zero-shot MLLM knowledge purely via a stable, feature-based distillation. By employing ITA to directly embed fixed anatomical traits and TND to explicitly orthogonalize dynamic clothing noise, our approach achieves robust semantic disentanglement.
+
+Gait Recognition. Gait recognition identifies individuals based on their walking posture, using modalities such as appearance [17, 20, 21, 26, 53, 58], skeletons [14], and LiDAR [45]. The majority of methods—whether utilizing CNNs [13], transformers [12], or large vision models [60, 61]—require large-scale video datasets for training and inference. A separate line of research has explored image-based or static-to-dynamic approaches. Early methods compress entire gait cycles into static templates, such as Gait Energy Images (GEIs), though these suffer from severe information loss. [55] attempts to reconstruct a full gait sequence from a single image during inference; however, training their reconstruction module still requires video data. While general spatio-temporal video transformers (e.g., ViViT [4]) rely on dense grid-based self-attention with quadratic complexity and require video fine-tuning, we demonstrate that a foundation model trained primarily on images can inherently capture temporal dynamics. By adapting the spatial attention mechanism to track semantically anchored keypoint tokens across neighboring frames, our approach captures rich kinematic signatures directly without video retraining.
+
+## 3 Method
+
+## 3.1 Preliminaries
+
+SapiensID [29] uses Retina Patch (RP) to dynamically allocate patches to semantically critical regions (i.e., face, upper torso, whole body). RP generates semantically grounded patches with region-sampled positional embeddings that preserve spatial origin—an inductive bias critical for temporal tracking. These patches pass through the ViT [10] backbone to extract a deep spatial feature map $\mathbf { X } \in \mathbb { R } ^ { L \times C }$ , where L is the number of spatial tokens and C is the feature dimension.
+
+Following the ViT, the Semantic Attention Head (SAH) aggregates this feature map. SAH generates a semantic query matrix $\mathbf { Q } \in \mathbb { R } ^ { K \times C }$ from predicted keypoints using a 2D position embedding matrix $\mathbf { P } \in \mathbb { R } ^ { L \times C }$
+
+$$
+\mathbf { Q } = \mathbf { \mathrm { G r i d S a m p l e } } ( \mathbf { P } , \mathbf { C } ) + \mathbf { O } ,\tag{1}
+$$
+
+![](images/3854c7beb7e5cb8b6eeea7fe3108af395a5af10f0b9da570831522bcf6a0bda7.jpg)  
+Figure 2: Overall architecture of SapiensID 2.0. RetinaPatch (RP) converts the image into patches based on the landmarks and key points. ViT extracts features from these patches. K-SAH aggregates the features around each joint in images or videos. Additionally, we supervise the training via alignment with fixed soft biometrics and the disentanglement of dynamic soft biometrics.
+
+where K is the total number of semantic queries $( K = 1 7$ keypoints), $\mathbf { C } \in \mathbb { R } ^ { K \times 2 }$ represents the image-specific predicted 2D coordinate matrix, and $\mathbf { O } \in \mathbb { R } ^ { K \times C }$ is a learned global offset matrix. These queries extract local features via a cross-attention operation over the spatial tokens:
+
+$$
+\mathbf { H } = { \mathrm { A t t e n t i o n } } ( \mathbf { Q } , \mathbf { P } , \mathbf { X } ) .\tag{2}
+$$
+
+Here, P serves as the key and X serves as the value. This allows the network to adaptively pool features around keypoints. H is then flattened to produce the final biometric feature f.
+
+However, SapiensID has two limitations. First, its feature space lacks explicit awareness of fixed soft biometrics and is vulnerable to dynamic soft biometrics. Second, when given a video, it extracts biometric features for each frame and collapses them via averaging. This isolates the spatial attention (Eq. 2) to individual frames and discards the kinematic continuity inherent in temporal dynamics.
+
+## 3.2 Overall Framework Formulation
+
+To align the latent space with human cognitive identification, we propose SapiensID 2.0 (see Fig. 2), a unified architecture driven by explicit soft biometrics and temporal dynamics. Like SapiensID, given a video, we continue to use RP and a ViT backbone to extract structurally grounded features X.
+
+Our objective is to extract an enhanced spatio-temporal feature $\mathbf { f } _ { S T }$ that satisfies two novel constraints:
+
+1. Bipartite Semantic Alignment: The feature $\mathbf { f } _ { S T }$ must explicitly capture the variance of fixed soft biometrics while decoupling from dynamic soft biometrics. Its projection must be highly correlated with the underlying semantic subspace of fixed soft biometrics and strictly orthogonal to the confounding subspace of dynamic soft biometrics.
+
+2. Kinematic Continuity: The network must explicitly model the trajectory of the semantic queries Q across the temporal dimension $T ,$ capturing the continuous kinematic signatures $( e . g .$ gait) that humans use for identification.
+
+We achieve the first constraint through a novel feature-based distillation module incorporating ITA and TND. To address the second constraint, we replace the static SAH with our K-SAH, which extends cross attention pooling over temporal windows.
+
+## 3.3 Semantic Alignment via Distillation
+
+Deploying a generative MLLM at the edge for real-world applications incurs prohibitive computational overhead. Thus, we propose a feature-based cross-modal distillation framework to efficiently transfer high-dimensional semantic understanding into the SapiensID student model (see Fig. 3).
+
+Semantic Subspace Construction. To generate the requisite semantic supervision, we query an MLLM offline on the WebBody4M dataset. It outputs attributes in two groups: Fixed Soft Biometrics (e.g., race, gender) and Dynamic Soft Biometrics $( e . g .$ , clothing, hair). These textual descriptions pass through the frozen text encoder, yielding high-dimensional semantic embeddings representing the native hidden spaces: $\mathbf { X } ^ { F }$ for fixed soft biometrics and $\mathbf { X } ^ { D }$ for dynamic soft biometrics.
+
+![](images/fc9497843529558a046109875e4b20136b6735bd9970c08857a49fdd00f5caff.jpg)  
+Figure 3: Semantic alignment via distillation. ITA aligns the principal components of the Y with the principal components of fixed soft biometric embeddings in the MLLM space. TND enforces that the principal components of the Y are orthogonal to those of the confounding factors like clothing, thereby minimizing their influence.
+
+To bridge the dimensional gap between the visual metric space and the language space during training, the unified spatio-temporal biometric feature $\mathbf { f } _ { S T }$ is passed through a shallow Multi-Layer Perceptron (MLP). This yields a unified projected student feature Y. We mathematically force this feature to simultaneously align with invariant traits and orthogonalize against transient noise. This MLP and the teacher text encoder are utilized only for loss calculation during training and are completely discarded during inference. During deployment, SapiensID 2.0 operates strictly on the 63M parameter ViT-B backbone in a single forward pass, introducing zero additional computational overhead.
+
+Invariant Trait Alignment (ITA). Fixed soft biometrics are low-dimensional signals representing stable identity markers. To embed this knowledge, ITA aligns the orthogonal basis vectors containing the highest semantic variance of the teacher’s fixed subspace with the SapiensID feature space. By calculating the empirical covariance matrix of $\mathbf { X } ^ { F }$ and performing Singular Value Decomposition (SVD), we extract the top $D _ { F }$ eigenvectors, represented by the matrix $\mathbf { \bar { V } } _ { T } ^ { F } \in \mathbb { R } ^ { C \times D _ { F } }$ . A parallel decomposition on the projected student feature Y yields its principal components matrix, $\mathbf { V } _ { S }$ . The alignment loss is:
+
+$$
+\mathcal { L } _ { I T A } = \sum _ { k = 1 } ^ { D _ { F } } \left( 1 - \left. \mathbf { v } _ { T } ^ { F ( k ) } , \mathbf { v } _ { S } ^ { ( k ) } \right. ^ { 2 } \right) + \lambda _ { P } \left. \mathbf { X } ^ { F } \mathbf { V } _ { T } ^ { F } - \mathbf { Y } \mathbf { V } _ { S } \right. _ { F } ^ { 2 } ,\tag{3}
+$$
+
+where ${ \bf v } _ { T } ^ { F ( k ) }$ and ${ \bf v } _ { S } ^ { ( k ) }$ denote the k-th individual eigenvector 1D arrays extracted from $\mathbf { V } _ { T } ^ { F }$ and $\mathbf { V } _ { S } ,$ , respectively, with $D _ { F } = 6$ corresponding to the fixed soft-biometric categories (gender, race, age, skin tone, body build, and facial structure). This objective operates via two complementary mechanisms. The first term explicitly aligns the geometric axes of the latent spaces by maximizing the squared cosine similarity between the principal components of the teacher and the student. The second term aligns the actual data distributions along these axes by minimizing the Mean Squared Error between the projected semantic and visual coordinates. Together, these mechanisms precisely transfer core invariant biometric intelligence while filtering out the MLLM’s contextual background noise.
+
+Transient Noise Disentanglement (TND). Dynamic soft biometrics must be explicitly decoupled from the identity representation to prevent reliance on transient attributes such as identical outfits. We calculate the empirical covariance matrix for $\mathbf { X } ^ { D }$ and utilize SVD to extract its top $D _ { D }$ principal components, forming the matrix $\mathbf { V } _ { T } ^ { D } \in \mathbb { R } ^ { C \times D _ { D } }$ , which defines the geometric subspace of transient noise $( D _ { D } = 5$ corresponding to hair, facial hair, accessories, upper clothing, and lower clothing). We mathematically force the student’s unified projected feature, ${ \dot { \mathbf { Y } } } .$ , to be orthogonal to this dynamic subspace via a direct projection penalty:
+
+$$
+\mathcal { L } _ { T N D } = \left\| \mathbf { Y } \mathbf { V } _ { T } ^ { D } \right\| _ { F } ^ { 2 } .\tag{4}
+$$
+
+![](images/5636de95cc56cae70f740abf7cc2887c5f9cb01fdd7766004d37ee5e1fa14203.jpg)  
+Figure 4: Illustration of K-SAH. It extends static semantic attention to model local temporal dynamics over a temporal window $\mathcal { W } .$ . Semantic queries $\mathbf { Q } _ { t }$ for the anchor frame t are derived via grid sampling from static embeddings, preserving spatial priors. Cross-frame attention between the queries $\mathbf { Q } _ { t }$ <sub>t</sub> and dense spatiotemporal key $\mathbf { P } _ { W }$ and value ${ \bf { X } } _ { W }$ volumes allows precise tracking of geometric trajectories. Occlusion-Robust Temporal Pooling dynamically aggregates intermediate features H by masking occluded patches using an explicit mask $\mathbf { M } _ { O } ,$ producing the final flattened spatiotemporal feature $\mathbf { f } _ { S T }$
+
+Relational Topology Preservation. To complement ITA, we preserve the relational topology of instances within a training batch by comparing the Gram matrices of the teacher and student features:
+
+$$
+\mathcal { L } _ { F R } = \frac { 1 } { N ^ { 2 } } \| \mathbf { X } ^ { F } ( \mathbf { X } ^ { F } ) ^ { \top } - \mathbf { Y } \mathbf { Y } ^ { \top } \| _ { F } ^ { 2 } .\tag{5}
+$$
+
+This ensures that individuals sharing similar fixed soft biometrics in the language space have proportionally minimized distances in the metric space.
+
+## 3.4 Kinematic Semantic Attention Head (K-SAH)
+
+The primary challenge in extending human recognition to the temporal domain is the severe disparity in data availability. The scale, diversity, and annotation quality of static image datasets (e.g., WebBody4M [29]) vastly exceed those of video datasets. Consequently, training parameter-heavy spatiotemporal models from scratch on limited video data inevitably leads to severe overfitting and the destruction of rich, pre-trained spatial priors.
+
+Rather than discarding these spatial priors or building a separate video architecture, we lift the pre-trained image foundation model into the temporal domain by introducing the Kinematic Semantic Attention Head (K-SAH). This builds on SapiensID’s spatial representations which inherently encode precise geometric locations via the RP positional embeddings. Because the spatial tokens explicitly retain the coordinates of keypoints, we can natively track these trajectories over time, thereby capturing kinematic continuity simply by expanding the attention window.
+
+Crucially, this design guarantees complete checkpoint compatibility with the existing foundational model. The pre-trained weights of the static SAH are directly transferable to K-SAH, allowing the network to leverage temporal information without architectural disruption. In fact, the original SAH is mathematically a special case of K-SAH when the input sequence has a single frame $( \check { T } = 1 )$ .
+
+Temporal Windowing and Spatio-Temporal Embeddings. Given a video tracklet yielding spatial feature tensor $\mathbf { X } \in \mathbb { R } ^ { \overset { \vartriangle } { \overleftarrow { B } } \times T \times L \times \overset { \mathbf { \theta } } { \times } C }$ (where B is the batch size), we explicitly model the local temporal dynamics without flattening the entire video sequence, which would cause quadratic attention bottlenecks. For each frame t, we define a localized temporal window $\mathcal { W } ( t )$
+
+We simply repeat the standard pre-trained 2D positional embedding matrix P across the temporal dimension. This approach uses the physical displacement of the subject to provide kinematic context and preserves the spatial knowledge from WebBody4M image pre-training. Let $\mathbf { P } _ { \mathcal { W } } \in \mathbb { R } ^ { | \mathcal { W } | L \times C }$ denote this temporally repeated 2D positional embedding for the given window.
+
+Multi-Frame Semantic Attention. Within K-SAH, the semantic query $\mathbf { Q } _ { t }$ is generated for the anchor frame t via grid sampling of P using its frame-level keypoint predictions $\mathbf { C } _ { t }$ , similar to Eq. 1:
+
+$$
+\mathbf { Q } _ { t } = \operatorname { G r i d S a m p l e } \left( \mathbf { P } , \mathbf { C } _ { t } \right) + \mathbf { O } .\tag{6}
+$$
+
+However, rather than attending solely to the spatial tokens of frame t (as in Eq. 2), the query attends to the concatenated spatial features $\dot { \mathbf { X } } _ { \mathcal { W } } \in \mathbb { R } ^ { | \mathrm { \bar { \mathcal { W } } } | L \times C }$ and their corresponding repeated 2D positional embeddings $\mathbf { P } _ { \mathcal { W } }$ within the temporal window. The multi-frame cross-attention yields an intermediate temporal feature matrix for all keypoints at frame t:
+
+$$
+\mathbf { H } _ { t } = \operatorname { A t t e n t i o n } \left( \mathbf { Q } _ { t } , \mathbf { P } _ { \mathcal { W } } , \mathbf { X } _ { \mathcal { W } } \right) .\tag{7}
+$$
+
+Unlike global spatio-temporal attention methods that scale quadratically $\mathcal { O } ( T ^ { 2 } L ^ { 2 } C )$ , K-SAH restricts cross-attention strictly along the K keypoint trajectories, reducing complexity to linear scaling $\mathcal { O } ( T \cdot K \cdot L \cdot C )$ with respect to window size T. Because the feature space is completely compatible with the pre-trained static weights, this formulation replaces isolated spatial pooling without requiring video retraining. It allows the attention mechanism to smoothly track specific semantic patches (e.g., a swinging arm or stepping foot) across neighboring frames, capturing continuous kinematics.
+
+Occlusion-Robust Temporal Pooling. A critical challenge in unconstrained real-world video is occlusion, where keypoints frequently disappear and reappear throughout a tracklet. K-SAH elegantly handles this via dynamically masked temporal pooling prior to final feature flattening.
+
+Let $\mathbf { M } _ { O } \in \{ 0 , 1 \} ^ { B \times T \times K }$ be a boolean mask indicating whether a keypoint index $k \in \{ 1 , \ldots , K \}$ is missing or severely occluded in frame t. During training and inference, $\mathbf { M } _ { O } [ t , k ] = \dot { 1 }$ is generated dynamically using OpenPose keypoint confidence scores when the confidence drops below a threshold $( < 0 . 3 )$ . Furthermore, let $\mathbf { h } _ { t , k }$ denote the specific 1D feature vector for keypoint k extracted from the matrix $\mathbf { H } _ { t }$ . We pool the intermediate multi-frame features $\mathbf { h } _ { t , k }$ across the temporal dimension, explicitly disregarding occluded patches:
+
+$$
+\bar { \mathbf { h } _ { k } } = \frac { \sum _ { t = 1 } ^ { T } \mathbf { h } _ { t , k } \cdot ( 1 - \mathbf { M } _ { O } [ t , k ] ) } { \operatorname* { m a x } \left( 1 , \sum _ { t = 1 } ^ { T } ( 1 - \mathbf { M } _ { O } [ t , k ] ) \right) } .\tag{8}
+$$
+
+This ensures that heavily occluded frames do not corrupt the aggregated representation. The temporally pooled features are then flattened to produce the final spatiotemporal feature $\mathbf { f } _ { S T }$ .
+
+## 4 Experiments
+
+Experiment Setup. Unless otherwise noted, our experimental setup, including the ViT backbone, RetinaPatch extraction, and training hyperparameters, strictly follows SapiensID [29]. For the semantic distillation modules, we utilize Qwen2.5-VL-7B-Instruct [5] to extract the semantic subspaces offline, retaining the top principal components for both ITA $( D _ { F } = 6 )$ and TND $( D _ { D } = 5 )$ For video-based tasks, K-SAH operates on randomly sampled temporal windows of $T = 5$ frames. We train a single model strictly on the WebBody4M dataset and evaluate it directly in a zero-shot manner on all testing benchmarks without dataset-specific fine-tuning. For video-based evaluation on CCPG, we evaluate on RGB video sequences, extracting kinematic trajectories via K-SAH. Because baseline models are bound to their input modalities (gait models strictly require video data like CCGR, while appearance models are trained on static corpora), all models are evaluated zero-shot on the target test sets for a fair comparison of out-of-distribution generalization (see Table 6 in the supplementary material for baseline pretraining metadata). We use the same checkpoint for each baseline model.
+
+Video-Based Person ReID and Gait Recognition. Table 1 evaluates SapiensID 2.0 on video-based person reID (CCVID [15]) and gait recognition (CCPG [33]). The results clearly illustrate the divergence between models that overfit to domain-specific cues and those that learn invariant representations. On CCVID, while video-specialized models like BiggerGait [60] achieve strong overall accuracy, SapiensID 2.0 achieves top performance (95.70% General Rank-1). More importantly, it demonstrates robustness in the challenging clothing-change (CC) protocol, boosting SapiensID’s mAP by +5.82% (from 72.22% to 78.04%). This suggests that explicitly penalizing dynamic visual traits (via TND) encourages the model to synthesize a reliable temporal identity rather than simply tracking an outfit across frames.
+
+Table 1: Generalization comparison with SoTA ReID and gait recognition models. The evaluation is split into video-based person reID (CCVID) and gait recognition (CCPG). For CCPG, we report the rank-1 accuracy under four evaluation protocols. SapiensID 2.0 leverages semantic and kinematic priors to achieve SoTA performance.
+<table><tr><td rowspan="2">Method</td><td colspan="2">CCVID (General)</td><td colspan="2">CCVID (CC)</td></tr><tr><td>top1</td><td>mAP</td><td>top1</td><td>mAP</td></tr><tr><td>CAL [15]</td><td>74.83</td><td>29.43</td><td>73.89</td><td>26.65</td></tr><tr><td>CLIP3DReID [37]</td><td>77.28</td><td>30.01</td><td>76.28</td><td>26.69</td></tr><tr><td>SOLIDER [7]</td><td>40.27</td><td>36.56</td><td>39.61</td><td>35.48</td></tr><tr><td>HAP [64]</td><td>54.74</td><td>45.14</td><td>52.37</td><td>41.33</td></tr><tr><td>BiggerGait [60]</td><td>85.13</td><td>83.38</td><td>84.53</td><td>82.59</td></tr><tr><td>SapiensID [29]</td><td>92.57</td><td>77.82</td><td>88.72</td><td>72.22</td></tr><tr><td>Ours</td><td>95.70</td><td>84.99</td><td>88.62</td><td>78.04</td></tr></table>
+
+<table><tr><td rowspan="2">Method</td><td colspan="4">CCPG [33]</td></tr><tr><td>CL</td><td>UP</td><td>DN</td><td>BG</td></tr><tr><td>CLIP3DReID [37]</td><td>15.7</td><td>25.6</td><td>24.5</td><td>60.3</td></tr><tr><td>GaitBase [13]</td><td>20.8</td><td>31.3</td><td>38.3</td><td>70.2</td></tr><tr><td>DeepGaitV2 [12]</td><td>23.0</td><td>37.1</td><td>36.5</td><td>69.9</td></tr><tr><td>BigGait [61]</td><td>22.9</td><td>42.2</td><td>25.0</td><td>80.5</td></tr><tr><td>BiggerGait [60]</td><td>23.2</td><td>44.5</td><td>29.5</td><td>86.7</td></tr><tr><td>SapiensID [29]</td><td>33.9</td><td>45.0</td><td>75.2</td><td>90.2</td></tr><tr><td>Ours</td><td>60.8</td><td>60.8</td><td>86.4</td><td>91.6</td></tr></table>
+
+Table 2: Generalization comparison with SoTA ReID models across short-term and long-term settings. “Longterm” refers to clothing change (CC) protocols of LTCC and PRCC datasets, while “short-term” uses the same clothing (SC) protocol. For other datasets, the data capture characteristics define short or long-term conditions. While texture-biased models excel marginally on short-term benchmarks, SapiensID 2.0 achieves much superior robustness and generalization in long-term scenarios.
+<table><tr><td rowspan="2">Method</td><td rowspan="2">Avg</td><td colspan="4">LTCC (General) [46] PRCC (SC) [57]</td><td colspan="2">Market1501 [66]</td><td colspan="2">MSMT17 [54]</td></tr><tr><td>top1</td><td>mAP</td><td>top1</td><td>mAP</td><td>top1</td><td>mAP</td><td>top1</td><td>mAP</td></tr><tr><td>CAL [15]</td><td>49.09</td><td>72.41</td><td>38.12</td><td>99.54</td><td>99.01</td><td>43.65</td><td>21.03</td><td>14.48</td><td>4.44</td></tr><tr><td>CLIP3DReID [38]</td><td>50.20</td><td>75.66</td><td>45.15</td><td>99.43</td><td>96.43</td><td>41.66</td><td>20.33</td><td>17.45</td><td>5.50</td></tr><tr><td>SOLIDER [7]</td><td>71.45</td><td>73.83</td><td>36.28</td><td>99.51</td><td>99.53</td><td>97.03</td><td>94.04</td><td>48.64</td><td>22.77</td></tr><tr><td>HAP [64]</td><td>70.78</td><td>73.02</td><td>35.97</td><td>99.30</td><td>98.45</td><td>96.23</td><td>92.20</td><td>48.01</td><td>23.02</td></tr><tr><td>SapiensID [29]</td><td>70.01</td><td>72.01</td><td>34.56</td><td>100.00</td><td>98.79</td><td>88.18</td><td>68.26</td><td>67.25</td><td>31.02</td></tr><tr><td>SapiensID 2.0 (Ours)</td><td>71.31</td><td>77.08</td><td>42.39</td><td>100.00</td><td>99.01</td><td>86.94</td><td>67.15</td><td>67.62</td><td>30.32</td></tr><tr><td colspan="10">(a) Short-Term ReID</td></tr><tr><td rowspan="2">Method</td><td rowspan="2">Avg</td><td colspan="2">LTCC (CC) [46]</td><td colspan="2">PRCC (CC) [57]</td><td colspan="2">CCDA [37]</td><td colspan="2">Celeb-ReID [23]</td></tr><tr><td colspan="2">top1</td><td colspan="2">top1</td><td colspan="2">top1</td><td colspan="2">top1</td></tr><tr><td>CAL [15]</td><td>24.26</td><td>33.16</td><td>mAP 16.27</td><td>45.39</td><td>mAP 45.42</td><td>3.74</td><td>mAP 9.14</td><td>37.11</td><td>mAP 3.81</td></tr><tr><td>CLIP3DReID [38]</td><td>24.93</td><td>41.84</td><td>22.58</td><td>40.81</td><td>38.38</td><td>4.31</td><td>10.18</td><td>37.31</td><td>4.02</td></tr><tr><td>SOLIDER [7]</td><td>21.66</td><td>25.00</td><td>12.18</td><td>26.87</td><td>32.12</td><td>8.62</td><td>16.48</td><td>46.37</td><td>5.66</td></tr><tr><td>HAP [64]</td><td>22.66</td><td>24.74</td><td>11.71</td><td>33.90</td><td>37.00</td><td>8.30</td><td>16.02</td><td>44.38</td><td>5.20</td></tr><tr><td>SapiensID [29]</td><td>62.77</td><td>42.35</td><td>17.79</td><td>78.75</td><td>72.60</td><td>61.84</td><td>69.08</td><td>92.80</td><td>66.92</td></tr><tr><td>SapiensID 2.0 (Ours)</td><td>66.82</td><td>48.26</td><td>22.28</td><td>85.19</td><td>79.32</td><td>64.96</td><td>71.06</td><td>91.64</td><td>71.87</td></tr></table>
+
+(b) Long-Term ReID
+
+The performance on CCPG further exposes the generalization bottlenecks of specialized architectures. Models trained on ReID data (e.g., CLIP3DReID [37]) inherently struggle to capture identity information from gait data. Conversely, the poor cross-dataset generalization of gait models indicates they likely overfit to their training domains (e.g., BiggerGait reaches only 23.2% Rank-1 on CCPG CL). By leveraging K-SAH to explicitly track the temporal displacement of spatial patches through keypoints, SapiensID 2.0 extracts robust kinematic signatures, substantially improving performance on CCPG CL (33.9% to 60.8%) without requiring massive video retraining.
+
+Image-Based Person ReID. We evaluate SapiensID 2.0 on image-based person reID benchmarks where the improvements come from the semantic alignment with MLLM. The distinction between short-term (same clothing) and long-term (clothing change) protocols reveals a critical flaw in previous methods: short-term datasets inherently reward models that overfit to transient appearance cues. As shown in Tab. 2a, models like SOLIDER perform exceptionally well on short-term tasks (averaging 71.45% accuracy). We infer that they achieve this by exploiting texture and clothing.
+
+This inference is supported by their performance drop in unconstrained, real-world conditions where subjects change outfits, causing SOLIDER’s average performance to collapse to 21.66% in long-term scenarios (Tab. 2b). In contrast, SapiensID 2.0 deliberately penalizes reliance on these transient cues via the TND objective. While this occasionally causes our model to marginally underperform SOLIDER on short-term benchmarks (averaging 71.31%), it fundamentally anchors the latent space to invariant anatomical traits (via ITA). Consequently, SapiensID 2.0 achieves massive, consistent robustness across long-term protocols, elevating the baseline average from 62.77% to 66.82%, demonstrating robustness to appearance variations.
+
+Table 3: 1:1 Face verification accuracy across face recognition benchmarks. These results confirm that SapiensID 2.0 fully preserves SoTA facial recognition capabilities.
+<table><tr><td>Method</td><td>AdaFace [28]</td><td>SapiensID [29]</td><td>SapiensID 2.0 (Ours)</td></tr><tr><td>LFW [19]</td><td>99.82</td><td>99.82</td><td>99.85</td></tr><tr><td>CPLFW [67]</td><td>95.12</td><td>94.85</td><td>95.28</td></tr><tr><td>CFPFP [44]</td><td>99.19</td><td>98.74</td><td>99.14</td></tr><tr><td>CALFW [68]</td><td>96.07</td><td>95.78</td><td>95.93</td></tr><tr><td>AgeDB [40]</td><td>97.97</td><td>97.33</td><td>98.07</td></tr><tr><td>Avg</td><td>97.63</td><td>97.30</td><td>97.65</td></tr></table>
+
+Table 4: Component-wise ablation of SapiensID 2.0 on the CCVID dataset. “Gen” denotes the general evaluation protocol, “CC” denotes the clothing-change protocol. The results confirm that combining these components yields highly synergistic performance gains.
+<table><tr><td rowspan="2">ITA</td><td rowspan="2">TND</td><td rowspan="2">K-SAH</td><td colspan="2">CCVID (Gen)</td><td colspan="2">CCVID (CC)</td></tr><tr><td>top1</td><td>mAP</td><td>top1</td><td>mAP</td></tr><tr><td>一</td><td>=</td><td></td><td>92.57</td><td>77.82</td><td>88.72</td><td>72.22</td></tr><tr><td>√</td><td>=</td><td></td><td>92.70</td><td>80.70</td><td>87.97</td><td>73.58</td></tr><tr><td>√</td><td>√</td><td></td><td>93.82</td><td>81.26</td><td>88.39</td><td>75.66</td></tr><tr><td>√</td><td>√</td><td>√</td><td>95.70</td><td>84.99</td><td>88.62</td><td>78.04</td></tr></table>
+
+Face Recognition. To verify that optimizing for body-centric soft biometrics and temporal kinematics does not induce catastrophic forgetting of fine-grained facial features, we evaluate SapiensID 2.0 across five standard face recognition benchmarks. As shown in Tab. 3, SapiensID 2.0 fully preserves, and slightly exceeds, SoTA face verification accuracy (e.g., 99.85% on LFW vs. AdaFace-ViT’s 99.82%). We attribute this to ITA. We hypothesize that because the invariant soft biometrics extracted from the MLLM (e.g. gender) naturally correlate with structural facial features, the body-centric semantic alignment successfully avoids inducing catastrophic forgetting of fine-grained facial priors.
+
+Ablation Studies. To systematically isolate the contributions of our proposed semantic distillation and temporal tracking modules, we conduct ablation studies on CCVID [15]. It is suited for this analysis as it provides video tracklets and separate protocols for general (short-term) and clothingchange (long-term) scenarios. Tab. 4 reports the progressive integration of our modules over the semantically agnostic, static baseline. Introducing ITA provides an immediate boost to both general and clothing-change mAP (e.g., General mAP jumps from 77.82% to 80.70%), suggesting that anchoring the geometric space to stable semantic priors (e.g., body proportions, gender) enhances overall discriminability. The addition of TND yields a particularly pronounced improvement on the CCVID (CC) split, increasing CC mAP by a further +2.08%. By mathematically enforcing orthogonality against dynamic noise, TND actively prevents the model from overfitting to identical outfits, effectively mitigating the baseline’s “semantic blindness.” Introducing K-SAH explicitly models temporal dynamics. As shown in the last row, swapping the original SAH for K-SAH drives the final push to SoTA metrics, improving General mAP to 84.99% and CC mAP to 78.04%. Furthermore, evaluating the temporal window size $T \in \{ 1 , 3 , 5 , 7 \}$ in K-SAH on CCVID (see supplementary material) shows steady gains over the static baseline (T = 1, 72.22% CC mAP), with performance saturating at T = 5 (78.04% CC mAP).
+
+Efficiency. Because MLLM feature extraction is performed offline, a training iteration increases marginally from 1.77 seconds to 2.06 seconds compared to the baseline. During inference, the only added computational cost is the temporal attention in the K-SAH module. Total evaluation time increases modestly from 28 minutes to 32 minutes. This demonstrates that our approach achieve SoTA performance without compromising practical deployment speeds.
+
+Visualizations & Discussion. To qualitatively validate our semantic distillation, Fig. 5 illustrates cases where the baseline SapiensID fails but SapiensID 2.0 succeeds. The baseline model suffers from “semantic blindness,” erroneously assigning high similarity to different individuals who share similar clothing (dynamic soft biometrics) or failing to distinguish clear differences in gender (fixed soft biometrics). This visually confirms that SapiensID 2.0 effectively cures this blindness, successfully converting these false positives into true negatives, which is better aligned with human perception. While learning clothing-invariant identity representations substantially improves generalization in realistic long-term scenarios, it incurs a slight, expected trade-off on short-term benchmarks (e.g., Market-1501) where clothing is a valid retrieval shortcut. Additionally, potential attribute hallucinations from MLLMs in complex scenes are naturally mitigated in WebBody4M because the dataset is constructed via single-subject name queries, minimizing multi-person crop contamination.
+
+![](images/8c18eb1b3f31aaadeb0f1d4f530a17f6fa5e492bb0c6f821abddf4abc0f9743b.jpg)  
+Figure 5: Left: Compared to SapiensID, SapiensID 2.0 reduces the similarity between faces of different genders to below the verification threshold. Right: In retrieval, SapiensID returns another subject wearing similar clothing at rank-1. SapiensID 2.0 reduces the similarity between them to avoid making the same mistake.
+
+## 5 Conclusion
+
+We present SapiensID 2.0, a unified foundation model that grounds human recognition in explicit semantic awareness and kinematic continuity. We introduce a semantic distillation framework utilizing Bipartite Subspace Alignment. This strategy leverages ITA and TND to anchor identity to stable anatomical traits while explicitly decoupling transient artifacts. Furthermore, our K-SAH extends spatial attention to track structural patches over time, capturing continuous motion signatures without the prohibitive overhead of video-level retraining. Extensive experiments demonstrate that SapiensID 2.0 achieves SOTA performance across image- and video-based person re-identification and gait recognition, while preserving robust face recognition capabilities.
+
+Acknowledgements. This research is based upon work supported in part by the Office of the Director of National Intelligence (ODNI), Intelligence Advanced Research Projects Activity (IARPA), via 2022-21102100004. The views and conclusions contained herein are those of the authors and should not be interpreted as necessarily representing the official policies, either expressed or implied, of ODNI, IARPA, or the U.S. Government. The U.S. Government is authorized to reproduce and distribute reprints for governmental purposes notwithstanding any copyright annotation therein.
+
+## References
+
+[1] Abdelgader Abdelwhab and Serestina Viriri. “A survey on soft biometrics for human identification”. In: Machine Learning and Biometrics (2018).
+
+[2] Heikki Ailisto, Elena Vildjiounaite, Mikko Lindholm, Satu-Marja Mäkelä, and Johannes Peltola. “Soft biometrics—combining body weight and fat measurements with fingerprint biometrics”. In: Pattern Recognition Letters (2006).
+
+[3] Daniel Arkushin, Bar Cohen, Shmuel Peleg, and Ohad Fried. “GEFF: Improving Any Clothes-Changing Person ReID Model Using Gallery Enrichment With Face Features”. In: WACV. 2024.
+
+[4] Anurag Arnab, Mostafa Dehghani, Georg Heigold, Chen Sun, Mario Luciˇ c, and Cordelia´ Schmid. “ViViT: A Video Vision Transformer”. In: ICCV. 2021.
+
+[5] Shuai Bai, Keqin Chen, Xuejing Liu, Jialin Wang, Wenbin Ge, Sibo Song, Kai Dang, Peng Wang, Shijie Wang, Jun Tang, et al. “Qwen2. 5-VL Technical Report”. In: arXiv e-prints (2025), arXiv–2502.
+
+[6] Keqi Chen, Vinkle Srivastav, Didier Mutter, and Nicolas Padoy. “Learning from Synchronization: Self-Supervised Uncalibrated Multi-View Person Association in Challenging Scenes”. In: CVPR. 2025.
+
+[7] Weihua Chen, Xianzhe Xu, Jian Jia, Hao Luo, Yaohua Wang, Fan Wang, Rong Jin, and Xiuyu Sun. “Beyond appearance: a semantic controllable self-supervised learning framework for human-centric visual tasks”. In: CVPR. 2023.
+
+[8] Xiangxiang Chu, Limeng Qiao, Xinyu Zhang, Shuang Xu, Fei Wei, Yang Yang, Xiaofei Sun, Yiming Hu, Xinyang Lin, Bo Zhang, and Chunhua Shen. “MobileVLM V2: Faster and Stronger Baseline for Vision Language Model”. In: arXiv preprint arXiv:2402.03766 (2024).
+
+[9] Zhenyu Cui, Jiahuan Zhou, and Yuxin Peng. “DKC: Differentiated Knowledge Consolidation for Cloth-Hybrid Lifelong Person Re-identification”. In: CVPR. 2025.
+
+[10] Alexey Dosovitskiy, Lucas Beyer, Alexander Kolesnikov, Dirk Weissenborn, Xiaohua Zhai, Thomas Unterthiner, Mostafa Dehghani, Matthias Minderer, Georg Heigold, Sylvain Gelly, Jakob Uszkoreit, and Neil Houlsby. “An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale”. In: ICLR. OpenReview.net, 2021.
+
+[11] Saeed Ebrahimi, Sahar Rahimi, Ali Dabouei, Srinjoy Das, Jeremy M Dawson, and Nasser M Nasrabadi. “GIF: Generative Inspiration for Face Recognition at Scale”. In: Proceedings ofthe Computer Vision and Pattern Recognition Conference. 2025.
+
+[12] Chao Fan, Saihui Hou, Yongzhen Huang, and Shiqi Yu. “Exploring Deep Models for Practical Gait Recognition”. In: arXiv preprint arXiv:2303.03301 (2023).
+
+[13] Chao Fan, Junhao Liang, Chuanfu Shen, Saihui Hou, Yongzhen Huang, and Shiqi Yu. “Open-Gait: Revisiting Gait Recognition Towards Better Practicality”. In: CVPR. 2023.
+
+[14] Chao Fan, Jingzhe Ma, Dongyang Jin, Chuanfu Shen, and Shiqi Yu. “Skeletongait: Gait recognition using skeleton maps”. In: AAAI. 2024.
+
+[15] Xinqian Gu, Hong Chang, Bingpeng Ma, Shutao Bai, Shiguang Shan, and Xilin Chen. “Clotheschanging person re-identification with rgb modality only”. In: CVPR. 2022.
+
+[16] Ruiyang Ha, Songyi Jiang, Bin Li, Bikang Pan, Yihang Zhu, Junjie Zhang, Xiatian Zhu, Shaogang Gong, and Jingya Wang. “Multi-modal Multi-platform Person Re-Identification: Benchmark and Method”. In: ICCV. 2025.
+
+[17] Gavriel Habib, Noa Barzilay, Or Shimshi, Rami Ben-Ari, and Nir Darshan. “Cargait: Crossattention based re-ranking for gait recognition”. In: ICCV. 2025.
+
+[18] Bilal Hassan, Ebroul Izquierdo, and Tomas Piatrik. “Soft biometrics: A survey: Benchmark analysis, open challenges and recommendations”. In: Multimedia Tools and Applications 83.5 (2024), pp. 15151–15194.
+
+[19] Gary B Huang, Marwan Mattar, Tamara Berg, and Eric Learned-Miller. “Labeled faces in the wild: A database forstudying face recognition in unconstrained environments”. In: Workshop on faces in’Real-Life’Images: detection, alignment, and recognition. 2008.
+
+[20] Panjian Huang, Saihui Hou, Chunshui Cao, Xu Liu, and Yongzhen Huang. “Vocabulary-Guided Gait Recognition”. In: NeurIPS. 2025.
+
+[21] Panjian Huang, Saihui Hou, Junzhou Huang, and Yongzhen Huang. “Learning A Unified Template for Gait Recognition”. In: ICCV. 2025.
+
+[22] Siyuan Huang, Ram Prabhakar Kathirvel, Yuxiang Guo, Rama Chellappa, and Cheng Peng. “VILLS : Video-Image Learning to Learn Semantics for Person Re-Identification”. In: WACV. 2025.
+
+[23] Yan Huang, Qiang Wu, Jingsong Xu, and Yi Zhong. “Celebrities-ReID: A benchmark for clothes variation in long-term person re-identification”. In: IJCNN. 2019.
+
+[24] Anil K Jain, Karthik Nandakumar, Xiaoguang Lu, and Unsang Park. “Integrating faces, fingerprints, and soft biometric traits for user recognition”. In: International Workshop on Biometric Authentication. Springer. 2004.
+
+[25] Anil K Jain and Unsang Park. “Facial marks: Soft biometric for face recognition”. In: ICIP. IEEE. 2009.
+
+[26] Dongyang Jin, Chao Fan, Jingzhe Ma, Jingkai Zhou, Weihua Chen, and Shiqi Yu. “On Denoising Walking Videos for Gait Recognition”. In: CVPR. 2025.
+
+[27] Wajahat Khalid, Bin Liu, Xulin Li, Muhammad Waqas, and Muhammad Sher Afgan. “Bridging the Sky and Ground: Towards View-Invariant Feature Learning for Aerial-Ground Person Re-Identification”. In: ICCV. 2025.
+
+[28] Minchul Kim, Anil K Jain, and Xiaoming Liu. “Adaface: Quality adaptive margin for face recognition”. In: CVPR. 2022.
+
+[29] Minchul Kim, Dingqiang Ye, Yiyang Su, Feng Liu, and Xiaoming Liu. “Sapiensid: Foundation for human recognition”. In: CVPR. 2025.
+
+[30] Minsoo Kim, Min-Cheol Sagong, Gi Pyo Nam, Junghyun Cho, and Ig-Jae Kim. “VIGFace: Virtual Identity Generation for Privacy-Free Face Recognition Dataset”. In: Proceedings of the IEEE/CVF International Conference on Computer Vision. 2025.
+
+[31] Sunpill Kim, Seunghun Paik, Chanwoo Hwang, Dongsoo Kim, Junbum Shin, and Jae Hong Seo. “IDFace: Face Template Protection for Efficient and Secure Identification”. In: CVPR. 2025.
+
+[32] Longhua Li, Lei Qi, and Xin Geng. “One-Shot Knowledge Transfer for Scalable Person Re-Identification”. In: ICCV. 2025.
+
+[33] Weijia Li, Saihui Hou, Chunjie Zhang, Chunshui Cao, Xu Liu, Yongzhen Huang, and Yao Zhao. “An In-Depth Exploration of Person Re-Identification and Gait Recognition in Cloth-Changing Conditions”. In: CVPR. 2023.
+
+[34] Xin Liang and Yogesh S Rawat. “DIFFER: Disentangling Identity Features via Semantic Cues for Clothes-Changing Person Re-ID”. In: CVPR. 2025.
+
+[35] Feng Liu, Ryan Ashbaugh, Nicholas Chimitt, Najmul Hassan, Ali Hassani, Ajay Jaiswal, Minchul Kim, Zhiyuan Mao, Christopher Perry, Zhiyuan Ren, et al. “Farsight: A physicsdriven whole-body biometric system at large distance and altitude”. In: WACV. 2024.
+
+[36] Feng Liu, Nicholas Chimitt, Lanqing Guo, Jitesh Jain, Aditya Kane, Minchul Kim, Wes Robbins, Yiyang Su, Dingqiang Ye, Xingguang Zhang, et al. “Person Recognition at Altitude and Range: Fusion of Face, Body Shape and Gait”. In: arXiv preprint arXiv:2505.04616 (2025).
+
+[37] Feng Liu, Minchul Kim, ZiAng Gu, Anil Jain, and Xiaoming Liu. “Learning Clothing and Pose Invariant 3D Shape Representation for Long-Term Person Re-Identification”. In: ICCV. 2023.
+
+[38] Feng Liu, Minchul Kim, Zhiyuan Ren, and Xiaoming Liu. “Distilling CLIP with Dual Guidance for Learning Discriminative Human Body Shape Representation”. In: CVPR. 2024.
+
+[39] Shervin Minaee, Amirali Abdolrashidi, Hang Su, Mohammed Bennamoun, and David Zhang. “Biometrics recognition using deep learning: A survey”. In: Artificial Intelligence Review (2023).
+
+[40] Stylianos Moschoglou, Athanasios Papaioannou, Christos Sagonas, Jiankang Deng, Irene Kotsia, and Stefanos Zafeiriou. “Agedb: the first manually collected, in-the-wild age database”. In: CVPRW. 2017.
+
+[41] Zhiqi Pang, Junjie Wang, Lingling Zhao, and Chunyu Wang. “Identity-Clothing Similarity Modeling for Unsupervised Clothing Change Person Re-Identification”. In: CVPR. 2025.
+
+[42] Unsang Park and Anil K Jain. “Face matching and retrieval using soft biometrics”. In: IEEE transactions on informationforensics and security (2010).
+
+[43] Zhengyuan Peng, Jianqing Xu, Yuge Huang, Jinkun Hao, Shouhong Ding, Zhizhong Zhang, Xin Tan, and Lizhuang Ma. “Stylized-Face: A Million-level Stylized Face Dataset for Face Recognition”. In: ICCV. 2025.
+
+[44] Soumyadip Sengupta, Jun-Cheng Chen, Carlos Castillo, Vishal M Patel, Rama Chellappa, and David W Jacobs. “Frontal to profile face verification in the wild”. In: WACV. 2016.
+
+[45] Chuanfu Shen, Rui Wang, Lixin Duan, and Shiqi Yu. “LidarGait++: Learning Local Features and Size Awareness from LiDAR Point Clouds for 3D Gait Recognition”. In: CVPR. 2025.
+
+[46] Xiujun Shu, Xiao Wang, Xianghao Zang, Shiliang Zhang, Yuanqi Chen, Ge Li, and Qi Tian. “Large-Scale Spatio-Temporal Person Re-identification: Algorithms and Benchmark”. In: TCSVT (2021).
+
+[47] Nyle Siddiqui, Florinel Alin Croitoru, Gaurav Kumar Nayak, Radu Tudor Ionescu, and Mubarak Shah. “DLCR: A Generative Data Expansion Framework via Diffusion for Clothes-Changing Person Re-ID”. In: WACV. 2025.
+
+[48] Woojung Son, Yoonki Cho, Guoyuan An, Chanmi Lee, and Sung-Eui Yoon. “Towards Robustness of Person Search against Corruptions”. In: ICCV. 2025.
+
+[49] Yiyang Su, Yunping Shi, Feng Liu, and Xiaoming Liu. “Hamobe: Hierarchical and adaptive mixture of biometric experts for video-based person reid”. In: ICCV. 2025.
+
+[50] Pedro Tome, Ruben Vera-Rodriguez, Julian Fierrez, and Javier Ortega-Garcia. “Facial soft biometric features for forensic face recognition”. In: Forensic science international (2015).
+
+[51] Pavan Kumar Anasosalu Vasu, Fartash Faghri, Chun-Liang Li, Cem Koc, Nate True, Albert Antony, Gokul Santhanam, James Gabriel, Peter Grasch, Oncel Tuzel, and Hadi Pouransari. “FastVLM: Efficient Vision Encoding for Vision Language Models”. In: CVPR. 2025.
+
+[52] Shining Wang, Yunlong Wang, Ruiqi Wu, Bingliang Jiao, Wenxuan Wang, and Peng Wang. “SeCap: Self-Calibrating and Adaptive Prompts for Cross-view Person Re-Identification in Aerial-Ground Networks”. In: CVPR. 2025.
+
+[53] Zengbin Wang, Saihui Hou, Junjie Li, Xu Liu, Chunshui Cao, Yongzhen Huang, Siye Wang, and Man Zhang. “Gait-X: Exploring X modality for Generalized Gait Recognition”. In: ICCV. 2025.
+
+[54] Longhui Wei, Shiliang Zhang, Wen Gao, and Qi Tian. “Person transfer GAN to bridge domain gap for person re-identification”. In: CVPR. 2018.
+
+[55] Chi Xu, Yasushi Makihara, Xiang Li, Yasushi Yagi, and Jianfeng Lu. “Gait recognition from a single image using a phase-aware gait cycle reconstruction network”. In: ECCV. 2020.
+
+[56] Kunlun Xu, Fan Zhuo, Jiangmeng Li, Xu Zou, and Jiahuan Zhou. “Self-Reinforcing Prototype Evolution with Dual-Knowledge Cooperation for Semi-Supervised Lifelong Person Re-Identification”. In: ICCV. 2025.
+
+[57] Qize Yang, Ancong Wu, and Wei-Shi Zheng. “Person re-identification by contour sketch under moderate clothing change”. In: TPAMI (2019).
+
+[58] Shaopeng Yang, Jilong Wang, Saihui Hou, Xu Liu, Chunshui Cao, Liang Wang, and Yongzhen Huang. “Bridging gait recognition and large language models sequence modeling”. In: CVPR. 2025.
+
+[59] Zhengwei Yang, Meng Lin, Xian Zhong, Yu Wu, and Zheng Wang. “Good is Bad: Causality Inspired Cloth-debiasing for Cloth-changing Person Re-identification”. In: CVPR. 2023.
+
+[60] Dingqiang Ye, Chao Fan, Zhanbo Huang, Chengwen Luo, Jianqiang Li, Shiqi Yu, and Xiaoming Liu. “Biggergait: Unlocking gait recognition with layer-wise representations from large vision models”. In: NeurIPS. 2025.
+
+[61] Dingqiang Ye, Chao Fan, Jingzhe Ma, Xiaoming Liu, and Shiqi Yu. “BigGait: Learning Gait Representation You Want by Large Vision Models”. In: CVPR. 2024.
+
+[62] Jinghan You, Shanglin Li, Yuanrui Sun, Jiangchuan Wei, Mingyu Guo, Chao Feng, and Jiao Ran. “LVFace: Progressive Cluster Optimization for Large Vision Models in Face Recognition”. In: ICCV. 2025.
+
+[63] Chao Yuan, Guiwei Zhang, Changxiao Ma, Tianyi Zhang, and Guanglin Niu. “From poses to identity: Training-free person re-identification via feature centralization”. In: CVPR. 2025.
+
+[64] Junkun Yuan, Xinyu Zhang, Hao Zhou, Jian Wang, Zhongwei Qiu, Zhiyin Shao, Shaofeng Zhang, Sifan Long, Kun Kuang, Kun Yao, et al. “Hap: Structure-aware masked image modeling for human-centric perception”. In: NeurIPS. 2023.
+
+[65] Xiao-Wen Zhang, Delong Zhang, Yi-Xing Peng, Zhi Ouyang, Jingke Meng, and Wei-Shi Zheng. “VIPerson: Flexibly Generating Virtual Identity for Person Re-Identification”. In: ICCV. 2025.
+
+[66] Liang Zheng, Liyue Shen, Lu Tian, Shengjin Wang, Jingdong Wang, and Qi Tian. “Scalable person re-identification: A benchmark”. In: ICCV. 2015.
+
+[67] Tianyue Zheng and Weihong Deng. “Cross-pose lfw: A database for studying cross-pose face recognition in unconstrained environments”. In: Beijing University of Posts and Telecommunications, Tech. Rep (2018).
+
+[68] Tianyue Zheng, Weihong Deng, and Jiani Hu. “Cross-age lfw: A database for studying crossage face recognition in unconstrained environments”. In: arXiv preprint arXiv:1708.08197 (2017).
+
+[69] Jie Zhu, Yiyang Su, Minchul Kim, Anil Jain, and Xiaoming Liu. “A quality-guided mixture of score-fusion experts framework for human recognition”. In: ICCV. 2025.
+
+[70] Shinan Zou, Chao Fan, Jianbo Xiong, Chuanfu Shen, Shiqi Yu, and Jin Tang. “Cross-covariate gait recognition: A benchmark”. In: AAAI. 2024.
+
+[71] Jialong Zuo, Yongtai Deng, Mengdan Tan, Rui Jin, Dongyue Wu, Nong Sang, Liang Pan, and Changxin Gao. “ReID5o: Achieving Omni Multi-modal Person Re-identification in a Single Model”. In: NeurIPS. 2025.
+
+## A Additional Experiments
+
+## A.1 Additional Implementation Details
+
+Architecture and K-SAH Specifications SapiensID 2.0 is built upon a standard Vision Transformer (ViT-B/16) backbone, initialized with the pre-trained weights from the original SapiensID baseline to preserve foundational spatial representations. The RP module explicitly isolates and normalizes semantic regions (e.g., face, full body, upper torso) before patch extraction, preserving absolute geometric coordinates via region-specific positional embeddings. For our K-SAH, the temporal processing window size is set to $\dot { T } = 5$ frames during training to balance memory constraints and temporal representation learning. However, because the temporal pooling mechanism relies on attention masking and late sequence aggregation, this window can be flexibly scaled up during inference without further architectural modifications.
+
+Semantic Subspace Distillation Setup The semantic feature spaces are generated entirely offline. We utilize the frozen Qwen2.5-VL-7B-Instruct [5] model to process the massive WebBody4M dataset. We employ the following structured prompt to ensure attribute consistency across instances:
+
+"Analyze the individual in the provided image or video tracklet.
+
+Generate a strict JSON object with:\n"
+
+"group\_a\_fixed: race\_ethnicity\_presentation, gender\_presentation, age\_demographic\_category, "
+
+"skin\_tone, body\_shape, facial\_structure.\n"
+
+"group\_b\_dynamic: hair\_color\_length\_style, facial\_hair\_presence, visible\_accessories, "
+
+"upper\_clothing\_color\_type, lower\_clothing\_color\_type.\n"
+
+"If an attribute is obscured or ambiguous, return null for that key. "
+
+"Do not infer uncertain information. Return JSON only."
+
+The resulting text strings are passed through the Qwen2.5-VL-7B-Instruct [5] text encoder, producing high-dimensional textual embeddings. To obtain the requisite stable semantic topologies, we compute the covariance matrix over the entire WebBody training corpus and apply SVD independently to both the fixed and dynamic semantic sets. For ITA, we retain the top $D _ { F } = 6$ principal components from the fixed biometrics subspace (V<sup>F</sup>). For TND, we extract the top $D _ { D } = 5$ principal components from the dynamic biometrics subspace $( \mathbf { V } _ { T } ^ { D } )$ . To align the visual embedding space with these lower-dimensional semantic bases, we attach a lightweight, two-layer Multi-Layer Perceptron (MLP) mapping the student feature dimension $( D \to { \overline { { 5 } } } 1 2 \to { \overline { { D } } } )$ . This MLP serves exclusively to calculate the distillation gradients during training and is dropped prior to inference.
+
+Training Hyperparameters The unified SapiensID 2.0 framework is optimized using the AdamW optimizer. We employ a base learning rate of $1 \times 1 0 ^ { - 4 }$ , accompanied by a cosine annealing learning rate schedule and a linear warmup over the first two epochs. Weight decay is set to 0.05. To effectively support the Relational Topology Preservation loss $( \mathcal { L } _ { F R } )$ , we utilize a large total batch size of 128, which is distributed across 7 NVIDIA A100 GPUs. The model is trained for a total of 30 epochs. For the loss landscape, we use AdaFace [28], weighting our combined semantic distillation loss terms equally with a projection weight 0.5 to ensure that the distillation process guides the latent space without overriding the fundamental metric learning constraints.
+
+## A.2 Datasets
+
+In Tab. 5, we provide an overview of all the testing datasets that we use in our experiments. Note that we use one single model to test the zero-shot generalization capabilities of both SapiensID 2.0 and the baseline methods.
+
+## A.3 Additional Results
+
+We show the results of additional baseline models with more diverse architectures trained on more diverse training datasets in Tab. 6. In the main paper, we report the results of the baseline model with the best overall generalization performance.
+
+Table 5: Summary of testing datasets used in our experiments.
+<table><tr><td>Dataset</td><td>Year</td><td>Task</td><td>Data Type</td><td>Same-Cloth.</td><td>Cloth.-Change</td><td>Other Variations</td></tr><tr><td>CCVID [15]</td><td>2022</td><td>ReID</td><td>Video</td><td>√</td><td>√</td><td></td></tr><tr><td>CCPG [33]</td><td>2023</td><td>ReID/Gait</td><td>Video</td><td></td><td>√</td><td>Gait</td></tr><tr><td>LTCC [46]</td><td>2021</td><td>ReID</td><td>Image</td><td>√</td><td>√</td><td></td></tr><tr><td>PRCC [57]</td><td>2019</td><td>ReID</td><td>Image</td><td>√</td><td>√</td><td></td></tr><tr><td>Market1501</td><td>2015</td><td>ReID</td><td>Image</td><td>√</td><td></td><td></td></tr><tr><td>MSMT17</td><td>2018</td><td>ReID</td><td>Image</td><td>√</td><td></td><td></td></tr><tr><td>CCDA [37]</td><td>2023</td><td>ReID</td><td>Image</td><td></td><td>√</td><td></td></tr><tr><td>CelevReID [23]</td><td>2019</td><td>ReID</td><td>Image</td><td></td><td>√</td><td></td></tr><tr><td>WebBody [29]</td><td>2025</td><td>ReID</td><td>Image</td><td></td><td></td><td>Pose/Scale</td></tr><tr><td>LFW</td><td>2007</td><td>Face</td><td>Image</td><td></td><td></td><td></td></tr><tr><td>CPLFW</td><td>2018</td><td>Face</td><td>Image</td><td></td><td></td><td>Pose</td></tr><tr><td>CFP-FP</td><td>2017</td><td>Face</td><td>Image</td><td></td><td></td><td>Frontal</td></tr><tr><td>CALFW</td><td>2017</td><td>Face</td><td>Image</td><td></td><td></td><td>Age</td></tr><tr><td>AgeDB</td><td>2017</td><td>Face</td><td>Image</td><td></td><td></td><td>Age</td></tr></table>
+
+Table 6: Generalization comparison with SoTA ReID models on two settings. "Long-term" refers to clothing change (CC) protocols of LTCC and PRCC datasets, while “short-term” the same clothing (SC) protocols. For other datasets, the data capture characteristics define short or long-term conditions.
+<table><tr><td rowspan="2">Method</td><td rowspan="2">Train Data</td><td colspan="2">LTCC (General)</td><td colspan="2">PRCC (SC) [57]</td><td colspan="2">Market1501</td><td colspan="2">MSMT17 [54]</td></tr><tr><td>top1</td><td>mAP</td><td>top1</td><td>mAP</td><td>top1</td><td>mAP</td><td>top1</td><td>mAP</td></tr><tr><td>CAL [15] (R50)</td><td>LTCC</td><td>74.04</td><td>40.84</td><td>99.51</td><td>95.64</td><td>35.60</td><td>16.11</td><td>15.92</td><td>5.06</td></tr><tr><td>CAL [15] (R50)</td><td>PRCC</td><td>20.69</td><td>6.19</td><td>100.00</td><td>99.76</td><td>18.97</td><td>6.47</td><td>2.56</td><td>0.69</td></tr><tr><td>CAL [15] (R50)</td><td>LTCC+PRCC</td><td>72.41</td><td>38.12</td><td>99.54</td><td>99.01</td><td>43.65</td><td>21.03</td><td>14.48</td><td>4.44</td></tr><tr><td>CLIP3DReID [38] (R50)</td><td>LTCC</td><td>75.66</td><td>45.15</td><td>99.43</td><td>96.43</td><td>41.66</td><td>20.33</td><td>17.45</td><td>5.50</td></tr><tr><td>CLIP3DReID [38] (R50)</td><td>PRCC</td><td>21.30</td><td>6.19</td><td>100.00</td><td>99.84</td><td>20.93</td><td>7.49</td><td>3.28</td><td>0.85</td></tr><tr><td>SOLIDER [7] (Swin-Base)</td><td>LUP4M+Market1501</td><td>73.83</td><td>36.28</td><td>99.51</td><td>99.53</td><td>97.03</td><td>94.04</td><td>48.64</td><td>22.77</td></tr><tr><td>SOLIDER [7] (Swin-Base)</td><td>LUP4M+MSMT17</td><td>74.44</td><td>36.74</td><td>99.30</td><td>98.71</td><td>89.85</td><td>73.20</td><td>91.12</td><td>78.01</td></tr><tr><td>HAP [64] (ViT-Base)</td><td>LUP4M+LTCC</td><td>65.11</td><td>29.02</td><td>95.53</td><td>86.44</td><td>51.63</td><td>27.29</td><td>20.89</td><td>6.56</td></tr><tr><td>HAP [64] (ViT-Base)</td><td>LUP4M+PRCC</td><td>63.29</td><td>29.36</td><td>98.84</td><td>98.38</td><td>73.49</td><td>50.11</td><td>29.61</td><td>10.99</td></tr><tr><td>HAP [64] (ViT-Base)</td><td>LUP4M+Market1501</td><td>73.02</td><td>35.97</td><td>99.30</td><td>98.45</td><td>96.23</td><td>92.20</td><td>48.01</td><td>23.02</td></tr><tr><td>HAP [64] (ViT-Base)</td><td>LUP4M+MSMT17</td><td>67.95</td><td>32.07</td><td>99.15</td><td>96.50</td><td>80.37</td><td>57.07</td><td>89.13</td><td>75.85</td></tr><tr><td>HAP [64] (ViT-Base)</td><td>WebBody</td><td>56.80</td><td>25.88</td><td>99.72</td><td>98.26</td><td>66.18</td><td>42.41</td><td>43.61</td><td>21.42</td></tr><tr><td>SapiensID [29] (ViT-Base)</td><td>WebBody</td><td>72.01</td><td>34.56</td><td>100.00</td><td>98.79</td><td>88.18</td><td>68.26</td><td>67.25</td><td>31.02</td></tr><tr><td>SapiensID 2.0 (Ours, ViT-Base)</td><td>WebBody</td><td>77.08</td><td>42.39</td><td>100.00</td><td>99.01</td><td>86.94</td><td>67.15</td><td>67.62</td><td>30.32</td></tr><tr><td colspan="10">(a) Short-Term ReID</td></tr><tr><td>Method</td><td>Train Data</td><td colspan="2">LTCC (CC) [46]</td><td colspan="2">PRCC (CC)</td><td colspan="2">CCDA [37]</td><td colspan="2">Celeb-ReID [23]</td></tr><tr><td>CAL [15] (R50)</td><td></td><td>top1</td><td>mAP</td><td>top1</td><td>mAP</td><td>top1</td><td>mAP</td><td>top1</td><td>mAP</td></tr><tr><td>CAL [15] (R50)</td><td>LTCC PRCC</td><td>38.01</td><td>18.84</td><td>37.00</td><td>35.20</td><td>3.91</td><td>9.67</td><td>37.42</td><td>3.92</td></tr><tr><td>CAL [15] (R50)</td><td></td><td>6.38</td><td>3.14</td><td>55.69</td><td>55.64</td><td>2.85</td><td>8.61</td><td>23.59</td><td>2.20</td></tr><tr><td>CLIP3DReID [38] (R50)</td><td>LTCC+PRCC</td><td>33.16</td><td>16.27</td><td>45.39</td><td>45.42</td><td>3.74</td><td>9.14</td><td>37.11</td><td>3.81</td></tr><tr><td></td><td>LTCC PRCC</td><td>41.84</td><td>22.58</td><td>40.81</td><td>38.38</td><td>4.31</td><td>10.18</td><td>37.31</td><td>4.02</td></tr><tr><td>CLIP3DReID [38] (R50)</td><td></td><td>6.63</td><td>3.17</td><td>62.40</td><td>61.97</td><td>3.17</td><td>8.89</td><td>23.82</td><td>2.17</td></tr><tr><td>SOLIDER [7] (Swin-Base)</td><td>LUP4M+Market1501</td><td>25.00</td><td>12.18</td><td>26.87</td><td>32.12</td><td>8.62</td><td>16.48</td><td>46.37</td><td>5.66</td></tr><tr><td>SOLIDER [7] (Swin-Base)</td><td>LUP4M+MSMT17</td><td>26.02</td><td>11.33</td><td>22.27</td><td>25.36</td><td>8.79</td><td>15.54</td><td>47.95</td><td>6.14</td></tr><tr><td>HAP [64] (ViT-Base)</td><td>LUP4M+LTCC</td><td>25.00</td><td>11.63</td><td>26.14</td><td>22.34</td><td>4.56</td><td>11.18</td><td>30.28</td><td>3.54</td></tr><tr><td>HAP [64] (ViT-Base)</td><td>LUP4M+PRCC</td><td>29.08</td><td>12.52</td><td>38.05</td><td>41.94</td><td>5.13</td><td>13.40</td><td>37.79</td><td>4.48</td></tr><tr><td>HAP [64] (ViT-Base)</td><td>LUP4M+Market1501</td><td>24.74</td><td>11.71</td><td>33.90</td><td>37.00</td><td>8.30</td><td>16.02</td><td>44.38</td><td>5.20</td></tr><tr><td>HAP [64] (ViT-Base)</td><td>LUP4M+MSMT17</td><td>23.47</td><td>10.74</td><td>23.82</td><td>25.00</td><td>6.27</td><td>13.33</td><td>46.37</td><td>5.77</td></tr><tr><td>HAP [64] (ViT-Base)</td><td>WebBody</td><td>22.70</td><td>9.96</td><td>54.93</td><td>49.38</td><td>28.80</td><td>41.49</td><td>65.78</td><td>18.93</td></tr><tr><td>SapiensID [29] (ViT-Base)</td><td>WebBody</td><td>42.35</td><td>17.79</td><td>78.75</td><td>72.60</td><td>61.84</td><td>69.08</td><td>92.80</td><td>66.92</td></tr><tr><td>SapiensID 2.0 (Ours, ViT-Base)</td><td>WebBody</td><td>48.26</td><td>22.28</td><td>85.19</td><td>79.32</td><td>64.96</td><td>71.06</td><td>91.64</td><td>71.87</td></tr></table>
+
+(b) Long-Term ReID
+
+Table 7: ReID Performance on variable pose and scale settings on the WebBody test set.
+<table><tr><td>Method</td><td>top1</td><td>mAP</td></tr><tr><td>CAL [15]</td><td>6.57</td><td>1.02</td></tr><tr><td>SOLIDER [7]</td><td>9.95</td><td>1.98</td></tr><tr><td>HAP [64]</td><td>8.22</td><td>1.52</td></tr><tr><td>SapiensID [29]</td><td>76.82</td><td>52.00</td></tr><tr><td>SapiensID 2.0 (Ours)</td><td>76.94</td><td>52.16</td></tr></table>
+
+## A.4 Performance of Gait Recognition Models on CCVID
+
+To provide a comprehensive analysis of cross-domain capabilities, we evaluated recent large-scale gait foundation models, specifically BigGait [61] and BiggerGait [60], on the video-based person re identification dataset (CCVID). We use models trained on CCGR [70], a large-scale gait recognition dataset commonly used for pretraining gait models with better generalization results than other gait datasets.
+
+Surprisingly, gait recognition models demonstrate remarkably strong generalization to video-based ReID. BiggerGait achieves 85.13% Rank-1 and 83.38% mAP on the CCVID General split, vastly outperforming traditional ReID models like CAL (74.83% Rank-1) and CLIP3DReID (77.28% Rank-1). Most notably, in the clothing-change (CC) split, BiggerGait achieves a highly competitive mAP of 82.59%. This highlights the intrinsic advantage of gait architectures in appearance-altering scenarios: by relying entirely on kinematic silhouettes and discarding RGB texture, they are inherently immune to the clothing-change artifacts that catastrophically disrupt traditional ReID models like SOLIDER.
+
+Despite this resilience, dedicated gait models are ultimately constrained by their modality limit. Because they discard all visual semantics (such as facial features, fixed soft biometrics, and unoccluded visual markers), they fail to match the peak discriminative capabilities of foundation models for human recognition. SapiensID 2.0 significantly outperforms BiggerGait in Top-1 accuracy across both the General (95.70% vs. 85.13%) and CC (88.62% vs. 84.53%) splits. This demonstrates that while BiggerGait is robust against noise, the optimal strategy for human recognition is a unified approach. By integrating kinematic continuity (via K-SAH) with explicit visual soft biometrics (via Invariant Trait Alignment), SapiensID 2.0 captures the temporal robustness of gait models without sacrificing the rich, discriminative power of static semantic identity.
+
+## A.5 Cross Pose-Scale ReID
+
+To ensure that semantic alignment and kinematic tracking do not degrade the foundational spatial representations of the baseline, we evaluate the model on the challenging WebBody [29] test set, which features extreme variations in pose and scale. As shown in Table 7, traditional ReID models completely collapse (e.g., SOLIDER yields only 9.95% Rank-1 accuracy). The SapiensID baseline exhibits strong pose and scale invariance due to its massive pre-training on WebBody4M. Crucially, SapiensID 2.0 maintains and even slightly improves upon this robustness (76.94% Rank-1 and 52.16% mAP). This confirms that our Bipartite Subspace Alignment successfully disentangles semantic features without compromising the network’s underlying geometric spatial priors.
+
+## A.6 Additional Ablation Studies and Benchmarks
+
+Temporal Window Size Ablation in K-SAH To further dissect the impact of kinematic continuity, Tab. 8 illustrates the effect of the temporal window size (T) within K-SAH on the CCVID dataset. When $T = 1$ , the architecture effectively degenerates to the baseline static attention (SAH). As the temporal window expands $\left( T \geq 3 \right)$ , the network successfully tracks keypoint-guided semantic patches across neighboring frames, capturing discriminative kinematic signatures that single-frame averaging completely discards. Performance saturates around $T = 3 – 5$ , demonstrating that local temporal windows sufficiently capture kinematic continuity without incurring unnecessary computation.
+
+Edge Latency and Inference Throughput Benchmark We benchmark SapiensID 2.0 against edge MLLMs on an NVIDIA H100 GPU (fp16, batch size 1). As shown in Tab. 9, edge MLLMs (MobileVLM V2 [8] and FastVLM [51]) suffer from low throughput due to autoregressive decoding of attribute tokens (> 5s latency per frame). In contrast, SapiensID 2.0 completely discards the teacher MLLM after training, running inference strictly on the 63M parameter ViT-B backbone in a single forward pass with a latency of only 23.3ms (42.9 FPS), achieving a 225× throughput speedup.
+
+Table 8: Impact of temporal tracking window size (T) within the K-SAH module on the CCVID dataset.
+<table><tr><td colspan="3">CCVID (General) Window Size (T)</td><td colspan="2">CCVID (CC)</td></tr><tr><td></td><td>top1</td><td>mAP</td><td>top1</td><td>mAP</td></tr><tr><td>1 (Static SAH)</td><td>92.57</td><td>77.82</td><td>88.72</td><td>72.22</td></tr><tr><td>3</td><td>95.70</td><td>84.99</td><td>88.62</td><td>78.04</td></tr><tr><td>5</td><td>95.65</td><td>84.95</td><td>88.53</td><td>77.95</td></tr><tr><td>7</td><td>95.73</td><td>84.90</td><td>88.54</td><td>77.87</td></tr></table>
+
+Table 9: Inference latency, throughput, and parameter comparison with edge MLLMs.
+<table><tr><td>Model</td><td>Parameters (Inference)</td><td>GFLOPs / Frame</td><td>Throughput (FPS)</td><td>Edge Latency</td></tr><tr><td>MobileVLM V2 (1.7B)</td><td>1.67B</td><td>3221.2</td><td>0.190</td><td>5.27s</td></tr><tr><td>FastVLM (1.5B)</td><td>1.68B</td><td>1967.3</td><td>0.162</td><td>6.17s</td></tr><tr><td>SapiensID 2.0 (Ours)</td><td>63M (backbone)</td><td>68.8</td><td>42.9</td><td>23.3ms</td></tr></table>
+
+Zero-Shot Out-of-Distribution Baseline Comparison To further evaluate out-of-distribution (OOD) clothes-changing generalization, Tab. 10 compares SapiensID 2.0 directly against specialized domainspecific zero-shot methods on the LTCC and PRCC clothing-change protocols. SapiensID 2.0 significantly outperforms recent zero-shot methods (e.g., 48.26% vs. 11.7% on LTCC, and 85.19% vs. 81.0% on PRCC), demonstrating the superior generalization of our decoupled semantic subspace alignment.
+
+Table 10: Zero-shot out-of-distribution generalization comparison on LTCC (CC) and PRCC (CC).
+<table><tr><td rowspan="2">Method</td><td rowspan="2">Venue &amp; Year</td><td colspan="2">LTCC (CC)</td><td colspan="2">PRCC (CC)</td></tr><tr><td>Rank-1 (%)</td><td>mAP (%)</td><td>Rank-1 (%)</td><td>mAP (%)</td></tr><tr><td>CAL [15]</td><td>CVPR 2022</td><td></td><td></td><td>37.5</td><td>35.4</td></tr><tr><td>AIM [59]</td><td>CVPR 2023</td><td></td><td></td><td>40.7</td><td>38.4</td></tr><tr><td>GEFF [3]</td><td>WACV 2024</td><td>11.7</td><td>4.8</td><td>81.0</td><td>50.5</td></tr><tr><td>DLCR [47]</td><td>WACV 2025</td><td></td><td></td><td>45.5</td><td>38.8</td></tr><tr><td>SapiensID 2.0 (Ours)</td><td>NeurIPS 2026</td><td>48.26</td><td>22.28</td><td>85.19</td><td>79.32</td></tr></table>
+
+## B Limitations
+
+While SapiensID 2.0 significantly advances human recognition, it presents a few limitations. First, our semantic distillation framework intrinsically bounds the model’s semantic awareness to the zero-shot capabilities of the teacher MLLM. Consequently, any inherent limitations or failure modes of the MLLM in recognizing nuanced soft biometrics will naturally propagate to the student embedding space. Second, extracting the semantic subspaces requires running the heavy MLLM on the entire training corpus offline, which introduces a substantial, albeit one-time, computational overhead during the dataset preparation phase. However, since the distillation projection and the teacher MLLM are entirely discarded during inference, the deployed visual foundation model maintains the high efficiency and low latency required for real-time edge applications without any loss in throughput.
+
+## C Potential Societal Impacts
+
+The deployment of highly accurate, modality-unified human recognition systems carries profound societal implications. On the positive side, robust identity matching across extreme poses, occlusions, and clothing changes can drastically improve public security, aid in rigorous forensic investigations, and facilitate the recovery of missing persons in highly unconstrained environments. Conversely, the increased efficacy of these systems raises valid concerns regarding privacy infringement and the potential for unwarranted mass surveillance. Furthermore, because our semantic distillation relies on an MLLM to anchor traits such as race and gender, there is a distinct risk of inheriting and amplifying systemic biases present in the teacher model’s pre-training data, which could lead to discriminatory profiling. It is imperative that the deployment of such foundational biometric models is accompanied by strict ethical guidelines, rigorous bias auditing, and transparent regulatory oversight to prevent misuse and ensure equitable societal outcomes.
