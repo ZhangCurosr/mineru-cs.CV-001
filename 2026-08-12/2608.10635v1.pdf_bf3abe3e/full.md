@@ -1,0 +1,620 @@
+# M<sub>e</sub>dUP<sub>:</sub> A<sub>wa</sub>k<sub>e</sub>nin<sub>g</sub> Unifi<sub>e</sub>d Und<sub>e</sub>r<sub>s</sub>t<sub>a</sub>ndin<sub>g</sub> <sub>a</sub>nd P<sub>e</sub>r<sub>cep</sub>ti<sub>o</sub>n in M<sub>e</sub>di<sub>ca</sub>l Vi<sub>s</sub>i<sub>o</sub>n<sub>-</sub>L<sub>a</sub>n<sub>guage</sub> M<sub>o</sub>d<sub>e</sub>l<sub>s</sub>
+
+Yuan Wang<sup>1</sup> Hualiang Wang<sup>1</sup> Yixin Chen<sup>1</sup> Songtao Jiang<sup>1</sup> Shujian Gao<sup>2</sup> Jiaming Lin<sup>1</sup> Simin<sub>g</sub> Fu<sup>1</sup> Jian Wu<sup>1</sup> Zuozhu Liu<sup>\*,</sup> <sup>1</sup> <sup>1</sup> Zhejiang University <sup>2</sup> Fudan University {yuan2.24, zuozhuliu}@intl.zju.edu.cn
+
+## Abstract
+
+Medical Vision-Language Models (Med-VLMs) excel at verbalizing visual content, yet precise visual perception, segmentation, and grounding remain challenging. Existing approaches either verbalize regions as coordinate strings or rely on external modules that decouple perception from understanding, creating representation gaps for region-language alignment. We present MedUP, a Med-VLM that natively unifies perception and understanding within a shared token space. At its core lies UniMed-Tok, a region tokenizer that encodes masks as discrete tokens in the LLM vocabulary, enabling the model to seamlessly interleave mask tokens with text. We curate UniMed-Train, a 1.84M-instance corpus spanning text-guided segmentation, region-grounded understanding, medical VQA and CoT-based segmentation, and introduce UniMed-Bench for unified evaluation. Extensive experiments show that MedUP outperforms native, agentic, and dual-decoder Med-VLMs across all tasks while remaining competitive with specialist segmentors, demonstrating the strong potential of unified understanding and perception modeling.
+
+## 1 Intr<sub>o</sub>d<sub>uc</sub>ti<sub>o</sub>n
+
+Fueled by massive medical vision-language corpora, Medical Vision-Language Models (Med-VLMs) have risen to prominence through a unified paradigm: verbalizing anything they see. This formulation endows them with powerful visual understanding and versatile linguistic generation capabilities, substantially advancing tasks ranging from visual question answering and report generation to medical reasoning (Li et al., 2023; Moor et al., 2023; Wu et al., 2025a; Zhang et al., 2024; Chen et al., 2024; Wang et al., 2026, 2025c; Liu et al., 2024). Among these tasks, precise visual perception, such as grounding and segmentation, serves as an indispensable prerequisite for trustworthy medical image understanding, providing explicit localizations of pathological regions and key visual cues before decision-making (Kirillov et al., 2023; Ma et al., 2024; Luo et al., 2025).
+
+![](images/005a97ee0d81565753bcf1da800f202136af1a71da24f8f3d515541ee4173e84.jpg)  
+Figure 1: Prior medical VLMs either lack native textguided segmentation, rely on external tools, or sufer from the gap between text and images. MedUP introduces UniMedTok, a native mask-token interface that unifies text-guided segmentation, region-grounded understanding, and medical VQA within one VLM.
+
+However, the paradigm of verbalizing anything constrains how Med-VLMs achieve perception natively: existing models resort to a text-centric strategy, wherein spatial references are verbalized as discrete numerical strings, such as bounding-box coordinates and segmentation keypoints (Chen et al., 2023), as shown in Figure 1 (A). This formulation sufers from inherent limitations: Med-VLMs lack spatial sensitivity to such coordinate strings, fundamentally disconnecting the localization semantics they encode from the visual feature space.
+
+Alternatively, a line of work pursues an orthogonal solution: equipping Med-VLMs with external segmentation modules. Representative approaches include tool-using agent models, as shown in Figure 1 (B), which orchestrate of-the-shelf models (e.g., SAM) as callable tools during inference (Li et al., 2024; Jiang et al., 2026), and dual-decoder architectures, as shown in Figure 1 (C), which completely decouple the output space into an LLM branch for linguistic content understanding and a dedicated visual decoder for segmentation mask prediction (Lai et al., 2024; Huang et al., 2025a,b). Both paradigms, however, introduce notable drawbacks: they incur substantial additional parameters and architectural complexity. More fundamentally, whether by delegating perception to external tools or routing it through a separate decoder, the decoupling of understanding and perception creates a significant representation gap between the two capabilities. As a result, this decoupled design often leads to inefective region-language alignment, as we empirically verify in Table 4, where decoupled Med-VLMs deliver underwhelming performance on visually-grounded tasks.
+
+These observations motivate a fundamental question:
+
+## Can we natively unify understanding and perception ofMed-VLMs within a shared representation space?
+
+We argue that the key insight is to tokenize regions into discrete mask tokens within the shared token space of language, i.e., region as language.
+
+Guided by this principle, we present MedUP, a medical VLM for unified region-language modeling. At its core lies UniMedTok, a native region tokenizer that encodes medical regions as discrete mask tokens and then aligns them with their language counterparts (Wang et al., 2025b; Zhou et al., 2026; Lai et al., 2024). Consequently, MedUP can seamlessly interleave mask tokens with text in a single sequence, grounding pathological findings to precise regions, and describing arbitrary regions in natural language, thereby achieving unified perception and understanding.
+
+We train MedUP in two stages. In Stage 1, UniMedTok is pretrained via masked region reconstruction, where it learns to encode masks into discrete tokens and decode them back into masks. In Stage 2, we align UniMedTok with the VLMs, teaching it to natively “speak” mask tokens within text sequences. To this end, we curate a large-scale training corpus, UniMed-Train, comprising 902,648 text-guided segmentation samples, 902,648 region-grounded understanding samples, 4,000 CoT-based text-to-mask reasoning samples, and 27,738 standard medical image understanding samples, 1,837,034 training instances in total.
+
+To evaluate MedUP systematically, we further build UniMed-Bench, a unified medical regionlanguage benchmark with three tasks: Medical VQA, Text-Guided Segmentation, and Region-Grounded Understanding. This benchmark is designed to test not only whether a model can answer questions correctly, but also whether it can associate answers with the right medical regions and operate bidirectionally between language and masks. Under this protocol, we compare general-domain VLMs, medical VLMs, adapted mask-token baselines, and MedUP. We further introduce Seg-CoT task, a segmentation-oriented chain-of-thought paradigm for text-to-mask prediction (Wei et al., 2022; Lai et al., 2024). Instead of treating mask generation as a direct decoding problem alone, Seg-CoT encourages the model to produce segmentation through intermediate reasoning about anatomy, abnormality attributes, and localization cues. This improves semantic grounding and makes mask prediction more compatible with the reasoning behavior already exhibited by large vision-language models.
+
+Extensive experiments demonstrate that MedUP achieves strong and consistent performance across all three tasks in UniMed-Bench, outperforming native Med-VLMs, agentic Med-VLMs, and dualdecoder models, while remaining competitive with specialist medical segmentors (e.g., MedSAM1–3) on text-guided segmentation.
+
+Our contributions are three-fold:
+
+Architectural Contribution. We propose MedUP, a Med-VLM equipped with UniMedTok, a native region tokenizer that encodes masks as discrete tokens within the LLM vocabulary, unifying perception and understanding.
+
+Data Contribution. We curate UniMed-Train (1.84M instances) and UniMed-Bench, providing the large-scale region-language corpus and benchmark for bidirectional medical region-language evaluation, including Seg-CoT, a new reasoningguided segmentation paradigm.
+
+Empirical Contribution. MedUP consistently outperforms native, agentic, and dual-decoder Med-VLMs across all tasks, while remaining competitive with specialist segmentors, demonstrating the strong potential of unified understanding-perception modeling.
+
+## 2 M<sub>e</sub>th<sub>o</sub>d<sub>s</sub>
+
+## 2<sub>.</sub>1 P<sub>ro</sub>bl<sub>em</sub> F<sub>ormu</sub>l<sub>a</sub>ti<sub>on</sub>
+
+We study grounded medical vision-language modeling under a unified region-language setting. Given a medical image �, a text instruction or question �, and an optional region mask �, the model is required to support three downstream task types: (1) Medical VQA, where the output is a free-form textual answer; (2) Text-Guided Segmentation, where the output is a segmentation mask corresponding to a language description; and (3) Region-Grounded Understanding, where the model receives a target region and generates a clinically meaningful description, label, or answer conditioned on that region. The goal is to model these tasks in one autoregressive framework rather than by coupling separate segmentation and language systems.
+
+Formally, we introduce a mask serialization operator �(·) that maps a dense region mask into a short token span, and denote the output sequence by �. MedUP models all tasks with a single conditional autoregressive distribution
+
+$$
+p _ { \theta } ( Y \mid I , X ) = \prod _ { t = 1 } ^ { | Y | } p _ { \theta } ( y _ { t } \mid I , X , y _ { < t } ) .\tag{1}
+$$
+
+The three tasks difer only in how the input-output pair is instantiated. For Medical VQA, the target sequence is a textual answer �. For Text-Guided Segmentation, the target sequence is the serialized mask span �(�). For Region-Grounded Understanding, the serialized region span �(�) is appended to the instruction as part of the conditioning context, and the model predicts the textual answer �. This formulation reduces region understanding and region generation to next-token prediction in a shared text-mask space.
+
+## 2<sub>.</sub>2 O<sub>verv</sub>i<sub>ew</sub>
+
+MedUP is built around UniMedTok, a native masktoken interface that places medical regions in the same autoregressive space as text. The system has two stages. In Stage 1, we train a medical mask tokenizer to convert a region mask into compact discrete codes and reconstruct the mask from them.
+
+In Stage 2, we expand the VLM vocabulary with mask tokens, convert all region-related supervision into text-mask sequences, and jointly train on the four streams of UniMed-Train: Medical VQA, Text-Guided Segmentation, Region-Grounded Understanding, and Seg-CoT. Figure 2 summarizes the two-stage design of MedUP.
+
+This design separates mask representation learning from region-language modeling. The tokenizer is responsible for faithful bidirectional conversion between dense masks and discrete codes, while the VLM only needs to learn how to read and generate these codes in context. As a result, UniMedTok avoids adding a trainable segmentation head inside the language model. Full tokenizer architecture and implementation details are deferred to Appendix C.
+
+## 2<sub>.</sub>3 St<sub>age</sub> 1<sub>:</sub> M<sub>e</sub>di<sub>ca</sub>l M<sub>as</sub>k T<sub>o</sub>k<sub>e</sub>ni<sub>ze</sub>r
+
+We implement UniMedTok as an image-conditioned vector-quantized mask autoencoder. Given an image � and region mask �, the tokenizer encodes the mask into a continuous representation and then compresses it with residual vector quantization into an ordered two-code representation
+
+$$
+\begin{array} { r } { q = Q ( E _ { \mathrm { t o k } } ( I , M ) ) = [ c _ { 1 } , c _ { 2 } ] , \qquad c _ { 1 } , c _ { 2 } \in \{ 0 , \ldots , 2 5 5 \} , } \end{array}\tag{2}
+$$
+
+yielding an MT256×2 tokenization scheme. The discrete code pair is then decoded, conditioned on the same image, back into a dense mask $\hat { M } = D _ { \mathrm { t o k } } ( I , q )$ . Because decoding remains imageconditioned, the codes act as compact region prompts rather than standalone pixel descriptions.
+
+Stage 1 is trained as a mask reconstruction objective with quantization regularization, and the tokenizer is frozen after convergence for all downstream Stage-2 data construction and inference. In practice, we use a medical SAM2-style backbone, non-shared codebooks, and image-plus-box conditioning for localization stability. The full architecture, residual quantization procedure, and losses are provided in Appendix C.
+
+## 2<sub>.</sub>4 St<sub>age</sub> 2<sub>:</sub> M<sub>as</sub>k T<sub>o</sub>k<sub>e</sub>n<sub>s</sub> <sub>as</sub> L<sub>a</sub>n<sub>guage</sub>
+
+Vocabulary expansion. After training the tokenizer, we convert each discrete code into a textual special token. Specifically, we add a start token <|mt\_start|>, an end token <|mt\_end|>, and 512 mask code tokens <|mt\_0000|> to <|mt\_0511|> to the VLM vocabulary. Since each mask uses two codebook levels of size 256, the first token corresponds to the first codebook and the second token corresponds to the second codebook with an ofset of 256. A mask is therefore represented as
+
+![](images/ef5679ebc3095b157cef24ba7a628fc784bc8a22b696db64d41baa7413102a6f.jpg)  
+Figure 2: Overview of MedUP. MedUP is built on UniMedTok, a native mask-token interface for grounded medical vision-language modeling. Stage 1 learns a medical mask tokenizer that converts region masks into compact discrete tokens, and Stage 2 trains the VLM on four supervision streams from UniMed-Train: Medical VQA, Text-Guided Segmentation, Region-Grounded Understanding, and Seg-CoT. The same interface supports both mask-as-output and mask-as-input inference and is evaluated on UniMed-Bench
+
+$$
+\boldsymbol { S } ( M ) = [ t _ { \mathrm { s } } , t _ { c _ { 1 } } , t _ { 2 5 6 + c _ { 2 } } , t _ { \mathrm { e } } ]\tag{3}
+$$
+
+This textualization turns each mask into a short, language-compatible span that can be inserted into prompts or generated as output.
+
+Mask-as-input. For mask-grounded understanding, we encode the target region with the frozen tokenizer and insert the resulting mask-token span into the user prompt:
+
+$$
+X _ { \mathrm { r e g } } = [ X ; S ( M ) ] .\tag{4}
+$$
+
+The model then answers questions conditioned on both the image and the explicit region reference. This formulation allows region-level reasoning without modifying the base VLM architecture. In contrast to crop-based or overlay-based prompting, the mask is represented in a symbolic form that can be composed with arbitrary text instructions.
+
+Mask-as-output. For text-guided segmentation, the VLM autoregressively generates a mask-token span in response to a referring instruction,
+
+$$
+\hat { q } = [ \hat { c } _ { 1 } , \hat { c } _ { 2 } ] \sim p _ { \theta } ( \cdot \mid I , X ) , \qquad \hat { M } = D _ { \mathrm { t o k } } ( I , \hat { q } ) ,\tag{5}
+$$
+
+where the generated tokens are parsed into a code pair before decoding. Thus, the VLM itself only generates short discrete codes, while pixel-level reconstruction is handled by the frozen tokenizer learned in Stage 1.
+
+## 2<sub>.</sub>5 Unifi<sub>e</sub>d M<sub>u</sub>lti<sub>-</sub>T<sub>as</sub>k Tr<sub>a</sub>inin<sub>g</sub>
+
+We train the Stage-2 VLM with mixed supervision from the four streams of UniMed-Train. All samples are converted into standard conversational sequences, so optimization remains the usual autoregressive next-token loss:
+
+$$
+\mathcal { L } _ { \mathrm { s t a g e 2 } } = - \sum _ { ( I , X , Y ) \in \mathcal { D } } \sum _ { t = 1 } ^ { | Y | } \log p _ { \theta } ( y _ { t } \mid I , X , y _ { < t } ) ,\tag{6}
+$$
+
+where $\mathcal { D } = \cup _ { k = 1 } ^ { 4 } \mathcal { D } _ { k }$ merges Medical VQA, Text-Guided Segmentation, Region-Grounded Understanding, and Seg-CoT. This unified objective lets the model answer image-level medical questions, generate mask tokens from text, interpret mask tokens as symbolic region references, and perform reasoning-augmented text-to-mask prediction within a single training pipeline.
+
+In Stage 2, the tokenizer is frozen and only the VLM is optimized. No segmentation-specific reconstruction loss is used in this stage; cross-task transfer is induced entirely by next-token prediction over mixed text-mask sequences. For Seg-CoT specifically, the target is written as a concatenated reasoning-and-mask sequence � = [�; �(�)], where � denotes the intermediate textual rationale. Detailed optimization settings and backbonespecific implementation choices are provided in Appendix C.
+
+![](images/0cac11bf9697d332636902ec6de7d12e498130fe31ed3754e2ee7e08952aa98b.jpg)  
+Figure 3: Overview of the unified grounded medical framework and the UniMed corpus. The framework unifies segmentation, region understanding, medical VQA, and Seg-CoT reasoning through shared mask tokens across seven imaging modalities.
+
+## 3 UniM<sub>e</sub>d<sub>-</sub>Tr<sub>a</sub>in <sub>a</sub>nd UniM<sub>e</sub>d<sub>-</sub>B<sub>e</sub>n<sub>c</sub>h
+
+## 3<sub>.</sub>1 UniM<sub>e</sub>d<sub>-</sub>Tr<sub>a</sub>in<sub>:</sub> St<sub>age-</sub>2 Tr<sub>a</sub>inin<sub>g</sub> C<sub>o</sub>r<sub>pus</sub>
+
+As illustrated in Figure 3, Stage 2 is trained on UniMed-Train, a four-stream medical instruction corpus covering Text-Guided Segmentation, Region-Grounded Understanding, Medical VQA, and Seg-CoT. The current release contains 902,648 text-guided segmentation samples, 902,648 regiongrounded understanding samples, 27,738 Medical VQA samples, and 4,000 reasoning-augmented Seg-CoT samples, for a total of 1,837,034 instances. The two mask-centric streams are constructed from 80 + 1 medical segmentation datasets using the frozen Stage-1 tokenizer: one stream trains maskas-output generation from referring text, while the other trains mask-as-input understanding by inserting the serialized region into the question context. Medical VQA preserves image-level clinical reasoning, and Seg-CoT adds intermediate anatomical, attribute, and localization reasoning before the final mask-token span.
+
+Because not all datasets are equally compatible with a compact two-token mask representation, we apply round-trip filtering before Stage 2: each ground-truth mask is encoded and decoded by the tokenizer, and low-fidelity datasets are downsampled according to reconstruction quality. This filtering is applied consistently to both mask-centric streams and improves training stability. Detailed construction templates, prompt formats, and filtering procedures are deferred to Appendix C.4, Appendix C.2, and Figure 6.
+
+## 3<sub>.</sub>2 UniM<sub>e</sub>d<sub>-</sub>B<sub>e</sub>n<sub>c</sub>h<sub>:</sub> Unifi<sub>e</sub>d E<sub>va</sub>l<sub>ua</sub>ti<sub>o</sub>n B<sub>enc</sub>h<sub>mar</sub>k
+
+We build UniMed-Bench as a held-out benchmark for unified grounded medical vision-language evaluation. It covers three tasks: Medical VQA, Text-Guided Segmentation, and Region-Grounded Understanding. Medical VQA includes 8,273 test questions. Text-Guided Segmentation contains 219,636 test samples from an 80-dataset benchmark family. Region-Grounded Understanding is built from the same 80 datasets, with 218,244 v2\_tokens samples and 219,257 v1\_masks samples. In the current benchmark instantiation, most region-understanding questions are concise category- or label-oriented prompts.
+
+In the main paper, we report answer accuracy for Medical VQA, Dice/IoU for Text-Guided Segmentation, and exact match for Region-Grounded Understanding, with weighted token recall used as a complementary detailed metric. Full evaluation details are provided in Appendix C.2.
+
+## 4 E<sub>xpe</sub>rim<sub>e</sub>nt<sub>s</sub>
+
+## 4<sub>.</sub>1 E<sub>xpe</sub>rim<sub>e</sub>nt<sub>a</sub>l S<sub>e</sub>t<sub>up</sub>
+
+We train MedUP on UniMed-Train and evaluate it on UniMed-Bench. Our main models are MedUP-H, built on HuluMed-4B (Jiang et al., 2025b), and MedUP-Q, built on Qwen3-VL-4B (Bai et al., 2025). Both variants share the same Stage-1 MT256x2 tokenizer, round-trip-filtered training data, and four-stream Stage-2 objective. Medical VQA is evaluated on SLAKE, PathVQA, and VQA-RAD with overall accuracy; Text-Guided Segmentation is evaluated on 80 datasets with mean Dice; and Region-Grounded Understanding is evaluated on the same dataset family under both ${ \mathsf { v } } 2 _ { - }$ tokens and v1\_masks with exact match. Consistent with the framing in the Introduction, we compare MedUP against three main baseline families: native medical VLMs without native mask-token interfaces, represented by HealthGPT-M3 (Lin et al., 2025) and UniBiomed (Wu et al., 2025b); dual-decoder or externally grounded baselines, represented by LISA++ (Lai et al., 2024) and SAM4MLLM; and agentic grounded medical models, represented by MMedAgent (Li et al., 2024). Because these methods expose regions through diferent concrete mechanisms, the main table further regroups them by region interface or grounding mechanism for presentation clarity. Unless otherwise stated, all methods are evaluated under the same data splits, task formats, and decoding settings. Detailed optimization settings are provided in Appendix C.
+
+![](images/33ca545c77f64df0ee5deaf24917a06e154fde4862f7a7aaba9639daa03d1843.jpg)
+
+![](images/55589afc4b46977d24a4bbac94d510fdb85ac58aa1f27fdba06e3d0627a702be.jpg)  
+Figure 4: Efect of training data scale on Text-Guided Segmentation and Region-Grounded Understanding. (A) Increasing the training data scale from 10% to 100% consistently improves weighted Dice and weighted IoU in text-guided segmentation, with a 0.099 gain in weighted Dice. (B) Region-grounded understanding also improves steadily with scale, and $\mathsf { v } 2 _ { - }$ tokens consistently outperforms v1\_masks.
+
+Table 1: Main results on UniMed-Bench. We report sample-weighted overall accuracy for Medical VQA, macro Dice for Text-Guided Segmentation, and exact match for Region-Grounded Understanding. For baselines without native mask tokens, Region-Grounded Understanding is evaluated under v1\_masks. Consistent with the Introduction, the comparison set includes native medical VLM baselines, agentic grounded models, and dual-decoder or externally grounded baselines. For readability, the table regroups these methods by their concrete region interface or grounding mechanism. Methods without complete three-task coverage are reported in Tables 2, 3 and 5.
+<table><tr><td rowspan="2">Method</td><td rowspan="2">Region Interface</td><td>Image-Level Reasoning</td><td colspan="2">Region-Grounded Capabilities</td></tr><tr><td>Medical VQA Acc. ↑</td><td>Text-Guided Seg. mDice ↑</td><td>Region-Grounded Und. EM↑</td></tr><tr><td colspan="6">Medical VLMs without native mask-token interfaces</td></tr><tr><td rowspan="3">HealthGPT-M3 UniBiomed</td><td>image-level only</td><td>45.3</td><td></td><td>4.4</td></tr><tr><td>image-level only</td><td>7.7</td><td>37.9</td><td>0.0</td></tr><tr><td colspan="4">Dual-decoder or externally grounded baselines</td></tr><tr><td rowspan="2">LISA++ SAM4MLLM</td><td>external mask decoder</td><td>30.2</td><td>19.2</td><td>0.0</td></tr><tr><td>SAM-assisted grounding</td><td>21.5</td><td>14.8</td><td>3.0</td></tr><tr><td colspan="5">Àgentic grounded medical models</td></tr><tr><td>MMedAgent</td><td>agent + external tools</td><td>4.5</td><td>27.9</td><td>0.0</td></tr><tr><td>MedUP-Q</td><td>native mask tokens</td><td>63.5</td><td>64.4</td><td>78.5</td></tr><tr><td>MedUP-H</td><td>native mask tokens</td><td>66.5</td><td>67.9</td><td>81.8</td></tr></table>
+
+Table 2: Medical VQA results on UniMed-Bench. We report closed-question accuracy.
+<table><tr><td>Model</td><td>SLAKE</td><td>PathVQA</td><td>VQA-RAD</td></tr><tr><td colspan="4">Baselines</td></tr><tr><td>LLaVA-Med MedGemma UniBiomed</td><td>0.8534 0.8269</td><td>0.9121</td><td>0.8419</td></tr><tr><td rowspan="3">LISA++ SAM4MLLM</td><td>0.1490</td><td>0.6299 0.1607</td><td>0.8207 0.1213</td></tr><tr><td>0.5769</td><td>0.5851</td><td>0.5478</td></tr><tr><td>0.5192 0.0673</td><td>0.3586 0.0717</td><td>0.4081 0.3603</td></tr><tr><td rowspan="3">MedUP-Q MedUP-H</td><td>0.9063</td><td>0.9219</td><td>0.8606</td></tr><tr><td>0.9135</td><td>0.9354</td><td>0.8493</td></tr><tr><td></td><td></td><td></td></tr></table>
+
+Table 3: Per-modality micro Dice on text-guided medical image segmentation. Specialist segmentors receive oracle visual prompts, whereas MedUP receives only text instructions. Micro Dice is computed from globally accumulated intersections and mask areas within each modality group.
+<table><tr><td rowspan="3">Modality</td><td colspan="3">Specialist Segmentors</td><td colspan="5">Grounded / VLM Baselines</td><td colspan="2">MedUP</td></tr><tr><td>MedSAM1</td><td>MedSAM2</td><td>MedSAM3</td><td>BiomedParse v2</td><td>UniBiomed</td><td>LISA++</td><td>SAM4MLLM</td><td>MMedAgent</td><td>MedUP-H</td><td>MedUP-Q</td></tr><tr><td>CT</td><td>0.8431</td><td>0.7006</td><td>0.5007</td><td>0.3646</td><td>0.4782</td><td>0.1353</td><td>0.0685</td><td>0.3980</td><td>0.9206</td><td>0.9137</td></tr><tr><td>MR</td><td>0.7437</td><td>0.6709</td><td>0.3873</td><td>0.3173</td><td>0.4923</td><td>0.1059</td><td>0.0519</td><td>0.2774</td><td>0.7414</td><td>0.6891</td></tr><tr><td>Ultrasound</td><td>0.8849</td><td>0.7754</td><td>0.5667</td><td>0.4033</td><td>0.3718</td><td>0.2399</td><td>0.1411</td><td>0.2509</td><td>0.8428</td><td>0.8265</td></tr><tr><td>Endoscopy</td><td>0.9257</td><td>0.9407</td><td>0.9017</td><td>0.0030</td><td>0.7472</td><td>0.5863</td><td>0.3601</td><td>0.4708</td><td>0.8760</td><td>0.8361</td></tr><tr><td>Fundus</td><td>0.9257</td><td>0.9353</td><td>0.6958</td><td>0.0000</td><td>0.4710</td><td>0.0712</td><td>0.0925</td><td>0.2090</td><td>0.8566</td><td>0.8607</td></tr><tr><td>Dermoscopy</td><td>0.9485</td><td>0.9424</td><td>0.9095</td><td>0.0004</td><td>0.5567</td><td>0.5398</td><td>0.4172</td><td>0.4854</td><td>0.8473</td><td>0.8616</td></tr><tr><td>X-ray</td><td>0.9614</td><td>0.9501</td><td>0.9601</td><td>0.0137</td><td>0.9344</td><td>0.7615</td><td>0.4358</td><td>0.6572</td><td>0.9523</td><td>0.9603</td></tr><tr><td>Overall</td><td>0.8858</td><td>0.8104</td><td>0.6434</td><td>0.2204</td><td>0.5589</td><td>0.1955</td><td>0.1072</td><td>0.4123</td><td>0.8906</td><td>0.8885</td></tr></table>
+
+Table 4: Protocol comparison for Region-Grounded Understanding on UniMed-Bench across the Qwen-based and Hulu-based backbones. v1\_masks exposes the target region visually, whereas v2\_tokens uses discrete mask tokens as the region reference. Each cell reports EM and Token Recall.
+<table><tr><td>Backbone</td><td>Protocol</td><td>EM (%)</td><td>Recall (%)</td></tr><tr><td rowspan="2">Qwen-based</td><td>v1_masks</td><td>49.8</td><td>49.8</td></tr><tr><td>v2_tokens</td><td>78.5</td><td>78.5</td></tr><tr><td rowspan="2">Hulu-based</td><td>v1_masks</td><td>49.8</td><td>49.8</td></tr><tr><td>v2_tokens</td><td>81.8</td><td>81.8</td></tr></table>
+
+## 4<sub>.</sub>2 M<sub>a</sub>i<sub>n</sub> R<sub>esu</sub>lt<sub>s</sub> <sub>on</sub> th<sub>e</sub> U<sub>n</sub>ifi<sub>e</sub>d B<sub>enc</sub>h<sub>mar</sub>k
+
+Table 1 reports the unified comparison across Medical VQA, Text-Guided Segmentation, and Region-Grounded Understanding. Across both backbones, MedUP achieves the strongest overall results among the methods included in this three-task setting, outperforming native medical VLM baselines, agentic grounded models, and dual-decoder or externally grounded baselines on the grounded tasks while remaining strong on Medical VQA. MedUP-H reaches 66.5 accuracy, 67.9 mDice, and 81.8 exact match, while MedUP-Q reaches 63.5, 64.4, and 78.5, showing that the proposed interface transfers across both medical-domain and more general multimodal foundations.
+
+## 4<sub>.</sub>3 C<sub>o</sub>m<sub>pa</sub>ri<sub>so</sub>n <sub>w</sub>ith S<sub>pec</sub>i<sub>a</sub>li<sub>s</sub>t M<sub>e</sub>di<sub>ca</sub>l Se<sub>g</sub>mentors
+
+Table 3 compares MedUP with specialist medical segmentors on text-guided segmentation. Although specialist models receive stronger oracle visual prompts, MedUP remains competitive across modalities and substantially outperforms the grounded / VLM baselines under micro-Dice. This highlights the practical value of native text-driven segmentation: MedUP trades some oracle-prompt advantage for a much more flexible language interface while retaining strong dense localization performance.
+
+## 4<sub>.</sub>4 Pr<sub>o</sub>t<sub>oco</sub>l St<sub>u</sub>d<sub>y</sub> f<sub>o</sub>r M<sub>as</sub>k<sub>-</sub>Gr<sub>ou</sub>nd<sub>e</sub>d Understandin<sub>g</sub>
+
+To understand whether discrete mask tokens are an efective interface for region-grounded understanding, we compare MedUP with alternative region-presentation protocols. The v1\_masks setting exposes the target region visually, whereas v2\_tokens represents the region in a languagecompatible token space. This experiment isolates the benefit of the interface itself. Table 4 shows a large protocol gap across both the Qwen-based and Hulu-based backbones, while Table 5 reports the per-modality weighted token recall comparison. Across all settings, v2\_tokens consistently outperforms v1\_masks, indicating that discrete mask tokens provide a more efective interface for regiongrounded understanding.
+
+The results further suggest that the region interface is a core factor in connecting localized visual evidence with language reasoning. Under v1\_masks, the model must additionally map visual overlays to textual semantics, which becomes fragile for small or anatomically ambiguous regions. In contrast, v2\_tokens places both region references and linguistic context within a shared token space, reducing the representation gap between visual grounding and language reasoning and leading to substantially stronger performance.
+
+## 4<sub>.</sub>5 Ef<sub>ec</sub>t <sub>o</sub>f Tr<sub>a</sub>inin<sub>g</sub> D<sub>a</sub>t<sub>a</sub> S<sub>ca</sub>l<sub>e</sub>
+
+Figure 4 shows that both grounded tasks improve as the amount of Stage-2 training data increases. For Text-Guided Segmentation, weighted Dice and weighted IoU rise consistently from 10% to 100% data scale, with a total Dice gain of 0.099. Region-Grounded Understanding follows the same trend, and $\mathsf { v } 2 _ { - }$ tokens remains stronger than v1\_masks at every scale. These results indicate that the proposed interface continues to benefit from additional supervision and remains favorable throughout the tested data regime.
+
+Table 5: Per-modality weighted token recall on Region-Grounded Understanding. Baselines use v1\_masks, while MedUP-H/Q use v2\_tokens.
+<table><tr><td rowspan="3">Modality</td><td colspan="4">Grounded / VLM Baselines</td><td colspan="2">Medical VLM Baselines</td><td colspan="2">MedUP</td></tr><tr><td>UniBiomed</td><td>LISA++</td><td>SAM4MLLM</td><td>MMedAgent</td><td>LLaVA-Med</td><td>MedGemma</td><td>MedUP-H</td><td>MedUP-Q</td></tr><tr><td>CT</td><td>0.0499</td><td>0.0005</td><td>0.0495</td><td>0.0000</td><td>0.0382</td><td>0.3123</td><td>0.9347</td><td>0.9242</td></tr><tr><td>MR</td><td>0.0137</td><td>0.0000</td><td>0.0011</td><td>0.0000</td><td>0.0119</td><td>0.3038</td><td>0.6271</td><td>0.5568</td></tr><tr><td>Ultrasound</td><td>0.0006</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0936</td><td>0.9857</td><td>0.8762</td><td>0.8206</td></tr><tr><td>Endoscopy</td><td>0.3529</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>1.0000</td><td>1.0000</td><td>1.0000</td></tr><tr><td>Fundus</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0535</td><td>0.6310</td><td>0.9450</td><td>0.9609</td></tr><tr><td>Dermoscopy</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.2237</td><td>0.9956</td><td>0.9967</td><td>1.0000</td></tr><tr><td>X-ray</td><td>0.1404</td><td>0.1754</td><td>0.9561</td><td>0.0000</td><td>0.4386</td><td>1.0000</td><td>1.0000</td><td>1.0000</td></tr><tr><td>Overall</td><td>0.0359</td><td>0.0004</td><td>0.0302</td><td>0.0000</td><td>0.0297</td><td>0.3277</td><td>0.8183</td><td>0.7845</td></tr></table>
+
+## 4<sub>.</sub>6 P<sub>er-</sub>T<sub>as</sub>k <sub>an</sub>d P<sub>ro</sub>t<sub>oco</sub>l A<sub>na</sub>l<sub>ys</sub>i<sub>s</sub>
+
+Beyond the unified main table, Tables 2, 3, 4, and 5 provide task-specific views of the benchmark. Table 2 reports the closed-question Medical VQA breakdown on SLAKE, PathVQA, and VQA-RAD. Table 3 compares text-guided segmentation against specialist medical segmentors and grounded VLM baselines under per-modality micro Dice. Tables 4 and 5 analyze region-grounded understanding through protocol comparison and modality-level token recall, respectively. Figure 4 complements these tables with a training-scale analysis for the two grounded tasks. We leave additional ablations such as round-trip filtering, token budget, and Seg-CoT training efects for future versions once the corresponding experimental evidence is included.
+
+## 4<sub>.</sub>7 Ef<sub>ec</sub>t <sub>o</sub>f R<sub>ou</sub>nd<sub>-</sub>tri<sub>p</sub> Filt<sub>e</sub>rin<sub>g</sub>
+
+Figure 5 isolates the contribution of our round-trip filtering strategy. Without filtering, tokenizer reconstruction errors introduce noisy supervision into Stage-2 mask generation, especially on datasets with small, irregular, or semantically ambiguous regions. After filtering, both backbones improve substantially: MedUP-Q increases from 57.3 to 64.4 mDice, while MedUP-H rises from 58.6 to 67.9. The larger gain on MedUP-H suggests that stronger medical backbones can better exploit cleaner tokenized mask supervision once low-fidelity training cases are removed.
+
+## 4.8 Qualitative Analysis
+
+We provide qualitative examples for text-guided segmentation, region-grounded understanding, and failure cases. In particular, we visualize how Seg-
+
+![](images/6d96882f64cef163b73d79bd37478d109012f8aed41e38497ba3d572b4bf14ac.jpg)  
+Figure 5: Efect of round-trip filtering on text-guided segmentation. We compare training with and without round-trip filtering for both MedUP-Q and MedUP-H. Filtering low-fidelity mask-token supervision improves macro Dice consistently across backbones, yielding gains of +7.1 for MedUP-Q and +9.3 for MedUP-H.
+
+CoT changes generation behavior, whether the predicted masks are semantically aligned with the reasoning trace, and how the same region is handled under crop, overlay, and mask-token protocols. Details are shown in Appendix D.
+
+## 5 C<sub>o</sub>n<sub>c</sub>l<sub>us</sub>i<sub>o</sub>n
+
+We introduced MedUP, a family of grounded medical vision-language models built on UniMedTok, a unified mask-token interface for region-language modeling. By treating masks as discrete languagecompatible tokens, MedUP unifies Medical VQA, Text-Guided Segmentation, and Region-Grounded Understanding within a single autoregressive framework. We further organized training as the fourstream UniMed-Train corpus and evaluation as the three-task UniMed-Bench, with Seg-CoT improving text-to-mask generation through intermediate anatomical and localization reasoning. These results suggest that native region-language interfaces are a promising direction for building grounded medical VLMs.
+
+## Li<sub>m</sub>it<sub>a</sub>ti<sub>ons</sub>
+
+While MedUP shows that a native mask-token interface is efective for unified medical understanding and perception, several aspects remain open for further study. Our current region representation is intentionally compact, and future work may explore whether richer tokenizations are helpful for some very small, irregular, or visually subtle structures. Our evaluation also focuses primarily on ofline benchmark settings, and it would be valuable to further study behavior in more deployment-oriented scenarios such as interactive refinement, longitudinal workflows, or distribution shift. In addition, although we study two backbones under a shared interface, broader validation across model scales and training regimes would help better characterize the generality of the proposed design. We view these as natural next steps for extending native region-language modeling toward more realistic medical applications.
+
+## R<sub>e</sub>f<sub>erences</sub>
+
+Alfred V. Aho and Jefrey D. Ullman. 1972. The Theory of Parsing, Translation and Compiling, volume 1. Prentice-Hall, Englewood Clifs, NJ.
+
+American Psychological Association. 1983. Publications Manual. American Psychological Association, Washington, DC.
+
+Rie Kubota Ando and Tong Zhang. 2005. A framework for learning predictive structures from multiple tasks and unlabeled data. Journal of Machine Learning Research, 6:1817–1853.
+
+Galen Andrew and Jianfeng Gao. 2007. Scalable training of L1-regularized log-linear models. In Proceedings of the 24th International Conference on Machine Learning, pages 33–40.
+
+Shuai Bai, Yuxuan Cai, Ruizhe Chen, Keqin Chen, Xionghui Chen, Zesen Cheng, Lianghao Deng, Wei Ding, Chang Gao, Chunjiang Ge, and 1 others. 2025. Qwen3-vl technical report. arXiv preprint arXiv:2511.21631.
+
+Hu Cao, Yueyue Wang, Joy Chen, Dongsheng Jiang, Xiaopeng Zhang, Qi Tian, and Manning Wang. 2023. Swin-unet: Unet-like pure transformer for medical image segmentation. In Computer Vision – ECCV 2022 Workshops, pages 205–218. Springer.
+
+Ashok K. Chandra, Dexter C. Kozen, and Larry J. Stockmeyer. 1981. Alternation. Journal ofthe Association for Computing Machinery, 28(1):114–133.
+
+Junying Chen, Chi Gui, Ruyi Ouyang, Anningzhe Gao, Shunian Chen, Guiming Hardy Chen, Xidong Wang,
+
+Ruifei Zhang, Zhenyang Cai, Ke Ji, Guangjun Yu, Xiang Wan, and Benyou Wang. 2024. Huatuogpt-vision, towards injecting medical visual knowledge into multimodal llms at scale. Preprint, arXiv:2406.19280.
+
+Keqin Chen, Zhao Zhang, Weili Zeng, Richong Zhang, Feng Zhu, and Rui Zhao. 2023. Shikra: Unleashing multimodal llm’s referential dialogue magic. Preprint, arXiv:2306.15195.
+
+Dan Gusfield. 1997. Algorithms on Strings, Trees and Sequences. Cambridge University Press, Cambridge, UK.
+
+Ali Hatamizadeh, Yucheng Tang, Vishwesh Nath, Dong Yang, Andriy Myronenko, Bennett Landman, Holger R. Roth, and Daguang Xu. 2022. Unetr: Transformers for 3d medical image segmentation. In Proceedings of the IEEE/CVF Winter Conference on Applications ofComputer Vision, pages 574–584.
+
+Xiaoshuang Huang, Lingdong Shen, Jia Liu, Fangxin Shang, Hongxiang Li, Haifeng Huang, and Yehui Yang. 2025a. Towards a multimodal large language model with pixel-level insight for biomedicine. Proceedings ofthe AAAI Conference on Artificial Intelligence, 39(4):3779–3787.
+
+Yu Huang, Zelin Peng, Yichen Zhao, Piao Yang, Xiaokang Yang, and Wei Shen. 2025b. Medsegr: Reasoning segmentation in medical images with multimodal large language models. Preprint, arXiv:2506.10465.
+
+Fabian Isensee, Paul F. Jaeger, Simon A. A. Kohl, Jens Petersen, and Klaus H. Maier-Hein. 2021. nnu-net: a self-configuring method for deep learning-based biomedical image segmentation. Nature Methods, 18(2):203–211.
+
+Songtao Jiang, Yuan Wang, Sibo Song, Tianxiang Hu, Chenyi Zhou, Bin Pu, Yan Zhang, Zhibo Yang, Yang Feng, Joey Tianyi Zhou, Jin Hao, Zijian Chen, Ruijia Wu, Tao Tang, Junhui Lv, Hongxia Xu, Hongwei Wang, Jun Xiao, Bin Feng, and 6 others. 2025a. Hulumed: A transparent generalist model towards holistic medical vision-language understanding. Preprint, arXiv:2510.08668.
+
+Songtao Jiang, Yuan Wang, Sibo Song, Tianxiang Hu, Chenyi Zhou, Bin Pu, Yan Zhang, Zhibo Yang, Yang Feng, Joey Tianyi Zhou, and 1 others. 2025b. Hulumed: A transparent generalist model towards holistic medical vision-language understanding. arXiv preprint arXiv:2510.08668.
+
+Yankai Jiang, Qiaoru Li, Binlu Xu, Haoran Sun, Chao Ding, Junting Dong, Yuxiang Cai, Xuhong Zhang, and Jianwei Yin. 2026. Ibisagent: Reinforcing pixellevel visual reasoning in mllms for universal biomedical object referring and segmentation. Preprint, arXiv:2601.03054.
+
+Alexander Kirillov, Eric Mintun, Nikhila Ravi, Hanzi Mao, Chloe Rolland, Laura Gustafson, Tete Xiao, Spencer Whitehead, Alexander C. Berg, Wan-Yen Lo,
+
+Piotr Dollar, and Ross Girshick. 2023. Segment anything. In Proceedings ofthe IEEE/CVF International Conference on Computer Vision, pages 4015–4026.
+
+Xin Lai, Zhuotao Tian, Yukang Chen, Yanwei Li, Yuhui Yuan, Shu Liu, and Jiaya Jia. 2024. Lisa: Reasoning segmentation via large language model. In Proceedings ofthe IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages 9579–9589.
+
+Binxu Li, Tiankai Yan, Yuanting Pan, Jie Luo, Ruiyang Ji, Jiayuan Ding, Zhe Xu, Shilong Liu, Haoyu Dong, Zihao Lin, and 1 others. 2024. Mmedagent: Learning to use medical tools with multi-modal agent. In Findings ofthe Associationfor Computational Linguistics: EMNLP 2024, pages 8745–8760.
+
+Chunyuan Li, Clif Wong, Sheng Zhang, Naoto Usuyama, Haotian Liu, Jianwei Yang, Tristan Naumann, Hoifung Poon, and Jianfeng Gao. 2023. Llavamed: Training a large language-and-vision assistant for biomedicine in one day. In Advances in Neural Information Processing Systems, volume 36. Datasets and Benchmarks Track.
+
+Tianwei Lin, Wenqiao Zhang, Sijing Li, Yuqian Yuan, Binhe Yu, Haoyuan Li, Wanggui He, Hao Jiang, Mengze Li, Xiaohui Song, and 1 others. 2025. Healthgpt: A medical large vision-language model for unifying comprehension and generation via heterogeneous knowledge adaptation. arXiv preprint arXiv:2502.09838.
+
+Jiaxiang Liu, Yuan Wang, Jiawei Du, Joey Tianyi Zhou, and Zuozhu Liu. 2024. Medcot: Medical chain of thought via hierarchical expert. In Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing, pages 17371–17389.
+
+Lingxiao Luo, Bingda Tang, Xuanzhong Chen, Rong Han, and Ting Chen. 2025. Vividmed: Vision language model with versatile visual grounding for medicine. In Proceedings of the 2025 Conference of the Nations of the Americas Chapter of the Association for Computational Linguistics: Human Language Technologies, pages 1687–1704.
+
+Jun Ma, Yuting He, Feifei Li, Lin Han, Chenyu You, and Bo Wang. 2024. Segment anything in medical images. Nature Communications, 15(1):654.
+
+Michael Moor, Qian Huang, Shirley Wu, Michihiro Yasunaga, Yash Dalmia, Jure Leskovec, Cyril Zakka, Eduardo Pontes Reis, and Pranav Rajpurkar. 2023. Med-flamingo: a multimodal medical few-shot learner. In Proceedings of the 3rd Machine Learning for Health Symposium, volume 225 of Proceedings of Machine Learning Research, pages 353–367. PMLR.
+
+Zhiliang Peng, Wenhui Wang, Li Dong, Yaru Hao, Shaohan Huang, Shuming Ma, Qixiang Ye, and Furu Wei. 2024. Kosmos-2: Grounding multimodal large language models to the world. In The Twelfth International Conference on Learning Representations.
+
+Mohammad Sadegh Rasooli and Joel R. Tetreault. 2015. Yara parser: A fast and accurate dependency parser. Computing Research Repository, arXiv:1503.06733. Version 2.
+
+Olaf Ronneberger, Philipp Fischer, and Thomas Brox. 2015. U-net: Convolutional networks for biomedical image segmentation. In Medical Image Computing and Computer-Assisted Intervention, pages 234–241. Springer.
+
+Andrew Sellergren, Sahar Kazemzadeh, Tiam Jaroensri, Atilla Kiraly, Madeleine Traverse, Timo Kohlberger, Shawn Xu, Fayaz Jamil, Cian Hughes, Charles Lau, and 1 others. 2026. Medgemma technical report. Preprint, arXiv:2507.05201.
+
+Qinyue Tong, Ziqian Lu, Jun Liu, Yangming Zheng, and Zheming Lu. 2025. Medisee: Reasoning-based pixel-level perception in medical images. Preprint, arXiv:2504.11008.
+
+Quoc-Huy Trinh, Minh-Van Nguyen, Jun Zeng, Debesh Jha, and Ulas Bagci. 2026. Prs-med: Position reasoning segmentation in medical imaging. Preprint, arXiv:2505.11872.
+
+Guoxin Wang, Jun Zhao, Xinyi Liu, Yanbo Liu, Xuyang Cao, Chao Li, Zhuoyun Liu, Qintian Sun, Fangru Zhou, Haoqiang Xing, and Zhenhong Yang. 2025a. Citrus-v: Advancing medical foundation models with unified medical image grounding for clinical reasoning. Preprint, arXiv:2509.19090.
+
+Tao Wang, Changxu Cheng, Lingfeng Wang, Senda Chen, and Wuyue Zhao. 2025b. Himtok: Learning hierarchical mask tokens for image segmentation with large multimodal model. In Proceedings of the IEEE/CVF International Conference on Computer Vision, pages 23267–23278.
+
+Yuan Wang, Shujian Gao, Jiaxiang Liu, Songtao Jiang, Xia Haoxiang, Xiaotian Zhang, Zhaolu Kang, Yemin Wang, and Zuozhu Liu. 2026. Beyond n-grams: A hierarchical reward learning framework for clinicallyaware medical report generation. In Proceedings of the AAAI Conference on Artificial Intelligence, volume 40, pages 33719–33727.
+
+Yuan Wang, Jiaxiang Liu, Shujian Gao, Bin Feng, Zhihang Tang, Xiaotang Gai, Jian Wu, and Zuozhu Liu. 2025c. V2t-cot: From vision to text chain-ofthought for medical reasoning and diagnosis. In International Conference on Medical Image Computing and Computer-Assisted Intervention, pages 658–668. Springer.
+
+Ziyue Wang, Junde Wu, Linghan Cai, Chang Han Low, Xihong Yang, Qiaxuan Li, and Yueming Jin. 2025d. Medagent-pro: Towards evidence-based multi-modal medical diagnosis via reasoning agentic workflow. arXiv preprint arXiv:2503.18968.
+
+Jason Wei, Xuezhi Wang, Dale Schuurmans, Maarten Bosma, Brian Ichter, Fei Xia, Ed H. Chi, Quoc V. Le,
+
+and Denny Zhou. 2022. Chain-of-thought prompting elicits reasoning in large language models. In Advances in Neural Information Processing Systems, volume 35, pages 24824–24837.
+
+Chaoyi Wu, Xiaoman Zhang, Ya Zhang, Hui Hui, Yanfeng Wang, and Weidi Xie. 2025a. Towards generalist foundation model for radiology by leveraging webscale 2d&3d medical data. Nature Communications, 16:7866.
+
+Linshan Wu, Yuxiang Nie, Sunan He, Jiaxin Zhuang, Luyang Luo, Tao Li, Zhuoyao Xie, Dexuan Chen, Yinghua Zhao, Neeraj Mahboobani, Varut Vardhanabhuti, Ronald Cheong Kin Chan, Yifan Peng, Pranav Rajpurkar, and Hao Chen. 2025b. Unibiomed: A universal foundation model for grounded biomedical image interpretation. Preprint, arXiv:2504.21336.
+
+Kai Zhang, Rong Zhou, Eashan Adhikarla, Zhiling Yan, Yixin Liu, Jun Yu, Zhengliang Liu, Xun Chen, Brian D. Davison, Hui Ren, Jing Huang, Chen Chen, Yuyin Zhou, Sunyang Fu, Wei Liu, Tianming Liu, Xiang Li, Yong Chen, Lifang He, and 4 others. 2024. A generalist vision-language foundation model for diverse biomedical tasks. Nature Medicine, 30(11):3129–3141.
+
+Yikang Zhou, Tao Zhang, Dengxian Gong, Yuanzheng Wu, Ye Tian, Haochen Wang, Haobo Yuan, Jiacong Wang, Lu Qi, Hao Fei, Anran Wang, Zhuochen Wang, Yujing Wang, Cheng Chen, Shunping Ji, and Xiangtai Li. 2026. Samtok: Representing any mask with two words. Preprint, arXiv:2601.16093.
+
+## A<sub>pp</sub>endix
+
+In this appendix, we provide additional relatedwork discussion, dataset statistics, implementation details, qualitative case studies, and detailed benchmark analysis. The content structure is outlined as follows:
+
+• Section A - Related Work
+
+• Section B - UniMed Dataset Overview
+
+• Section C - Implementation Details
+
+– Section C.1 - Overall Pipeline
+
+– Section C.2 - Evaluation Details
+
+– Section C.3 - Hyperparameters
+
+– Section C.4 - Prompt and Data Format
+
+• Section D - Case Study of Seg-CoT
+
+• Section E - UniMed-Bench Detailed Analysis
+
+## A R<sub>e</sub>l<sub>a</sub>t<sub>e</sub>d W<sub>or</sub>k
+
+## A<sub>.</sub>1 M<sub>e</sub>di<sub>ca</sub>l Im<sub>age</sub> S<sub>eg</sub>m<sub>e</sub>nt<sub>a</sub>ti<sub>o</sub>n<sub>.</sub>
+
+Medical image segmentation has long served as the foundation of pixel-level medical perception. Classical encoder–decoder architectures such as U-Net established dense prediction as a standard formulation for biomedical image analysis, while nnU-Net further showed the importance of selfconfiguring pipelines and task-adaptive training protocols (Ronneberger et al., 2015; Isensee et al., 2021). Transformer-based models such as Swin-Unet and UNETR extend this paradigm by incorporating long-range spatial modeling for 2D and 3D medical images (Cao et al., 2023; Hatamizadeh et al., 2022). More recently, promptable segmentation models such as SAM and MedSAM have shifted segmentation toward interactive region localization, enabling strong generalization across anatomical structures, lesions, and imaging modalities (Kirillov et al., 2023; Ma et al., 2024). Despite their strong localization capability, these methods are primarily designed for mask prediction or region delineation. They do not naturally support open-ended medical language interaction, diagnosis-oriented reasoning, or bidirectional mask-language understanding. Thus, traditional and promptable medical segmentors can localize regions but remain largely disconnected from grounded medical vision-language modeling.
+
+## A<sub>.</sub>2 Pi<sub>xe</sub>l<sub>-</sub>L<sub>eve</sub>l Und<sub>e</sub>r<sub>s</sub>t<sub>a</sub>ndin<sub>g</sub> in M<sub>e</sub>di<sub>ca</sub>l MLLM<sub>s.</sub>
+
+Recent medical vision-language models have demonstrated strong capabilities in medical visual question answering, report understanding, clinical dialogue, and diagnosis-oriented reasoning (Li et al., 2023; Moor et al., 2023; Zhang et al., 2024; Chen et al., 2024; Jiang et al., 2025a; Sellergren et al., 2026). However, most of these models still represent visual evidence at the image level, making it dificult to associate generated language with precise anatomical structures or abnormal regions. To bridge language reasoning with fine-grained spatial grounding, recent pixel-level MLLMs introduce segmentation into multimodal reasoning. A representative direction is LISA-style reasoning segmentation, where MLLMs generate implicit segmentation representations that are decoded into masks through external segmentation modules (Lai et al., 2024). Subsequent medical adaptations further extend this paradigm to biomedical grounding, clinical reasoning, and reasoning-guided segmentation (Huang et al., 2025a; Wang et al., 2025a; Wu et al., 2025b; Tong et al., 2025; Trinh et al., 2026; Huang et al., 2025b), marking an important transition from image-level medical understanding toward grounded pixel-level perception.
+
+Despite this progress, many existing grounded medical MLLMs remain decoder-centric or toolcentric. LISA-style methods typically rely on implicit segmentation embeddings and external decoders, while recent agentic approaches such as IBISAgent reformulate segmentation as iterative reasoning and interaction with external segmentation tools (Jiang et al., 2026; Wang et al., 2025d). Although these methods improve grounding and refinement ability, masks are still treated as outputs of decoders or tools rather than native representations within the autoregressive language space.
+
+Another emerging direction explores mask-aslanguage modeling, where segmentation masks are represented as discrete language-compatible tokens for autoregressive prediction. Recent methods such as SAMTok and HiMTok demonstrate the feasibility of unified text-mask interaction within a shared token space (Zhou et al., 2026; Wang et al., 2025b). However, existing mask-token approaches mainly focus on general-domain visual grounding, whereas medical grounded understanding introduces additional challenges including anatomical ambiguity, abnormality semantics, clinically meaningful localization, and segmentation-oriented reasoning. MedUP addresses this medical setting through a unified region-language interface, with UniMed-Tok integrating Medical VQA, Text-Guided Segmentation, Region-Grounded Understanding, and segmentation-oriented reasoning within a single grounded medical VLM.
+
+## B UniM<sub>e</sub>d D<sub>a</sub>t<sub>ase</sub>t O<sub>ve</sub>r<sub>v</sub>i<sub>ew</sub>
+
+Figure 6 summarizes both the training composition of UniMed-Train and the evaluation coverage of UniMed-Bench. As shown in the left donut chart, UniMed-Train is dominated by the two mask-centric supervision streams, with 902,648 Text-Guided Segmentation samples and 902,648 Region-Grounded Understanding samples, together accounting for roughly 98% of the full corpus. The remaining supervision comes from 27,738 Medical VQA samples and 4,000 Seg-CoT samples. This mixture reflects the core design of MedUP: image-level reasoning is preserved, but the majority of Stage-2 learning signal is devoted to teaching the model how to read, generate, and reason over localized medical regions through the shared mask-token interface.
+
+The right panel highlights the modality and dataset diversity of UniMed-Bench. The benchmark spans 80 held-out datasets across seven imaging modalities, with MR and CT forming the largest portions (46.2% and 30.0%, respectively), followed by Endoscopy and Fundus (7.5% each), Ultrasound and Dermoscopy (3.8% each), and a smaller X-ray portion (1.2%). The nested benchmark chart further shows that this coverage is not concentrated in only a few datasets: the inner ring captures modality-level balance, while the outer ring exposes substantial dataset-level variation in scale. Together, these statistics illustrate that UniMed-Bench evaluates unified region-language modeling not only on dominant cross-sectional modalities such as CT and MR, but also on long-tail clinical settings where visual appearance, anatomy, and grounding dificulty difer substantially.
+
+## C I<sub>mp</sub>l<sub>emen</sub>t<sub>a</sub>ti<sub>on</sub> D<sub>e</sub>t<sub>a</sub>il<sub>s</sub>
+
+We summarize the concrete implementation of MedUP, including the two-stage training pipeline, evaluation protocol, optimization settings, and the prompt/data format used to unify the three tasks in UniMed-Bench.
+
+## C<sub>.</sub>1 O<sub>ve</sub>r<sub>a</sub>ll Pi<sub>pe</sub>lin<sub>e</sub>
+
+Our implementation follows a two-stage design. In Stage 1, we train a VQ-based mask tokenizer on medical segmentation data using a SAM2-style image encoder and a residual vector quantization bottleneck. The tokenizer compresses each binary region mask into a compact MT256x2 representation with codebook size 256, codebook depth 2, nonshared codebooks, and latent dimension 256. All images are resized to 1024×1024 before tokenizer encoding and decoding.
+
+![](images/40e80026924e03d2e649bb1aaa607692fc5eb28dd2112bf8c7c9864aaddc7fe1.jpg)  
+Figure 6: Overview of UniMed-Train and UniMed-Bench. UniMed-Train combines four supervision streams for Stage-2 training, while UniMed-Bench provides held-out evaluation across Medical VQA, Text-Guided Segmentation, and Region-Grounded Understanding.
+
+After Stage 1 converges, we freeze the tokenizer and export its weights for downstream use. We then expand the Stage-2 backbone vocabulary with 514 mask-related special tokens: <|mt\_start|>, <|mt\_end|>, and 512 code tokens from <|mt\_0000|> to <|mt\_0511|>. These tokens form the native region-language interface used by MedUP.
+
+In Stage 2, all training streams are converted into a unified conversational format and optimized with standard autoregressive next-token prediction. For text-guided segmentation, the model predicts a short mask-token span; for region-grounded understanding, the mask-token span is inserted into the user prompt as a symbolic region reference; for Medical VQA, the model answers directly from the image-question pair. Our released medical training pipeline supports both Qwen3-VL-4B and HuluMed-4B backbones under the same masktoken interface.
+
+Round-trip filtering. Before Stage 2, we apply dataset-level round-trip filtering to reduce noisy mask supervision. Specifically, each ground-truth mask is first encoded by the Stage-1 tokenizer and then decoded back into a dense mask. We compute reconstruction quality with Dice and IoU and derive a dataset-level score from their mean. In our filtering script, low-quality datasets are downsampled according to score-based keep ratios, while highquality datasets are kept in full. This filtered data is used consistently for both text-guided segmentation and region-grounded understanding.
+
+## C<sub>.</sub>2 E<sub>va</sub>l<sub>ua</sub>ti<sub>on</sub> D<sub>e</sub>t<sub>a</sub>il<sub>s</sub>
+
+Medical VQA. We evaluate image-level reasoning on SLAKE, PathVQA, and VQA-RAD. Following the evaluation scripts used in our codebase, each closed question is rewritten with a short answer instruction (“Answer the question using a single word or phrase”), while open questions request concise responses. For the main paper, we report closed-question accuracy. Our evaluation scripts additionally support exact match, token recall, and optional external LLM judging for open-ended answers.
+
+Text-Guided Segmentation. We evaluate textguided segmentation on the 80-dataset medical benchmark family. At inference time, the model generates textual outputs containing mask tokens. These tokens are parsed and decoded back into dense binary masks with the frozen Stage-1 tokenizer and the original medical image. We then compute Dice and IoU. In the main table, we report macro Dice; in the appendix and internal analysis, we additionally report weighted and micro aggregation.
+
+Region-Grounded Understanding. We evaluate region-grounded understanding on the same 80- dataset benchmark family under two protocols.
+
+<table><tr><td>Component</td><td>Setting</td></tr><tr><td>Stage-1 tokenizer</td><td>VQ-SAM2 with codebook size 256, depth 2, non-shared codebooks</td></tr><tr><td>Stage-1 input size</td><td>1024 × 1024</td></tr><tr><td>Stage-1 optimizer</td><td>AdamW, learning rate 4 × 10−5, weight decay 0.05</td></tr><tr><td>Stage-1 training</td><td>batch size 8/GPU, 1 epoch, warmup ratio 0.05</td></tr><tr><td>Stage-1 checkpoint interval</td><td>every 5000 iterations</td></tr><tr><td>Stage-2 backbones</td><td>MedUP-Q (Qwen-based), MedUP-H (Hulu-based)</td></tr><tr><td>Stage-2 optimizer</td><td>AdamW, learning rate 2 × 10−5, weight decay 0.05</td></tr><tr><td>Stage-2 training</td><td>batch size 1/GPU, gradient accumulation 8, 1 epoch</td></tr><tr><td>Stage-2 schedule</td><td>linear warmup (0.05) + cosine decay</td></tr><tr><td>Stage-2 precision</td><td>BF16 mixed precision</td></tr><tr><td>Stage-2 adaptation</td><td>LoRA with rank 128, alpha 256, dropout 0.05</td></tr><tr><td>Stage-2 vision encoder</td><td>frozen</td></tr><tr><td>Stage-2 max length</td><td>8192 (Qwen3-VL-4B) / 16384 (HuluMed-4B)</td></tr><tr><td>Stage-2 checkpoint interval</td><td>every 1000 iterations</td></tr></table>
+
+Table 6: Key implementation hyperparameters used by MedUP. The table reflects the training configurations used in our local codebase for the reported Qwen-based and Hulu-based models.
+
+In v1\_masks, the target region is shown visually through an overlay mask; in v2\_tokens, the same region is represented by a discrete mask-token span and inserted into the question template. For the main paper, we use exact match as the primary metric and additionally report token recall in the detailed appendix analysis.
+
+Sharded inference. For the large 80-dataset evaluations, our codebase performs sharded inference across multiple GPUs and merges shard-level predictions into a final summary file. This is the default setting used by our task-2 and task-3 evaluation scripts.
+
+## C.3 H<sub>yp</sub>er<sub>p</sub>arameters
+
+Table 6 summarizes the key hyperparameters used in the current implementation of MedUP. We implement MedUP on top of the Qwen3-VL-4B and HuluMed-4B backbones, referred to as MedUP-Q and MedUP-H, respectively. All Stage-2 fine-tuning experiments are conducted using 8 NVIDIA H20 GPUs.
+
+## C<sub>.</sub>4 Pr<sub>o</sub>m<sub>p</sub>t <sub>a</sub>nd D<sub>a</sub>t<sub>a</sub> F<sub>o</sub>rm<sub>a</sub>t
+
+All tasks are converted into a standard conversational format so that training remains pure autoregressive next-token prediction. For example, a text-guided segmentation sample is represented as an image-conditioned instruction followed by a short JSON-like answer containing the mask-token span and its label. A typical target format is:
+
+```json
+["mask_2d":
+"<|mt_start|><|mt_0230|><|mt_0345|><|mt_end|>",
+"label": "liver"]
+```
+
+For region-grounded understanding, the masktoken span is inserted directly into the question, e.g., “Which category does region <|mt\_start|>...<|mt\_end|> belong to in this medical image?” In our current benchmark and training templates, these prompts are typically instantiated as short category- or label-oriented region understanding questions. For Medical VQA, we use ordinary image-question-answer conversations without mask tokens.
+
+This unified textual interface is important for our implementation: the language model only needs to predict short symbolic spans, while dense pixel reconstruction is delegated to the frozen Stage-1 tokenizer decoder. As a result, MedUP can support segmentation generation and region-grounded understanding without introducing an additional trainable dense decoder in Stage 2.
+
+## D C<sub>ase</sub> St<sub>u</sub>d<sub>y o</sub>f S<sub>eg</sub>-C<sub>o</sub>T
+
+We provide qualitative examples from the Seg-CoT portion of UniMed-Train to illustrate how reasoning and mask prediction are interleaved under the UniMedTok interface. Each card shows the question, the original image, the pseudo segmentation overlay, and the corresponding reasoning trace with embedded mask-token outputs.
+
+These examples fall into two patterns. The first pattern is single-mask Seg-CoT, where the model reasons about the target anatomy or semantic category and emits one final mask-token span for the identified region. The second pattern is multi-mask Seg-CoT, where the reasoning trajectory is decomposed into multiple localization steps, and each step produces its own mask-token span. This latter form is especially useful for bilateral structures, hierarchical anatomy, and context-to-target localization, where intermediate grounded regions help the model progressively refine its interpretation.
+
+## CT
+
+## Prom<sub>p</sub>t:
+
+What is the anatomical location of the area shown in the image? A. Shoulder and upper back region B. Abdominal region C. Chest region. D. Hip region
+
+## Ori<sub>g</sub>in<sub>a</sub>l Im<sub>age</sub>
+
+![](images/6ab43f7fb3e07b21410ac8888ad3c953f5cdb6f36edaa0bc2ba7b3453050a7e0.jpg)
+
+## Se<sub>g</sub>mentation Overla<sub>y</sub>
+
+![](images/e2001d1271e2b31417eec42ad0c94c8837de840eb784ca9eb2d7b78c09db0589.jpg)
+
+## Ch<sub>a</sub>i<sub>n-o</sub>f<sub>-</sub>Th<sub>oug</sub>ht R<sub>eason-</sub> <sup>i</sup>n<sub>g</sub>
+
+The image shows a cross-sectional view of the thoracic cavity, with visible lung parenchyma and mediastinal structures. The highlighted region corresponds to the chest area, ruling out the shoulder, abdominal, and hip regions based on anatomical landmarks and tissue types.
+
+[{"mask\_2d": "<|mt\_start|> <|mt\_0180|><|mt\_0087|><|mt\_end|>", "label": "Chest region."}]
+
+Final answer: (C)
+
+## Ultrasound
+
+## Prom<sub>p</sub>t:
+
+What structure is depicted in this ultrasound image? A. Femoral Vein B. Adrenal Gland C. portal vein D. Liver parenchyma
+
+## X<sub>-</sub>R<sub>ay</sub>
+
+## Prom<sub>p</sub>t:
+
+What content appears in this image? A. Kidney B. Brain C. Lung D. Bone
+
+## Ori<sub>g</sub>in<sub>a</sub>l Im<sub>age</sub>
+
+![](images/d4cc35d241b3c99176411963837b2408d0d000baa7491892a7d6943b3d802648.jpg)
+
+## Se<sub>g</sub>mentation Overla<sub>y</sub>
+
+![](images/cc1342a288333d938cc7b0d203f8f306380e2729bc200293d22934db218543cd.jpg)
+
+## Ch<sub>a</sub>i<sub>n-o</sub>f<sub>-</sub>Th<sub>oug</sub>ht R<sub>eason-</sub> <sup>i</sup>n<sub>g</sub>
+
+The image shows a large, dark area with branching structures that resemble airways and blood vessels.
+
+[{"mask\_2d": "<|mt\_start|> <|mt\_0073|><|mt\_0089|><|mt\_end|>", "label": "Lung"}]
+
+The highlighted region corresponds to the lung tissue, ruling out the kidney, brain, and bone based on their distinct anatomical features and density. Fina answer: (C)
+
+## D<sub>ermoscopy</sub>
+
+## Prom<sub>p</sub>t:
+
+What anatomical part is illustrated in this picture?
+
+A. Bones
+
+![](images/d0f95fcc9a4c33e86ac8c8cb07beab6a097a56e528fefd80c6ef4e497084fc82.jpg)
+
+B. Skin
+
+C. Reproductive system
+
+D. Respiratory sys-
+
+## Ori<sub>g</sub>in<sub>a</sub>l Im<sub>age</sub>
+
+## Se<sub>g</sub>mentation Overla<sub>y</sub>
+
+![](images/74469b989de6fe53f058cf67731e51657adddc8d0480a7b73bd253937b6212c0.jpg)
+
+## Ch<sub>a</sub>i<sub>n-o</sub>f<sub>-</sub>Th<sub>oug</sub>ht R<sub>eason-</sub> <sup>i</sup>n<sub>g</sub>
+
+The image shows a tubular structure with an anechoic center and echogenic walls, which is characteristic of a blood vessel.
+
+[{"mask\_2d": "<|mt\_start|> <|mt\_0101|><|mt\_0168|><|mt\_end|>", "label": "portal vein"}]
+
+The location and appearance are consistent with the portal vein, ruling out the femoral vein, adrenal gland, and liver parenchyma based on size, shape, and acoustic profile. Final answer: (C)
+
+## Ori<sub>g</sub>in<sub>a</sub>l Im<sub>age</sub>
+
+![](images/747d47b3f794a912b391ecdf8a549be253dccfc822edb25c75beab5628d82a4f.jpg)
+
+## Se<sub>g</sub>mentation Overla<sub>y</sub>
+
+![](images/e4983c60d34187e602bf7be6718e901419d2aebc5b695a3dfc2ff408e107d92c.jpg)
+
+## Ch<sub>a</sub>i<sub>n-o</sub>f<sub>-</sub>Th<sub>oug</sub>ht R<sub>eason-</sub> <sup>i</sup>n<sub>g</sub>
+
+The image shows a close-up view of a textured surface with visible pores and hair follicles, which are characteristic features of the skin.
+
+[{"mask\_2d": "<|mt\_start|> <|mt\_0003|><|mt\_0196|><|mt\_end|>", "label": "Skin"}]
+
+The highlighted region corresponds to the skin, ruling out bones, reproductive system, and respiratory system based on the absence of bone structure, interna organs, or airways. Final answer: (B)
+
+## CT
+
+## Prom<sub>p</sub>t:
+
+Step through the two lung fields visible in this thoracic CT slice and emit one segmentation mask per side.
+
+## Ori<sub>g</sub>in<sub>a</sub>l Im<sub>age</sub>
+
+![](images/a4dbc25dd15852941780a69d2c7c0b19b51f161bc7ad2ab3b377dc7d7d7d3489.jpg)
+
+## Se<sub>g</sub>mentation Overla<sub>y</sub>
+
+## [Multi-mask Overlay]
+
+![](images/c3c1cf7db7948399108a567f1d65e38217289bf7b81b04acd005149536863ed1.jpg)
+
+## Ch<sub>a</sub>i<sub>n-o</sub>f<sub>-</sub>Th<sub>oug</sub>ht R<sub>eason-</sub> <sup>i</sup>n<sub>g</sub>
+
+The image is an axial CT slice through the lower thorax, with bilateral pulmonary fields flanking the central mediastinum. Step one: I segment the right lung field, identified by its low-density air-filled parenchyma lateral to the heart.
+
+Step two: I then segment the contralateral left lung, which exhibits a simila reticular pulmonary texture and rib-cage boundary.
+
+```json
+[{"mask_2d": "<|mt_start|>
+<|mt_0428|><|mt_0091|><|mt_end|>",
+"label": "left lung"}]
+```
+
+## Ultrasound
+
+The two masks together delineate the complete bilateral pulmonary anatomy at this slice level.
+
+## Prom<sub>p</sub>t:
+
+Provide two masks for this ultrasound image: the surrounding hepatic parenchyma and the portal vein within it.
+
+## Prom<sub>p</sub>t:
+
+## X<sub>-</sub>R<sub>ay</sub>
+
+## Se<sub>g</sub>mentation Overla<sub>y</sub>
+
+## [Multi-mask Overlay]
+
+## Ori<sub>g</sub>in<sub>a</sub>l Im<sub>age</sub>
+
+![](images/356b9640714ec4f95780c7c0a81e6c39dca7cf830818331194445726dbe1bca1.jpg)
+
+## Ch<sub>a</sub>i<sub>n-o</sub>f<sub>-</sub>Th<sub>oug</sub>ht R<sub>eason-</sub> <sup>i</sup>n<sub>g</sub>
+
+Identify each lung field separately on this chest radiograph and return one segmentation mask per side.
+
+![](images/ba5d15a8e2395f19786ab4fe81836da337700174000522be603941ce63c5a0ca.jpg)
+
+<|mt\_0265|><|mt\_0142|><|mt\_end|>", "label": "right lung"}]
+
+The ultrasound image displays the right upper quadrant centered on hepatic anatomy. Step one: I first segment the surrounding hepatic parenchyma, characterized by its homogeneous mid-level echotexture.
+
+## Ori<sub>g</sub>in<sub>a</sub>l Im<sub>age</sub>
+
+[{"mask\_2d": "<|mt\_start|> <|mt\_0314|><|mt\_0207|><|mt\_end|>", "label": "liver parenchyma"}]
+
+![](images/5a9e5f89e7280f3dd24702ad1a9b39b628432353b3e2bf0ebcad2d9a795e36df.jpg)
+
+Step two: within this organ context, I refine the segmentation to the portal vein, recognized by its anechoic lumen and echogenic walls.
+
+<|mt\_0073|><|mt\_0089|><|mt\_end|>", "label": "left lung"}]
+
+## Se<sub>g</sub>mentation Overla<sub>y</sub>
+
+The frontal chest X-ray reveals bilateral lung fields with the central mediastinal silhouette between them. Step one: I begin with the right lung, segmenting its radiolucent area within the rib cage. [{"mask\_2d": "<|mt\_start|>
+
+Both pulmonary fields are now isolated as two distinct masks suitable for downstream side-specific assessment.
+
+## [Multi-mask Overlay]
+
+Step two: I then segment the contralateral left lung, bounded laterally by the chest wall and medially by the cardiac silhouette. [{"mask\_2d": "<|mt\_start|>
+
+![](images/4cffb1ca09904525073c485e2253153dde23c57152cd5f4ef1a281f5f260e0c3.jpg)
+
+The hierarchical masks separate the organ background from the target vessel, enabling vessel-in-organ reasoning down stream.
+
+## Ch<sub>a</sub>i<sub>n-o</sub>f<sub>-</sub>Th<sub>oug</sub>ht R<sub>eason-</sub> <sup>i</sup>n<sub>g</sub>
+
+## D<sub>ermoscopy</sub>
+
+## Prom<sub>p</sub>t:
+
+masks for this dermoscopy image: the surrounding skin region and the central pigmented lesion.
+
+## Ori<sub>g</sub>in<sub>a</sub>l Im<sub>age</sub>
+
+![](images/0392f598542edbac3b2d0ee67b8ac77b53b861587df1224e6f157112b7335161.jpg)
+
+## Se<sub>g</sub>mentation Overla<sub>y</sub>
+
+## [Multi-mask Overlay]
+
+![](images/e01bb0d34181b4e6dfa2be2079fdf058ec4965232c06b93bd880e1aed52a5576.jpg)
+
+## Ch<sub>a</sub>i<sub>n-o</sub>f<sub>-</sub>Th<sub>oug</sub>ht R<sub>eason-</sub> <sup>i</sup>n<sub>g</sub>
+
+The dermoscopy image captures a pigmented region on the skin surface. Step one: I segment the surrounding healthy skin area as anatomical context.
+
+[{"mask [{"mask\_2d": "<|mt\_start|> <|mt\_0003|><|mt\_0196|><|mt\_end|>", "label": "skin"}]
+
+Step two: I then refine the segmentation to isolate the pigmented lesion located at the center, distinguished by its darker tone and irregular border.
+
+[{"mask\_2d": "<|mt\_start|> <|mt\_0152|><|mt\_0086|><|mt\_end|>", "label": "skin lesion"}]
+
+The two masks separate the anatomical context from the lesion target, supporting downstream pathology-versus-context reasoning.
+
+## E U<sub>n</sub>iM<sub>e</sub>d<sub>-</sub>B<sub>enc</sub>h D<sub>e</sub>t<sub>a</sub>il<sub>e</sub>d A<sub>na</sub>l<sub>ys</sub>i<sub>s</sub>
+
+This appendix presents benchmark subset examples for four dataset-level metrics. The subset is constrained so that each listed dataset satisfies a strict criterion: in that row, either MedUP-H or MedUP-Q achieves the best score (including ties).
+
+Within each row, the best and second-best method scores are marked by bold and underline. For readability, we show up to 20 datasets per metric, prioritized by the higher value between MedUP-H and MedUP-Q.
+
+The resulting subsets emphasize datasets where our unified token-based models are competitive at the top level, while still exposing cross-method diferences on the same benchmark slices. In textguided segmentation, this highlights both nearsaturated datasets and structurally harder datasets where method gaps remain visible. In regiongrounded understanding, it also shows where multiple methods hit ceiling-level scores versus where token-level naming and exact matching are still challenging.
+
+Table 7: Benchmark subset results for mean Dice on text-guided segmentation.
+<table><tr><td rowspan="2">Modality</td><td rowspan="2">Dataset</td><td rowspan="2">Samples</td><td colspan="3">Specialist Segmentors</td><td colspan="5">Grounded / VLM Baselines</td><td colspan="2">MedUP</td></tr><tr><td>MedSAM1 MedSAM2</td><td></td><td>MedSAM3 | BiomedParse</td><td></td><td>UniBiomed</td><td>LISA++</td><td></td><td>SAM4MLLM MMedAgent | MedUP-H MedUP-Q</td><td></td><td></td></tr><tr><td>CT</td><td>finding-lungs-in-ct-data_2d</td><td>54</td><td>0.7481</td><td>0.0951</td><td>0.7205</td><td>0.2666</td><td>0.2839</td><td>0.6701</td><td>0.4281</td><td>0.0519</td><td>0.9576</td><td>0.9582</td></tr><tr><td>CT</td><td>VESSEL2012</td><td>2,082</td><td>0.8034</td><td>0.1436</td><td>0.0031</td><td>0.0039</td><td>0.0176</td><td>0.4534</td><td>0.4428</td><td>0.1755</td><td>0.9273</td><td>0.9396</td></tr><tr><td>CT</td><td>MSD_Spleen</td><td>146</td><td>0.9249</td><td>0.7612</td><td>0.8838</td><td>0.3994</td><td>0.7433</td><td>0.0675</td><td>0.0588</td><td>0.0809</td><td>0.9374</td><td>0.9389</td></tr><tr><td>CT</td><td>PleThora</td><td>3,313</td><td>0.8004</td><td>0.7373</td><td>0.1055</td><td>0.0098</td><td>0.0025</td><td>0.3188</td><td>0.3486</td><td>0.0306</td><td>0.9179</td><td>0.9113</td></tr><tr><td>CT</td><td>Continuous_Registration_task1</td><td>139</td><td>0.6704</td><td>0.7834</td><td>0.8009</td><td>0.2900</td><td>0.0286</td><td>0.2508</td><td>0.2507</td><td>0.2873</td><td>0.9013</td><td>0.9042</td></tr><tr><td>MR</td><td>CMRxMotions</td><td>313</td><td>0.8597</td><td>0.7876</td><td>0.5084</td><td>0.2492</td><td>0.3001</td><td>0.0909</td><td>0.0452</td><td>0.1494</td><td>0.8623</td><td>0.8493</td></tr><tr><td>CT</td><td>AbdomenCT1K</td><td>37,571</td><td>0.8325</td><td>0.6491</td><td>0.6379</td><td>0.2202</td><td>0.4402</td><td>0.1230</td><td>0.0890</td><td>0.3976</td><td>0.8561</td><td>0.8394</td></tr><tr><td>CT</td><td>FLARE21</td><td>8,211</td><td>0.8054</td><td>0.6077</td><td>0.6191</td><td>0.3602</td><td>0.5453</td><td>0.1232</td><td>0.1050</td><td>0.3769</td><td>0.8450</td><td>0.8386</td></tr><tr><td>CT</td><td>KiTS</td><td>3,313</td><td>0.7361</td><td>0.5738</td><td>0.6170</td><td>0.0831</td><td>0.3284</td><td>0.0844</td><td>0.0599</td><td>0.3690</td><td>0.8414</td><td>0.8164</td></tr><tr><td>MR</td><td>mnms2</td><td>1,919</td><td>0.7908</td><td>0.7701</td><td>0.5202</td><td>0.3488</td><td>0.3094</td><td>0.0985</td><td>0.0467</td><td>0.1940</td><td>0.8407</td><td>0.8151</td></tr><tr><td>CT</td><td>Colorectal_Liver_Metastases</td><td>2,060</td><td>0.7650</td><td>0.4567</td><td>0.5880</td><td>0.1410</td><td>0.6192</td><td>0.1835</td><td>0.1399</td><td>0.6354</td><td>0.7929</td><td>0.7682</td></tr><tr><td>CT</td><td>KiTS2021</td><td>5,622</td><td>0.7048</td><td>0.5266</td><td>0.6219</td><td>0.0800</td><td>0.3275</td><td>0.0693</td><td>0.0442</td><td>0.3762</td><td>0.7863</td><td>0.7661</td></tr><tr><td>CT</td><td>KiTS2023</td><td>5,816</td><td>0.6845</td><td>0.5044</td><td>0.5896</td><td>0.0826</td><td>0.3307</td><td>0.0784</td><td>0.0542</td><td>0.4156</td><td>0.7747</td><td>0.7434</td></tr><tr><td>CT</td><td>SegRap2023_cta</td><td>6,597</td><td>0.6261</td><td>0.4815</td><td>0.2165</td><td>0.0756</td><td>0.0678</td><td>0.0763</td><td>0.0688</td><td>0.0558</td><td>0.7180</td><td>0.7020</td></tr><tr><td>CT</td><td>SegRap2023_ct</td><td>6,597</td><td>0.6261</td><td>0.4815</td><td>0.2165</td><td>0.0747</td><td>0.0678</td><td>0.0763</td><td>0.0688</td><td>0.0558</td><td>0.7177</td><td>0.7037</td></tr><tr><td>MR</td><td>BraTS2021</td><td>15,929</td><td>0.5836</td><td>0.5463</td><td>0.4015</td><td>0.0680</td><td>0.3848</td><td>0.0964</td><td>0.0779</td><td>0.2709</td><td>0.5881</td><td>0.5294</td></tr><tr><td>X-ray</td><td>sz_cxr</td><td>114</td><td>0.9602</td><td>0.9477</td><td>0.9586</td><td>0.0122</td><td>0.9331</td><td>0.7557</td><td>0.4345</td><td>0.6581</td><td>0.9485</td><td>0.9436</td></tr><tr><td>Fundus</td><td>drishti_gs_od</td><td>51</td><td>0.9613</td><td>0.9710</td><td>0.9591</td><td>0.0000</td><td>0.6814</td><td>0.0641</td><td>0.4387</td><td>0.8767</td><td>0.9315</td><td>0.9351</td></tr><tr><td>Endoscopy</td><td>kvasircapsule_seg</td><td>11</td><td>0.9533</td><td>0.9527</td><td>0.9309</td><td>0.0000</td><td>0.5627</td><td>0.7868</td><td>0.7506</td><td>0.6338</td><td>0.9154</td><td>0.9204</td></tr><tr><td>Fundus</td><td>ichallenge_adam_task2</td><td>61</td><td>0.9559</td><td>0.9645</td><td>0.9367</td><td>0.0000</td><td>0.8011</td><td>0.0285</td><td>0.0601</td><td>0.1823</td><td>0.9190</td><td>0.9203</td></tr></table>
+
+Table 8: Benchmark subset results for mean IoU on text-guided segmentation.
+<table><tr><td rowspan="2">Modality</td><td rowspan="2">Dataset</td><td rowspan="2">Samples</td><td colspan="3">Specialist Segmentors</td><td colspan="4">Grounded / VLM Baselines</td><td colspan="3">MedUP</td></tr><tr><td>MedSAM1 MedSAM2</td><td></td><td>MedSAM3</td><td>BiomedParse</td><td>UniBiomed</td><td>LISA++</td><td>SAM4MLLM</td><td>MMedAgent</td><td>|MedUP-H MedUP-Q</td><td></td></tr><tr><td>CT</td><td>finding-lungs-in-ct-data_2d</td><td>54</td><td>0.6023</td><td>0.0580</td><td>0.6328</td><td>0.1663</td><td>0.1819</td><td>0.5136</td><td>0.2831</td><td>0.0362</td><td>0.9293</td><td>0.9301</td></tr><tr><td>CT</td><td>VESSEL2012</td><td>2,082</td><td>0.7223</td><td>0.1326</td><td>0.0017</td><td>0.0022</td><td>0.0105</td><td>0.3845</td><td>0.3205</td><td>0.1387</td><td>0.8945</td><td>0.9101</td></tr><tr><td>CT</td><td>MSD_Spleen</td><td>146</td><td>0.8635</td><td>0.7021</td><td>0.8198</td><td>0.3125</td><td>0.6694</td><td>0.0351</td><td>0.0305</td><td>0.0746</td><td>0.8919</td><td>0.8933</td></tr><tr><td>CT</td><td>PleThora</td><td>3,313</td><td>0.7358</td><td>0.6797</td><td>0.0822</td><td>0.0070</td><td>0.0013</td><td>0.2041</td><td>0.2286</td><td>0.0174</td><td>0.8665</td><td>0.8608</td></tr><tr><td>CT</td><td>Continuous_Registration_task1</td><td>139</td><td>0.5988</td><td>0.7124</td><td>0.6882</td><td>0.2030</td><td>0.0162</td><td>0.1503</td><td>0.1502</td><td>0.2208</td><td>0.8396</td><td>0.8419</td></tr><tr><td>CT</td><td>AbdomenCT1K</td><td>37,571</td><td>0.7445</td><td>0.5830</td><td>0.5410</td><td>0.1817</td><td>0.3742</td><td>0.0725</td><td>0.0497</td><td>0.3456</td><td>0.7983</td><td>0.7816</td></tr><tr><td>CT</td><td>KiTS</td><td>3,313</td><td>0.6205</td><td>0.4952</td><td>0.5224</td><td>0.0611</td><td>0.2530</td><td>0.0462</td><td>0.0317</td><td>0.2987</td><td>0.7943</td><td>0.7683</td></tr><tr><td>CT</td><td>FLARE21</td><td>8,211</td><td>0.7110</td><td>0.5424</td><td>0.5254</td><td>0.2979</td><td>0.4621</td><td>0.0716</td><td>0.0598</td><td>0.3240</td><td>0.7923</td><td>0.7842</td></tr><tr><td>MR</td><td>CMRxMotions</td><td>313</td><td>0.7720</td><td>0.6947</td><td>0.3766</td><td>0.2002</td><td>0.2378</td><td>0.0513</td><td>0.0236</td><td>0.1003</td><td>0.7846</td><td>0.7714</td></tr><tr><td>MR</td><td>mnms2</td><td>1,919</td><td>0.6980</td><td>0.6836</td><td>0.3804</td><td>0.2681</td><td>0.2267</td><td>0.0573</td><td>0.0242</td><td>0.1421</td><td>0.7593</td><td>0.7309</td></tr><tr><td>CT</td><td>Colorectal_Liver_Metastases</td><td>2,060</td><td>0.6626</td><td>0.4034</td><td>0.4675</td><td>0.1142</td><td>0.5365</td><td>0.1083</td><td>0.0811</td><td>0.5711</td><td>0.7410</td><td>0.7169</td></tr><tr><td>CT</td><td>KiTS2021</td><td>5,622</td><td>0.5966</td><td>0.4548</td><td>0.5343</td><td>0.0589</td><td>0.2583</td><td>0.0377</td><td>0.0230</td><td>0.3041</td><td>0.7375</td><td>0.7177</td></tr><tr><td>CT</td><td>KiTS2023</td><td>5,816</td><td>0.5776</td><td>0.4348</td><td>0.4985</td><td>0.0606</td><td>0.2627</td><td>0.0433</td><td>0.0285</td><td>0.3368</td><td>0.7232</td><td>0.6946</td></tr><tr><td>CT</td><td>MMWHS_CT</td><td>1,591</td><td>0.6565</td><td>0.5065</td><td>0.2007</td><td>0.0051</td><td>0.1731</td><td>0.0246</td><td>0.0388</td><td>0.2069</td><td>0.6573</td><td>0.6342</td></tr><tr><td>CT</td><td>SegRap2023_cta</td><td>6,597</td><td>0.5127</td><td>0.4026</td><td>0.1760</td><td>0.0547</td><td>0.0472</td><td>0.0487</td><td>0.0451</td><td>0.0426</td><td>0.6219</td><td>0.6053</td></tr><tr><td>CT</td><td>SegRap2023_ct</td><td>6,597</td><td>0.5127</td><td>0.4026</td><td>0.1760</td><td>0.0541</td><td>0.0472</td><td>0.0487</td><td>0.0451</td><td>0.0426</td><td>0.6216</td><td>0.6068</td></tr><tr><td>CT</td><td>WORD</td><td>6,854</td><td>0.5690</td><td>0.4856</td><td>0.2812</td><td>0.1577</td><td>0.3731</td><td>0.0471</td><td>0.0490</td><td>0.2820</td><td>0.5884</td><td>0.5600</td></tr><tr><td>MR</td><td>BraTS2021</td><td>15,929</td><td>0.4614</td><td>0.4366</td><td>0.3192</td><td>0.0447</td><td>0.2951</td><td>0.0553</td><td>0.0442</td><td>0.2010</td><td>0.4864</td><td>0.4261</td></tr><tr><td>MR</td><td>BraTS2023 GLI</td><td>16,388</td><td>0.4588</td><td>0.4225</td><td>0.3981</td><td>0.1512</td><td>0.3414</td><td>0.0540</td><td>0.0451</td><td>0.1620</td><td>0.4674</td><td>0.4086</td></tr><tr><td>MR</td><td>BraTS2019</td><td>5,035</td><td>0.4351</td><td>0.3689</td><td>0.2655</td><td>0.0483</td><td>0.2509</td><td>0.0609</td><td>0.0446</td><td>0.1541</td><td>0.4396</td><td>0.3688</td></tr></table>
+
+Table 9: Benchmark subset results for weighted EM on region-grounded understanding.
+<table><tr><td rowspan="2">Modality</td><td rowspan="2">Dataset</td><td rowspan="2">Samples</td><td colspan="4">Grounded / VLM Baselines</td><td colspan="2">Medical VLM Baselines</td><td colspan="2">MedUP</td></tr><tr><td>UniBiomed</td><td>LISA++</td><td>SAM4MLLM MMedAgent</td><td></td><td>LLaVA-Med</td><td>MedGemma</td><td>MedUP-H</td><td>MedUP-Q</td></tr><tr><td>Ultrasound</td><td>CETUS2014</td><td>3,262</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>1.0000</td><td>1.0000</td><td>1.0000</td></tr><tr><td>CT</td><td>Continuous_Registration_task1</td><td>139</td><td>0.0000</td><td>0.0072</td><td>0.0647</td><td>0.0000</td><td>0.0144</td><td>0.7842</td><td>1.0000</td><td>1.0000</td></tr><tr><td>MR</td><td>Heart_Seg_MRI</td><td>51</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>1.0000</td><td>1.0000</td><td>1.0000</td></tr><tr><td>MR</td><td>braimMRI</td><td>258</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.9806</td><td>1.0000</td><td>1.0000</td></tr><tr><td>Endoscopy</td><td>cvc_clinicdb</td><td>123</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>1.0000</td><td>1.0000</td><td>1.0000</td></tr><tr><td>Fundus</td><td>drishti_gs_od</td><td>51</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>1.0000</td><td>1.0000</td><td>1.0000</td></tr><tr><td>Endoscopy</td><td>endovis15</td><td>123</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>1.0000</td><td>1.0000</td><td>1.0000</td></tr><tr><td>Endoscopy</td><td>hyper-kvasir-segmented-images</td><td>200</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>1.0000</td><td>1.0000</td><td>1.0000</td></tr><tr><td>Fundus</td><td>ichallenge_adam_task2</td><td>61</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>1.0000</td><td>1.0000</td><td>1.0000</td></tr><tr><td>Dermoscopy</td><td>isic2018_task1</td><td>90</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>1.0000</td><td>1.0000</td><td>1.0000</td></tr><tr><td>Endoscopy</td><td>kvasir_seg</td><td>40</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>1.0000</td><td>1.0000</td><td>1.0000</td></tr><tr><td>Endoscopy</td><td>kvasir_seg_aliyun</td><td>200</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>1.0000</td><td>1.0000</td><td>1.0000</td></tr><tr><td>Endoscopy</td><td>kvasircapsule_seg</td><td>11</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>1.0000</td><td>1.0000</td><td>1.0000</td></tr><tr><td>X-ray</td><td>sz_cxr</td><td>114</td><td>0.0000</td><td>0.1754</td><td>0.9561</td><td>0.0000</td><td>0.3158</td><td>1.0000</td><td>1.0000</td><td>1.0000</td></tr><tr><td>Ultrasound</td><td>TDSC-ABUS2023</td><td>254</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.9252</td><td>1.0000</td><td>0.9961</td></tr><tr><td>MR</td><td>Prostate_MRI_Segmentation_Dataset</td><td>175</td><td>0.0000</td><td>0.0000</td><td>0.1371</td><td>0.0000</td><td>0.0743</td><td>0.9943</td><td>1.0000</td><td>0.9943</td></tr><tr><td>MR</td><td>SPPIN2023</td><td>923</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.4670</td><td>1.0000</td><td>0.9935</td></tr><tr><td>CT</td><td>MSD_Spleen</td><td>146</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.8973</td><td>1.0000</td><td>0.9932</td></tr><tr><td>MR</td><td>MSD_Heart</td><td>133</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>1.0000</td><td>1.0000</td><td>0.9850</td></tr><tr><td>CT</td><td>finding-lungs-in-ct-data_2d</td><td>54</td><td>0.0000</td><td>0.1667</td><td>0.8148</td><td>0.0000</td><td>0.0556</td><td>0.9815</td><td>1.0000</td><td>0.9815</td></tr></table>
+
+Table 10: Benchmark subset results for weighted token recall on region-grounded understanding.
+<table><tr><td rowspan="2">Modality</td><td rowspan="2">Dataset</td><td rowspan="2">Samples</td><td colspan="4">Grounded / VLM Baselines</td><td colspan="2">Medical VLM Baselines</td><td colspan="2">MedUP</td></tr><tr><td>UniBiomed</td><td>LISA++</td><td>SAM4MLLM MMedAgent | LLaVA-Med MedGemma</td><td></td><td></td><td></td><td>MedUP-H MedUP-Q</td><td></td></tr><tr><td>Ultrasound</td><td>CETUS2014</td><td>3,262</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.1257</td><td>1.0000</td><td>1.0000</td><td>1.0000</td></tr><tr><td>CT</td><td>Continuous_Registration_task1</td><td>139</td><td>0.0432</td><td>0.0072</td><td>0.0647</td><td>0.0000</td><td>0.0144</td><td>0.7842</td><td>1.0000</td><td>1.0000</td></tr><tr><td>MR</td><td>Heart_Seg_MRI</td><td>51</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.1961</td><td>1.0000</td><td>1.0000</td><td>1.0000</td></tr><tr><td>MR</td><td>braimMRI</td><td>258</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.9806</td><td>1.0000</td><td>1.0000</td></tr><tr><td>Endoscopy</td><td>cvc_clinicdb</td><td>123</td><td>0.2602</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>1.0000</td><td>1.0000</td><td>1.0000</td></tr><tr><td>Fundus</td><td>drishti_gs_od</td><td>51</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0784</td><td>1.0000</td><td>1.0000</td><td>1.0000</td></tr><tr><td>Endoscopy</td><td>endovis15</td><td>123</td><td>0.2276</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>1.0000</td><td>1.0000</td><td>1.0000</td></tr><tr><td>Endoscopy</td><td>hyper-kvasir-segmented-images</td><td>200</td><td>0.4450</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>1.0000</td><td>1.0000</td><td>1.0000</td></tr><tr><td>Fundus</td><td>ichallenge_adam_task2</td><td>61</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.1148</td><td>1.0000</td><td>1.0000</td><td>1.0000</td></tr><tr><td>Dermoscopy</td><td>isic2018_task1</td><td>90</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.2111</td><td>1.0000</td><td>1.0000</td><td>1.0000</td></tr><tr><td>Endoscopy</td><td>kvasir_seg</td><td>40</td><td>0.5250</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>1.0000</td><td>1.0000</td><td>1.0000</td></tr><tr><td>Endoscopy</td><td>kvasir_seg_aliyun</td><td>200</td><td>0.3800</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>1.0000</td><td>1.0000</td><td>1.0000</td></tr><tr><td>Endoscopy</td><td>kvasircapsule_seg</td><td>11</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>1.0000</td><td>1.0000</td><td>1.0000</td></tr><tr><td>X-ray</td><td>sz_cxr</td><td>114</td><td>0.1404</td><td>0.1754</td><td>0.9561</td><td>0.0000</td><td>0.4386</td><td>1.0000</td><td>1.0000</td><td>1.0000</td></tr><tr><td>Ultrasound</td><td>TDSC-ABUS2023</td><td>254</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.1063</td><td>0.9252</td><td>1.0000</td><td>0.9961</td></tr><tr><td>MR</td><td>Prostate_MRI_Segmentation_Dataset</td><td>175</td><td>0.0000</td><td>0.0000</td><td>0.1600</td><td>0.0000</td><td>0.0971</td><td>0.9943</td><td>1.0000</td><td>0.9943</td></tr><tr><td>MR</td><td>SPPIN2023</td><td>923</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.4670</td><td>1.0000</td><td>0.9935</td></tr><tr><td>CT</td><td>MSD_Spleen</td><td>146</td><td>0.0205</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.8973</td><td>1.0000</td><td>0.9932</td></tr><tr><td>MR</td><td>MSD_Heart</td><td>133</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0000</td><td>0.0376</td><td>1.0000</td><td>1.0000</td><td>0.9850</td></tr><tr><td>CT</td><td>finding-lungs-in-ct-data_2d</td><td>54</td><td>0.0741</td><td>0.1667</td><td>0.8148</td><td>0.0000</td><td>0.2037</td><td>0.9815</td><td>1.0000</td><td>0.9815</td></tr></table>

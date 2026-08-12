@@ -1,0 +1,380 @@
+# Grid-Preserving Knowledge Distillation: Transferring Convolutional Inductive Bias to Vision Transformers under Data Scarcity
+
+Junyong Choi<sup>2</sup>, Cheolhyeon Park<sup>1</sup>, Jaehoon Cho<sup>1∗</sup>
+
+<sup>1</sup>School of Electronics and Avionics Engineering, Korea Aerospace University, <sup>2</sup>Hyundai Motor Company
+
+## Abstract
+
+Vision Transformers underperform convolutional networks when training data is scarce, and distilling convolutional inductive biases from a CNN teacher is an efective remedy that leaves the deployed model unchanged. General-purpose feature distillation, however, transfers little in this setting. The pooling, flattening, and logit-space projections it inherits from CNN to CNN pipelines discard the spatial grid in which locality and translation equivariance are encoded, and unlike a convolutional student, a ViT cannot rebuild that structure on its own. In this paper, we propose iBKD, a distillation framework that preserves the grid along the entire transfer path. Its core module, the Inductive Bias Attention Module, aggregates every student layer onto the teacher grid with learned weights, sharpens structural cues with channel and deformable spatial attention, and injects them through convolutional cross-attention that operates between grids rather than between token sets. The module is used only during training, so the deployed model is an unmodified ViT with no inference overhead. Across seven Transformer backbones and six datascarce benchmarks, iBKD outperforms both locality-guidance methods and general knowledge distillation baselines, and its margin widens as training data shrinks.
+
+## Introduction
+
+Vision Transformers (ViTs) model long-range dependencies through global self-attention (Dosovitskiy et al. 2021; Liu et al. 2021b), but lack the inductive biases that convolutional networks encode architecturally, including locality, translation equivariance, and hierarchical composition. The two families consequently learn visibly diferent representations, with ViTs relying on early global attention where CNNs build up spatial structure gradually (Raghu et al. 2021). As a consequence, ViTs are strongly data-dependent, surpassing CNNs given large-scale pretraining yet falling clearly behind when trained from scratch on small datasets (Dosovitskiy et al. 2021; Touvron et al. 2021; Liu et al. 2021a; Li et al. 2022). This limits their use in domains where data collection is expensive, such as medical imaging (Zhu et al. 2021) and fine-grained recognition (Nilsback and Zisserman 2008).
+
+Existing remedies fall into three groups. Hybrid architectures embed convolutions into the Transformer (Wu et al. 2021; d’Ascoli et al. 2021; Dai et al. 2021), self-supervised auxiliary objectives encourage spatially aware representations (Liu et al. 2021a), and CNN-guided knowledge distillation (KD) supervises intermediate ViT features with a convolutional teacher (Touvron et al. 2021; Li et al. 2022; Rostand, Hsu, and Lu 2025). Distillation methods have a practical advantage the other two groups lack, because the teacher and all auxiliary components are discarded after training, leaving a vanilla ViT with zero inference overhead at deployment. Locality Guidance (LG) (Li et al. 2022) and Adaptive Locality Guidance (ALG) (Rostand, Hsu, and Lu 2025) follow this line of research via direct feature matching and report the strongest results in the data-scarce regime (Figure 1b).
+
+![](images/507f52c94979cd8c0f4fb5877d44fd90a425a622479beab24f36067207c104bf.jpg)  
+Figure 1: Three transfer regimes. (a) Generic KD pools or flattens features, losing positional correspondence. (b) LG/ALG keep the grid but fix the layer and target shape in advance. (c) iBKD keeps the grid and learns the transfer, leveraging all layers and reading the CNN by attention.
+
+However, it remains unclear why the data-scarce CNN→ViT pairing requires specialized methods at all, given that feature distillation is a mature field with strong generalpurpose techniques (Tian, Krishnan, and Isola 2020; Chen et al. 2021; Yang et al. 2022; Hao et al. 2023; Gou et al. 2021). We identify a structural reason. These methods were designed for CNN→CNN transfer, where the student’s own convolutions re-impose locality and equivariance on whatever it receives. Transfer operators built on pooling, flattening, or logit-space projection (Tian, Krishnan, and Isola
+
+2020; Hao et al. 2023) therefore cost little in that regime, because the student recovers the spatial structure they discard. By contrast, a ViT student has no such recovery mechanism. The transfer path becomes the sole carrier of the inductive bias, and this bias is a property of the spatial grid. Locality specifies which positions interact, and equivariance specifies how responses move with the input, so transfer operators that discard positional correspondence destroy precisely the quantity they are meant to transmit (Figure 1a). We verify this account with a matched benchmark of generic KD methods, an operator-substitution ablation, and a grid-permutation experiment in which destroying positional correspondence alone, with operators, parameters, and information content unchanged, collapses the transfer (in the Experiments section).
+
+In this work, we build on this analysis and propose Inductive Bias Knowledge Distillation (iBKD), whose core module, the Inductive Bias Attention Module (IBAM), keeps the spatial grid intact through three stages (Figure 1c). Learnable cross-architecture alignment aggregates multilayer ViT tokens with learned weights and restores them onto the teacher’s grid, replacing the fixed layer pairing of prior work. Deformable enhancement amplifies structural cues along object boundaries. Convolutional cross-attention fusion computes attention between grids using 1×1 convolutional Q/K/V projections instead of operating on flattened token sets and this substitution alone accounts for 2.62 points of accuracy. Each stage is deliberately built from established operators, since introducing novel ones would make it impossible to attribute measured gains to the grid-preserving principle rather than to the operators themselves. IBAM exists only at training time.
+
+To attribute the improvements, we first train the module without the teacher. When IBAM is kept as an architectureonly branch without the teacher, it fails to converge and does not recover vanilla accuracy, indicating that the module carries no useful prior of its own and that the gains originate in the transmitted teacher signal. We then keep the module and the teacher in place and permute the teacher grid, which removes the gain entirely. Positional correspondence, rather than the operators or the added capacity, is what carries the transferable bias. With the teacher and an intact grid, the three stages contribute measurably and complementarily.
+
+Our contributions are as follows:
+
+• We identify why generic feature distillation transfers little in the CNN→ViT pairing. Transfer operators inherited from the CNN→CNN regime discard the positional correspondence in which convolutional inductive biases are encoded, and a ViT student cannot restore it. We support this with a matched-protocol benchmark of general KD methods (CRD, ReviewKD, MGD, OFA) in this regime.
+
+• We propose iBKD/IBAM, a grid-preserving transfer mechanism combining learnable cross-architecture alignment, deformable enhancement, and convolutional crossattention fusion, used only during training and adding zero inference overhead.
+
+• We attribute the gains with three single-factor experiments. Removing the teacher prevents convergence, substituting token-space attention lowers accuracy, and permuting the teacher grid collapses the transfer, together showing that positional correspondence is what carries the transferred bias. iBKD improves the state of the art on six benchmarks and seven Transformer backbones.
+
+## Related Work
+
+## Inductive Bias for Vision Transformers
+
+One line of work modifies the architecture itself. T2T-ViT (Yuan et al. 2021) restructures tokenization to retain local structure, CvT (Wu et al. 2021), ConViT (d’Ascoli et al. 2021), CoAtNet (Dai et al. 2021), and NesT (Zhang et al. 2022) interleave convolution with attention, and LeViT (Graham et al. 2021), MobileViT (Mehta and Rastegari 2021), and LocalViT (Li et al. 2023) add lightweight convolutional components. These designs permanently alter the deployed network. A second line transfers the bias during training only. DeiT (Touvron et al. 2021) distills through an auxiliary token, DearKD (Chen et al. 2022) injects convolutional knowledge in an early training phase, Co-advise (Ren et al. 2022) pairs teachers with diferent inductive biases, LG (Li et al. 2022) supervises intermediate features with a fixed CNN teacher, and ALG (Rostand, Hsu, and Lu 2025) schedules this supervision adaptively. Our work belongs to the second line, but difers in making explicit what must survive the transfer, namely the spatial grid, and in learning the transfer end to end rather than fixing it a priori.
+
+## Feature Distillation across Architectures
+
+Feature-level KD transfers intermediate representations from teacher to student (Hinton, Vinyals, and Dean 2015; Romero et al. 2014; Gou et al. 2021). We organize existing methods by their transfer operator, since under our analysis this determines whether spatial structure survives. Pooled or logitspace operators (Tian, Krishnan, and Isola 2020; Zhao et al. 2022; Hao et al. 2023) discard the feature grid, while convolutional projectors (Chen et al. 2021; Yang et al. 2022), direct feature matching (Li et al. 2022; Rostand, Hsu, and Lu 2025) and learned cross-architecture projection (Liu et al. 2022; Lee et al. 2025) retain it to varying degrees. In the CNN→CNN setting these choices are largely interchangeable, because the student’s convolutions restore spatial structure regardless of how the signal arrives. The CNN→ViT setting removes this safety net, which is the regime studied here. A related direction is DearKD (Chen et al. 2022), which distills convolutional knowledge into a ViT but focuses on when the knowledge is injected through a phased schedule rather than on whether the transfer preserves the grid. We instead make grid preservation an explicit principle, verify its causal role, and replace static matching with a learnable transfer.
+
+## Method
+
+## Preliminaries
+
+Given an input x, a CNN teacher and a ViT student produce intermediate features $f _ { T } ( x )$ and $f _ { S } ( x )$ . The teacher feature is $F ^ { \mathrm { c n n } } \in \mathbb { R } ^ { H _ { c } \times W _ { c } \times \overleftarrow { C } _ { c } }$ , and student tokens are reshaped
+
+![](images/4747c0135058e72947ab385960d00ec1519982596064ae043542a56ee14d9078.jpg)  
+Figure 2: Overview of iBKD. $( l e f t )$ Training pipeline: the CNN teacher and IBAM supervise the ViT student through $\mathcal { L } _ { \mathrm { a l i g n } }$ and ${ \mathcal { L } } _ { \mathrm { f u s e } }$ , and are discarded entirely at inference, leaving an unmodified vanilla ViT. (right) IBAM in detail: (a) alignment aggregates multi-layer student tokens and restores them onto the teacher’s grid; (2) enhancement applies channel and deformable spatial attention on the grid; (3) fusion injects teacher priors via convolutional cross-attention with 1×1 Q/K/V projections.
+
+onto their native grid. Feature distillation trains the student with $\mathcal { L } _ { \mathrm { t a s k } } + \lambda \mathcal { L } _ { \mathrm { F D } }$ , where $\mathcal { L } _ { \mathrm { F D } }$ penalizes a distance between (transformed) teacher and student features.
+
+## Grid Collapse in Cross-Architecture Transfer
+
+Feature distillation matches values, but the teacher’s inductive bias does not reside in the values. It resides in how they are arranged on the spatial grid. Locality is a statement about which positions are neighbors, and translation equivariance about how responses move when the input shifts, $f _ { T } ( \tau _ { \delta } x ) ~ = ~ \tau _ { \delta } f _ { T } ( x )$ . Both are properties of position, so once positional correspondence is discarded, neither can be expressed however accurately the values are matched.
+
+We call a transfer operator grid-preserving if its output is defined on the teacher grid and its value at position $p$ depends only on a fixed local neighborhood of $p .$ Per-position (1×1) convolutions, resolution-preserving resampling, and attention between grids satisfy this, whereas global pooling, flattening, and logit-space projection do not, since their output is no longer indexed by the grid. Only a grid-preserving target can express translation equivariance, because the constraint $T ( f _ { T } \dot { ( } \tau _ { \delta } x ) ) = \tau _ { \delta } T ( f _ { T } \dot { ( } x ) )$ applies the shift to the operator output and is undefined once that output leaves the grid. Preserving the grid is therefore necessary, though not suficient, since whether the student acquires the bias remains a matter of optimization, which is why a preserved grid benefits from being paired with a learned transfer. In CNN→CNN distillation this is immaterial, because the student’s own convolutions re-impose the bias regardless of how the signal arrives. For a ViT student the transfer path is the only carrier, and the distinction becomes decisive. We verify this account in the Experiments section by benchmarking generic KD methods under an identical CNN→ViT protocol, by substituting a single grid-space stage with its token-space counterpart, and by permuting the teacher grid.
+
+## Inductive Bias Attention Module
+
+IBAM instantiates grid-preserving transfer in three stages (Figure 2), each built from established operators so that measured gains are attributable to the principle rather than to operator novelty. It takes the teacher feature F<sup>cnn</sup> and student features from all N blocks, $\{ F _ { 1 } ^ { \mathrm { v t } } , \ldots , F _ { N } ^ { \mathrm { v t } } \}$
+
+Learnable Cross-Architecture Alignment. Prior locality-guidance methods match manually selected layer pairs, but which student depths are compatible with a given CNN teacher varies across architectures and cannot be fixed in advance. We instead learn the correspondence. For each teacher stage g, we aggregate all student layers with a stage-specific set of learned convex weights,
+
+$$
+{ \bf F } _ { \mathrm { a g g } } ^ { ( g ) } = \sum _ { i = 1 } ^ { N } \alpha _ { g , i } { \bf F } _ { i } , \qquad \alpha _ { g , i } = \frac { e ^ { w _ { g , i } } } { \sum _ { j } e ^ { w _ { g , j } } } ,\tag{1}
+$$
+
+so that each teacher stage draws from the student depths most compatible with it rather than from a single shared pooling. Each aggregate is passed through a 1×1 convolution to match the teacher channel width and resampled to a common grid. The weights $w _ { g , i }$ are initialized uniformly, so the model discovers this depth-to-stage correspondence during training rather than committing to a choice made in advance. All operations act per position or through local resampling, so the student representation reaches the teacher grid as a grid. We verify this choice against four manual strategies in the Experiments section (Table 5).
+
+Deformable Enhancement. Alignment establishes correspondence but does not make structural cues salient, and a rigid receptive field cannot follow object boundaries as they change shape across images. We therefore refine the aligned features with dual attention,
+
+$$
+\tilde { F } ^ { v t } = \mathcal { A } _ { s } \left( \mathcal { A } _ { c } ( F _ { \mathrm { a g g } } ^ { \mathrm { v t } } ) \right) ,\tag{2}
+$$
+
+where $\boldsymbol { A } _ { c }$ and $A _ { s }$ denote channel and spatial attention. Channel attention. We model inter-channel dependencies from pooled statistics,
+
+$$
+\mathcal { A } _ { c } ( F ) = \sigma \big ( \mathrm { M L P } ( P _ { a v g } ) + \mathrm { M L P } ( P _ { m a x } ) \big ) \odot F ,\tag{3}
+$$
+
+where σ is the sigmoid, $\odot$ is element-wise multiplication, and $P _ { a v g } , P _ { m a x } \in \breve { \mathbb { R } } ^ { 1 \times 1 \times \dot { C } }$ are pooled descriptors. This emphasizes the channels that carry structural rather than purely semantic information, following the channel-attention design of CBAM (Woo et al. 2018). The rescaling is identical at every position, so it leaves the grid untouched.
+
+Spatial attention. To sharpen spatial saliency while retaining geometric flexibility, we apply a modulated deformable convolution (Zhu et al. 2019) to concatenated pooled maps,
+
+$$
+\begin{array} { r } { \mathcal { A } _ { s } ( F ) = \sigma \big ( \mathrm { D C o n v } ( [ P _ { a v g } ; P _ { m a x } ] ) \big ) \odot F . } \end{array}\tag{4}
+$$
+
+Unlike a standard convolution, which samples a fixed square neighborhood, the deformable kernel learns ofsets and can therefore attend along non-rigid object boundaries. This matters here because the student’s global patches and the teacher’s fine-grained local responses rarely align on a regular lattice. The sampling still takes place within the grid at learned ofsets, so spatial correspondence is preserved while the receptive field adapts.
+
+Convolutional Cross-Attention Fusion. Standard crossattention operates on flattened token sets, where the queries, keys, and values are produced after positional structure has been serialized, so the attention map relates unordered tokens rather than spatial positions. We instead compute attention between grids with h=4 parallel heads,
+
+$$
+\begin{array} { r l } & { F _ { \mathrm { f u s e d } } = \mathrm { C o n v } _ { 1 \times 1 } \big ( \mathrm { C o n c a t } ( \mathrm { h e a d } _ { 1 } , \dots , \mathrm { h e a d } _ { h } ) \big ) , } \\ & { { \mathrm { h e a d } } _ { m } = \mathrm { s o f t m a x } \bigg ( \frac { Q _ { m } K _ { m } ^ { \top } } { \sqrt { d } } \bigg ) V _ { m } , } \\ & { Q _ { m } = \mathrm { C o n v } _ { 1 \times 1 } ^ { ( m ) } ( \tilde { F } ^ { v t } ) , \quad K _ { m } , V _ { m } = \mathrm { C o n v } _ { 1 \times 1 } ^ { ( m ) } ( { F } ^ { \mathrm { c n n } } ) , } \end{array}\tag{5}
+$$
+
+where each head draws its queries from the enhanced student feature $\tilde { F } ^ { v t }$ and its keys and values from the teacher feature $F ^ { \mathrm { c n n } }$ , all through 1×1 convolutions. Because every projection is a 1×1 convolution, each query, key, and value stays anchored to its position on the $\bar { H _ { c } } \times \bar { W _ { c } }$ grid. The per-head outputs are concatenated along the channel dimension and passed through a final 1×1 convolution that mixes the heads while keeping every position in place, so the fused feature returns on the same grid it started from.
+
+Two properties follow. First, every projection is applied identically at each position, so it shares parameters across space in the same way a convolution does and is itself translation equivariant, whereas a projection defined over a flattened sequence is free to treat each position diferently. Second, the attention map relates spatial positions to spatial positions, so the student reads the teacher’s structure where that structure actually is. The stage therefore injects convolutional priors without giving up the global receptive field of attention, which is what makes it usable inside a ViT rather than in place of one.
+
+## Training Objective
+
+The student is trained with
+
+$$
+\mathcal { L } _ { \mathrm { t o t a l } } = \mathcal { L } _ { \mathrm { t a s k } } + \beta _ { e } \left[ \lambda \mathcal { L } _ { \mathrm { f u s e } } + \left( 1 - \lambda \right) \mathcal { L } _ { \mathrm { a l i g n } } \right] ,\tag{6}
+$$
+
+with $\mathcal { L } _ { \mathrm { f u s e } } ~ = ~ \| F _ { \mathrm { f u s e d } } - F ^ { \mathrm { c n n } } \| _ { 2 } ^ { 2 }$ and ${ \mathcal { L } } _ { \mathrm { a l i g n } } ~ = ~ \Vert F _ { \mathrm { a g g } } ^ { \mathrm { v t } } -$ ${ \cal F } ^ { \mathrm { c n n } } \vert \vert _ { 2 } ^ { 2 }$ , where $\mathcal { L } _ { \mathrm { t a s k } }$ is the cross-entropy loss and $\lambda = 0 . 2 5$ unless stated otherwise. The only term that changes during training is $\beta _ { e }$ , which varies the strength of the distillation signal across epochs following the adaptive schedule ofRostand, Hsu, and Lu (2025). $\mathcal { L } _ { \mathrm { a l i g n } }$ supervises spatial and semantic correspondence at the aligned stage, while ${ \mathcal { L } } _ { \mathrm { f u s e } }$ supervises the fused output. Both losses are positionwise, so the supervision itself requires the grid correspondence that IBAM maintains. At inference, the teacher and IBAM are discarded.
+
+## Experiments
+
+Datasets. We evaluate on six benchmarks. CIFAR-10/100 (Krizhevsky and Hinton 2009) contain 50,000 training and 10,000 test images each, Flowers-102 (Nilsback and Zisserman 2008) contains 8,189 images across 102 categories, Chaoyang (Zhu et al. 2021) contains 4,021 training and 2,139 test colorectal histopathology patches with label noise, CUB-200 (Wah et al. 2011) contains 5,994 training and 5,794 test images across 200 fine-grained bird species, and Tiny-ImageNet (Le and Yang 2015) contains 200 classes with 500 training images per class.
+
+Models. Following Li et al. (2022), the teacher is ResNet-56 (He et al. 2016) for CIFAR, Flowers, CUB, and Chaoyang, and ResNet-50 for Tiny-ImageNet with a 3×3 stem and no initial max-pooling. All teachers, including the Tiny-ImageNet ResNet-50, are trained from scratch on the target training split only. No external pretraining is used anywhere in the pipeline, so the setting is strictly data-scarce and measured gains reflect transferred structure rather than leaked large-scale knowledge. Students span DeiT-Ti (Touvron et al. 2021), T2T-7/14 (Yuan et al. 2021), PiT (Heo et al. 2021), PvTv2 (Wang et al. 2022), CvT (Wu et al. 2021), and ConViT (d’Ascoli et al. 2021).
+
+Implementation. We follow the training protocol of LG and ALG (Li et al. 2022; Rostand, Hsu, and Lu 2025) so that all methods are compared under identical conditions. Every student trains with AdamW (Loshchilov and Hutter 2017) at an initial learning rate of $5 \times 1 0 ^ { - 4 }$ , weight decay 0.05, a cosine schedule with label smoothing 0.1, and mixed precision, at resolution 224×224, while the CNN teacher operates at 32×32 as in LG and ALG. The number of epochs, batch size, and warm-up match the LG and ALG setup for each dataset and are listed per dataset in Appendix, with a batch size of 128 on CIFAR-100 and 64 on Flowers-102 and Chaoyang. The deformable kernel is 5×5 (Appendix) and $\lambda = 0 . 2 5$ . Unless noted otherwise, every reported number is the mean over three runs with seeds {1, 2, 3}, and we report the standard deviation alongside the main comparisons. All experiments run on a single NVIDIA H200 GPU.
+
+Baseline protocol. For Table 2 we run author-released implementations of KD (Hinton, Vinyals, and Dean 2015), CRD (Tian, Krishnan, and Isola 2020), ReviewKD (Chen et al. 2021), MGD (Yang et al. 2022), and OFA (Hao et al. 2023) on CIFAR-100, Flowers-102, and Chaoyang with the identical ResNet-56 teacher, DeiT-Ti student, schedule, and augmentation, searching hyperparameters separately for each method. Appendix reports the selected hyperparameters and the token-to-grid adaptation.
+
+We choose baselines that span the range of transfer operators, from logit-space and pooled embeddings to convolutional projectors, since the operator is the variable our analysis turns on. CRD represents pooled embeddings, ReviewKD and MGD represent convolutional projectors, and OFA represents logit-space projection, which together span the range from discarding the grid to partly retaining it. This is what lets Table 2 read as a single graded axis rather than as a list of unrelated systems.
+
+Table 1: Comparison with locality-guidance methods. Top-1 accuracy (%) on CIFAR-100, Flowers-102, Chaoyang, and CUB-200 with a ResNet-56 teacher (70.43 / 66.33 / 77.20 / 36.40) across seven Transformer backbones. Bold indicates the best result.
+<table><tr><td rowspan="2">Student</td><td colspan="4">CIFAR-100</td><td colspan="4">Flowers-102</td><td colspan="4">Chaoyang</td><td colspan="4">CUB-200</td></tr><tr><td>Van.</td><td>LG</td><td>ALG</td><td>Ours</td><td>Van.</td><td>LG</td><td>ALG</td><td>Ours</td><td>Van.</td><td>LG</td><td>ALG</td><td>Ours</td><td>Van.</td><td>LG</td><td>ALG</td><td>Ours</td></tr><tr><td>DeiT-Ti</td><td>65.08</td><td>77.38</td><td>81.98</td><td>82.42</td><td>50.06</td><td>67.02</td><td>68.54</td><td>70.31</td><td>82.00</td><td>83.26</td><td>83.50</td><td>86.35</td><td>17.69</td><td>44.51</td><td>47.70</td><td>48.36</td></tr><tr><td>ConViT</td><td>74.87</td><td>76.35</td><td>81.84</td><td>82.16</td><td>57.45</td><td>65.31</td><td>68.02</td><td>71.33</td><td>80.93</td><td>82.00</td><td>83.03</td><td>85.04</td><td>22.94</td><td>45.55</td><td>51.05</td><td>53.18</td></tr><tr><td>CvT</td><td>74.29</td><td>76.78</td><td>76.81</td><td>77.29</td><td>60.82</td><td>67.13</td><td>69.07</td><td>69.85</td><td>80.04</td><td>82.42</td><td>83.74</td><td>84.02</td><td>29.19</td><td>43.01</td><td>46.63</td><td>47.98</td></tr><tr><td>PiT</td><td>73.16</td><td>76.98</td><td>77.67</td><td>78.19</td><td>56.12</td><td>66.78</td><td>68.00</td><td>68.31</td><td>81.53</td><td>83.45</td><td>83.69</td><td>84.48</td><td>20.16</td><td>42.37</td><td>43.63</td><td>44.44</td></tr><tr><td>PvTv2</td><td>77.21</td><td>75.90</td><td>79.19</td><td>79.22</td><td>67.89</td><td>65.70</td><td>68.34</td><td>75.89</td><td>82.52</td><td>82.84</td><td>83.50</td><td>84.30</td><td>47.15</td><td>45.43</td><td>50.05</td><td>52.73</td></tr><tr><td>T2T-7</td><td>68.00</td><td>76.48</td><td>79.56</td><td>80.43</td><td>66.14</td><td>67.57</td><td>71.06</td><td>72.52</td><td>78.78</td><td>81.44</td><td>81.81</td><td>86.45</td><td>26.73</td><td>46.63</td><td>50.57</td><td>54.59</td></tr><tr><td>T2T-14</td><td>69.93</td><td>78.18</td><td>80.75</td><td>81.62</td><td>64.95</td><td>71.15</td><td>71.30</td><td>74.11</td><td>75.04</td><td>82.00</td><td>83.50</td><td>86.21</td><td>19.90</td><td>46.05</td><td>48.45</td><td>49.00</td></tr></table>
+
+Table 2: General knowledge distillation under the CNN to ViT protocol. Top-1 accuracy (%) with the identical ResNet-56 teacher and DeiT-Ti student. Values below the vanilla baseline are underlined. Bold is best.
+<table><tr><td>Method</td><td>Transfer operator</td><td>C-100 Flowers</td><td></td><td>Chaoyang</td></tr><tr><td>Vanilla DeiT-Ti</td><td></td><td>65.08</td><td>50.06</td><td>82.00</td></tr><tr><td>Operators that discard the grid</td><td></td><td></td><td></td><td></td></tr><tr><td>KD (Hinton, Vinyals, and Dean 2015) Logits</td><td></td><td>69.10</td><td>48.95</td><td>74.05</td></tr><tr><td>CRD (Tian, Krishnan, and Isola 2020) Pooled contrastive</td><td></td><td>68.59</td><td>49.06</td><td>79.85</td></tr><tr><td>OFA (Hao et al. 2023)</td><td>Logit-space proj.</td><td>67.73</td><td>46.41</td><td>78.03</td></tr><tr><td>Operators that partly retain the grid</td><td></td><td></td><td></td><td></td></tr><tr><td>ReviewKD (Chen et al. 2021)</td><td>Conv. projector</td><td>75.65</td><td>61.88</td><td>82.75</td></tr><tr><td>MGD (Yang et al. 2022)</td><td>Conv. projector (masked)</td><td>75.68</td><td>54.66</td><td>81.81</td></tr><tr><td>Operators that preserve the grid</td><td></td><td></td><td></td><td></td></tr><tr><td>LG (Li et al. 2022)</td><td>Direct match (static)</td><td>77.38</td><td>67.02</td><td>83.26</td></tr><tr><td>ALG (Rostand, Hsu, and Lu 2025)</td><td>Scheduled match (static)</td><td>81.98</td><td>68.54</td><td>83.50</td></tr><tr><td>iBKD (Ours)</td><td>Grid-space, learnable</td><td>82.42</td><td>70.31</td><td>86.35</td></tr></table>
+
+## Comparison with Prior Methods
+
+Locality-guidance methods. Table 1 reports results across seven backbones on CIFAR-100, Flowers-102, Chaoyang, and the fine-grained CUB-200. iBKD outperforms LG and ALG on every backbone and dataset, so the mechanism is not tied to a particular Transformer family and applies whether or not the backbone already carries built-in inductive bias. Margins are largest for backbones without endogenous convolutional components and on fine-grained or domain-shifted data, where the transferred structure cannot be substituted by the student’s own capacity.
+
+General distillation methods. As our analysis predicts, the methods in Table 2 do not perform uniformly, and what each transfers tracks how much of the spatial grid its operator keeps. On CIFAR-100, methods that transfer through logits or pooled embeddings recover the least, gaining 2.65 to 4.02 points over the vanilla student. Convolutional projectors, which retain part of the spatial layout, recover roughly two and a half times as much, gaining 10.57 and 10.60. Gridpreserving methods recover the most, from 12.30 for LG to 17.34 for iBKD. The three groups do not overlap, which is the ordering our account predicts.
+
+The smaller datasets separate the groups more sharply.
+
+On Flowers-102, every method in the first group falls below the vanilla student, by 1.00 to 3.65 points, while the convolutional projectors gain 4.60 and 11.82 and the gridpreserving methods gain 16.96 to 20.25. Here the sign of the efect, not only its size, depends on whether the grid survives. CIFAR-100 supplies 50,000 training images, enough for a ViT to acquire some spatial regularity on its own, so even a structure-free signal helps. Flowers-102 and Chaoyang are an order of magnitude smaller, where this self-recovery is unavailable and spatially incoherent supervision instead becomes harmful.
+
+A teacher that the student already outperforms. Two datasets make the mechanism unusually clear. On Chaoyang the ResNet-56 teacher reaches 77.20, which is 4.80 points below the vanilla DeiT-Ti student at 82.00, yet iBKD lifts the student to 86.35, or 9.15 points above its own teacher. CUB-200 is more extreme still. It is fine-grained, and because the CNN teacher operates at 32×32, much of the detail needed to separate species is lost, so the teacher reaches only 36.40, far below every student. Even so, iBKD raises the DeiT-Ti student from 17.69 to 48.36 and the T2T-7 student to 54.59, roughly 18 points above the teacher. Copying a weaker model’s values or decisions cannot produce this on either dataset. What is being transferred is the way the teacher organizes space rather than what it predicts. The same reading explains why static matching alone can even harm a strong student, since LG falls below the vanilla PvTv2 on CUB-200, while the learnable transfer in iBKD recovers and surpasses it, and why logit-based methods lose the most ground where the teacher is weakest.
+
+Table 3: Tiny-ImageNet. Top-1 / Top-5 error (%) with a ResNet-50 teacher trained from scratch. Bold is best.
+<table><tr><td></td><td colspan="2">DeiT-Ti</td><td colspan="2">DeiT-S</td><td colspan="2">DeiT-B</td></tr><tr><td>Method</td><td>T-1</td><td>T-5</td><td>T-1</td><td>T-5</td><td>T-1</td><td>T-5</td></tr><tr><td>Vanilla</td><td>51.07</td><td>27.69</td><td>51.27</td><td>28.76</td><td>52.72</td><td>30.28</td></tr><tr><td>LG</td><td>30.38</td><td>12.39</td><td>30.27</td><td>12.82</td><td>30.76</td><td>13.09</td></tr><tr><td>ALG</td><td>30.17</td><td>12.14</td><td>28.88</td><td>12.30</td><td>29.60</td><td>12.80</td></tr><tr><td>Ours</td><td>29.11</td><td>11.75</td><td>28.84</td><td>11.88</td><td>29.02</td><td>12.65</td></tr></table>
+
+Table 4: Module and loss ablation (CIFAR-100, DeiT-Ti). SpAtt is C for a standard 5×5 convolution and D for a deformable convolution at matched receptive field. Attn is the space in which fusion attention is computed. ${ \mathcal { L } } _ { a }$ and $\mathcal { L } _ { f }$ denote $\mathcal { L } _ { \mathrm { a l i g n } }$ and ${ \mathcal { L } } _ { \mathrm { f u s e } } .$
+<table><tr><td># Align ChAtt SpAtt Fuse</td><td></td><td></td><td></td><td>e Attn</td><td> $\mathcal { L } _ { a }$ </td><td> $\mathcal { L } _ { f }$  Top-1</td></tr><tr><td>1 √</td><td></td><td></td><td></td><td></td><td>√</td><td>78.00</td></tr><tr><td>2</td><td>√</td><td></td><td>√</td><td>Grid</td><td>√</td><td>81.40</td></tr><tr><td>3</td><td>√</td><td>√</td><td>√</td><td>Grid</td><td>√ √</td><td>81.77</td></tr><tr><td>4</td><td>√</td><td>D</td><td>√</td><td>Grid</td><td>√ √</td><td>81.97</td></tr><tr><td>5</td><td>√</td><td>√ D</td><td>√</td><td>Token</td><td>√ √</td><td>79.80</td></tr><tr><td>6</td><td>√</td><td>√ C</td><td>√</td><td>Grid</td><td>V</td><td>81.96</td></tr><tr><td>7</td><td>√</td><td>√ D</td><td>√</td><td>Grid</td><td>√ √</td><td>82.42</td></tr></table>
+
+Scaling to a larger regime. Prior locality-guidance methods were evaluated only on small datasets such as CIFAR-100, Flowers-102, and Chaoyang. Tiny-ImageNet is an order of magnitude larger with 200 classes, and thus tests whether grid-preserving transfer remains useful as the regime grows. On DeiT-Ti, iBKD lowers Top-1 error to 29.11%, improving over ALG at 30.17% and LG at 30.38%, and the advantage holds across all DeiT capacities (Table 3).
+
+## Attributing the Gains
+
+Feature-level distillation raises an attribution question. Do the improvements come from the transferred knowledge, or from the parameters and operators that the auxiliary module adds? We separate these factors with three experiments, each changing exactly one element of the full framework and leaving everything else fixed (Figure 3).
+
+Removing the teacher. We drop the CNN teacher and both distillation losses, replace K and V in $\operatorname { E q . }$ (5) with selffeatures so that IBAM becomes an additional self-attention branch, and train with $\mathcal { L } _ { \mathrm { t a s k } }$ alone. Training fails to converge and does not reach vanilla accuracy. The module carries no useful prior of its own, and the gains originate in the teacher signal it transmits.
+
+Substituting token-space attention. Replacing the gridspace fusion stage with a standard token-space crossattention block, which computes fully connected Q, K, and V over flattened tokens with everything else unchanged, costs 2.62 points and brings accuracy from 82.42 to 79.80. The same information, delivered without positional anchoring, transfers substantially less.
+
+![](images/2e17d02d21f9de6ee9cafedec023a6a23e5a8cbd9f6cd0f6d21954660ccf9a1a.jpg)  
+Figure 3: Where the improvement comes from (CIFAR-100, DeiT-Ti). Each configuration changes exactly one factor relative to full iBKD.
+
+Permuting the teacher grid. The substitution above changes both the parameterization and the spatial behavior, so it cannot separate the operator from the grid. We therefore keep the convolutional cross-attention intact and apply one fixed random spatial permutation to the teacher features, using it consistently for K, V, and both positionwise loss targets. Operators, parameter counts, and information content are identical to full iBKD, and only the positional correspondence is destroyed. Averaged over three permutation seeds, all of which converged normally, accuracy falls to 68.36, which retains 3.28 of the 17.34 points that full iBKD gains over the vanilla student. Roughly four fifths of the improvement depends on the teacher’s features arriving in the right places rather than merely arriving.
+
+Two comparisons make this number concrete. Permuting the grid costs 11.44 points more than substituting the operator, so positional correspondence matters considerably more than the form of the projection. And the permuted model lands at 68.36, inside the 67.73 to 69.10 band occupied in Table 2 by KD, CRD, and OFA, the methods that discard the grid by design. Destroying the grid deliberately inside our framework reproduces the accuracy that those methods reach by construction, which links the graded pattern of Table 2 to a single causal factor rather than to diferences among the methods themselves.
+
+## Ablation Studies
+
+Modules and losses. Table 4 ablates the IBAM stages, the spatial-attention convolution type, the fusion attention type, and the loss terms together. Alignment alone reaches 78.00 in row 1. Adding grid-space fusion contributes +3.40 in row 2. Channel attention and deformable spatial attention add +0.37 and +0.57 individually in rows 3 and 4, and +1.02 jointly in row 7. Comparing rows 1 and 7 shows that the two losses together yield +4.42, and comparing rows 6 and 7 shows that deformable sampling adds +0.46 over a standard convolution at matched receptive field. Row 5 is the tokenspace substitution discussed above.
+
+Alignment strategy. Table 5 compares the learnable aggregation of Eq. (1) against four manual strategies, evaluated with $\mathcal { L } _ { \mathrm { a l i g n } }$ only. The four manual strategies difer in how they pair student depths with teacher stages, yet they land within 0.49 points of one another, between 76.21 and 76.70.
+
+![](images/6f03739273b6d0032cef8b266a56386d0b938827728cb791e341e86ccc4231f3.jpg)
+
+![](images/a5527aeabe5f1894dbe121a475dfad738781558e05cc8f406002051d0e4f6f2c.jpg)
+
+![](images/5784f3a04eab76df99c3c90e80c1354f267b7aca1886e9822452829820364026.jpg)  
+Figure 4: Feature consistency under geometric transformations. Cosine similarity between features of the original and the transformed input, for shifts, scalings, and rotations. Higher is better. iBKD students approach CNN-level stability, which indicates that translation equivariance itself was transferred rather than only accuracy.
+
+Table 5: Alignment strategies evaluated with $\mathcal { L } _ { \mathrm { a l i g n } }$ only (CIFAR-100, DeiT-Ti). M denotes manual and L denotes learnable.
+<table><tr><td>Strategy</td><td>M/L</td><td>Top-1 (%)</td></tr><tr><td>(1) Full sum of CNN features</td><td>M</td><td>76.21</td></tr><tr><td>(2) Manual selection (LG-style)</td><td>M</td><td>76.50</td></tr><tr><td>(3) Group-wise (m/n) matching</td><td>M</td><td>76.64</td></tr><tr><td>(4) Stochastic selection</td><td>M</td><td>76.70</td></tr><tr><td>(5) Learnable (ours)</td><td>L</td><td>78.00</td></tr></table>
+
+Table 6: Sensitivity to the loss balance λ (CIFAR-100, DeiT-Ti). λ = 0 supervises only the aligned stage, which reproduces row 1 of Table 4, and λ = 1 supervises only the fused output.
+<table><tr><td>λ</td><td>0</td><td>0.25</td><td>0.5</td><td>0.75</td><td>1.0</td></tr><tr><td>Top-1 (%)</td><td>78.00</td><td>82.42</td><td>81.93</td><td>81.66</td><td>81.32</td></tr></table>
+
+Learning the correspondence instead gains 1.30 over the best of them. The choice of manual rule matters little, and what matters is that the correspondence is learned at all, which is consistent with our claim that the compatible depth range cannot be fixed in advance.
+
+Loss balance. Table 6 sweeps λ in Eq. (6), which splits the distillation budget between the aligned stage and the fused output. Setting λ = 0 removes ${ \mathcal { L } } _ { \mathrm { f u s e } }$ and reproduces row 1 of Table 4 at 78.00. Once both terms are active, accuracy varies by only 1.10 points across λ ∈ [0.25, 1.0], so the balance is not a sensitive hyperparameter, with the aligned stage the more important term since λ = 1 is the weakest at 81.32. We use λ = 0.25 throughout.
+
+## Data Scarcity, Eficiency, and Bias Transfer
+
+Extreme data scarcity. Table 7 restricts CIFAR-10/100 to 20%, 50%, and 100% of the training data. iBKD leads in every regime, and its margin over ALG widens as data shrinks, reaching +2.80 at 20% of CIFAR-100. Transferred structure matters most exactly where the student cannot learn it from data.
+
+Eficiency and convergence. iBKD adds no inference overhead, since the teacher and IBAM are used only during training and discarded at deployment, leaving an unmodified ViT with identical latency. On an epoch axis it also reaches any given accuracy in fewer epochs and converges higher (Figure 8), which is what grid preservation should produce.
+
+Table 7: Extreme data scarcity. Top-1 accuracy (%) with varying training-set fractions and a DeiT-Ti student.
+<table><tr><td rowspan="2">Method</td><td colspan="3">CIFAR-10</td><td colspan="3">CIFAR-100</td></tr><tr><td>20%</td><td>50%</td><td>100%</td><td>20%</td><td>50%</td><td>100%</td></tr><tr><td>Vanilla</td><td>65.83</td><td>81.48</td><td>88.70</td><td>31.03</td><td>50.31</td><td>64.65</td></tr><tr><td>LG</td><td>91.48</td><td>94.37</td><td>95.39</td><td>64.33</td><td>73.28</td><td>77.38</td></tr><tr><td>ALG</td><td>91.39</td><td>95.18</td><td>96.29</td><td>64.82</td><td>74.90</td><td>81.13</td></tr><tr><td>Ours</td><td>93.20</td><td>96.12</td><td>97.25</td><td>67.62</td><td>76.89</td><td>82.42</td></tr></table>
+
+Does the bias itself transfer? Accuracy alone does not establish that the student acquired CNN-like structure, so we measure the property directly. Under geometric perturbations, iBKD students approach CNN-level stability under shift, scale, and rotation (Figure 4). Mean attention distance (Raghu et al. 2021) approaches that of ImageNet-pretrained models even though training used Tiny-ImageNet alone. Translation equivariance is one of the two properties we argued lives in the grid, and it is measurably higher in students trained with a grid-preserving transfer. Appendix reports the full analyses.
+
+## Conclusion
+
+We asked why general feature distillation transfers so little from a CNN teacher to a ViT student, and traced the failure to transfer operators that discard the positional correspondence carrying convolutional inductive bias. This loss is harmless when the student can rebuild spatial structure with its own convolutions and destructive when it cannot. iBKD keeps the grid intact along the whole transfer path, and three singlefactor experiments show that the grid itself, rather than the added module or its operators, carries the transferred bias. Because grid preservation concerns spatial correspondence rather than a particular objective, we expect it to matter at least as much for dense prediction such as semantic segmentation and monocular depth estimation, where a prediction is made at every position. We leave this extension to future work.
+
+## References
+
+Chefer, H.; Gur, S.; and Wolf, L. 2021. Transformer Interpretability Beyond Attention Visualization. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, 782–791.
+
+Chen, P.; Liu, S.; Zhao, H.; and Jia, J. 2021. Distilling Knowledge via Knowledge Review. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, 5008–5017.
+
+Chen, X.; Cao, Q.; Zhong, Y.; Zhang, J.; Gao, S.; and Tao, D. 2022. DearKD: Data-Eficient Early Knowledge Distillation for Vision Transformers. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition.
+
+Dai, Z.; Liu, H.; Le, Q. V.; and Tan, M. 2021. CoAtNet: Marrying Convolution and Attention for All Data Sizes. Advances in Neural Information Processing Systems, 34: 3965– 3977.
+
+d’Ascoli, S.; Touvron, H.; Leavitt, M. L.; Morcos, A. S.; Biroli, G.; and Sagun, L. 2021. ConViT: Improving Vision Transformers with Soft Convolutional Inductive Biases. In International Conference on Machine Learning, 2286–2296.
+
+Dosovitskiy, A.; Beyer, L.; Kolesnikov, A.; Weissenborn, D.; Zhai, X.; Unterthiner, T.; Dehghani, M.; Minderer, M.; Heigold, G.; Gelly, S.; Uszkoreit, J.; and Houlsby, N. 2021. An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale. In International Conference on Learning Representations.
+
+Gou, J.; Yu, B.; Maybank, S. J.; and Tao, D. 2021. Knowledge Distillation: A Survey. International Journal of Computer Vision, 129(6): 1789–1819.
+
+Graham, B.; El-Nouby, A.; Touvron, H.; Stock, P.; Joulin, A.; Jégou, H.; and Douze, M. 2021. LeViT: A Vision Transformer in ConvNet’s Clothing for Faster Inference. In Proceedings ofthe IEEE/CVF International Conference on Computer Vision, 12259–12269.
+
+Hao, Z.; Guo, J.; Han, K.; Tang, Y.; Hu, H.; Wang, Y.; and Xu, C. 2023. One-for-All: Bridge the Gap Between Heterogeneous Architectures in Knowledge Distillation. Advances in Neural Information Processing Systems, 36: 79570–79582.
+
+He, K.; Zhang, X.; Ren, S.; and Sun, J. 2016. Deep Residual Learning for Image Recognition. In Proceedings ofthe IEEE Conference on Computer Vision and Pattern Recognition, 770–778.
+
+Heo, B.; Yun, S.; Han, D.; Chun, S.; Choe, J.; and Oh, S. J. 2021. Rethinking Spatial Dimensions of Vision Transformers. In Proceedings of the IEEE/CVF International Conference on Computer Vision, 11936–11945.
+
+Hinton, G.; Vinyals, O.; and Dean, J. 2015. Distilling the Knowledge in a Neural Network. arXiv:1503.02531.
+
+Krizhevsky, A.; and Hinton, G. 2009. Learning Multiple Layers of Features from Tiny Images. Technical report, University of Toronto.
+
+Le, Y.; and Yang, X. 2015. Tiny ImageNet Visual Recognition Challenge. Stanford CS231n Course Project.
+
+Lee, J.; Das, D.; Hayat, M.; Choi, S.; Hwang, K.; and Porikli, F. 2025. CustomKD: Customizing Large Vision Foundation for Edge Model Improvement via Knowledge Distillation. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, 25176–25186.
+
+Li, K.; Yu, R.; Wang, Z.; Yuan, L.; Song, G.; and Chen, J. 2022. Locality Guidance for Improving Vision Transformers on Tiny Datasets. In European Conference on Computer Vision, 110–127.
+
+Li, Y.; Zhang, K.; Cao, J.; Timofte, R.; Magno, M.; Benini, L.; and Van Goo, L. 2023. LocalViT: Analyzing locality in vision transformers. In 2023 IEEE/RSJInternational Conference on Intelligent Robots and Systems (IROS), 9598–9605. IEEE.
+
+Liu, Y.; Cao, J.; Li, B.; Hu, W.; Ding, J.; and Li, L. 2022. Cross-Architecture Knowledge Distillation. In Proceedings ofthe Asian Conference on Computer Vision, 3396–3411.
+
+Liu, Y.; Sangineto, E.; Bi, W.; Sebe, N.; Lepri, B.; and Nadai, M. 2021a. Eficient Training of Visual Transformers with Small Datasets. Advances in Neural Information Processing Systems, 34: 23818–23830.
+
+Liu, Z.; Lin, Y.; Cao, Y.; Hu, H.; Wei, Y.; Zhang, Z.; Lin, S.; and Guo, B. 2021b. Swin Transformer: Hierarchical Vision Transformer Using Shifted Windows. In Proceedings of the IEEE/CVF International Conference on Computer Vision, 10012–10022.
+
+Loshchilov, I.; and Hutter, F. 2017. Decoupled Weight Decay Regularization. arXiv:1711.05101.
+
+Mehta, S.; and Rastegari, M. 2021. MobileViT: Light-weight, General-purpose, and Mobile-friendly Vision Transformer. arXiv:2110.02178.
+
+Nilsback, M.-E.; and Zisserman, A. 2008. Automated Flower Classification over a Large Number of Classes. In Sixth Indian Conference on Computer Vision, Graphics & Image Processing, 722–729.
+
+Raghu, M.; Unterthiner, T.; Kornblith, S.; Zhang, C.; and Dosovitskiy, A. 2021. Do Vision Transformers See Like Convolutional Neural Networks? In Advances in Neural Information Processing Systems.
+
+Ren, S.; Gao, Z.; Hua, T.; Xue, Z.; Tian, Y.; He, S.; and Zhao, H. 2022. Co-Advise: Cross Inductive Bias Distillation. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition.
+
+Romero, A.; Ballas, N.; Kahou, S. E.; Chassang, A.; Gatta, C.; and Bengio, Y. 2014. FitNets: Hints for Thin Deep Nets. arXiv:1412.6550.
+
+Rostand, J.; Hsu, C.-C. J.; and Lu, C.-K. 2025. Adaptive Locality Guidance: Using Locality Guidance to Initialize the Learning of Vision Transformers on Tiny Datasets. IEEE Transactions on Neural Networks and Learning Systems, 36(8): 14313–14327.
+
+Tian, Y.; Krishnan, D.; and Isola, P. 2020. Contrastive Representation Distillation. In International Conference on Learning Representations.
+
+Touvron, H.; Cord, M.; Douze, M.; Massa, F.; Sablayrolles, A.; and Jégou, H. 2021. Training Data-Eficient Image Transformers & Distillation Through Attention. In International Conference on Machine Learning, 10347–10357.
+
+Wah, C.; Branson, S.; Welinder, P.; Perona, P.; and Belongie, S. 2011. The caltech-ucsd birds-200-2011 dataset.
+
+Wang, W.; Xie, E.; Li, X.; Fan, D.-P.; Song, K.; Liang, D.; Lu, T.; Luo, P.; and Shao, L. 2022. PVT v2: Improved Baselines with Pyramid Vision Transformer. Computational Visual Media, 8(3): 415–424.
+
+Woo, S.; Park, J.; Lee, J.-Y.; and Kweon, I. S. 2018. CBAM: Convolutional Block Attention Module. In European Conference on Computer Vision, 3–19.
+
+Wu, H.; Xiao, B.; Codella, N.; Liu, M.; Dai, X.; Yuan, L.; and Zhang, L. 2021. CvT: Introducing Convolutions to Vision Transformers. In Proceedings ofthe IEEE/CVF International Conference on Computer Vision, 22–31.
+
+Yang, Z.; Li, Z.; Shao, M.; Shi, D.; Yuan, Z.; and Yuan, C. 2022. Masked Generative Distillation. In European Conference on Computer Vision, 53–69.
+
+Yuan, L.; Chen, Y.; Wang, T.; Yu, W.; Shi, Y.; Jiang, Z.-H.; Tay, F. E.; Feng, J.; and Yan, S. 2021. Tokens-to-Token ViT: Training Vision Transformers from Scratch on ImageNet. In Proceedings of the IEEE/CVF International Conference on Computer Vision, 558–567.
+
+Zhang, Z.; Zhang, H.; Zhao, L.; Chen, T.; Arik, S. Ö.; and Pfister, T. 2022. Nested Hierarchical Transformer: Towards Accurate, Data-Eficient and Interpretable Visual Understanding. In Proceedings of the AAAI Conference on Artificial Intelligence, volume 36, 3417–3425.
+
+Zhao, B.; Cui, Q.; Song, R.; Qiu, Y.; and Liang, J. 2022. Decoupled Knowledge Distillation. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition.
+
+Zhu, C.; Chen, W.; Peng, T.; Wang, Y.; and Jin, M. 2021. Hard Sample Aware Noise Robust Learning for Histopathology Image Classification. IEEE Transactions on Medical Imaging, 41(4): 881–894.
+
+Zhu, X.; Hu, H.; Lin, S.; and Dai, J. 2019. Deformable convnets v2: More deformable, better results. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition, 9308–9316.
+
+## Baseline Protocol
+
+Shared teacher and student. All compared methods reuse a single fixed teacher per dataset rather than training a separate teacher each. The teacher is a CIFAR-style ResNet-56 (6n+2, n=9) trained at 32×32 resolution, following the recipe of Li et al. (2022). Teachers are trained with SGD (initial learning rate 0.1, momentum 0.9 with Nesterov, weight decay $5 \times 1 0 ^ { - 4 }$ excluding bias and normalization parameters), a cosine schedule with no warm-up, and the oficial localityguidance strong-augmentation path (random resized crop to 32 with bicubic interpolation, horizontal flip, RandAugment m9, and random erasing with probability 0.25). The CIFAR-100 teacher trains for 300 epochs, the Flowers-102 teacher for 450 epochs on the oficial train and validation split, and the Chaoyang teacher for 300 epochs.
+
+The student is a DeiT-Ti (deit\_tiny\_patch16\_224) trained from scratch at 224×224, with the teacher branch receiving the same student crop bilinearly resized to 32×32 so that crop and flip geometry are shared while each model keeps its own normalization. Every compared method uses AdamW with initial learning rate $5 \times 1 0 ^ { - 4 }$ , weight decay 0.05, a cosine schedule, label smoothing 0.1, and mixed precision. The per-dataset epochs, batch size, and warm-up are given in Table 8, and only the method-specific transfer loss and its adapter difer across methods.
+
+Table 8: Shared student protocol for Table 2. All KD baselines use these settings, difering only in the method-specific transfer loss and adapter.
+<table><tr><td>Setting</td><td>CIFAR-100</td><td>) Flowers-102</td><td>Chaoyang</td></tr><tr><td>Epochs</td><td>300</td><td>200</td><td>100</td></tr><tr><td>Batch size</td><td>128</td><td>64</td><td>64</td></tr><tr><td>Warm-up</td><td>20</td><td>5</td><td>5</td></tr><tr><td>Optimizer</td><td colspan="3">AdamW, l  $\mathrm { { r 5 } } { \times } 1 0 ^ { - 4 }$ </td></tr><tr><td>Schedule</td><td colspan="3">cosine, label smoothing 0.1, AMP</td></tr><tr><td>Student res. / Teacher res.</td><td colspan="3"> $2 2 4 { \times } 2 2 4 / 3 2 { \times } 3 2$ </td></tr></table>
+
+Method-specific settings and adapters. Each method keeps the coeficients of its oficial implementation. KD uses a temperature of 4.0 and a balance of $\alpha { = } 0 . 9$ between the crossentropy and logit terms, transferring only the class distribution so no spatial adapter is required. CRD contrasts a globalaverage-pooled ResNet stage-3 vector (64d) against the DeiT pre-logits (192d), both mapped to 128d, with an NCE temperature of 0.07 and memory momentum 0.5, so no spatial correspondence is kept. ReviewKD fuses post-activation ResNet stages 1 to 3 (grids 32/16/8, channels 16/32/64) with a feature-loss weight of 0.6 that ramps over 20 epochs. MGD reconstructs masked features with weight $\alpha { = } 7 { \times } 1 0 ^ { - 5 }$ and mask probability 0.15. OFA projects features into the logit space at temperature 1.0 using student stages 1 to 4, deliberately abandoning the feature grid. The pattern that matters for our analysis is visible in these adapters, since KD, CRD, and OFA reduce the teacher to a vector or a logit while ReviewKD and MGD retain a convolutional feature grid.
+
+Kernel size. Table 9 varies the deformable kernel size across the seven backbones on Chaoyang. Kernel size 5 gives the best or near-best accuracy on most backbones, for example 86.35 on DeiT-Ti and 86.45 on T2T-7, and we use it throughout. Smaller kernels tend to underperform on the deeper backbones, while larger kernels give no consistent gain, so a moderate receptive field balances local coverage and spatial selectivity.
+
+Table 9: Deformable kernel size (Top-1 accuracy, %, Chaoyang) across the seven Transformer backbones. Bold is best in each column.
+<table><tr><td>Kernel</td><td>DeiT-Ti</td><td>T2T-7</td><td>T2T-14</td><td>PiT</td><td>PvTv2</td><td>ConViT</td><td>CvT</td></tr><tr><td>3×3</td><td>85.93</td><td>85.42</td><td>85.33</td><td>84.67</td><td>83.97</td><td>85.33</td><td>84.31</td></tr><tr><td>5×5</td><td>86.35</td><td>86.45</td><td>86.21</td><td>84.48</td><td>84.30</td><td>85.04</td><td>84.02</td></tr><tr><td>7×7</td><td>86.26</td><td>85.00</td><td>86.17</td><td>83.69</td><td>83.78</td><td>85.84</td><td>82.85</td></tr></table>
+
+## Inductive Bias Analyses
+
+This section expands the bias-transfer evidence summarized in Experiments section (Data Scarcity, Eficiency, and Bias Transfer). It collects the mean attention distance analysis, the layer-wise attention visualizations, the attention heatmaps, and the full geometric-consistency curves from which the numbers in the main text are drawn.
+
+Mean attention distance. To quantitatively assess the spatial modeling behavior of ViTs under limited data, we measure the Mean Attention Distance (MAD) (Raghu et al. 2021) across transformer layers. This metric reflects the average spatial extent a token attends to—higher values indicate broader, more global attention.
+
+Figure 5 compares four models: (a) DeiT trained from scratch, (b) DeiT pretrained on ImageNet, (c) LG (Li et al. 2022), and (d) our iBKD. As shown in the Figure 5(b) and (d), while the ImageNet-pretrained DeiT naturally achieves wide spatial coverage, iBKD—despite being trained only on Tiny-ImageNet—closely approximates this pattern. In contrast, vanilla DeiT and LG remain overly local or inconsistent, especially in early layers. This result highlights a key strength of iBKD. It enables ViTs to acquire globally aware attention patterns comparable to those obtained via costly large-scale pretraining, by selectively injecting inductive bias from CNNs during training.
+
+Attention heatmaps. We also compare attention heatmaps for a given input image from Tiny-ImageNet. As shown in Figure 6, ResNet shows sharp localization due to strong inductive bias, while DeiT-Ti exhibits sparse focus. LG (Li et al. 2022) and ALG (Rostand, Hsu, and Lu 2025) improve spatial awareness, but still sufer from difuse or noisy attention. In contrast, our iBKD produces sharp and complete attention coverage on both salient regions (e.g., two cats), demonstrating that the proposed cross-attention distillation improves spatial generalization even in data-scarce regimes. Layer-wise attention. In Figure 7, we visualize the spatial attention patterns across layers by adopting the patch-based interpretability framework of Chefer et al. (Chefer, Gur, and Wolf 2021). A single query token (marked as a red dot) is selected, and its attention weights to all other patches are shown as heatmaps. The input image used is shown in Figure 6 (a). As shown in Figure 7 (a), DeiT-Ti exhibits narrow and noisy activations, while (b) LG improves locality but often lacks global coherence. In contrast, (c) our iBKD highlights semantically consistent and spatially distributed regions from early layers, showing better integration of local structure and global reasoning.
+
+![](images/69f516ddf46dc82fff4617fc002a63d69e5afd019cc89d8d35aea4853dbd5b4a.jpg)  
+(a)
+
+![](images/f57207d81307ce1dd1df4fcb7bac791f76ae0f92fd7c0dc55940e844d94df3f3.jpg)  
+(b)
+
+![](images/c0bd047f252bf75e257a1ea358001b14c9879bdaf4433e2c8c932746d41658ea.jpg)  
+(c)
+
+![](images/d9113af80ac20a2e7e470f7d03174a7df475e687eccb98999394ab39807aae75.jpg)  
+(d)
+
+Figure 5: Mean Attention Distance (MAD) across transformer layers. (a) DeiT-Ti (from scratch), (b) DeiT-Ti pretrained on ImageNet, (c) LG (Li et al. 2022), and (d) Ours. Our method achieves broad spatial attention comparable to ImageNet-pretrained models, despite training only on Tiny-ImageNet, while LG and vanilla DeiT remain more locally biased.  
+![](images/0775d93cfc4767cb7b412c5f7f35ff54b724b2b470fd391830a9ede508ae0d5b.jpg)  
+(a)
+
+![](images/6bb28a5b2cd919bb3dafd5d9f1113494f67c86b91286c78be7f39894bcd26f09.jpg)  
+(b)
+
+![](images/10ed585aa3c02602447f61e9466c3789ba69bc8123663c4bef95d6286c56bc73.jpg)  
+(c)
+
+![](images/73526afa87c917f20c2d569f4b5c90411df6d46b7578b16ebe333bf64222e59c.jpg)  
+(d)
+
+![](images/061912ae53318a53a2f4b7c5ed3592985d1fd85784f80b166535c7f6c8bd8504.jpg)  
+(e)
+
+![](images/db62e2c5e8395ad8abfcab97871cddb626b542cd399d3a33c7fde8c5e6dce8ae.jpg)  
+(f)  
+Figure 6: Visualization of attention maps under low-data settings. (a) Input image, (b) ResNet (He et al. 2016), (c) DeiT, (d) LG (Li et al. 2022), (e) ALG (Rostand, Hsu, and Lu 2025), and (f) Ours. Our method achieves sharp and semantically aligned attention across multiple objects.
+
+## Additional Implementation Details
+
+We give the details omitted from Experiments section. These include the exact teacher configurations for each dataset, the grid-permutation procedure used in Experiments section (Permuting the teacher grid).
+
+Grid-permutation procedure. A single spatial permutation of the teacher grid is drawn once per run and held fixed for all iterations. It is applied consistently to K, to V, and to both positionwise loss targets, so that the information reaching the student is identical to the unpermuted model and only the spatial correspondence changes.
+
+Computing environment. All experiments run on a single NVIDIA H200 GPU with Python 3.10.12, PyTorch 2.11.0 (CUDA 13.0), torchvision 0.26.0, and timm 1.0.27. For the general knowledge distillation comparison in Table 2, we do not reimplement the student but load the DeiT-Tiny model deit\_tiny\_patch16\_224 from timm with pretrained=False, so that it is trained from scratch without any pretrained weights. For the seven backbones in the CUB-200 results of Table 1, namely DeiT-Ti, ConViT-Ti, CvT-13, PiT-Ti, PVTv2-B0, T2T-ViT-7, and T2T-ViT-14, we use the model code and configuration files from the official LG tiny-transformers repository, and these backbones are likewise trained from scratch without pretraining.
+
+## Convergence Curves
+
+Figure 8 plots validation accuracy against training epochs for LG, ALG, and iBKD at 100, 50, and 20 percent of CIFAR-100. On an epoch axis, iBKD reaches any given accuracy in fewer epochs and converges higher, which is the basis for the convergence statement in the Experiments section. Perepoch wall-clock time is higher for iBKD, so the comparison is drawn on epochs rather than time.
+
+## Qualitative Analysis of Geometric Robustness
+
+Figure 9 compares Class Activation Maps and attention maps across architectures under translation, scaling, and rotation. We report these as qualitative observations on a set of representative inputs rather than as quantitative evidence, which Figure 4 provides.
+
+Comparison with the vanilla ViT. On the examples shown, the vanilla DeiT-Ti often produces scattered activations when data is limited, while iBKD tends to concentrate on the object region. This is consistent with the transferred inductive bias helping the tokens organize spatial information.
+
+Comparison with the CNN teacher. The CNN teacher shows strong local responses but its activations often do not cover the whole object, whereas iBKD attends more broadly while remaining on the object, which is consistent with combining convolutional locality and attention-based global context.
+
+![](images/e2a0cec95970cb5a9b6aefa07fd42958500ff16449906d087734926205eacabe.jpg)  
+(a) ViT  
+(b) LG  
+(c) Ours  
+Figure 7: Visual comparison of attention maps between the baseline ViT, LG (Li et al. 2022), and our proposed iBKD.
+
+![](images/821343b6aea933a593109899ff2226f0634293674a56dfbde9aa24c15415a32a.jpg)  
+Figure 8: Validation accuracy curves on CIFAR-100 with diferent data scales. From left to right: Training convergence is visualized under 100%, 50%, and 20% training data. Our method (orange line) consistently exhibits faster convergence and higher final accuracy than LG and ALG, especially under extreme data scarcity.
+
+Robustness to geometric variations. Under rotation and scaling, iBKD activations remain closer to the object region than the baselines on these examples. The quantitative counterpart of this observation is reported in Figure 4.
+
+Conclusion of Qualitative Findings. The visual evidence confirms that iBKD does not merely replicate the teacher’s features but internalizes a more robust representational strategy. By generating semantically complete activations that are invariant to geometric shifts, iBKD proves to be a highly efective framework for training Vision Transformers in datascarce and spatially dynamic environments.
+
+![](images/f24c1e7b557c3f3a0b89c63bbdf5af1f4338158deb53a4516d878fc0f36ba8b0.jpg)  
+Figure 9: Comparison of CAM and attention maps across architectures. From left to right: input image, ViT (DeiT-Ti) CAM, ViT (DeiT-Ti) attention, CNN (ResNet) CAM, CNN attention, ours (iBKD) CAM, and ours attention. Our iBKD generates more spatially coherent and semantically complete activations, capturing both local structures and global context even under limited data.

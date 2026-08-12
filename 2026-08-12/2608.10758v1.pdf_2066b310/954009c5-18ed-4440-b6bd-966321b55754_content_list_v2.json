@@ -1,0 +1,3073 @@
+[
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Where To Look? : Causal Tracing of Vision Encoders in VLM"
+                    }
+                ],
+                "level": 1
+            },
+            "bbox": [
+                176,
+                90,
+                820,
+                109
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Naren Kumar S, Tirth Bhatt, Mayank Singh"
+                    }
+                ]
+            },
+            "bbox": [
+                307,
+                146,
+                695,
+                161
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "LINGO Research Group, Indian Institute of Technology Gandhinagar, India Correspondence: lingo@iitgn.ac.in"
+                    }
+                ]
+            },
+            "bbox": [
+                189,
+                162,
+                806,
+                196
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Abstract"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                262,
+                261,
+                341,
+                275
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Vision-language models can describe an image with remarkable accuracy, yet a more fundamental question remains unanswered: what visual information actually drives their answers? In this work, we investigate this question through causal tracing, and we observe that highly causal vision tokens often lie out side the target region. Extending the analysis to larger vision-language models reveals a similar pattern across models and corruption settings, suggesting that strong multimodal performance does not necessarily imply spatially localized causal representations. We further investigate: can these models preserve visual structure when appearance cues are removed? and find that visual cues are exploited to understand visual structures. Together, our experiments expose a gap between seeing, using, and reasoning over visual structure, and provide a causal framework for studying how visual information is transformed, preserved, and ultimately used by modern vision-language models"
+                    }
+                ]
+            },
+            "bbox": [
+                141,
+                291,
+                462,
+                606
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "1 Introduction"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                115,
+                620,
+                258,
+                636
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Every year, frontier vision-language models (VLMs), both open-source and proprietary, achieve increasingly strong performance on benchmarks that evaluate challenging visual perception and reasoning capabilities. Yet, the emergence of new benchmarks often reveals substantial performance degradation, raising questions about whether these models genuinely acquire robust visual representations or instead exploit dataset-specific shortcuts. This discrepancy highlights that understanding how visual and linguistic inputs interact remains a challenge. Raising the question of whether these models rely on visual information encoded in the image or on shortcuts to answer questions."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                648,
+                489,
+                873
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Recent studies in mechanistic interpretability have introduced causal tracing as a method to identify which internal component is responsible for a specific output. While these methods were primarily developed for language models, they are being heavily adopted to understand the behavior of VLMs. In this paper, we extend causal tracing to examine the behavior of the vision encoder in visionlanguage modeling, aiming to determine whether information about the image is lost throughout the process or not. We adapt the activation patching technique to the vision encoder and introduce a framework that links causal contribution Γ with spatial alignment, measured via Intersection-over-Union (IoU) between token patches and groundtruth object regions."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                875,
+                489,
+                922
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                507,
+                261,
+                885,
+                472
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "2 Related Work"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                509,
+                487,
+                665,
+                504
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Using mechanistic interpretability, we investigate the internal computations underlying model behavior, with causal intervention methods enabling the identification of representations that directly influence model outputs. Causal tracing, initially developed for language models to localize information flow, has been extended to vision-language models, showing that intermediate visual representations can be causally implicated in multimodal predictions (Palit et al., 2023). In parallel, visual grounding studies examine whether model representations or attention align with task-relevant image regions, with recent work showing that attention and spatial relevance can diverge and exploring explicit grounding methods for VLMs (Esmaeilkhani and Latecki, 2026; Schaumlöffel et al., 2026). Rather than studying causal influence and spatial grounding separately, we directly examine their relationship by testing whether causally influential visual tokens align with regions required to answer a query."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                517,
+                887,
+                857
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We further investigate structural visual reasoning through a controlled string-tracing task, motivated by evidence that VLMs struggle to follow connected visual structures (Esmaeilkhani and Latecki,"
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                858,
+                887,
+                922
+            ]
+        },
+        {
+            "type": "page_aside_text",
+            "content": {
+                "page_aside_text_content": [
+                    {
+                        "type": "text",
+                        "content": "arXiv:2608.10758v1 [cs.CV] 11 Aug 2026"
+                    }
+                ]
+            },
+            "bbox": [
+                30,
+                361,
+                67,
+                783
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "1"
+                    }
+                ]
+            },
+            "bbox": [
+                494,
+                944,
+                504,
+                956
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "2026). By keeping string geometry and connectivity fixed while manipulating their appearance, the task isolates whether models preserve structural information beyond appearance-based cues. This complements the causal analysis by shifting from where influential information is located to what visual structure is retained by the vision encoder and made available for downstream reasoning. Together, these experiments probe whether multimodal predictions rely on spatially grounded and structurally faithful representations or instead on distributed, appearance driven cues."
+                    }
+                ]
+            },
+            "bbox": [
+                110,
+                85,
+                490,
+                279
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3 Methodology"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                114,
+                290,
+                263,
+                307
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "In our experiment, we adapt causal tracing to the vision encoder to measure the causal influence of intermediate visual representations on the final image-text similarity score."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                317,
+                487,
+                380
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Given an image I and a text query "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "T ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", we can computes the image-text similarity as"
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                381,
+                487,
+                413
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "s ( I , T ) = \\langle f _ { \\mathrm { i m g } } ( I ) , f _ { \\mathrm { t e x t } } ( T ) \\rangle .\\tag{1}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/151e98b582ad44e0141cad188c2483b153a19ef24b2cd2a4d3b36c9d8f37ba72.jpg"
+                }
+            },
+            "bbox": [
+                189,
+                430,
+                411,
+                448
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We use three forward passes to measure the causal influence of an intermediate activation:"
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                455,
+                487,
+                487
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• Clean run: We provide the original image I to the model and record the resulting similarity score "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "s _ { \\mathrm { c l e a n } }"
+                    }
+                ]
+            },
+            "bbox": [
+                136,
+                500,
+                487,
+                549
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• Corrupted run: We provide a corrupted version of the image, obtained by adding Gaussian noise, and record the resulting similarity score "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "s _ { \\mathrm { c o r r } }"
+                    }
+                ]
+            },
+            "bbox": [
+                136,
+                560,
+                489,
+                625
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• Patched run: We provide the corrupted image and replace a selected intermediate activation with the corresponding activation recorded during the clean run. We then record the resulting similarity score s<sub>patch</sub>."
+                    }
+                ]
+            },
+            "bbox": [
+                136,
+                634,
+                489,
+                718
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "For a layer-token pair (l, t), we define the causal contribution as"
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                730,
+                487,
+                760
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\Gamma _ { l , t } = \\frac { s _ { \\mathrm { p a t c h } } - s _ { \\mathrm { c o r r } } } { s _ { \\mathrm { c l e a n } } - s _ { \\mathrm { c o r r } } } .\\tag{2}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/9ec96a1a7d7e6acb09feff4058b9c3a94cff3a82e0815eac203a6d2de481423e.jpg"
+                }
+            },
+            "bbox": [
+                221,
+                774,
+                378,
+                806
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "This quantity measures the fraction of the corrupted-to-clean similarity gap that is recovered by restoring the activation at layer l and token t. A value of "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\Gamma _ { l , t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "close to 1 indicates that the activation has a strong causal effect on the similarity score. A value close to 0 indicates that restoring the activation has little effect on the similarity score. Values outside the range [0, 1] can occur when activation patching produces over-recovery or a change that exceeds the clean-corrupted difference."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                809,
+                489,
+                922
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                507,
+                85,
+                884,
+                134
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.1 Spatial Grounding Alignment"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                509,
+                145,
+                791,
+                161
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Current state-of-the-art (SOTA) vision-language models achieve strong performance on image understanding and visual grounding tasks. However, task performance alone does not establish whether the model uses the spatial region relevant to the input query. We therefore evaluate whether causally important vision tokens correspond to the spatial regions associated with the target object."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                166,
+                885,
+                296
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We map each vision token to its corresponding image patch. In a Vision Transformer (ViT) (Dosovitskiy et al., 2020), each patch token represents a fixed spatial region of the input image. Let P<sub>t</sub> denote the image region associated with token "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "t ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and let B denote the ground-truth bounding box associated with the referring expression. We measure the spatial correspondence between token t and the target region using Intersection over Union (IoU):"
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                297,
+                885,
+                442
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathrm { I o U } ( P _ { t } , B ) = \\frac { | P _ { t } \\cap B | } { | P _ { t } \\cup B | }\\tag{3}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/55d5b5ba295bf7257822b9ebb142ae9e5ca9701589eb8ce87d125865031ef7bd.jpg"
+                }
+            },
+            "bbox": [
+                605,
+                454,
+                786,
+                488
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We then compare the causal contribution of each token with its spatial overlap with the target region. Specifically, we compute the correlation between the causal contribution "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\Gamma _ { l , t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathrm { I o U } ( P _ { t } , B )"
+                    },
+                    {
+                        "type": "text",
+                        "content": ":"
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                494,
+                885,
+                560
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathrm { C o r r } ( \\Gamma , \\mathrm { I o U } ) .\\tag{4}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/8324298dfc8009f73e50ff48a9464d7244a020e97fef89fe01946be2e1c95e12.jpg"
+                }
+            },
+            "bbox": [
+                642,
+                577,
+                747,
+                593
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "A high positive correlation indicates that tokens with high causal contribution tend to correspond to spatially relevant image regions. A low correlation indicates that causal importance is weakly associated with the target region. This analysis therefore provides a quantitative measure of the relationship between causal importance and spatial grounding."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                602,
+                885,
+                717
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.2 Layer-wise Grounding Analysis"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                509,
+                728,
+                806,
+                744
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "To determine how spatial grounding develops across the vision encoder, we compute the correlation independently at each layer. For layer l, we define"
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                750,
+                885,
+                813
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathbf { C o r r } _ { l } = \\mathbf { C o r r } ( \\Gamma _ { l , t } , \\mathbf { I o U } _ { t } )\\tag{5}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/aa30dcf439467ea3f6b5398c8777b7459641a0fdd0cd1ed59d38c98f21b0c246.jpg"
+                }
+            },
+            "bbox": [
+                601,
+                832,
+                788,
+                848
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "This analysis enables us to identify the layers at which causal importance becomes aligned with the spatial region relevant to the input query. A systematic increase in "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathrm { C o r r } _ { l }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "across layers would indicate that spatial grounding develops progressively in the vision encoder. Alternatively, high correlation at intermediate or early layers would indicate that spatial information becomes causally relevant before the final layers."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                858,
+                885,
+                922
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "2"
+                    }
+                ]
+            },
+            "bbox": [
+                492,
+                942,
+                505,
+                956
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                112,
+                85,
+                489,
+                165
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Although current SOTA vision-language models use different vision encoders, Vision Transformers remain a common architectural component. Therefore, the proposed analysis provides a useful basis for studying spatial grounding in ViT-based vision encoders. However, the results should not be assumed to generalize directly to models that use substantially different visual architectures."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                166,
+                489,
+                296
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4 Results"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                114,
+                307,
+                215,
+                324
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We first investigate whether causally important visual representations are spatially aligned with the regions relevant to a given query. We investigate all VLMs from 2023 to the present. Beginning with CLIP (Radford et al., 2021), which provides a controlled setting for studying the relationship between image-text similarity and individual vision tokens. We then extend the analysis to larger visionlanguage models (VLMs) to determine whether the observations from CLIP persist in more capable multimodal models."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                335,
+                489,
+                513
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Our experiments are organized in three stages. First, we establish the causal-spatial relationship in CLIP. Second, we evaluate whether the same behavior is observed in larger VLMs and under different image corruption procedures. Third, we propose to extend the evaluation across model generations and visual encoder architectures, including both ViT-based and SigLIP-based encoders. For experiments with multiple random seeds, we report the mean and standard deviation across runs."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                514,
+                490,
+                675
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.1 Does Causally Important Token Strongly Align with Spatially Relevant Area"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                114,
+                687,
+                482,
+                720
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We first evaluate CLIP (Radford et al., 2021) using the causal tracing procedure described in Section 3. For each image-query pair, we compute the causal contribution "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\Gamma _ { l , t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "of individual layer-token pairs and compare it with the spatial overlap between the corresponding image patch and the ground-truth bounding box."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                725,
+                489,
+                838
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Across 100 samples, we observe a weak relationship between causal importance and spatial alignment:"
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                840,
+                490,
+                888
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathrm { C o r r } ( \\Gamma , \\mathrm { I o U } ) = 0 . 0 6 2 .\\tag{6}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/10d9f9a9b8ef8f77f61147a388a87cbae13ec43ef5d31c0b6046a8b508bad92a.jpg"
+                }
+            },
+            "bbox": [
+                211,
+                906,
+                388,
+                922
+            ]
+        },
+        {
+            "type": "chart",
+            "content": {
+                "image_source": {
+                    "path": "images/2ca82ec0ec2f2f15331f035d5baa3f2212ff4c40f8f8d843a7253a119a24e4ae.jpg"
+                },
+                "content": "",
+                "chart_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 1: Causal contribution (Γ) across layers and vision tokens for the query “the lady with the blue shirt”. The highly causal tokens are not necessarily located within the ground-truth target region."
+                    }
+                ],
+                "chart_footnote": []
+            },
+            "bbox": [
+                514,
+                83,
+                880,
+                196
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The low correlation indicates that tokens that have a strong causal effect on the image-text similarity score are not necessarily located within the spatial region associated with the target object. Conversely, tokens that overlap with the target object do not necessarily have a strong causal effect on the model output."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                291,
+                885,
+                404
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "This observation is also visible at the individual token level. For example, in one representative example, a highly causal token achieves "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\Gamma = 0 . 7 1 8 ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "while its corresponding spatial overlap with the ground-truth bounding box is only "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathrm { I o U = 0 . 0 4 9 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "Several other highly ranked tokens also have zero overlap with the annotated target region."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                405,
+                885,
+                518
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "These results provide the first observation of our study that causal importance does not necessarily imply spatial information is encoded. A token can strongly influence the model output even when the corresponding image patch has little overlap with the object in question."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                519,
+                885,
+                615
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.2 Layer-wise Behavior in CLIP"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                509,
+                627,
+                788,
+                643
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We next examine whether the relationship between causal importance and spatial alignment changes across the layers of the vision encoder. For each layer l, we compute"
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                650,
+                884,
+                715
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathrm { C o r r } _ { l } = \\mathrm { C o r r } ( \\Gamma _ { l , t } , \\mathrm { I o U } _ { t } ) .\\tag{7}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/c428d800cb335291b92caea86d04c2fbc4c5e0d1742e5c5fe29d8004ae3cefdc.jpg"
+                }
+            },
+            "bbox": [
+                598,
+                733,
+                794,
+                750
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The correlation remains low across the vision encoder. We observe a small increase in the later layers, but the correlation remains weak even at its highest values."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                760,
+                884,
+                825
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "This result suggests that strong spatial grounding does not clearly emerge at a particular layer of the CLIP vision encoder. Instead, causal information appears to be distributed across visual representations that are not tightly localized to the target region."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                826,
+                885,
+                923
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "3"
+                    }
+                ]
+            },
+            "bbox": [
+                492,
+                942,
+                505,
+                956
+            ]
+        }
+    ],
+    [
+        {
+            "type": "chart",
+            "content": {
+                "image_source": {
+                    "path": "images/5d59401d9607fbb552015b71c5aaee640adb0b0d899e3f5be815db4a1cd429a1.jpg"
+                },
+                "content": "",
+                "chart_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 2: Layer-wise correlation between causal contribution and spatial alignment in the vision encoder."
+                    }
+                ],
+                "chart_footnote": []
+            },
+            "bbox": [
+                119,
+                85,
+                482,
+                286
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The CLIP experiment motivates a broader question:"
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                353,
+                489,
+                385
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Does the weak relationship between causal importance and spatial alignment, found in larger and more capable visionlanguage models?"
+                    }
+                ]
+            },
+            "bbox": [
+                147,
+                397,
+                455,
+                461
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.3 Extending the Analysis to Larger Vision-Language Models"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                114,
+                482,
+                421,
+                514
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "To investigate this question, we apply the same causal tracing procedure to larger VLMs. We evaluate DeepSeek-VL (Lu et al., 2024), Qwen-2.5 (Qwen et al., 2025), LLaVA-NeXT (Liu et al., 2024), LLaVA (Liu et al., 2023), InternVL-2 (Chen et al., 2024b,a), and SmolVLM (Marafioti et al., 2025) using the same token-level causal intervention and spatial alignment procedure. The results are summarized in Table 1. Overall, the evaluated VLMs exhibit the same qualitative behavior as CLIP. The correlation between causal contribution and spatial alignment remains low across models."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                520,
+                489,
+                713
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "For DDPM corruption, the overall correlation is 0.0531 ± 0.0334 for DeepSeek-VL, 0.0912 ± 0.0422 for Qwen, "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "0 . 0 4 1 9 \\pm 0 . 0 1 6 6"
+                    },
+                    {
+                        "type": "text",
+                        "content": "for LLaVA-"
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathrm { N e X T , 0 . 0 5 0 9 \\pm 0 . 0 3 2 9 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "for LLaVA, and 0.0397 ± 0.0224 for InternVL. These values remain close to the weak-correlation regime observed in CLIP."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                713,
+                489,
+                809
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The same trend is observed with blur corruption. DeepSeek-VL obtains "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "0 . 0 5 2 0 \\pm 0 . 0 0 4 1"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", Qwen-2.5 obtains "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "0 . 0 2 9 4 \\pm 0 . 0 1 0 0"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", LLaVA-NeXT obtains − "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "0 . 0 2 1 7 \\pm 0 . 0 0 5 2"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", LLaVA obtains "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "0 . 0 4 6 0 \\pm"
+                    },
+                    {
+                        "type": "text",
+                        "content": "0.0001, and InternVL obtains "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "0 . 0 1 2 1 \\pm 0 . 0 0 3 3"
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                810,
+                489,
+                890
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The results therefore provide preliminary evidence that the CLIP observation is not restricted to a contrastive image-text model. A similar lack of strong causal-spatial alignment is observed in larger VLMs."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                891,
+                489,
+                922
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                507,
+                85,
+                885,
+                134
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.4 Causal Importance and Spatial Grounding Remain Distinct"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                509,
+                143,
+                801,
+                175
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Although the overall correlations are low, several models contain tokens with substantial causal contributions. This is particularly clear for the maximum causal contribution among the top-ranked tokens. For example, under DDPM corruption, Qwen-2.5 obtains a mean maximum causal contribution of "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "0 . 5 3 6 5 \\pm 0 . 3 8 2 2"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", while DeepSeek-VL obtains "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "0 . 3 8 6 5 \\pm 0 . 1 6 0 4 ."
+                    },
+                    {
+                        "type": "text",
+                        "content": ". Under blur corruption, these values increase to "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "0 . 8 0 3 4 \\pm 0 . 0 8 6 8"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "0 . 4 4 0 9 \\pm 0 . 0 0 5 8"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", respectively. These results are important because they show that the low correlation is not due to the absence of causally important tokens. Instead, the models contain tokens that strongly affect the output, but these tokens are not consistently aligned with the target object’s spatial location."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                181,
+                887,
+                438
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Therefore, our analysis separates two properties of visual representations and proves that a visual token can be causally important without being spatially localized to the region required by the query."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                439,
+                885,
+                520
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.5 Robustness to the Corruption Procedure"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                509,
+                531,
+                875,
+                546
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The CLIP experiment was initially performed using image corruption to create a contrast between clean and corrupted model states. To determine whether our observations depend on a particular corruption mechanism, we extend the analysis to two corruption procedures: DDPM-based corruption and blur."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                551,
+                885,
+                649
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The overall causal-spatial correlation remains low for most models under both corruption settings. For example, DeepSeek-VL shows correlations of "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "0 . 0 5 3 1 { \\scriptstyle \\pm 0 . 0 3 3 4 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "0 . 0 5 2 0 { \\scriptstyle \\pm 0 . 0 0 4 1 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "under DDPM and blur, respectively. Qwen-2.5shows 0.0912 ± 0.0422 under DDPM and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "0 . 0 2 9 4 \\pm 0 . 0 1 0 0"
+                    },
+                    {
+                        "type": "text",
+                        "content": "under blur. LLaVA shows a similar pattern, with 0.0509± 0.0329 under DDPM and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "0 . 0 4 6 0 \\pm 0 . 0 0 0 1"
+                    },
+                    {
+                        "type": "text",
+                        "content": "under blur."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                649,
+                885,
+                793
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Some model-dependent variation is observed. LLaVA-NeXT, for example, changes from "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "0 . 0 4 1 9 \\pm \\ : 0 . 0 1 6 6"
+                    },
+                    {
+                        "type": "text",
+                        "content": "under DDPM corruption to "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "- 0 . 0 2 1 7 \\pm 0 . 0 0 5 2"
+                    },
+                    {
+                        "type": "text",
+                        "content": "under blur corruption. However, the magnitude remains small in both cases. These results indicate that the weak causal-spatial relationship is not limited to a single corruption procedure. At the same time, the variation between corruption types shows that the intervention procedure can affect the measured causal contribution. We therefore treat corruption robustness as an important component of the evaluation rather than assuming that a single corruption mechanism is sufficient."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                794,
+                887,
+                922
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "4"
+                    }
+                ]
+            },
+            "bbox": [
+                492,
+                944,
+                505,
+                956
+            ]
+        }
+    ],
+    [
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/0cd3a8a9572c6d1a0c4eaaef33fc2f2d8064232ae4b5d5682f5f551a3bc1d782.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 1: Causal importance and spatial alignment metrics across different VLM architectures under DDPM and blur corruptions. Values are reported as mean ± standard deviation over the evaluated runs."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Architecture</td><td>Corruption</td><td>Corr. Γ-IoU</td><td> $\\overline { { { \\bf M a x } \\Gamma { \\bf 1 0 p { - 1 } } } }$ </td><td>Spatial Heuristic Top-1 Intersection Top-k</td><td></td><td>Jaccard Top-k</td></tr><tr><td rowspan=\"2\">DeepSeek-VL</td><td rowspan=\"2\">DDPM</td><td rowspan=\"2\"> $\\overline { { 0 . 0 5 3 1 \\pm 0 . 0 3 3 4 } }$ </td><td rowspan=\"2\"> $\\overline { { 0 . 3 8 6 5 \\pm 0 . 1 6 0 4 } }$ </td><td rowspan=\"2\"> $\\overline { { 0 . 0 5 9 0 \\pm 0 . 0 4 9 0 } }$ </td><td rowspan=\"2\"> $\\overline { { 1 . 1 7 3 7 \\pm 0 . 0 4 6 4 } }$ </td><td rowspan=\"2\"> $\\overline { { 0 . 0 6 7 6 \\pm 0 . 0 0 3 0 } }$ </td></tr><tr><td></td></tr><tr><td rowspan=\"2\">Qwen-2.5</td><td>Blur</td><td> $0 . 0 5 2 0 \\pm 0 . 0 0 4 1$ </td><td> $0 . 4 4 0 9 \\pm 0 . 0 0 5 8$ </td><td> $0 . 0 3 6 2 \\pm 0 . 0 0 0 0$ </td><td> $1 . 1 7 1 2 \\pm 0 . 0 4 7 4$ </td><td> $0 . 0 6 7 8 \\pm 0 . 0 0 3 2$ </td></tr><tr><td>DDPM</td><td> $\\overline { { 0 . 0 9 1 2 \\pm 0 . 0 4 2 2 } }$ </td><td> $\\overline { { 0 . 5 3 6 5 \\pm 0 . 3 8 2 2 } }$ </td><td> $\\overline { { 0 . 0 8 1 2 \\pm 0 . 0 5 0 9 } }$ </td><td> $\\overline { { 0 . 5 9 4 8 \\pm 0 . 0 7 9 9 } }$ </td><td> $\\overline { { 0 . 0 3 2 6 \\pm 0 . 0 0 4 5 } }$ </td></tr><tr><td rowspan=\"2\">LLaVA-NeXT</td><td>Blur</td><td> $0 . 0 2 9 4 \\pm 0 . 0 1 0 0$ </td><td> $0 . 8 0 3 4 \\pm 0 . 0 8 6 8$ </td><td> $0 . 1 8 0 6 \\pm 0 . 0 6 5 1$ </td><td> $0 . 5 6 7 0 \\pm 0 . 0 4 8 6$ </td><td> $0 . 0 3 1 1 \\pm 0 . 0 0 2 9$ </td></tr><tr><td>DDPM</td><td> $\\overline { { 0 . 0 4 1 9 \\pm 0 . 0 1 6 6 } }$ </td><td> $\\overline { { 0 . 3 1 6 7 \\pm 0 . 1 1 1 0 } }$ </td><td> $\\overline { { 0 . 0 2 1 6 \\pm 0 . 0 1 1 8 } }$ </td><td> $\\overline { { 0 . 2 1 3 5 \\pm 0 . 0 3 2 8 } }$ </td><td> $\\overline { { 0 . 0 1 1 4 \\pm 0 . 0 0 1 8 } }$ </td></tr><tr><td rowspan=\"2\">LLaVA-1.5</td><td>Blur</td><td> $- 0 . 0 2 1 7 \\pm 0 . 0 0 5 2$ </td><td> $0 . 5 0 6 5 \\pm 0 . 0 2 2 0$ </td><td> $- 0 . 1 1 5 2 \\pm 0 . 0 0 0 3$ </td><td> $0 . 1 8 2 5 \\pm 0 . 0 1 5 7$ </td><td> $0 . 0 0 9 8 \\pm 0 . 0 0 0 8$ </td></tr><tr><td>DDPM</td><td> $\\overline { { 0 . 0 5 0 9 \\pm 0 . 0 3 2 9 } }$ </td><td> $\\overline { { 0 . 9 4 5 1 \\pm 0 . 3 7 1 0 } }$ </td><td> $\\overline { { 0 . 1 3 5 7 \\pm 0 . 0 5 6 2 } }$ </td><td> $\\overline { { 2 . 0 1 7 6 \\pm 0 . 0 4 1 7 } }$ </td><td> $\\overline { { 0 . 1 2 4 4 \\pm 0 . 0 0 2 8 } }$ </td></tr><tr><td rowspan=\"2\">InternVL</td><td>Blur</td><td> $0 . 0 4 6 0 \\pm 0 . 0 0 0 1$ </td><td> $0 . 6 3 6 7 \\pm 0 . 0 0 2 8$ </td><td> $0 . 0 4 5 7 \\pm 0 . 0 0 2 1$ </td><td> $1 . 8 1 4 0 \\pm 0 . 0 0 2 6$ </td><td> $0 . 1 1 1 3 \\pm 0 . 0 0 0 1$ </td></tr><tr><td>DDPM</td><td> $\\overline { { 0 . 0 3 9 7 \\pm 0 . 0 2 2 4 } }$ </td><td> $\\overline { { 0 . 3 9 0 8 \\pm 0 . 2 1 6 6 } }$ </td><td> $\\overline { { 0 . 0 8 2 6 \\pm 0 . 1 8 2 5 } }$ </td><td> $\\overline { { 0 . 0 7 5 3 \\pm 0 . 0 1 5 3 } }$ </td><td> $\\overline { { 0 . 0 0 4 1 \\pm 0 . 0 0 0 8 } }$ </td></tr><tr><td rowspan=\"2\">SmolVLM</td><td>Blur</td><td> $0 . 0 1 2 1 \\pm 0 . 0 0 3 3$ </td><td> $0 . 3 1 8 7 \\pm 0 . 0 0 9 5$ </td><td> $0 . 0 1 8 3 \\pm 0 . 0 0 0 0$ </td><td> $0 . 0 7 2 7 \\pm 0 . 0 0 9 6$ </td><td> $0 . 0 0 4 0 \\pm 0 . 0 0 0 5$ </td></tr><tr><td>DDPM</td><td> $\\overline { { 0 . 0 0 1 1 \\pm 0 . 0 0 0 0 } }$ </td><td> $\\overline { { 0 . 1 7 2 6 \\pm 0 . 0 0 0 0 } }$ </td><td> $\\overline { { 0 . 0 8 0 3 \\pm 0 . 0 0 0 0 } }$ </td><td> $\\overline { { 0 . 0 2 1 5 \\pm 0 . 0 0 0 0 } }$ </td><td> $\\overline { { - 0 . 0 0 1 1 \\pm 0 . 0 0 0 0 } }$ </td></tr><tr><td rowspan=\"2\"></td><td>Blur</td><td> $- 0 . 0 0 1 9 \\pm 0 . 0 0 0 0$ </td><td> $- 0 . 4 9 0 6 \\pm 0 . 0 0 0 0$ </td><td> $- 0 . 0 6 8 2 \\pm 0 . 0 0 0 0$ </td><td> $0 . 0 2 8 9 \\pm 0 . 0 0 0 0$ </td><td> $0 . 0 0 1 5 \\pm 0 . 0 0 0 0$ </td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td></tr></table>",
+                "table_type": "complex_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                114,
+                80,
+                884,
+                241
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                112,
+                305,
+                490,
+                403
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.6 Stability Across Random Seeds"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                112,
+                414,
+                406,
+                430
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Causal tracing involves image corruption and intervention. A single run can therefore produce a noisy estimate of causal contribution. We address this issue by repeating the experiments with different random seeds. For DeepSeek-VL, Qwen-2.5, LLaVA-NeXT, and LLaVA, we perform 10 runs for each corruption setting. InternVL is evaluated using 6 runs in the current experiment. We report the mean and standard deviation to quantify the variation across runs. The low overall correlations remain consistent across the repeated runs for the evaluated models. This provides preliminary evidence that the observed mismatch between causal importance and spatial alignment is not caused by a single random seed. SmolVLM currently has only one run in the reported experiment. We therefore do not use this result to make a strong statement about statistical stability. Additional runs are required before drawing conclusions for this model."
+                    }
+                ]
+            },
+            "bbox": [
+                110,
+                436,
+                490,
+                744
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.7 From CLIP to Current Vision-Language Models"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                112,
+                755,
+                480,
+                785
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The progression from CLIP to larger VLMs provides an important observation. The weak causalspatial relationship initially identified in CLIP is also observed in the larger VLMs evaluated in our current experiments. This raises a broader question: Does increasing model capability lead to stronger causal spatial grounding?"
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                793,
+                490,
+                906
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Modern VLMs have substantially improved in image understanding, visual question answering, reasoning, and instruction following. However, improved task performance does not necessarily imply that the internal visual representations have become more spatially localized. We therefore plan to perform a longitudinal evaluation of models released across multiple generations (refer to Appendix A), beginning with early visionlanguage models and extending to present state-ofthe-art (SOTA) models. This evaluation will allow us to examine whether the causal-spatial relationship changes as VLMs become larger and more capable."
+                    }
+                ]
+            },
+            "bbox": [
+                131,
+                906,
+                487,
+                922
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                507,
+                305,
+                887,
+                514
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Our main hypothesis is:"
+                    }
+                ]
+            },
+            "bbox": [
+                527,
+                516,
+                710,
+                531
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Increase in model capability doesn’t imply the model is well grounded and the representations embed the complete spatial information"
+                    }
+                ]
+            },
+            "bbox": [
+                544,
+                542,
+                850,
+                607
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "In other words, we investigate whether improvements in multimodal performance are accompanied by improvements in causal spatial grounding. If the correlation remains weak across model generations, this would suggest that stronger VLM performance emerges without a corresponding increase in localized causal representations."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                618,
+                887,
+                731
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.8 Across Vision Encoder Architectures"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                509,
+                740,
+                847,
+                756
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The current experiments primarily focus on VLMs with ViT-based vision encoders. This provides a suitable starting point because ViT tokens correspond naturally to spatial image patches. Therefore, each token can be directly associated with an image region and evaluated using IoU. However, current VLMs use more than one family of vision encoders. In particular, SigLIP-based (Zhai et al., 2023) encoders are also widely used in recent multimodal models. We therefore plan to extend the analysis from ViT-based encoders to SigLIP-based encoders. This extension is important because it allows us to distinguish between two possible explanations for the observed behavior."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                760,
+                887,
+                923
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "5"
+                    }
+                ]
+            },
+            "bbox": [
+                492,
+                944,
+                505,
+                956
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                112,
+                85,
+                489,
+                148
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "First, the weak causal-spatial alignment may be a general property of modern vision-language representations. If similar results are obtained with both ViT-based and SigLIP-based encoders, this would support this interpretation."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                149,
+                489,
+                229
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Second, the behavior may depend on the visual encoder architecture. If the causal-spatial relationship differs systematically between ViT and SigLIP encoders, this would indicate that the architecture contributes to the formation of spatially grounded representations."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                230,
+                489,
+                325
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The planned evaluation will therefore cover two dimensions: model generation (the year and family it belongs to) and the backbone of the vision encoder architecture. We will evaluate models from earlier generations through current SOTA VLMs and compare ViT-based and SigLIP-based visual encoders using the same causal tracing framework."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                326,
+                489,
+                439
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.9 Overall Findings"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                114,
+                449,
+                295,
+                464
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The experiments provide a progressive set of observations."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                470,
+                489,
+                502
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• First, our CLIP experiment shows a weak relationship between causal importance and spatial alignment, with an overall correlation of 0.062 across 100 samples."
+                    }
+                ]
+            },
+            "bbox": [
+                136,
+                511,
+                490,
+                576
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• Second, the same qualitative behavior is observed when the analysis is extended to larger VLMs. Across the evaluated models, the overall causal-spatial correlations remain low under both DDPM and blur corruption."
+                    }
+                ]
+            },
+            "bbox": [
+                136,
+                587,
+                490,
+                667
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• Third, the presence of highly causal tokens does not imply that these tokens correspond to the target object. Some tokens can have a strong effect on the model output while having low or zero spatial overlap with the groundtruth region."
+                    }
+                ]
+            },
+            "bbox": [
+                136,
+                677,
+                489,
+                775
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• Fourth, the observation remains present across multiple random seeds and corruption procedures, although the magnitude varies across models."
+                    }
+                ]
+            },
+            "bbox": [
+                136,
+                784,
+                489,
+                847
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Together, these results suggest that strong visionlanguage performance does not necessarily require strongly localized causal visual representations. The models may instead rely on distributed visual information that is not restricted to the spatial region associated with the queried object. Our current findings, therefore, motivate a broader investigation across model generations and visual encoder architectures. In the next stage of the study, we will evaluate VLMs from early models through current SOTA models and extend the analysis from ViTbased encoders to SigLIP-based encoders. This will allow us to determine whether the observed causal-spatial mismatch is a general property of modern VLMs or specific model architectures and training paradigms."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                858,
+                490,
+                922
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                507,
+                85,
+                887,
+                279
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "5 Conclusion and Future Work"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                509,
+                290,
+                798,
+                306
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "In this work, we investigate whether visual representations that are causally important to visionlanguage models are also spatially aligned with the regions relevant to a given query. The findings suggest that strong vision-language performance does not necessarily require causally important visual representations to be spatially localized to the queried object, and that causal importance and spatial grounding represent distinct properties of multimodal representations. We further observe variation across models and corruption procedures, motivating a broader evaluation across multiple model generations and visual encoder architectures. As future work, we plan to study models from early vision-language models through current SOTA models and extend the analysis from ViT-based encoders to SigLIP-based encoders. This will allow us to investigate whether causal spatial grounding improves as model capabilities increase and whether the observed behavior is a general property of modern vision-language models or depends on the underlying vision encoder architecture."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                317,
+                887,
+                688
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "References"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                510,
+                715,
+                610,
+                731
+            ]
+        },
+        {
+            "type": "list",
+            "content": {
+                "list_type": "reference_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Zhe Chen, Weiyun Wang, Hao Tian, Shenglong Ye, Zhangwei Gao, Erfei Cui, Wenwen Tong, Kongzhi Hu, Jiapeng Luo, Zheng Ma, and 1 others. 2024a. How far are we to gpt-4v? closing the gap to commercial multimodal models with open-source suites. arXiv preprint arXiv:2404.16821."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Zhe Chen, Jiannan Wu, Wenhai Wang, Weijie Su, Guo Chen, Sen Xing, Muyan Zhong, Qinglong Zhang, Xizhou Zhu, Lewei Lu, and 1 others. 2024b. Internvl: Scaling up vision foundation models and aligning for generic visual-linguistic tasks. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages 24185–24198."
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                510,
+                739,
+                885,
+                819
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "6"
+                    }
+                ]
+            },
+            "bbox": [
+                492,
+                944,
+                505,
+                956
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Alexey Dosovitskiy, Lucas Beyer, Alexander Kolesnikov, Dirk Weissenborn, Xiaohua Zhai, Thomas Unterthiner, Mostafa Dehghani, Matthias Minderer, Georg Heigold, Sylvain Gelly, and 1 others. 2020. An image is worth 16x16 words: Transformers for image recognition at scale. arXiv preprint arXiv:2010.11929."
+                    }
+                ]
+            },
+            "bbox": [
+                114,
+                85,
+                489,
+                178
+            ]
+        },
+        {
+            "type": "list",
+            "content": {
+                "list_type": "reference_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Parsa Esmaeilkhani and Longin Jan Latecki. 2026. Direct visual grounding by directing attention of visual tokens. In 2026 IEEE/CVF Winter Conference on Applications ofComputer Vision (WACV), pages 5787–5797. IEEE."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Haotian Liu, Chunyuan Li, Yuheng Li, Bo Li, Yuanhan Zhang, Sheng Shen, and Yong Jae Lee. 2024. Llavanext: Improved reasoning, ocr, and world knowledge."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Haotian Liu, Chunyuan Li, Qingyang Wu, and Yong Jae Lee. 2023. Visual instruction tuning."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Haoyu Lu, Wen Liu, Bo Zhang, Bingxuan Wang, Kai Dong, Bo Liu, Jingxiang Sun, Tongzheng Ren, Zhuoshu Li, Hao Yang, Yaofeng Sun, Chengqi Deng, Hanwei Xu, Zhenda Xie, and Chong Ruan. 2024. Deepseek-vl: Towards real-world vision-language understanding. Preprint, arXiv:2403.05525."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Andrés Marafioti, Orr Zohar, Miquel Farré, Merve Noyan, Elie Bakouch, Pedro Cuenca, Cyril Zakka, Loubna Ben Allal, Anton Lozhkov, Nouamane Tazi, and 1 others. 2025. Smolvlm: Redefining small and efficient multimodal models. arXiv preprint arXiv:2504.05299."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Vedant Palit, Rohan Pandey, Aryaman Arora, and Paul Pu Liang. 2023. Towards vision-language mechanistic interpretability: A causal tracing tool for blip. In 2023 IEEE/CVF International Conference on Computer Vision Workshops (ICCVW), pages 2848–2853. IEEE."
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                115,
+                187,
+                489,
+                253
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Qwen, :, An Yang, Baosong Yang, Beichen Zhang, Binyuan Hui, Bo Zheng, Bowen Yu, Chengyuan Li, Dayiheng Liu, Fei Huang, Haoran Wei, Huan Lin, Jian Yang, Jianhong Tu, Jianwei Zhang, Jianxin Yang, Jiaxi Yang, Jingren Zhou, and 25 others. 2025. Qwen2.5 technical report. Preprint, arXiv:2412.15115."
+                    }
+                ]
+            },
+            "bbox": [
+                115,
+                615,
+                489,
+                707
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Alec Radford, Jong Wook Kim, Chris Hallacy, Aditya Ramesh, Gabriel Goh, Sandhini Agarwal, Girish Sastry, Amanda Askell, Pamela Mishkin, Jack Clark, and 1 others. 2021. Learning transferable visual models from natural language supervision. In International conference on machine learning, pages 8748–8763. PmLR."
+                    }
+                ]
+            },
+            "bbox": [
+                115,
+                717,
+                489,
+                809
+            ]
+        },
+        {
+            "type": "list",
+            "content": {
+                "list_type": "reference_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Timothy Schaumlöffel, Martina G Vilas, and Gemma Roig. 2026. Mechanisms of object localization in vision-language models. arXiv preprint arXiv:2605.19792."
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                115,
+                819,
+                489,
+                872
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The Gemini Team. 2026. Gemini 3.1 pro: A smarter model for your most complex tasks. https://blog.google/innovation-and-ai/"
+                    }
+                ]
+            },
+            "bbox": [
+                114,
+                881,
+                489,
+                922
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "models-and-research/gemini-models/ gemini-3-1-pro/. Google Blog."
+                    }
+                ]
+            },
+            "bbox": [
+                527,
+                85,
+                821,
+                114
+            ]
+        },
+        {
+            "type": "list",
+            "content": {
+                "list_type": "reference_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Xiaohua Zhai, Basil Mustafa, Alexander Kolesnikov, and Lucas Beyer. 2023. Sigmoid loss for language image pre-training. In 2023 IEEE/CVF International Conference on Computer Vision (ICCV), pages 11941–11952. IEEE."
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                510,
+                123,
+                885,
+                190
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "A Structural Information Tracing with String Puzzles"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                509,
+                203,
+                865,
+                236
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The previous experiments show that causal importance in the vision encoder does not consistently correspond to the spatial region required by the query. This raises a further question: what type of visual information is preserved by the vision encoder and made available to the language model? In particular, spatial localization alone does not establish whether the model preserves relationships between distant image regions. To investigate this question, we introduce a controlled visual reasoning task based on string tracing."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                246,
+                887,
+                424
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "A.1 String Puzzle Task"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                509,
+                434,
+                709,
+                449
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We design a synthetic string-tracing task in which multiple visually overlapping strings connect pairs of endpoints. Given one endpoint, the model is asked to identify the endpoint at the other end of the same string. An example of the task is shown in Figure 3."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                455,
+                885,
+                551
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The task requires the model to follow a continuous visual structure through multiple crossings and determine the endpoint connected to the queried starting point. Unlike standard visual question answering tasks, the semantic content of the image is intentionally minimal. The primary information required to solve the task is the connectivity structure of the strings. We generate all puzzles using a custom Python-based generation procedure. The generator controls the number of strings, their trajectories, endpoint locations, and visual appearance. This allows us to construct paired examples with the same underlying string geometry while changing only the visual properties of the strings."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                551,
+                887,
+                780
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "A.2 Color-Consistent and Color-Distinct Settings"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                509,
+                788,
+                847,
+                820
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We evaluate two versions of the string-tracing task. In the first setting, all strings have the same color. Therefore, the model cannot use color identity to distinguish one string from another. The only reliable cue for solving the task is the string’s continuous geometric structure. In the second setting, each string is assigned a different color. The underlying geometry and endpoint connectivity remain unchanged. However, color provides an additional feature for distinguishing between strings."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                826,
+                887,
+                923
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "7"
+                    }
+                ]
+            },
+            "bbox": [
+                492,
+                944,
+                505,
+                956
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/05a662d7f5695c86707ca471a72ec5d5022d1cd2d98ea1bbd9ad509a893c7151.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 3: String-tracing puzzle in which all strings have the same color. The model must follow the continuous structure of the queried string to identify its endpoint."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                141,
+                92,
+                458,
+                273
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/1d5f2f62e0c8637e465f2cdde149af71b7b75ffaa751dd683834efe96efc318c.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 4: String-tracing puzzle with color-distinct strings. The underlying string geometry is unchanged, but color provides an additional cue for identifying the correct string."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                134,
+                378,
+                465,
+                511
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                112,
+                629,
+                489,
+                694
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "This controlled design is important because the two conditions contain the same structural information. The primary difference is the availability of a low-level appearance cue. Therefore, the performance difference between the two conditions provides evidence of the type of information the model uses."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                695,
+                490,
+                808
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "A.3 Evaluation"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                114,
+                820,
+                252,
+                835
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "For each puzzle, we provide the model with one endpoint and ask it to identify the endpoint connected to that point. We measure endpoint accuracy as the percentage of puzzles for which the model identifies the correct endpoint."
+                    }
+                ]
+            },
+            "bbox": [
+                110,
+                841,
+                489,
+                923
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/0fbd9133d39d6aa7a30993730f0eb66411a13b559d3669cb3ef3ce34e49ac945.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 5: String-tracing puzzle in which all strings have the same color. The model is not able to distinguish properly. Even when only two interleaved strings are there"
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                510,
+                82,
+                882,
+                249
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/713ffb8c59e906eaefca17d6ee94878e839bb02972b3bf639f7965ca3b2dd72a.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 6: String-tracing puzzle with color-distinct strings. The model uses color as a cue and performs better."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                510,
+                331,
+                880,
+                505
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Let "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "y _ { i }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "denote the correct endpoint for puzzle i and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\hat { y } _ { i }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "denote the model prediction. We define endpoint accuracy as"
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                588,
+                884,
+                636
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathrm { A c c u r a c y } = \\frac { 1 } { N } \\sum _ { i = 1 } ^ { N } \\mathbb { I } ( \\hat { y } _ { i } = y _ { i } ) ,\\tag{8}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/fb1b3a8756c340c7e4904066951e5b6eb5d5cc24d1a5585b628f3bc94da52eb5.jpg"
+                }
+            },
+            "bbox": [
+                576,
+                648,
+                816,
+                690
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where N is the number of evaluated puzzles."
+                    }
+                ]
+            },
+            "bbox": [
+                527,
+                696,
+                862,
+                712
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We compare performance between the samecolor and color-distinct conditions. Since the underlying string topology is kept constant, a large performance difference between the two conditions indicates that color provides information that substantially facilitates the tracing task."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                714,
+                887,
+                810
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "A.4 Initial Observations"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                509,
+                820,
+                719,
+                835
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Our initial experiments, in which we infer proprietary models from a single instance of the dataset, we observe a substantial difference between the two conditions. When all strings have the same color, the model has difficulty identifying the correct endpoint. In contrast, when each string is assigned a distinct color, the model is able to trace the queried string and identify its corresponding endpoint more reliably. This difference is illustrated in Figure 5 and Figure 6, the model used to evaluate is Gemini-3.1 Pro (The Gemini Team, 2026) . In the color-distinct example, the model correctly follows the queried string from its starting endpoint to the corresponding endpoint. In the same-color setting, the model frequently fails to preserve the string’s identity when multiple strings intersect or overlap."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                841,
+                887,
+                923
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "8"
+                    }
+                ]
+            },
+            "bbox": [
+                492,
+                942,
+                505,
+                956
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                112,
+                85,
+                489,
+                262
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Importantly, the underlying string structure is unchanged between the two conditions. Therefore, the difference in performance cannot be attributed to a change in the strings’ actual connectivity. Instead, the result indicates that the availability of color information substantially affects the model’s ability to solve the task. These observations suggest that the model may not reliably preserve the longrange structural identity of a string when strings have similar local visual appearance. When each string has a distinct color, that color serves as a persistent local feature that helps the model associate different parts of the same string across the image."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                263,
+                490,
+                473
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "A.5 Structural Information and Vision Encoder Representations"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                114,
+                482,
+                436,
+                514
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The string-puzzle experiment provides a more controlled setting for studying the limitations suggested by our causal grounding experiments. In the previous experiments, the target object and its surrounding context could contain many semantic and visual cues. In contrast, the string puzzle contains minimal semantic information and requires the model to preserve a specific visual relationship across distant image regions."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                519,
+                490,
+                664
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The observed performance gap between the same-color and color-distinct conditions suggests that the vision encoder may not preserve structural connectivity in a sufficiently explicit form. When color differs between strings, the encoder can use differences in pixel values as a discriminative feature. These features provide a relatively simple mechanism for maintaining the identity of a string across the image. In the same-color condition, this cue is removed. The model must instead infer connectivity from the geometry of the lines and their crossings. The reduced performance suggests that this structural information may be weakened or fragmented during visual encoding. We therefore hypothesize that the vision encoder transforms the continuous string structure into visual tokens withoutfullypreserving the long-range connectivity requiredfor the task. As a result, the language model may receive local visualfeatures that are individually informative but insufficient to reconstruct the complete structure of the string. This hypothesis is consistent with, but not established by, the accuracy results alone. To distinguish between information loss in the vision encoder and reasoning limitations in the language model, we perform additional analysis of intermediate visual representations and attention patterns."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                665,
+                490,
+                923
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                507,
+                85,
+                887,
+                263
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "A.6 Attention Analysis"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                509,
+                273,
+                707,
+                288
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "To investigate how the model processes the string structure, we analyze the attention maps produced by the vision-language model. We examine whether visual attention follows the queried string as it moves through the image and whether attention is disrupted at string crossings."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                294,
+                885,
+                391
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "For a query endpoint "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "e _ { s } ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "we examine the attention assigned to image tokens corresponding to the same string and compare it with attention assigned to visually similar but structurally unrelated strings. This analysis allows us to investigate two possible failure modes."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                391,
+                885,
+                487
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• First, the vision encoder may fail to preserve a string’s identity across distant image regions. In this case, attention would be expected to become distributed across multiple strings, particularly near crossing points."
+                    }
+                ]
+            },
+            "bbox": [
+                531,
+                498,
+                887,
+                580
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• Second, the visual representation may preserve sufficient information, but the language model may fail to use this information to perform the required multi-step tracing."
+                    }
+                ]
+            },
+            "bbox": [
+                531,
+                589,
+                887,
+                655
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "In this case, the relevant visual information may be present in the encoded representations even when the final prediction is incorrect. We therefore use attention analysis as a complementary analysis rather than treating attention alone as evidence of causal reasoning."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                665,
+                885,
+                763
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "A.7 From Visual Encoding to Language-Model Reasoning"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                509,
+                772,
+                781,
+                804
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The string puzzle also allows us to study the interaction between visual encoding and language-model reasoning. The task requires a sequence of operations: identify the queried endpoint, follow the corresponding string through the image, maintain its identity at crossings, and select the final endpoint. When the strings have different colors, the visual encoder provides a strong appearance-based identity signal. The language model can then use this signal to associate separated visual tokens with the same string. In contrast, when all strings have the same color, the model must rely primarily on geometric continuity."
+                    }
+                ]
+            },
+            "bbox": [
+                507,
+                809,
+                887,
+                923
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "9"
+                    }
+                ]
+            },
+            "bbox": [
+                492,
+                942,
+                505,
+                954
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                112,
+                85,
+                489,
+                181
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "This leads to a central question in our analysis:"
+                    }
+                ]
+            },
+            "bbox": [
+                132,
+                181,
+                484,
+                197
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "When the visual encoder does not provide an explicit structural representation, does the language model reconstruct the missing structure through reasoning, or does it rely on local visual cues and guess the answer?"
+                    }
+                ]
+            },
+            "bbox": [
+                149,
+                210,
+                453,
+                306
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We investigate this question by comparing model predictions, visual attention patterns, and intermediate representations across the two conditions."
+                    }
+                ]
+            },
+            "bbox": [
+                114,
+                318,
+                489,
+                366
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "A.8 Extension Across Model Generations"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                114,
+                376,
+                455,
+                392
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Similar to our causal tracing experiments, we plan to evaluate the string-puzzle task across multiple generations of vision-language models. We will begin with early large-scale VLMs and extend the evaluation to current SOTA models. This evaluation will determine whether improved multimodal capabilities are accompanied by improved preservation of structural visual information. In particular, we will compare the performance gap between the same-color and color-distinct conditions:"
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                398,
+                490,
+                560
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\Delta _ { \\mathrm { c o l o r } } = \\mathrm { A c c u r a c y } _ { \\mathrm { d i s t i n c t } } - \\mathrm { A c c u r a c y } _ { \\mathrm { s a m e } } .\\tag{9}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/b075085d0dc10676b1265e512594135d06f5ea71c1730864e228b93b464191ff.jpg"
+                }
+            },
+            "bbox": [
+                124,
+                588,
+                457,
+                605
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "A large value of "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\Delta _ { \\mathrm { c o l o r } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "indicates strong dependence on color-based cues, whereas a smaller value indicates that the model can solve the task using structural information even when color does not distinguish the strings. This provides a modelindependent measure of the dependence on appearance cues."
+                    }
+                ]
+            },
+            "bbox": [
+                112,
+                618,
+                490,
+                730
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "10"
+                    }
+                ]
+            },
+            "bbox": [
+                489,
+                942,
+                510,
+                956
+            ]
+        }
+    ]
+]

@@ -1,0 +1,3533 @@
+[
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Cross-View Sequential Visual Localization with Spatio-Temporal Context Modeling for Autonomous Driving"
+                    }
+                ],
+                "level": 1
+            },
+            "bbox": [
+                119,
+                64,
+                879,
+                166
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Jiaping Wang, Shaobo Li, Zhen Wang*"
+                    }
+                ]
+            },
+            "bbox": [
+                361,
+                174,
+                629,
+                190
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "School of Information Engineering, Chang'an University, P.R.China"
+                    }
+                ]
+            },
+            "bbox": [
+                267,
+                189,
+                723,
+                205
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Abstract—Continuous and reliable localization is essential for autonomous driving. Cross-view visual localization matches ground images with satellite maps, providing complementary localization cues for pipelines that depend on Global Navigation Satellite System (GNSS) signals and high-definition (HD) maps. Most existing cross-view visual localization methods process each frame independently, leaving temporal information underused and limiting accuracy under dynamic occlusion, illumination variation, and repetitive textures. This study proposes a temporal-context-enhanced framework for cross-view sequence visual localization. The proposed recurrent cross-frame module aggregates historical context from the previous state to enhance the coarse ground feature of each current frame. These enhanced features facilitate satellite candidate-region classification, while hierarchical fine-grained features enable precise local offset estimation. On the CVIS dataset, the proposed method reduces mean localization error from 3.80 m to 1.57 m and increases R@1 m from 8.14% to 40.22%. Direct transfer to KITTI-CVL achieves a mean error of 2.61 m, with target-domain fine-tuning further reducing the mean error to 2.27 m. Zero-shot field experiments on a real-world vehicle achieve a mean error of 2.84 m and R@5 m of 96.86%. These results demonstrate that temporal context enhancement significantly improves cross-view localization accuracy and supports robust deployment on public benchmarks and real-world roads."
+                    }
+                ]
+            },
+            "bbox": [
+                70,
+                229,
+                491,
+                559
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Index Terms—Cross-view localization, Autonomous driving, Sequential visual localization, Spatio-temporal context modeling."
+                    }
+                ]
+            },
+            "bbox": [
+                70,
+                570,
+                488,
+                599
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "I. INTRODUCTION"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                209,
+                627,
+                352,
+                641
+            ]
+        },
+        {
+            "type": "list",
+            "content": {
+                "list_type": "text_list",
+                "attribute": "unordered",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "ONVENTIONAL autonomous driving (AD) systems typically follow a modular perception-predictionplanning pipeline, which requires centimeter-level localization to align vehicle states with high-definition (HD) maps [1]-[3]. Such localization relies on Global Navigation Satellite System/Inertial Navigation System (GNSS/INS) fusion, Light Detection and Ranging (LiDAR)-based mapping, and HD map matching, increasing cost and limiting scalability in large-scale or GNSS-degraded environments [4]. Although end-to-end AD has reduced the dependence on centimeterlevel global poses, continuous, reliable, and lightweight localization remains crucial for global scene context and stable navigation [5]. As shown in Fig. 1, vision-based cross-view localization addresses this need by matching camera-captured ground images with satellite imagery, estimating the vehicle position on the satellite map without additional LiDAR sensing or HD map construction [6]-[9]. Because cameras are"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                70,
+                646,
+                491,
+                909
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "already standard on most autonomous vehicles, cross-view localization offers low sensor cost, flexible deployment, and stronger adaptability to environmental changes [10][11]. Compared with conventional LiDAR- and HD-map-dependent pipelines, this vision-only paradigm has emerged as a promising localization solution for outdoor AD in the presence of unstable GNSS signals [12]-[14]."
+                    }
+                ]
+            },
+            "bbox": [
+                503,
+                214,
+                926,
+                321
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/c3b66af4648ac8d0104d03f506aa1a56e47adfcc1308c7cb79bfd88725093d61.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 1. Illustration of cross‑view localization."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                516,
+                335,
+                913,
+                470
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Most existing cross-view localization methods still treat road video as independent single-frame matching tasks [15]. Recent studies have improved single-frame localization through shared representation learning, cross-view fusion, local region alignment, and fine-grained position regression [16][17]. Shi et al. [18] reformulate retrieval-based localization as neural camera pose optimization, using geometric projection and a differentiable Levenberg– Marquardt module to iteratively estimate camera pose. Xia et al. [19] introduce dense uncertainty estimation, aligning ground and satellite features through learned uncertainty distributions for more robust metric localization. Deuser et al. [20] propose Sample4Geo, where two hard-negative sampling strategies improve contrastive cross-view retrieval on standard benchmarks. Wang et al. [21] design a correlation-aware homography estimator to recover precise geometric transformations and suppress spatial noise induced by viewpoint changes. Shore et al. [22] develop BEV-CV, projecting ground images into semantic Bird’s-Eye View (BEV) representations to reduce cross-view geometry gaps under limited fields of view. Yuan et al. [23] build cross-view cross-attention between ground images and satellite maps, combining contextual spatial cues for local geometric matching beyond global descriptor retrieval. Xia et al. [24] further integrate geometric projection and alignment, establishing sparse or dense cross-view correspondences for direct vehicle-position estimation."
+                    }
+                ]
+            },
+            "bbox": [
+                503,
+                521,
+                928,
+                934
+            ]
+        },
+        {
+            "type": "page_footnote",
+            "content": {
+                "page_footnote_content": [
+                    {
+                        "type": "text",
+                        "content": "*Corresponding author: Zhen Wang (zhenwang@chd.edu.cn)"
+                    }
+                ]
+            },
+            "bbox": [
+                68,
+                925,
+                478,
+                943
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "These single-frame methods improve cross-view localization accuracy across diverse scenarios, yet their independent matching paradigm discards temporal context from vehicle motion and continuous observations. In complex urban road scenes, vehicle-mounted cameras are vulnerable to dynamic occlusion, abrupt changes in illumination, and repetitive building textures [25]. Independent matching without historical context can produce ambiguous or incorrect frame-wise localization, limiting the reliability of single-frame localization in AD scenarios that require continuous position estimation [1]."
+                    }
+                ]
+            },
+            "bbox": [
+                70,
+                63,
+                491,
+                231
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Driven by the intrinsic limitations of single-frame matching, recent studies have shifted toward sequence-based cross-view localization using video frames. Sequence localization models contextual dependencies among historical observations, providing additional visual evidence for current-frame crossview matching [26]. Shi et al. [27] present CVLNet, a framework that converts consecutive ground frames into BEV projections and matches satellite maps through inter-frame consistency in the projected view. Vyas et al. [28] introduce GAMa, which aggregates visual features from consecutive video clips and uses hierarchical search to improve sequenceto-map recall. Zhang et al. [29] propose a cross-view image sequence localization framework with temporal feature aggregation, capturing limited-field-of-view cues and mitigating feature loss caused by occlusion. Ghanem et al. [30] incorporate historical trajectories into ensemble learning to correct current-frame localization bias due to recent vehicle motion. Yuan et al. [31] develop a temporal-attention-based fine localization method, fusing spatiotemporal context from adjacent frames to reduce sequence localization errors. Deng et al. [32] present a self-supervised sequence framework that jointly encodes spatiotemporal features and samples frames through motion-aware dynamics, improving trajectory robustness in complex scenes."
+                    }
+                ]
+            },
+            "bbox": [
+                68,
+                231,
+                491,
+                597
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Despite clear progress, existing sequence methods remain limited. Most approaches aggregate sequence information only at the feature level and do not inject historical context into the cross-view matching backbone, restricting the contribution of temporal cues to global matching and local fine localization. Although continuous frames can compensate for incomplete single-frame observations, current methods mainly emphasize holistic sequence aggregation and provide limited analysis of how temporal context drives fine-grained cross-view localization, thereby constraining deployment potential for continuous AD localization."
+                    }
+                ]
+            },
+            "bbox": [
+                70,
+                597,
+                491,
+                765
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "To address these limitations, this study proposes a temporal-context-enhanced framework for cross-view image sequence localization. The framework takes one satellite map and a continuous ground-image sequence as input, and introduces directional temporal propagation into the crossview matching pipeline. Each current-frame feature adaptively aggregates historical scene cues from the previous recurrent state before candidate-region discrimination. The enhanced sequence features are then fed into candidate-region discrimination and local offset estimation modules, enabling fine-grained localization of consecutive frames on the satellite map."
+                    }
+                ]
+            },
+            "bbox": [
+                70,
+                765,
+                491,
+                887
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                504,
+                63,
+                926,
+                123
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The main contributions are as follows."
+                    }
+                ]
+            },
+            "bbox": [
+                524,
+                125,
+                781,
+                138
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "(1) This study proposes a cross-view sequence localization framework that integrates hierarchical feature representation, temporal context enhancement, and two-stage localization. The framework uses temporally enhanced coarse features for satellite candidate-region discrimination and fine-grained features containing local structure and texture cues for candidate-conditioned offset estimation, forming a continuous localization pipeline from coarse region localization to precise position prediction."
+                    }
+                ]
+            },
+            "bbox": [
+                504,
+                140,
+                928,
+                276
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "(2) This study designs a temporal context enhancement module for continuous time windows. At each timestamp, the current-frame feature retrieves historical information from the previous recurrent state through cross-frame attention, while a residual update preserves the current observation as the main representation. The recurrent structure progressively propagates historical context along the sequence, improving the discriminability of ground-view features."
+                    }
+                ]
+            },
+            "bbox": [
+                504,
+                276,
+                928,
+                398
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "(3) Extensive experiments on CVIS and KITTI-CVL demonstrate the effectiveness and generalization capability of the proposed method. On CVIS, the proposed method reduces mean distance error from 3.80 m to 1.57 m and improves R@1 m by 32.08 percentage points over SOTA. On KITTI-CVL, direct transfer reduces the mean error from 3.57 m to 2.61 m, while target-domain fine-tuning further reduces it to 2.27 m and improves R@1 m to 35.69%."
+                    }
+                ]
+            },
+            "bbox": [
+                504,
+                398,
+                928,
+                520
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "(4) A real-vehicle field experiment covers nine representative urban driving scenarios. The model uses lowaccuracy GPS only to provide a coarse satellite-map prior and requires no additional training or fine-tuning. It achieves a mean error of 2.84 m, a median error of 2.92 m, and an R@5 m of 96.86%, while maintaining effective localization across the evaluated scenarios. In high-rise and occluded areas where RTK measurements drift, the proposed method still produces stable, road-aligned localization results."
+                    }
+                ]
+            },
+            "bbox": [
+                504,
+                520,
+                928,
+                657
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The remainder is organized as follows. Section 2 details the proposed temporal matching localization framework and the temporal enhancement module. Section 3 reports the experimental design and result analysis, focusing on localization accuracy and robustness. Section 4 presents realvehicle field experiments. Section 5 concludes the study."
+                    }
+                ]
+            },
+            "bbox": [
+                504,
+                657,
+                928,
+                751
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "II. METHODOLOGY"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                650,
+                765,
+                781,
+                779
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "A. Problem Statement"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                504,
+                787,
+                660,
+                803
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "This study addresses continuous cross-view matching localization for AD vehicles in complex urban environments, aiming to estimate vehicle trajectories on satellite maps from sequential ground observations. Given a ground-image sequence "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "S _ { g } = \\left\\{ I _ { g , t } \\right\\} _ { t = 0 } ^ { T - 1 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "I _ { g , t } \\in \\mathbb { R } ^ { H _ { g } \\times W _ { g } \\times 3 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "denotes the image captured by vehicle-mounted cameras at timestamp "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "t ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and a satellite map "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "I _ { s } \\in \\mathbb R ^ { H _ { s } \\times W _ { s } \\times 3 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "covering the driving corridor without being centered on any queried vehicle position, the task estimates the planar vehicle positions "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\{ ( x _ { t } , y _ { t } ) \\} _ { t = 0 } ^ { T - 1 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "in the satellite coordinate system. To solve this task, this section presents a temporal cross-view matching localization framework that models historical context among consecutive ground observations for continuous vehicleposition estimation. The following subsections first overview the overall architecture, then detail the local feature extraction module, temporal enhancement network, and two-stage localization module. For the reader's convenience, Table 1 summarizes the key notations used in this study."
+                    }
+                ]
+            },
+            "bbox": [
+                504,
+                805,
+                928,
+                868
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/da0f636538ec4762245563425b8925b0bca216a7221abbc5980674310522191f.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 2. Overview of the proposed sequential localization framework."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                178,
+                63,
+                818,
+                349
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                70,
+                382,
+                490,
+                607
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/2720d0c9458f7ddcf59121ee1339ae93abcf9518f1b34783278fb2e078f58702.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 1. Notation list."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Symbol</td><td>Description</td></tr><tr><td> $I _ { s } , I _ { g , t }$ </td><td>Satellite image and ground-view image at time step t.</td></tr><tr><td> $F _ { s } ^ { c } , F _ { s } ^ { f }$ </td><td>Coarse-level and fine-level satellite features.</td></tr><tr><td> $F _ { g , t } ^ { c } , F _ { g , t } ^ { f }$ </td><td>Coarse-level and fine-level ground-view features of frame t.</td></tr><tr><td> $\\tilde { F } _ { g , t } ^ { c }$ </td><td>Temporally enhanced coarse-level ground-view feature of frame t.</td></tr><tr><td> $C _ { t } , \\mathcal { R } ( \\cdot )$ </td><td>Historical context aggregated from the previous recurrent state and the recursive update function.</td></tr><tr><td> $s _ { t } , \\mathcal { M } _ { t }$ </td><td>Coarse satellite-grid classification scores and the corresponding top-K candidate mask.</td></tr><tr><td> $\\Delta p _ { t , n } , \\widehat { P } _ { t }$ </td><td>Local offset predicted within grid n and the final continuous predicted coordinate of frame t.</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                65,
+                632,
+                495,
+                856
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "B. Sequential Localization Framework"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                71,
+                880,
+                331,
+                895
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "As shown in Fig. 2, the proposed localization framework consists of three main components. First, the local feature extraction module uses pretrained DINOv2 to extract coarseand fine-grained representations from the satellite image and the ground-image sequence within a continuous time window. Second, the proposed temporal context enhancement module models historical context in coarse ground-sequence features, allowing each current frame to preserve its spatial layout while adaptively aggregating informative contextual cues from the historical state. Finally, the two-stage localization module performs feature fusion and mask-guided cascaded regression across the entire temporal clip, predicting continuous vehicle trajectory coordinates "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\{ ( x _ { t } , y _ { t } ) \\} _ { t = 0 } ^ { T - 1 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". The following subsections detail each stage."
+                    }
+                ]
+            },
+            "bbox": [
+                70,
+                898,
+                490,
+                929
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                504,
+                382,
+                926,
+                568
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "C. Local Feature Extraction Module"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                506,
+                574,
+                754,
+                589
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The local feature extraction module encodes one satellite map and six consecutive ground images to produce cross-view temporal representations for temporal enhancement and twostage localization. As shown in Fig. 3, this study adopts pretrained DINOv2 with a Vision Transformer Base/14 (ViT-B/14) backbone to extract visual features from the satellite map "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "I _ { s }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and the temporally ordered ground sequence "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "S _ { g }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "forming a continuous stream of ground-observation features."
+                    }
+                ]
+            },
+            "bbox": [
+                504,
+                592,
+                924,
+                717
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Deep DINOv2 layers mainly encode abstract global semantics, whereas intermediate layers preserve stronger spatial layout, texture, and structural cues. This study therefore extracts hierarchical features from different backbone layers. The last backbone layer produces coarse-grained semantic features "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "F _ { s } ^ { c } \\in \\mathbb { R } ^ { B \\times C \\times N \\times N }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "F _ { g , t } ^ { c } \\in \\mathbb { R } ^ { B \\times C \\times N \\times \\mathbf { \\bar { \\boldsymbol { N } } } _ { 1 } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "F _ { s } ^ { c }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "F _ { g } ^ { c } = \\left\\{ F _ { g , t } ^ { c } \\right\\} _ { t = 0 } ^ { T - 1 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "denote the satellite and ground-sequence coarse features. To retain local texture and structural details, features from the 5th, 6th, 7th, and 8th intermediate layers are concatenated as fine-grained representations "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "F _ { s } ^ { f } \\in \\mathbb { R } ^ { B \\times C _ { 1 } \\mathrm { \\Sigma } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "×�×� and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "F _ { g , t } ^ { f } \\in \\mathbb { R } ^ { B \\times C _ { 1 } \\times N \\times N _ { 1 } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". Here, � denotes the batch size, � and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "C _ { 1 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "denote channel dimensions, � denotes the ground-sequence length, and � and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "N _ { 1 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "denote the feature-map sizes after patch partitioning. Unlike single-frame cross-view localization, this study preserves independent features for all six ground frames and explicitly organizes them along the temporal dimension, allowing each observation to retain local discriminability while supporting temporal dependency modeling in subsequent modules."
+                    }
+                ]
+            },
+            "bbox": [
+                504,
+                715,
+                926,
+                934
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                68,
+                63,
+                491,
+                156
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/a7524ac8e4c8134f7faf43d94fa989b6bd6fd3500f727e98d19fd817c5465f39.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 3. Architecture of the DINOv2-based hierarchical feature extraction."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                84,
+                169,
+                470,
+                366
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The satellite and ground hierarchical features are projected to a unified channel dimension � through 1 × 1 convolution and then flattened along spatial dimensions. The projected ground-sequence features are further refined by the temporal enhancement module, and the enhanced sequence features are aggregated and matched in the two-stage localization module to estimate vehicle positions on the satellite map."
+                    }
+                ]
+            },
+            "bbox": [
+                68,
+                416,
+                491,
+                525
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "D. Spatio-temporal Context Enhancement"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                70,
+                531,
+                354,
+                547
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Existing single-frame cross-view localization methods can achieve accurate matching in complex urban environments, yet they process ground observations independently at each timestamp and underuse temporal correlations between consecutive frames. In AD scenarios, adjacent ground images typically exhibit continuity in scene structure, viewpoint changes, and motion states, providing historical context that enables more stable current-frame cross-view matching."
+                    }
+                ]
+            },
+            "bbox": [
+                70,
+                549,
+                491,
+                580
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                503,
+                63,
+                928,
+                155
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "As shown in Fig. 4, this study adopts a spatio-temporal cross-frame enhancement structure. The structure does not aggregate the entire sequence at once; instead, it updates ground-sequence features through state recurrence. Each frame is first enhanced by self-attention, and the first frame is then initialized as the historical state. For each subsequent frame, the current-frame feature serves as the target representation, and the previous recurrent state provides historical context. Historical information is progressively accumulated along the temporal direction, while the current frame remains the main component of the output state."
+                    }
+                ]
+            },
+            "bbox": [
+                504,
+                155,
+                928,
+                323
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "After spatial self-attention, the coarse ground feature of frame � is denoted by "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "Z _ { g , t } ^ { c }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". The recurrent state is initialized as "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\tilde { F } _ { g , 0 } ^ { c } = Z _ { g , 0 } ^ { c }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". For frame "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "t \\geq 1"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", the recurrent state is updated as:"
+                    }
+                ]
+            },
+            "bbox": [
+                504,
+                321,
+                926,
+                372
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\begin{array} { r } { \\tilde { F } _ { g , t } ^ { c } = \\mathcal { R } \\big ( Z _ { g , t } ^ { c } , \\tilde { F } _ { g , t - 1 } ^ { c } \\big ) , } \\end{array}\\tag{1}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/1727053ceb9fca4b27ba0c619a34c91edd257bd3e8e4946fc670d7008752a8ae.jpg"
+                }
+            },
+            "bbox": [
+                638,
+                372,
+                789,
+                391
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where ℛ(·) denotes the recurrent cross-frame context update function. Unlike conventional sequence aggregation, ℛ(·) adopts an asymmetric Query-Key/Value design:"
+                    }
+                ]
+            },
+            "bbox": [
+                504,
+                391,
+                924,
+                436
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\begin{array} { r } { Q _ { t } = Z _ { g , t } ^ { c } + P ^ { c u r } , K _ { t } = \\tilde { F } _ { g , t - 1 } ^ { c } + P ^ { p r e } , V _ { t } = \\tilde { F } _ { g , t - 1 } ^ { c } ( 2 ) } \\end{array}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/5a12de78445bf47acb1fca085dc4ce77a715088534a03672752ba71f2c1db3ed.jpg"
+                }
+            },
+            "bbox": [
+                508,
+                436,
+                923,
+                455
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "P ^ { c u r }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "P ^ { p r e }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "denote two-dimensional spatial positional encodings (SPE) for the current frame and the previous recurrent state, respectively. The asymmetric design gives a clear functional separation: the current frame "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "Z _ { g , t } ^ { c }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "determines what information to retrieve, whereas the previous recurrent state "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\tilde { F } _ { g , t - 1 } ^ { c }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "provides retrievable historical context. The cross-frame attention (CTA) is formulated as:"
+                    }
+                ]
+            },
+            "bbox": [
+                504,
+                455,
+                926,
+                535
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/dda904fd288c94f0dfad62375865a7cef06abc3553b14e8fa816e40d9737522b.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 4. Illustration of the spatio-temporal enhancement structure."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                181,
+                579,
+                818,
+                883
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                70,
+                63,
+                488,
+                95
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "C _ { t } = A t t n ( Q _ { t } , K _ { t } , V _ { t } )\\tag{3}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/0ffc4c9f432faf8260ef1b981a53c909a1de43203cd959a66ef4388c044503da.jpg"
+                }
+            },
+            "bbox": [
+                207,
+                95,
+                354,
+                112
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "C _ { t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "denotes historical context extracted from the previous recurrent state. The current frame is then fused with the historical context through a residual update:"
+                    }
+                ]
+            },
+            "bbox": [
+                70,
+                112,
+                490,
+                157
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\tilde { F } _ { g , t } ^ { c } = U p d a t e { \\left( Z _ { g , t } ^ { c } , C _ { t } \\right) }\\tag{4}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/ca2441f7fcbd4c5cb5051abce34bb746ee0018cdfe85fa7c99fa84336417b250.jpg"
+                }
+            },
+            "bbox": [
+                197,
+                157,
+                362,
+                176
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "������(·) consists of residual connections, normalization layers, and a feed-forward network. The updated state "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\tilde { F } _ { g , t } ^ { c }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "does not replace the current frame with historical information; instead, "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\tilde { F } _ { g , t } ^ { c }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "preserves "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "Z _ { g , t } ^ { c }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "as the main representation and uses "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "C _ { t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "as complementary context. Therefore, the enhanced state maintains the spatial layout of frame � and can be directly used for subsequent satellite-ground cross-view matching."
+                    }
+                ]
+            },
+            "bbox": [
+                70,
+                176,
+                490,
+                289
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "After recurrent historical-context aggregation, the contextenhanced ground sequence is obtained as:"
+                    }
+                ]
+            },
+            "bbox": [
+                70,
+                289,
+                488,
+                319
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\tilde { F } _ { g } ^ { c } = \\left\\{ \\tilde { F } _ { g , 0 } ^ { c } , \\tilde { F } _ { g , 1 } ^ { c } , \\ldots , \\tilde { F } _ { g , T - 1 } ^ { c } \\right\\}\\tag{5}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/e883f12695a48f2173369dadc79797cccddeed55bbccea6c3d3bcae04d34db12.jpg"
+                }
+            },
+            "bbox": [
+                189,
+                319,
+                370,
+                337
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The spatio-temporal context enhancement structure models historical information as a retrievable state rather than simply averaging or concatenating multi-frame observations. The current frame always serves as the Query and residual backbone, preventing accumulated history from suppressing discriminative cues in the current observation. The previous recurrent state serves as the Key and Value, enabling stable road structures and scene context to propagate frame by frame. In this way, historical cues from continuous observations are injected into coarse cross-view matching in a controlled manner, improving localization accuracy and prediction consistency in complex road environments."
+                    }
+                ]
+            },
+            "bbox": [
+                68,
+                338,
+                490,
+                521
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "E. Two-stage Localization"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                71,
+                529,
+                251,
+                542
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Although the spatio-temporal context enhancement module improves the discriminability of ground-sequence features, it does not alter the satellite search space. Instead, the enhanced features provide history-aware ground representations for subsequent cross-view matching. Therefore, this study adopts a two-stage localization strategy. Stage 1 uses coarse temporal features to select global candidate regions, identifying satellite grids likely to contain the vehicle. Stage 2 performs candidateconditioned offset refinement, in which the candidate mask from Stage 1 guides fine-grained feature interactions and the corresponding local offsets refine the selected coarse grids."
+                    }
+                ]
+            },
+            "bbox": [
+                70,
+                546,
+                490,
+                714
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Stage 1. As shown in Fig. 5, Stage 1 retrieves potential vehicle regions from the satellite map using coarse features from the satellite image and continuous ground observations. Unlike single-frame localization, the ground sequence first passes through spatio-temporal context enhancement and produces "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\tilde { F } _ { g , t } ^ { c }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", which allows historical observations to influence the satellite candidate distribution used for grid-level classification."
+                    }
+                ]
+            },
+            "bbox": [
+                70,
+                713,
+                490,
+                838
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Specifically, let the recurrently enhanced ground coarse feature be "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\tilde { F } _ { g , t } ^ { c }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", and let the corresponding satellite coarse feature be "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "F _ { s } ^ { c }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". Since the same satellite image is matched with each ground frame in the sequence, this study replicates the satellite coarse feature along the temporal dimension and fuses it with the enhanced ground feature at each timestamp. A location classification head then predicts the candidate-region distribution of frame � over satellite grids:"
+                    }
+                ]
+            },
+            "bbox": [
+                70,
+                839,
+                490,
+                934
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                504,
+                63,
+                924,
+                93
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\begin{array} { r } { s _ { t } = \\mathcal { H } _ { c l s } \\left( \\mathcal { F } _ { c v } \\left( F _ { s } ^ { c } , \\tilde { F } _ { g , t } ^ { c } \\right) \\right) . } \\end{array}\\tag{6}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/b3116546a637c96db75ae31299de3862fef5e3f4b96af2236e45a31093fe71cf.jpg"
+                }
+            },
+            "bbox": [
+                624,
+                94,
+                803,
+                116
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathcal { F } _ { c v }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "denotes the satellite-ground cross-view feature fusion module, "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathcal { H } _ { c l s }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "denotes the candidate-region classification head, and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "s _ { t } \\in \\mathbb { R } ^ { N ^ { 2 } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "denotes the classification scores of frame � over "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "N ^ { 2 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "satellite grids. The coarse candidate distribution provides global spatial constraints for the vehicle location and restricts subsequent fine-grained offset estimation to more reliable candidate regions."
+                    }
+                ]
+            },
+            "bbox": [
+                504,
+                117,
+                926,
+                227
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/5f671cb6c6d6f069e183a6e2c3b4864f6356e2e6d6ebf36f2fbc009d9ffed32a.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 5. Architecture of the dual-stream coarse localization network."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                513,
+                226,
+                926,
+                328
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Stage 2. As shown in Fig. 6, after obtaining the coarse candidate-region distribution, this study constructs a candidate mask to guide fine-grained offset regression. The candidate mask is not the final location selection strategy; rather, it serves as a fine-grained feature constraint in Stage 2. Using only the Stage 1 top-1 grid for offset regression would prematurely fix the local uncertainty from coarse localization. Once the top-1 grid is biased by occlusion, repetitive textures, or adjacent road structures, the fine regressor cannot exploit complementary cues from other high-confidence candidates. In contrast, the top-K candidate mask preserves a set of highconfidence Stage 1 regions, avoiding large-scale background noise from the full satellite map while retaining local candidate context for fine offset estimation."
+                    }
+                ]
+            },
+            "bbox": [
+                504,
+                361,
+                926,
+                575
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/bc9151553e8a77f72668cf6723d0fe361fdf0158e55fba2841f8021f6d65a8c6.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 6. Illustration of the mask-guided fine-grained localizer."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                516,
+                575,
+                921,
+                674
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Specifically, according to the coarse classification scores, the top-K grids are selected to construct a binary candidate mask:"
+                    }
+                ]
+            },
+            "bbox": [
+                504,
+                695,
+                924,
+                739
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathcal { M } _ { t , n } = \\left\\{ \\begin{array} { l l } { 1 , \\ } & { n \\in T o p K ( s _ { t } ) , } \\\\ { ~ 0 , ~ } & { o t h e r w i s e . } \\end{array} \\right.\\tag{7}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/094cd69a592c7918788c6343c4bf9c9dc4aa7605f65be7d040e12b8bc22749d2.jpg"
+                }
+            },
+            "bbox": [
+                599,
+                739,
+                812,
+                768
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The candidate mask does not change the final output form of the model, but constrains the valid candidate regions during fine-grained offset decoding. The satellite and ground finegrained features "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( F _ { s } ^ { f } , F _ { g , t } ^ { f } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "extracted from intermediate layers are then used for local offset estimation:"
+                    }
+                ]
+            },
+            "bbox": [
+                504,
+                768,
+                926,
+                851
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\Delta p _ { t , n } = \\mathcal { H } _ { r e g } \\big ( F _ { s } ^ { f } , F _ { g , t } ^ { f } , \\mathcal { M } _ { t } \\big ) , n \\in \\mathcal { M } _ { t }\\tag{8}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/0a6e6610eb0647823bc768b70131fbaf177f3feec3c4663f66a40df345979259.jpg"
+                }
+            },
+            "bbox": [
+                593,
+                852,
+                838,
+                869
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\Delta p _ { t , n } = ( \\Delta x _ { t , n } , \\Delta y _ { t , n } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "denotes the normalized local offset of frame � relative to the � -th candidate grid, and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathcal { H } _ { r e g } ( \\cdot )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "denotes the candidate-guided offset regression module. Fine-grained offset prediction exploits road boundaries, local textures, and geometric details from intermediate structural features, compensating for the quantization error introduced by coarse grid classification. During inference, the grid with the highest coarse classification score is first selected as the final candidate region:"
+                    }
+                ]
+            },
+            "bbox": [
+                504,
+                871,
+                926,
+                935
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                68,
+                63,
+                490,
+                155
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "n _ { t } ^ { * } = \\operatorname * { a r g m a x } _ { { n } \\atop { n } } s _ { t , n }\\tag{9}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/d7cf44d8fd2bfc4e1a0924a73bf2c885d0bd604ca1afd0f2f73a16c44ccae70b.jpg"
+                }
+            },
+            "bbox": [
+                217,
+                155,
+                339,
+                178
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The continuous coordinate of frame � on the satellite image is then decoded by combining the discrete grid coordinate with the corresponding local offset:"
+                    }
+                ]
+            },
+            "bbox": [
+                70,
+                178,
+                490,
+                223
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\widehat { P _ { t } } = g ( n _ { t } ^ { * } ) + \\Delta p _ { t , n _ { t } ^ { * } }\\tag{10}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/638d557377431d6088f3b31c84aa8756e00f26e4cbb10259e2342475ba5556e8.jpg"
+                }
+            },
+            "bbox": [
+                209,
+                223,
+                351,
+                241
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "g ( n _ { t } ^ { * } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "denotes the two-dimensional coordinate of the "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "n _ { t } ^ { * }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "-th satellite grid. The predicted coordinate is further converted into physical distance according to the satellite image resolution and ground sampling distance for localization-error evaluation."
+                    }
+                ]
+            },
+            "bbox": [
+                70,
+                241,
+                490,
+                318
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "As a local refiner, Stage 2 is not designed to recover arbitrary coarse-grid classification errors. Therefore, improving the Stage-1 candidate distribution is essential, and the temporal context module is introduced before Stage-1 classification to enhance candidate-region discrimination."
+                    }
+                ]
+            },
+            "bbox": [
+                68,
+                319,
+                490,
+                395
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "F. Training Objective"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                70,
+                402,
+                222,
+                417
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The two localization stages are jointly trained using coarsegrid classification supervision and candidate-conditioned offset regression supervision. Considering the temporal nature of AD localization, the total objective aggregates classification and regression losses over all timestamps:"
+                    }
+                ]
+            },
+            "bbox": [
+                70,
+                420,
+                490,
+                496
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathcal { L } _ { t o t a l } = \\lambda _ { c l s } \\mathcal { L } _ { c l s } + \\lambda _ { r e g } \\mathcal { L } _ { r e g }\\tag{11}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/c67d8ef1f806a356b3434d56d2a1fe77c6eb02f226cadeffe935f99653b047c4.jpg"
+                }
+            },
+            "bbox": [
+                181,
+                496,
+                379,
+                513
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\lambda _ { c l s }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\lambda _ { r e g }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "balance the two learning objectives."
+                    }
+                ]
+            },
+            "bbox": [
+                70,
+                513,
+                446,
+                530
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Coarse Classification Loss. In the coarse localization stage, the model predicts the satellite grid index containing the ground-truth vehicle position at each timestamp using temporally enhanced features. Since grid selection is a discrete classification task, cross-entropy loss supervises the sequencelevel prediction and maximizes the probability of the groundtruth grid:"
+                    }
+                ]
+            },
+            "bbox": [
+                70,
+                530,
+                490,
+                637
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathcal { L } _ { c l s } = - \\frac { 1 } { B \\cdot T } { \\sum _ { b = 1 } ^ { B } } { \\sum _ { t = 0 } ^ { T - 1 } } { \\sum _ { n = 1 } ^ { N ^ { 2 } } } y _ { n } ^ { ( b , t ) } \\log \\left( P _ { n } ^ { b , t } \\right)\\tag{12}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/d8de67aec103e09fd15f2f6b6cfc3c4955ebd67c301f153aab57bfdf5153bc0e.jpg"
+                }
+            },
+            "bbox": [
+                122,
+                636,
+                403,
+                683
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "N ^ { 2 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "denotes the number of satellite grids. "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "y _ { n } ^ { ( b , t ) }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is the one-hot ground-truth label for sample � at timestamp �, and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "P _ { n } ^ { b , t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "denotes the predicted probability of grid �."
+                    }
+                ]
+            },
+            "bbox": [
+                70,
+                683,
+                490,
+                734
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Masked Regression Loss. In the fine localization stage, the regression target is always defined on the ground-truth grid. The candidate mask determines whether the current candidate context covers the ground-truth grid. If the ground-truth grid is included in the candidate mask, the predicted offset at that grid is used to compute the regression loss. If the ground-truth grid is not covered, the regression loss of that sample is ignored to avoid supervising the local refiner under an invalid candidate context. The regression target is always indexed by the ground-truth grid, not by the Stage 1 top-1 prediction."
+                    }
+                ]
+            },
+            "bbox": [
+                70,
+                733,
+                490,
+                887
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathcal { L } _ { r e g } = \\frac { 1 } { B _ { v a l i d } } \\sum _ { b = 1 } ^ { B } \\sum _ { t = 0 } ^ { T - 1 } \\mathbb { I } \\left( M _ { n _ { g t } } ^ { b , t } \\right) \\cdot \\left. \\hat { t } _ { n _ { g t } } ^ { b , t } - t _ { g t } ^ { b , t } \\right. _ { 2 } ^ { 2 }\\tag{13}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/97fe4a697da3b6fa752d81d3361a14ec8dadecde8451d19dff03beb64014cedb.jpg"
+                }
+            },
+            "bbox": [
+                102,
+                886,
+                423,
+                930
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where �(·) denotes the indicator function, and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "B _ { v a l i d }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "denotes the number of valid regression samples in the current batch. "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\hat { t } _ { n _ { g t } } ^ { ( b ) }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "t _ { g t } ^ { ( b ) }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "denote the predicted normalized offset and ground-truth normalized offset, respectively. If the groundtruth grid is not selected by the candidate mask, the regression gradient at that timestamp is stopped."
+                    }
+                ]
+            },
+            "bbox": [
+                504,
+                63,
+                926,
+                162
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "III. EXPERIMENTS AND RESULTS ANALYSIS"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                573,
+                176,
+                857,
+                190
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "To evaluate the effectiveness of the proposed localization method, this section reports experiments on the CVIS [29] and KITTI-CVL [27] datasets. Section 3.1 describes the datasets and data splits; Section 3.2 defines the evaluation metrics for localization accuracy; and Section 3.3 details the implementation settings and hyperparameter configurations. Section 3.4 compares the proposed method against mainstream state-of-the-art (SOTA) methods across different datasets, and Section 3.5 presents ablation studies."
+                    }
+                ]
+            },
+            "bbox": [
+                503,
+                195,
+                928,
+                334
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "A. Datasets"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                504,
+                340,
+                591,
+                356
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "CVIS. The CVIS dataset contains real road-view sequences from Vermont, USA, and their corresponding satellite aerial images. It includes 118,549 street-view images captured by a front-facing vehicle camera with a 120° field of view. The dataset covers approximately 70% suburban roads and 30% urban areas, with about 30% of the data recording bidirectional trajectories along the same streets. To support sequential localization, adjacent street-view frames are spaced by about 8 m, and each sequence covers no more than 50 m. This constraint ensures that the entire trajectory segment lies within a single satellite map. Following this rule, CVIS provides 38,863 street-view sequence samples, each containing an average of 7 consecutive ground images. Each corresponding satellite map covers approximately 72.96 m×72.96 m with a ground resolution of about 0.114 m/pixel. To simulate localization uncertainty in real scenarios, the satellite map is not strictly centered on the street-view sequence and contains a random positional offset up to 5 m. This study splits CVIS into 24,872 training pairs, 6,218 validation pairs, and 7,773 test pairs. For a fair, fixed-length sequence input, this study samples six temporally ordered frames from each valid CVIS sequence during training and evaluation."
+                    }
+                ]
+            },
+            "bbox": [
+                504,
+                359,
+                928,
+                710
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "KITTI-CVL. KITTI-CVL extends the KITTI AD benchmark for cross-view localization. Shi et al. [27] use GPS coordinates from KITTI to retrieve high-resolution satellite imagery corresponding to street-view images. Each satellite map covers approximately 256 m × 256 m with a ground resolution of about 0.2 m/pixel. To adapt KITTI-CVL to sequential localization, this study serializes the original KITTI data using a strategy consistent with CVIS. Street-view images are sampled every 8 m to form a sequence "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "S = \\{ s _ { 0 } , s _ { 1 } , \\ldots , s _ { x } \\}"
+                    },
+                    {
+                        "type": "text",
+                        "content": "Starting from "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "s _ { 0 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", the distance to subsequent frames is accumulated, and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\{ s _ { 0 } , \\ldots , s _ { x } \\}"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is treated as one street-view sequence once the distance between "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "s _ { 0 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "s _ { x }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "exceeds 50 m. The next sequence starts from the midpoint of the current sequence. Generated sequences with fewer than six streetview images are discarded. This process yields 1,077 streetview sequences, each paired with the satellite map corresponding to its midpoint. This study splits KITTI-CVL into 862 training pairs, 107 validation pairs, and 108 test pairs."
+                    }
+                ]
+            },
+            "bbox": [
+                503,
+                709,
+                928,
+                926
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                70,
+                63,
+                490,
+                126
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "B. Evaluation metrics"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                71,
+                131,
+                222,
+                146
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "To comprehensively evaluate the proposed sequence localization model, this study follows common evaluation protocols for cross-view localization and measures performance from two aspects [23][31]: localization error statistics and distance-based recall. Model size and inference latency are also reported to assess computational cost and deployment efficiency, as summarized in Table 2."
+                    }
+                ]
+            },
+            "bbox": [
+                68,
+                150,
+                491,
+                258
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/223fc6205da878876c5ed99fbb81db5abeba68ff3424976e85b1868c9a2f786c.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 2. Evaluation metrics."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Metric</td><td>Definition</td></tr><tr><td>Mean error</td><td>Average Euclidean distance error</td></tr><tr><td>Median error</td><td>Median Euclidean distance error</td></tr><tr><td></td><td>R@1 m Percentage of predictions with error below 1 m</td></tr><tr><td></td><td>R@2 m Percentage of predictions with error below 2 m</td></tr><tr><td></td><td>R@5 m Percentage of predictions with error below 5 m</td></tr><tr><td>Params</td><td>Number of model parameters</td></tr><tr><td>Latency</td><td>Inference time for one input sequence</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                78,
+                299,
+                480,
+                428
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "C. Implementation details"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                71,
+                450,
+                248,
+                465
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "All experiments are implemented in PyTorch and trained on a single NVIDIA RTX 3090 GPU. For CVIS, ground images are resized from 1920 × 1080 pixels to 490 × 266 pixels, and satellite maps are resized from 640 × 640 pixels to 266 × 266 pixels during training and validation. For KITTI-CVL, ground images are resized from 1242 × 375 pixels to 490 × 154 pixels. Satellite maps are first center-cropped to 640 × 640 pixels and then resized to 266 × 266 pixels. Table 3 summarizes the network architecture and training hyperparameters."
+                    }
+                ]
+            },
+            "bbox": [
+                70,
+                468,
+                491,
+                607
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/1b29c4474587f8ee30a3999fc05798f7e7c486040b86420d9134315815b35def.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 3. Network and training settings."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Item</td><td>Setting</td></tr><tr><td>Feature dimension</td><td>C=768</td></tr><tr><td>Temporal context module</td><td>4 layers</td></tr><tr><td>Feature fusion module</td><td>4 layers</td></tr><tr><td>Attention heads</td><td>8</td></tr><tr><td>Backbone learning rate</td><td>10⁻⁶</td></tr><tr><td>FFN hidden dimension</td><td>1024</td></tr><tr><td>Dropout</td><td>0.1</td></tr><tr><td>Satellite grid</td><td>19×19</td></tr><tr><td>Batch size</td><td>4</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                78,
+                648,
+                480,
+                808
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "D. Performance analysis"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                71,
+                830,
+                241,
+                845
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "This section quantitatively evaluates the proposed localization framework on the CVIS and KITTI-CVL datasets. To verify its effectiveness, this study compares the proposed method with three representative SOTA methods: CVML [19], CBSGV [23], and TACV [31]. Mean error, median error, and distance recall under different thresholds serve as the core metrics for sequence-based cross-view localization. The comparison results demonstrate that the proposed temporal framework consistently outperforms all three baselines across different scene clips."
+                    }
+                ]
+            },
+            "bbox": [
+                70,
+                848,
+                490,
+                926
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                504,
+                63,
+                926,
+                138
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Evaluation on CVIS. This subsection evaluates the proposed localization method on the CVIS dataset. Table 4 summarizes the overall performance of the proposed method and three baselines, while Fig. 7 reports distance-recall curves on the validation and test sets. Fig. 8 further visualizes localization results on different temporal clips, providing qualitative examples of trajectory-level localization behavior."
+                    }
+                ]
+            },
+            "bbox": [
+                504,
+                140,
+                928,
+                246
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Table 4 reports the quantitative comparison on CVIS. The proposed method achieves the best localization performance on both validation and test sets. On the test set, the proposed method achieves a mean distance error of 1.57 m and a median distance error of 1.21 m, reducing the errors of the strongest baseline, TACV, by 2.23 m and 0.71 m, respectively. Compared with the variant without temporal enhancement, the full model reduces mean distance error from 5.92 m to 1.57 m, demonstrating the effectiveness of spatio-temporal context enhancement. Unlike TACV, which performs temporal aggregation on fused satellite-ground features, this study first enhances coarse ground features with historical context, then conducts cross-view feature interaction, and finally uses hierarchical features for candidate-region discrimination and local offset estimation. After replacing the TACV feature extractor with DINOv2, the test-set mean error decreases from 3.80 m to 2.84 m, and R@1 m improves from 8.14% to 15.95%, indicating that stronger visual representations improve sequential cross-view localization. Since TACV+DINOv2 already uses the same pretrained backbone, the remaining performance gap indicates that the improvement of the proposed method cannot be attributed only to backbone replacement. The placement of temporal enhancement, the use of hierarchical features, and the two-stage localization design also contribute to the final performance."
+                    }
+                ]
+            },
+            "bbox": [
+                503,
+                246,
+                928,
+                627
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "To reduce the influence of backbone differences, this study further replaces the original TACV feature extractor with DINOv2 while keeping its temporal aggregation strategy and localization structure unchanged. Although the full model introduces sequence modeling, its six-frame inference latency is 97.32 ms, lower than the 113.00 ms latency of TACV. This efficiency indicates that the proposed method achieves a favorable balance between localization accuracy and inference cost."
+                    }
+                ]
+            },
+            "bbox": [
+                504,
+                627,
+                928,
+                763
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 7 shows the distance-recall curves of different methods on the CVIS validation and test sets. The proposed method consistently maintains higher recall across all distance thresholds, with the largest gains appearing under small-error thresholds. This improvement indicates that spatio-temporal context enhancement strengthens fine-grained position discrimination. As the threshold increases, the recall curve saturates after approximately 4 m and remains above all baselines, indicating reliable localization across different error tolerances."
+                    }
+                ]
+            },
+            "bbox": [
+                503,
+                763,
+                928,
+                917
+            ]
+        }
+    ],
+    [
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/63816f7f45623d7afa091c22a05bece0b732b6926948bf935b72dee68ba33ba6.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 4. Localization performance comparison on the CVIS dataset. The best results are shown in bold, and the second-best results are underlined. “-” indicates that the corresponding metric is not reported in the original paper."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td rowspan=\"2\">Methods</td><td colspan=\"5\">Validation</td><td colspan=\"5\">Test</td><td rowspan=\"2\"></td><td rowspan=\"2\">Params Latency(ms)</td></tr><tr><td>Mean Median R@1m R@2m R@5m</td><td></td><td></td><td></td><td></td><td>Mean</td><td>Median R@1m</td><td></td><td>R@2m R@5m</td><td></td></tr><tr><td>CVML[19]</td><td>15.99</td><td>14.72</td><td>–</td><td>一</td><td>-</td><td>16.37</td><td>15.13</td><td></td><td>-</td><td>–</td><td>239.09</td><td>297.65</td></tr><tr><td>CBSGV[23]</td><td>10.97</td><td>7.52</td><td>6.95</td><td>20.86</td><td>37.16</td><td>11.39</td><td>7.89</td><td>6.76</td><td>19.57</td><td>34.12</td><td>27.09</td><td>21.86</td></tr><tr><td>TACV[31]</td><td>4.46</td><td>2.00</td><td>7.59</td><td>49.74</td><td>79.31</td><td>3.80</td><td>1.92</td><td>8.14</td><td>52.68</td><td>84.09</td><td>27.88</td><td>113.00</td></tr><tr><td>TACV+DINOv2</td><td>4.35</td><td>1.61</td><td>14.84</td><td>62.54</td><td>83.18</td><td>2.84</td><td>1.48</td><td>15.95</td><td>70.19</td><td>91.77</td><td>183.83</td><td>103.53</td></tr><tr><td>Ours w/o Temporal</td><td>5.11</td><td>1.88</td><td>26.42</td><td>52.30</td><td>67.86</td><td>5.92</td><td>2.11</td><td>24.44</td><td>48.10</td><td>61.95</td><td>185.66</td><td>28.94</td></tr><tr><td>Ours Full</td><td>1.78</td><td>1.25</td><td>38.09</td><td>75.79</td><td>97.95</td><td>1.57</td><td>1.21</td><td>40.22</td><td>77.51</td><td>98.99</td><td>189.88</td><td>97.32</td></tr></table>",
+                "table_type": "complex_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                81,
+                128,
+                915,
+                286
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/c20471386212ed1f725e3cf134169a98fd3fb79db2b1b27990e61a56002206c4.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 5. Transfer and fine-tuning performance on the KITTI-CVL dataset. The best results are shown in bold, and the secondbest results are underlined."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td rowspan=\"2\">Methods</td><td colspan=\"5\">Validation</td><td colspan=\"5\">Test</td></tr><tr><td>Mean</td><td>Median</td><td>R@1m</td><td>R@2m</td><td>R@5m</td><td>Mean</td><td>Median</td><td>R@1m</td><td>R@2m</td><td>R@5m</td></tr><tr><td>CBSGV</td><td>13.07</td><td>12.53</td><td>7.23</td><td>7.39</td><td>18.55</td><td>14.56</td><td>13.54</td><td>8.81</td><td>8.96</td><td>17.30</td></tr><tr><td>TACV</td><td>2.67</td><td>1.82</td><td>0.94</td><td>64.15</td><td>88.68</td><td>3.57</td><td>2.75</td><td>0.00</td><td>16.04</td><td>88.57</td></tr><tr><td>Ours w/o Temporal</td><td>12.52</td><td>9.43</td><td>11.32</td><td>16.82</td><td>18.71</td><td>14.38</td><td>13.85</td><td>9.59</td><td>13.68</td><td>16.67</td></tr><tr><td>Ours Full</td><td>1.42</td><td>1.12</td><td>43.55</td><td>78.46</td><td>98.27</td><td>2.61</td><td>1.97</td><td>26.42</td><td>51.10</td><td>89.47</td></tr><tr><td>Ours + Fine-tuning</td><td>1.14</td><td>0.85</td><td>58.33</td><td>86.48</td><td>98.27</td><td>2.27</td><td>1.55</td><td>35.69</td><td>63.36</td><td>92.92</td></tr></table>",
+                "table_type": "complex_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                91,
+                330,
+                905,
+                469
+            ]
+        },
+        {
+            "type": "chart",
+            "content": {
+                "image_source": {
+                    "path": "images/c35085001908decc239a2ff65c6ef16de7f3517f9528691b0fe32ef0b9fb9821.jpg"
+                },
+                "content": "",
+                "chart_caption": [],
+                "chart_footnote": []
+            },
+            "bbox": [
+                73,
+                481,
+                279,
+                614
+            ]
+        },
+        {
+            "type": "chart",
+            "content": {
+                "image_source": {
+                    "path": "images/3e8151db2eb7fca3ec6182686cb69cab5eb8b3b9b2fecb86d8d96709f505a894.jpg"
+                },
+                "content": "",
+                "chart_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 7. Recall rate curves of different methods based on the CVIS dataset."
+                    }
+                ],
+                "chart_footnote": []
+            },
+            "bbox": [
+                279,
+                486,
+                482,
+                614
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 8 visualizes localization results on two consecutive temporal clips. The predicted positions closely follow the ground-truth positions in spatial distribution. Together, Fig. 7 and Fig. 8 show that the proposed method improves distance recall and produces visually aligned localization results across consecutive frames."
+                    }
+                ]
+            },
+            "bbox": [
+                70,
+                646,
+                490,
+                733
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/05b9fb690341901c6988a5a68a70974798755c0d1fd136b9b76f10b076051d10.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 8. Visualization of sequential localization results for different temporal clips on the CVIS dataset. Green dots denote the GT trajectory, and blue diamonds denote our model's results."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                76,
+                731,
+                488,
+                852
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Evaluation on KITTI-CVL. This subsection evaluates the transferability and target-domain adaptation capability of the proposed method on KITTI-CVL. Since the serialized KITTI-CVL dataset contains fewer samples than CVIS, this experiment serves as a supplementary transfer evaluation rather than a large-scale benchmark. Table 5 reports directtransfer results and the performance obtained after fine-tuning the CVIS-pretrained model on KITTI-CVL. Fig. 9 shows distance-recall curves under varying thresholds, and Fig. 10 visualizes localization results on continuous temporal clips."
+                    }
+                ]
+            },
+            "bbox": [
+                504,
+                486,
+                928,
+                632
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Table 5 shows that Ours Full consistently outperforms the baselines on KITTI-CVL. On the test set, Ours Full achieves a mean error of 2.61 m and a median error of 1.97 m, reducing the corresponding errors of TACV by 0.96 m and 0.78 m. Ours Full also achieves R@1 m and R@2 m of 26.42% and 51.10%, substantially outperforming TACV, whose R@1 m and R@2 m are 0.00% and 16.04%. Compared with Ours w/o Temporal, the full model reduces mean error from 14.38 m to 2.61 m, confirming the effectiveness of temporal context enhancement under cross-dataset evaluation. After fine-tuning on KITTI-CVL, Ours + Fine-tuning further reduces the test-set mean error to 2.27 m and improves R@1 m to 35.69%, indicating stronger adaptation to the target-domain distribution."
+                    }
+                ]
+            },
+            "bbox": [
+                504,
+                631,
+                928,
+                820
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 9 presents the distance-recall curves on KITTI-CVL. The proposed method maintains a higher recall than all baselines across distance thresholds, with clear advantages at small error thresholds. Fine-tuning further improves recall at all thresholds, demonstrating that limited target-domain supervision helps the proposed framework adapt to the targetdomain distribution and improve localization accuracy."
+                    }
+                ]
+            },
+            "bbox": [
+                504,
+                820,
+                928,
+                924
+            ]
+        }
+    ],
+    [
+        {
+            "type": "chart",
+            "content": {
+                "image_source": {
+                    "path": "images/8d5f0972fce1782708012fb957e38e500bc323dbee28a5f6b290c5bca91bbf2e.jpg"
+                },
+                "content": "",
+                "chart_caption": [],
+                "chart_footnote": []
+            },
+            "bbox": [
+                73,
+                59,
+                281,
+                191
+            ]
+        },
+        {
+            "type": "chart",
+            "content": {
+                "image_source": {
+                    "path": "images/096245532c71151d7b7197e1925d100514f5317eeadc91773a9018f13d2a13c4.jpg"
+                },
+                "content": "",
+                "chart_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 9. Recall rate curves of different methods on the KITTI-CVL dataset."
+                    }
+                ],
+                "chart_footnote": []
+            },
+            "bbox": [
+                279,
+                59,
+                485,
+                191
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 10 visualizes localization results on continuous KITTI-CVL temporal clips. The predicted positions are spatially close to the ground-truth positions in the visualized clips, indicating effective localization behavior in unseen road scenes. Together, Table 5, Fig. 9, and Fig. 10 demonstrate that the proposed method achieves strong cross-dataset performance in quantitative metrics and produces visually aligned trajectory predictions."
+                    }
+                ]
+            },
+            "bbox": [
+                70,
+                220,
+                490,
+                321
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/b30cb7be789d5699cce05720a0e8bb3019715d3f1cd029d29c493a16e691a9c5.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 10. Visualization of sequential localization results for different temporal clips on the KITTI-CVL dataset. Green dots denote GT, and blue diamonds denote our model's results."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                76,
+                320,
+                486,
+                422
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "E. Ablation study"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                71,
+                476,
+                192,
+                491
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "To analyze the contribution of each component, this study conducts stepwise ablation experiments on CVIS. As reported in Table 6, Baseline uses only DINOv2 features for cross-view matching; +Multi-level Features further introduces a multilevel feature representation; and +Temporal Context adds the proposed temporal context enhancement module."
+                    }
+                ]
+            },
+            "bbox": [
+                70,
+                494,
+                490,
+                587
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Table 6 shows that using only final-layer DINOv2 features gives a test-set mean error of 12.25 m, indicating that a single semantic feature level cannot simultaneously support coarse candidate-region recognition and fine offset estimation. Introducing hierarchical features reduces the mean error from 12.25 m to 5.92 m and improves R@1 m from 6.37% to 24.44%. This improvement indicates that features at different depths provide complementary information for the two localization stages: deep features offer stronger semantic discrimination for coarse satellite-region classification, whereas intermediate features preserve richer local structures and textures for fine offset refinement. To further analyze the internal components of the recurrent cross-frame context enhancement module, this study constructs a position-aware variant without cross-frame aggregation. This variant removes cross-frame attention between the current frame and the previous recurrent state, injects only two-dimensional spatial positional encoding into the current coarse ground feature, and produces the output through the same residual feed-forward update as the full module. The position-aware spatial update reduces the mean error to 4.96 m, indicating that spatial structural priors improve the representation of ground features. Adding temporal context enhancement reduces the mean error to 1.57 m and increases R@1 m and R@5 m to 40.22% and 98.99%, respectively. These results demonstrate that historical observations strengthen the discriminability of coarse ground representations and generate more reliable satellite candidate distributions for subsequent refinement. Overall, hierarchical feature utilization improves compatibility between feature abstraction levels and stage-specific localization objectives, while temporal context reduces frame-level ambiguity by aggregating historical evidence. Their complementary effects jointly improve final localization performance."
+                    }
+                ]
+            },
+            "bbox": [
+                68,
+                585,
+                491,
+                800
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                504,
+                63,
+                928,
+                353
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "To analyze how temporal context affects fine localization, this study further examines the coverage and probability distribution of Stage 1 candidate regions. Since Stage 2 performs offset regression only within the candidate regions selected by Stage 1, the quality of the coarse candidate distribution directly affects fine localization. Temporal context can improve final localization accuracy only when it helps the model retain the ground-truth region inside the candidate mask."
+                    }
+                ]
+            },
+            "bbox": [
+                504,
+                352,
+                928,
+                474
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Table 7 reports ground-truth grid coverage under different top-K settings. Compared with the model without temporal context, the full model achieves higher candidate coverage for all K values. This improvement is especially important when only a small number of candidates are retained, since visually similar satellite regions can easily be confused with the true location. Under the top-64 setting, the full model uses only 17.73% of the 19×19 search space while covering 99.98% of ground-truth grids. These results indicate that temporal context improves the reliability of candidate-region discrimination before fine offset regression."
+                    }
+                ]
+            },
+            "bbox": [
+                503,
+                474,
+                928,
+                643
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/4ac78435a3fbee0f41979acc522b189fed609cedfe031ce8a54787c9a10ef5c1.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 7. Stage-1 candidate coverage on the CVIS dataset."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>top-K</td><td>Candidate Ratio</td><td>w/o Temporal</td><td>Full</td></tr><tr><td>top-1</td><td>0.28%</td><td>43.55</td><td>69.26</td></tr><tr><td>top-5</td><td>1.39%</td><td>83.33</td><td>98.92</td></tr><tr><td>top-10</td><td>2.77%</td><td>93.64</td><td>99.76</td></tr><tr><td>top-32</td><td>8.86%</td><td>99.75</td><td>99.95</td></tr><tr><td>top-64</td><td>17.73%</td><td>99.95</td><td>99.98</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                513,
+                665,
+                916,
+                775
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/96842143e617849dca9403bd133d3360c8a6d5f1447d4079e1aeb27f34b06c41.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 6. Ablation study on CVIS dataset."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Model</td><td>Multi-level Feat. Pos. Enc.</td><td></td><td>Temporal Attn.</td><td>Mean</td><td>Median</td><td>R@1m</td><td>R@2m</td><td>R@5m</td></tr><tr><td>Baseline</td><td>X</td><td>X</td><td>X</td><td>12.25</td><td>12.77</td><td>6.37</td><td>11.91</td><td>16.78</td></tr><tr><td>+ Multi-level Features</td><td>√</td><td>X</td><td>X</td><td>5.92</td><td>2.11</td><td>24.44</td><td>48.10</td><td>61.95</td></tr><tr><td>+ Position-aware Update</td><td>√</td><td>√</td><td>X</td><td>4.96</td><td>1.79</td><td>28.00</td><td>53.97</td><td>68.46</td></tr><tr><td>+ Temporal Context</td><td>√</td><td>√</td><td>√</td><td>1.57</td><td>1.21</td><td>40.22</td><td>77.51</td><td>98.99</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                71,
+                821,
+                923,
+                926
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 11 further visualizes the Stage 1 probability distributions. Without temporal context, the response distribution tends to spread across multiple visually similar road regions. After the temporal context is introduced, highconfidence responses become more concentrated around the reference region. These observations indicate that the proposed temporal module does not serve as post-processing or output smoothing; instead, it refines the satellite candidate distribution prior to Stage 2 and provides a more reliable spatial mask for local offset estimation."
+                    }
+                ]
+            },
+            "bbox": [
+                70,
+                63,
+                491,
+                214
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/9fd8a0c97f99b2fdb51a7d06bf7bb483270dfe7b80be0d77b30e1ab70f1da0e6.jpg"
+                },
+                "image_caption": [],
+                "image_footnote": []
+            },
+            "bbox": [
+                75,
+                215,
+                210,
+                320
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/6e4969d5ab07ab57b8f0b90bbef742eadd75585c6efa599fa3759800afce9890.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "(a) w/o temporal context enhancement"
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                212,
+                214,
+                349,
+                319
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/8588de368bde46b52df9862c6822a6b2ac9fd23dbcf26f859143415727984e0d.jpg"
+                },
+                "image_caption": [],
+                "image_footnote": []
+            },
+            "bbox": [
+                351,
+                214,
+                486,
+                319
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/9c1095556755e1f71e228f592e241782bb5158cd8c53a1bbff2c1a226cf4e7fa.jpg"
+                },
+                "image_caption": [],
+                "image_footnote": []
+            },
+            "bbox": [
+                73,
+                332,
+                210,
+                438
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/dd4938cd66a6973726b168c0b23f11a2bd4e52db1b410fe48cd1d4cf69da12ea.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "(b) Full"
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                212,
+                332,
+                349,
+                438
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/5b55d2473ba858ae6535eebcf84f184447d13ab4938b6473943abd4e3f4cd264.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 11. Effect of temporal context on Stage-1 candidate distributions."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                349,
+                332,
+                486,
+                438
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "IV. REAL-WORLD VEHICLE EXPERIMENT"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                147,
+                513,
+                413,
+                529
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "To further verify applicability under real-vehicle conditions, this study conducts field experiments on a real vehicle. Unlike public-dataset experiments, the real-vehicle experiment uses low-accuracy GPS measurements to define satellite-map crop centers, while high-accuracy GPS serves as ground truth. The model directly uses parameters learned from public datasets, without training, fine-tuning, or updating on real-vehicle data, thereby evaluating zero-shot deployment capability in realvehicle applications."
+                    }
+                ]
+            },
+            "bbox": [
+                70,
+                534,
+                491,
+                671
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "A. Experimental settings"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                70,
+                679,
+                240,
+                694
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 12 shows the vehicle used in the experiments. The vehicle is equipped with a front-facing camera, a highaccuracy GPS device, and a low-accuracy GPS device to synchronously collect road images and vehicle positioning information. As reported in Table 8, the front-facing camera provides continuous road-view images during driving; the high-accuracy GPS device provides real-time kinematic (RTK)-based GT trajectories for localization-error evaluation; and the low-accuracy GPS device offers coarse positioning from ordinary onboard localization equipment and defines the satellite-map crop center."
+                    }
+                ]
+            },
+            "bbox": [
+                68,
+                695,
+                491,
+                790
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                504,
+                63,
+                926,
+                138
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/1d552dc805083b83c30ef87c4fa5c1f014c10f7eaefdf5a8f27695d82a7703b2.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 12. Real-world vehicle platform and sensor setup."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                516,
+                137,
+                916,
+                329
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "As shown in Fig. 13, the driving route in the field experiments covers diverse real urban road scenarios, including arterial roads, intersections, dusk scenes, roundabouts, elevated roads, uphill and downhill segments, and side roads under viaducts. These scenes contain structural road changes, occlusions, elevation variations, and complex traffic conditions, providing a realistic testbed for cross-view visual localization in real-world driving."
+                    }
+                ]
+            },
+            "bbox": [
+                504,
+                348,
+                926,
+                468
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/d14e5bb6f6c026f75b97da6584987c11badaa468318140c66104951304d3a9fc.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 13. Driving route in the field experiments."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                514,
+                468,
+                918,
+                637
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "For each ground-image sequence, this study uses the lowaccuracy GPS position of the center frame as the crop center for the satellite image and retrieves the corresponding satellite image from Google Maps. Satellite images are acquired with zoom=20 and scale=2, and each crop is resized to 640 × 640 pixels. At this zoom level, each satellite image covers approximately 78.9 m × 78.9 m, encompassing the lowaccuracy GPS error range and the surrounding road context."
+                    }
+                ]
+            },
+            "bbox": [
+                504,
+                656,
+                926,
+                779
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/ed12e42d85ac4711311d487cd03162acae849a121342919acfe5e2685c4ad4c7.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 8. Detailed configuration of the real-world vehicle platform."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Item</td><td>Model/Type</td><td>Main specification</td><td>Sampling rate</td></tr><tr><td>Front-view Camera</td><td>AHD</td><td>1280×720 resolution</td><td>25 FPS</td></tr><tr><td>Low-precision GPS</td><td>WTGAHRS3-485</td><td>GNSS/IMU module; meter-level positioning accuracy</td><td>10 Hz</td></tr><tr><td>High-precision GPS</td><td>CHCNAV CGI430</td><td>RTK-capable GNSS/INS; horizontal RTK accuracy of 1 cm+1 ppm</td><td>50 Hz</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                71,
+                814,
+                923,
+                929
+            ]
+        }
+    ],
+    [
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/8a312f29a22d7dd1d964c4ee97ae6efcc92f65279a263484b73da8c0547546da.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 9. Scene-wise localization performance on real-vehicle data."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Scene</td><td>Sequences</td><td>Mean</td><td>Median</td><td>R@1m</td><td>R@2m</td><td>R@5m</td></tr><tr><td>Urban arterial road</td><td>148</td><td>1.78</td><td>1.63</td><td>16.67</td><td>65.88</td><td>99.89</td></tr><tr><td>Intersection</td><td>121</td><td>3.02</td><td>3.24</td><td>14.46</td><td>28.65</td><td>93.81</td></tr><tr><td>Internal road</td><td>125</td><td>1.38</td><td>1.12</td><td>43.20</td><td>83.73</td><td>100.00</td></tr><tr><td>Roundabout</td><td>15</td><td>2.30</td><td>2.10</td><td>6.66</td><td>47.78</td><td>96.67</td></tr><tr><td>Dusk scene</td><td>86</td><td>2.86</td><td>2.89</td><td>9.11</td><td>28.68</td><td>96.51</td></tr><tr><td>Elevated road</td><td>335</td><td>3.67</td><td>3.63</td><td>0.19</td><td>3.58</td><td>94.77</td></tr><tr><td>Viaduct-side road</td><td>159</td><td>2.95</td><td>2.89</td><td>1.78</td><td>22.32</td><td>98.95</td></tr><tr><td>Downhill road</td><td>33</td><td>3.33</td><td>3.32</td><td>3.53</td><td>8.59</td><td>97.47</td></tr><tr><td>Uphill road</td><td>9</td><td>4.21</td><td>4.37</td><td>1.85</td><td>5.55</td><td>87.04</td></tr><tr><td>All scenes</td><td>1031</td><td>2.84</td><td>2.92</td><td>10.65</td><td>30.98</td><td>96.86</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                99,
+                83,
+                895,
+                299
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "B. Scene-wise quantitative and qualitative results"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                71,
+                321,
+                401,
+                337
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "This subsection evaluates real-vehicle localization performance. The experiment directly uses the model trained on the CVIS dataset and applies no additional training, finetuning, or parameter update on real-vehicle data. The Euclidean distance between model outputs and GT is used to compute mean error, median error, and distance recall. To analyze performance across real road conditions, the experiments are divided into nine typical scenarios: urban arterial roads, intersections, internal roads, roundabouts, dusk scenes, elevated roads, side roads under viaducts, downhill segments, and uphill segments. Table 9 reports the scene-wise quantitative results."
+                    }
+                ]
+            },
+            "bbox": [
+                70,
+                339,
+                490,
+                522
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Table 9 shows that the proposed method achieves effective localization performance in real-vehicle application. Across all scenarios, our model achieves a mean error of 2.84 m, a median error of 2.92 m, and R@5 m of 96.86%, demonstrating effective cross-view localization under real-road conditions. The best performance is achieved in the internal-road scenario, with a mean error of 1.38 m, a median error of 1.12 m, R@1 m of 43.20%, and R@5 m of 100.00%. In the urban arterial roads and side roads under viaducts scenarios, our model also yields strong results, with mean errors of 1.78 m and 2.95 m, respectively. These results indicate that clear road boundaries and persistent scene structures provide useful cross-view cues for satellite-ground matching."
+                    }
+                ]
+            },
+            "bbox": [
+                70,
+                522,
+                491,
+                722
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "In contrast, our model produces relatively greater localization errors in intersections and elevated roads. Our model achieves a mean error of 3.02 m and R@1 m of 14.46% in the intersection scenario, suggesting that complex road topology, multi-directional lanes, and dynamic traffic interference increase cross-view matching ambiguity. In the elevated-road scenario, our model achieves a mean error of 3.67 m and R@5 m of 94.77%, but R@1 m and R@2 m remain low. The main reason is that elevated roads contain similar road shapes and lane textures, with fewer distinguishable surrounding landmarks, causing candidateregion confusion and less accurate local matching. In the downhill and uphill scenarios, our model achieves mean errors of 3.33 m and 4.21 m, respectively, indicating that slopeinduced viewpoint changes affect localization but still allow high recall within the 5 m threshold."
+                    }
+                ]
+            },
+            "bbox": [
+                68,
+                722,
+                491,
+                936
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                504,
+                313,
+                924,
+                344
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 14 visualizes localization results across different realvehicle scenarios. For internal roads, urban arterial roads, and side roads under viaducts, our model's results are generally close to the GT, demonstrating the strong usability in the real world. In roundabouts, elevated roads, and sloped segments, local trajectory deviations appear, but our visual localization results still follow the overall road geometry. Notably, in the uphill scenario, our model still produces reasonable localization results despite dynamic occlusion from windshield wiper motion, suggesting the robustness to local visual interference during real driving."
+                    }
+                ]
+            },
+            "bbox": [
+                504,
+                344,
+                928,
+                511
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/55e748531e51e2e47a1814e3cc5fff031b154df5bc6c84f6bb0d2469af16471c.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 14. Localization results in different real-world driving scenarios. Green dots denote GT, and blue diamonds denote our model's results."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                511,
+                508,
+                928,
+                772
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 15 further shows two special cases. Under some severe scenarios (Severely obstructed by buildings and trees), RTK GPS is unable to provide correct localization results. Our visual localization model is still able to provide precise localization results."
+                    }
+                ]
+            },
+            "bbox": [
+                504,
+                821,
+                926,
+                900
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/1c349065d7e2f9bfba39060e3c830f3c03f9600a1becac6145616128bfb8adec.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 15. Qualitative cases with local inconsistencies between RTK-based GT and visible road geometry. Green dots denote results from RTK, and blue diamonds denote our model's results."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                75,
+                60,
+                473,
+                175
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Overall, Table 9, Fig. 14, and Fig. 15 show that the proposed method performs continuous cross-view localization on real roads using only low-accuracy GPS and without training on realvehicle data, suggesting practical deployment potential."
+                    }
+                ]
+            },
+            "bbox": [
+                70,
+                238,
+                490,
+                299
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "V. CONCLUSION"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                225,
+                313,
+                336,
+                325
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "This study proposes a temporal cross-view localization method for AD. The method recurrently enhances ground-view features, using the current frame as the Query and the previous state as the Key and Value, allowing each frame to retrieve historical scene cues while preserving its spatial layout. The enhanced features support satellite-grid candidate discrimination and local offset estimation, improving continuous-frame localization accuracy and robustness. Extensive experiments demonstrate that the proposed method substantially outperforms existing temporal SOTA methods. On CVIS, the proposed method reduces mean error from 3.80 m to 1.57 m and improves R@1 m by 32.08 percentage points. On KITTI-CVL, direct transfer reduces the mean error from 3.57 m to 2.61 m, while target-domain fine-tuning further reduces it to 2.27 m and improves R@1 m to 35.69%. During real-vehicle field experiments, the proposed method achieves a mean error of 2.84 m, a median error of 2.92 m, and R@5 m of 96.86%, indicating effective cross-view localization on real roads where lowaccuracy GPS measurements provide only local priors. These results show that the proposed temporal-context-enhanced crossview localization framework provides an effective, generalizable, and practical solution for continuous visual localization."
+                    }
+                ]
+            },
+            "bbox": [
+                70,
+                332,
+                491,
+                651
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Future work includes three directions. First, multimodal sensor cues, such as LiDAR, IMU, or HD map priors, can be integrated to improve robustness under heavy occlusion, severe illumination variation, and dynamic traffic. Second, motion constraints or trajectory-smoothing mechanisms can be incorporated into future temporal modeling to further improve long-horizon trajectory-level consistency. Third, more efficient temporal feature modeling and lightweight deployment strategies can reduce the additional cost introduced by continuous attention, better satisfying real-time and resource-constrained onboard localization requirements."
+                    }
+                ]
+            },
+            "bbox": [
+                70,
+                651,
+                491,
+                813
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "REFERENCES"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                236,
+                827,
+                326,
+                839
+            ]
+        },
+        {
+            "type": "list",
+            "content": {
+                "list_type": "reference_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[1] Y. Lu, H. Ma, E. Smart, and H. Yu, “Real-time performance-focused localization techniques for autonomous vehicle: A review,” IEEE Trans. Intell. Transp. Syst., vol. 23, no. 7, pp. 6082–6100, Jul. 2022, doi: 10.1109/TITS.2021.3077800."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[2] X. Sheng et al., “EdgeUNet: Edge-guided multi-loss network for drivable area and lane segmentation in autonomous vehicles,” IEEE Trans. Intell. Transp. Syst., vol. 26, no. 2, pp. 2530–2542, Nov. 2024."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[3] Y. C. Lee, “LSMCL: Long-term static mapping and cloning localization for autonomous robot navigation using 3D LiDAR in dynamic environments,” Expert Syst. Appl., vol. 241, 2024, Art. no. 122688."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[4] J. Shang, Y. Liu, Y. Xu, J. Xiao, and D. Ma, \"Robust global localization for urban autonomous vehicles via 3D geometric-enhanced visual place recognition,\" IEEE Trans. Intell. Transp. Syst., vol. 26, no. 11, pp. 18553- 18567, 2025."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[5] L. Chen, P. Wu, K. Chitta, B. Jaeger, A. Geiger, and H. Li, “End-to-end autonomous driving: Challenges and frontiers,” IEEE Trans. Pattern Anal. Mach. Intell., vol. 46, no. 12, pp. 10164–10183, Dec. 2024, doi: 10.1109/TPAMI.2024.3435937."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[6] A. Durgam, S. Paheding, V. Dhiman, and V. Devabhaktuni, “Cross-view geo-localization: A survey,” IEEE Access, vol. 12, pp. 192028–192050, 2024."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[7] S. Wang, Y. Zhang, A. Perincherry, A. Vora, and H. Li, “View consistent purification for accurate cross-view localization,” in Proc. IEEE/CVF Int. Conf. Comput. Vis. (ICCV), Paris, France, 2023, pp. 8197–8206."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[8] Z. Xia, O. Booij, M. Manfredi, and J. F. P. Kooij, “Cross-view matching for vehicle localization by learning geographically local representations,” IEEE Robot. Autom. Lett., vol. 6, no. 3, pp. 5921–5928, Jul. 2021."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[9] K. Xie, W. Zhou, X. Huang, H. Guan, and F. Yulong, “Self-supervised cross-view graph search framework for ground-to-satellite geolocalization,” IEEE Trans. Geosci. Remote Sens., early access, Aug. 25, 2025."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[10] T. Lentsch, Z. Xia, H. Caesar, and J. F. P. Kooij, “SliceMatch: Geometry-guided aggregation for cross-view pose estimation,” in Proc. IEEE/CVF Conf. Comput. Vis. Pattern Recognit. (CVPR), Vancouver, BC, Canada, 2023, pp. 17225–17234."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[11] Q. Wang, S. Wu, and Y. Shi, “BevSplat: Resolving height ambiguity via feature-based Gaussian primitives for weakly-supervised cross-view localization,” 2025, arXiv:2502.09080."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[12] N. Keetha et al., “AnyLoc: Towards universal visual place recognition,” IEEE Robot. Autom. Lett., vol. 9, no. 2, pp. 1286–1293, Dec. 2023."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[13] Q. Zhang and Y. Zhu, “Benchmarking the robustness of cross-view geolocalization models,” in Proc. Eur. Conf. Comput. Vis. (ECCV), Milan, Italy, 2024, pp. 36–53."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[14] W. Liu, L. Ma, X. Zhuang, and Z. Deng, “MS2-CL: Multi-scale selfsupervised learning for camera to LiDAR cross-modal place recognition,” Sensors, vol. 26, no. 5, 2026, Art. no. 1561."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[15] H. Ju, S. Huang, S. Liu, and Z. Zheng, “Video2BEV: Transforming drone videos to BEVs for video-based geo-localization,” in Proc. IEEE/CVF Int. Conf. Comput. Vis. (ICCV), 2025, pp. 27073–27083."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[16] Y. Sun et al., “Cross-view object geo-localization in a local region with satellite imagery,” IEEE Trans. Geosci. Remote Sens., vol. 61, pp. 1–6, 2023."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[17] Y. Shi, F. Wu, A. Perincherry, A. Vora, and H. Li, “Boosting 3-DoF ground-to-satellite camera localization accuracy via geometry-guided cross-view transformer,” in Proc. IEEE/CVF Int. Conf. Comput. Vis. (ICCV), Paris, France, 2023, pp. 21516–21526."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[18] Y. Shi and H. Li, “Beyond cross-view image retrieval: Highly accurate vehicle localization using satellite image,” in Proc. IEEE/CVF Conf. Comput. Vis. Pattern Recognit. (CVPR), New Orleans, LA, USA, 2022, pp. 17010–17020."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[19] Z. Xia, O. Booij, M. Manfredi, and J. F. P. Kooij, “Visual cross-view metric localization with dense uncertainty estimates,” in Proc. Eur. Conf. Comput. Vis. (ECCV), Tel Aviv, Israel, 2022, pp. 90–106."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[20] F. Deuser, K. Habel, and N. Oswald, “Sample4Geo: Hard negative sampling for cross-view geo-localisation,” in Proc. IEEE/CVF Int. Conf. Comput. Vis. (ICCV), Paris, France, 2023, pp. 16847–16856."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[21] X. Wang, R. Xu, Z. Cui, Z. Wan, and Y. Zhang, “Fine-grained crossview geo-localization using a correlation-aware homography estimator,” Adv. Neural Inf. Process. Syst., vol. 36, pp. 5301–5319, 2023."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[22] T. Shore, S. Hadfield, and O. Mendez, “BEV-CV: Birds-eye-view transform for cross-view geo-localisation,” in Proc. IEEE/RSJ Int. Conf. Intell. Robots Syst. (IROS), Abu Dhabi, United Arab Emirates, 2024, pp. 11048–11055."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[23] D. Yuan, F. Maire, and F. Dayoub, “Cross-attention between satellite and ground views for enhanced fine-grained robot geo-localization,” in Proc. IEEE/CVF Winter Conf. Appl. Comput. Vis. (WACV), Waikoloa, HI, USA, 2024, pp. 1249–1256."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[24] Z. Xia and A. Alahi, “FG^2: Fine-grained cross-view localization by fine-grained feature matching,” in Proc. IEEE/CVF Conf. Comput. Vis. Pattern Recognit. (CVPR), 2025, pp. 6362–6372."
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                73,
+                844,
+                488,
+                891
+            ]
+        }
+    ],
+    [
+        {
+            "type": "list",
+            "content": {
+                "list_type": "reference_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[25] L. Qin, C. Wu, Z. Chen, X. Kong, Z. Lv, and Z. Zhao, “RSO-SLAM: A robust semantic visual SLAM with optical flow in complex dynamic environments,” IEEE Trans. Intell. Transp. Syst., vol. 25, no. 10, pp. 14669–14684, Oct. 2024, doi: 10.1109/TITS.2024.3402241."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[26] K. Wang, G. Zhao, and J. Lu, “A deep analysis of visual SLAM methods for highly automated and autonomous vehicles in complex urban environment,” IEEE Trans. Intell. Transp. Syst., vol. 25, no. 9, pp. 10524–10541, Sep. 2024, doi: 10.1109/TITS.2024.3379993."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[27] Y. Shi, X. Yu, S. Wang, and H. Li, “CVLNet: Cross-view semantic correspondence learning for video-based camera localization,” in Proc. Asian Conf. Comput. Vis. (ACCV), Macao, China, 2022, pp. 123–141."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[28] S. Vyas, C. Chen, and M. Shah, “GAMa: Cross-view video geolocalization,” in Proc. Eur. Conf. Comput. Vis. (ECCV), Tel Aviv, Israel, 2022, pp. 440–456."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[29] X. Zhang, W. Sultani, and S. Wshah, “Cross-view image sequence geolocalization,” in Proc. IEEE/CVF Winter Conf. Appl. Comput. Vis. (WACV), Waikoloa, HI, USA, 2023, pp. 2914–2923."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[30] A. Ghanem et al., “Leveraging cross-view geo-localization with ensemble learning and temporal awareness,” PLOS ONE, vol. 18, no. 3, Mar. 2023, Art. no. e0283672, doi: 10.1371/journal.pone.0283672."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[31] D. Yuan, F. Maire, and F. Dayoub, “Temporal attention for cross-view sequential image localization,” in Proc. IEEE/RSJ Int. Conf. Intell. Robots Syst. (IROS), Abu Dhabi, United Arab Emirates, 2024, pp. 7429–7436."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[32] Z. Deng et al., “Spatiotemporal contrastive learning for cross-view video localization in unstructured off-road terrains,” 2025, arXiv:2506.05250."
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                73,
+                63,
+                490,
+                109
+            ]
+        }
+    ]
+]

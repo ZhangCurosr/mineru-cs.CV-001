@@ -1,0 +1,3293 @@
+[
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "InterPruner: Interactive Structured Pruning via Taylor-Implicit Criterion and Language-Prior Modulator for Multimodal Object Detection"
+                    }
+                ],
+                "level": 1
+            },
+            "bbox": [
+                89,
+                128,
+                880,
+                174
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Qi Ming<sup>1</sup>, Zihan Yang<sup>2</sup>, Shaoguang Huang<sup>3</sup>, Si Sun<sup>4</sup>, Hanqing Zhang<sup>5</sup>, Nanqing Liu<sup>6</sup>, Jiahui Lv<sup>7</sup>, Juan Fang<sup>1</sup>, Aleksandra Pizurica<sup>8</sup>"
+                    }
+                ]
+            },
+            "bbox": [
+                200,
+                203,
+                767,
+                239
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "<sup>1</sup>Beijing University of Technology, <sup>2</sup>Southwest University, <sup>3</sup>China University of Geosciences Wuhan"
+                    }
+                ]
+            },
+            "bbox": [
+                184,
+                241,
+                787,
+                257
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "<sup>4</sup>Tsinghua University, <sup>5</sup>Beijing Institute of Technology, <sup>6</sup>Yunnan Normal University, <sup>7</sup>Beijing Forestry University"
+                    }
+                ]
+            },
+            "bbox": [
+                147,
+                258,
+                821,
+                275
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "<sup>8</sup>Department of Telecommunications and Information Processing (TELIN), Ghent University"
+                    }
+                ]
+            },
+            "bbox": [
+                207,
+                276,
+                764,
+                291
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "chaser.ming@gmail.com, yangzihan0211@163.com, Aleksandra.Pizurica@ugent.be"
+                    }
+                ]
+            },
+            "bbox": [
+                140,
+                295,
+                816,
+                309
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Abstract"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                235,
+                344,
+                313,
+                361
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Multimodal object detection proves effective in remote sensing, especially the RGB-Infrared paradigm. The parallel feature extractors provide rich multimodal information for robust detection, yet introduce substantial channel redundancy and computational overhead. Existing pruning methods can reduce channel redundancy, but they are designed for unimodal backbones, overlooking cross-modal interactions and dynamic scene-wise redundancy. In this paper, we propose InterPruner, the first interactive structured channel pruning framework for RGB–infrared object detectors. Specifically, we first derive a Taylor-Implicit Criterion(TIC) to quantify channel importance via high-order Taylor expansion and implicit function theorem. Then, a Modality Interaction Redundancy Analyzer (MIRA) identifies redundant channels via mutual compensability assessment. Finally, a Scene-Prior Channel Anchor (SPCA) uses language priors as semantic anchors to measure channelscene relevance for dynamic channel importance estimation. Cross-modality channel pruningfor RGB-Infrared detection is yet unexplored. Extensive experiments on RGBinfrared object detection dataset demonstrate that Inter-Pruner maintains high performance with negligible degradation. Specifically, it even achieves a 0.6% mAP increase on the FLIR dataset when pruning 50% of the channels. Code will be available on GitHub to facilitate future work."
+                    }
+                ]
+            },
+            "bbox": [
+                75,
+                375,
+                470,
+                755
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "1. Introduction"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                78,
+                799,
+                209,
+                815
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Multimodal object detection plays an important role in remote sensing applications [8]. By integrating visual cues from RGB [30], infrared [6], depth [22] and radar [15], multimodal systems seek to enhance scene understanding under adverse conditions. Among these modalities, RGB-infrared object detection [16, 23] serves as a representative application scenario. Specifically, RGB images provide rich texture and semantic information, while infrared images offer reliable temperature cues that are insensitive to illumination changes. Existing RGB-infrared detectors employ two modality-specific branches with feature fusion modules to extract features [18, 21, 28]. However, the dual-branch architecture introduces substantial cross-modal redundancy, since many channels in the two streams contain correlated features that contribute little to detection accuracy. This redundancy causes unnecessary computation, making deployment on resource-constrained platforms challenging."
+                    }
+                ]
+            },
+            "bbox": [
+                75,
+                824,
+                470,
+                901
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/f89be78a0ec67a8911bdbe612b18fcb80e727e38dbd077d9478249b9d9aefebd.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 1. Feature visualizations of the RGB and Infrared branches before and after unimodal pruning at the P4 stage. Compared to the unpruned baseline (top), pruning the RGB branch (bottom) has a negligible impact on the RGB feature but leads to feature misalignment in the infrared branch."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                501,
+                342,
+                890,
+                489
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                496,
+                598,
+                893,
+                780
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Pruning offers a promising solution to mitigate this efficiency problem via unstructured [13] or structured [12] approaches. Structured pruning, in particular, operates at different granularities depending on the backbone: token-level [1] for transformers and Mamba [25], versus channel-level for convolutional neural networks [3]. Given the high resolution of remote sensing imagery, most RGB-Infrared detectors still adopt CNN backbones for their efficient multiscale feature extraction. But these channel-level pruning techniques are mainly designed for single-stream CNNs."
+                    }
+                ]
+            },
+            "bbox": [
+                496,
+                780,
+                893,
+                901
+            ]
+        },
+        {
+            "type": "page_aside_text",
+            "content": {
+                "page_aside_text_content": [
+                    {
+                        "type": "text",
+                        "content": "arXiv:2608.10724v1 [cs.CV] 11 Aug 2026"
+                    }
+                ]
+            },
+            "bbox": [
+                29,
+                352,
+                63,
+                799
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                75,
+                92,
+                468,
+                121
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Directly extending single-stream pruning methods to the dual-stream setting results in performance degradation. We attribute this degradation to two factors: (1) Channel Importance is Coupled Across Modalities. The two branches are inherently coupled via cross-modal interactions. Pruning one branch can impair the other’s representation, even if the pruned channels appear unimportant in isolation. (2) Channel Importance Varies with Scenes. Pruning decisions optimal for one scene may become suboptimal under another, as the redundancy distribution changes with environmental conditions [20]. A fixed pruning criterion cannot adapt to such changes."
+                    }
+                ]
+            },
+            "bbox": [
+                75,
+                122,
+                470,
+                303
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "To overcome these limitations, we propose InterPruner, the first interactive structured channel pruning framework for RGB–infrared object detection. First, we formulate a Taylor-Implicit Criterion (TIC) that approximates the postremoval loss change through Taylor expansion and implicit function theorem to reveal each channel’s genuine contribution. Next, we employ a Modality Interaction Redundancy Analyzer (MIRA) that alternately masks each modality and checks for compensation by the other to identify redundant channels. Finally, a Scene-Prior Channel Anchor (SPCA) harnesses language priors to dynamically evaluate channel importance. These modules produce a unified importance score that guides structured channel removal, preserving critical cross-modal information while adjusting to different scenes. InterPruner bridges the gap of structured pruning for RGB-infrared object detection, which remains unexplored to the best of our knowledge."
+                    }
+                ]
+            },
+            "bbox": [
+                75,
+                304,
+                472,
+                560
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "In summary, the major contributions of our work are:"
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                560,
+                449,
+                575
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• We propose a Taylor-Implicit Criterion (TIC) that estimates channel importance via high-order loss expansion, providing a robust pruning basis for modalities."
+                    }
+                ]
+            },
+            "bbox": [
+                94,
+                587,
+                470,
+                633
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• A Modality Interaction Redundancy Analyzer (MIRA) is designed to identify cross-modal redundant channels via compensability assessment, ensuring that only informative features are retained for detection."
+                    }
+                ]
+            },
+            "bbox": [
+                94,
+                643,
+                470,
+                705
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• To make pruning decisions scene-aware, we introduce a Scene-Prior Channel Anchor (SPCA) that leverages scene priors, thereby enabling the model to identify redundancy across different visual contexts."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                715,
+                470,
+                777
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "2. Related Work"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                76,
+                791,
+                220,
+                808
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "2.1. Multimodal Object Detection"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                76,
+                815,
+                339,
+                832
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Multimodal detection integrates features from diverse sensors to enable robust perception. RGB-infrared detection, in particular, combines the visual cues with the thermal features, proving effective under adverse conditions [18, 28]. Various backbones have been explored for this task. Vision Transformers [16] and their adapter-based variants [24] suffer from high computational cost. Emerging mamba-based models [11] excel at global context modeling, yet their efficiency bottlenecks lie at the sequence level. In practice, CNNs [18, 28, 29] remain the dominant backbone for RGB-Infrared detection, offering a favorable balance of efficiency and representational power. Despite their effectiveness, these dual-branch architectures introduce substantial channel redundancy, as many channels across the two streams encode correlated features with limited contribution to final detection accuracy. In this paper, we aim to reduce this redundancy and computational overhead while maintaining detection performance."
+                    }
+                ]
+            },
+            "bbox": [
+                75,
+                839,
+                470,
+                901
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                496,
+                90,
+                893,
+                304
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "2.2. Structured Channel Pruning"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                500,
+                320,
+                758,
+                337
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Channel pruning removes entire filters or feature maps to achieve structured sparsity and produce compact models. Early approaches prune channels with small BN scaling factors [12], and later variants further separate important from unimportant channels via regularization [7]. More recent works attempt to estimate the post-pruning loss change via influence functions [2] or unify static and dynamic pruning through bi-level optimization [3]. Furthermore, domain-specific channel pruning has also been explored. IRPruneDeXt [27] introduces wavelet-regularized channel pruning for infrared small target detection, while CSP [9] performs joint channel and space pruning for general CNNs. Despite these advances, the assumption remains that channels can be judged independently. But this assumption fails in multimodal detectors, where a channel pruned from one branch may be compensated by the other."
+                    }
+                ]
+            },
+            "bbox": [
+                496,
+                347,
+                893,
+                590
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3. Methodology"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                500,
+                611,
+                635,
+                628
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.1. Preliminaries"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                500,
+                638,
+                640,
+                654
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Let "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "x _ { i } ^ { r g b }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "x _ { i } ^ { i r }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "denote aligned RGB and infrared images, and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "y _ { i }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "be the detection annotation. W and M denote the model weights and channel-wise binary masks respectively. Therefore, a RGB-infrared detector is formulated as:"
+                    }
+                ]
+            },
+            "bbox": [
+                496,
+                662,
+                893,
+                727
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\hat { y } _ { i } = f ( x _ { i } ^ { r g b } , x _ { i } ^ { i r } ; { \\bf W } , { \\bf M } ) .\\tag{1}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/4a30adfad7066c9d4a13427e6d8fab205808a23a995652c788a85135ba166acf.jpg"
+                }
+            },
+            "bbox": [
+                606,
+                741,
+                782,
+                761
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "For modality "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "m \\in \\{ r g b , i r \\}"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", we define "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbf { W } _ { m } = \\{ \\mathbf { W } _ { m } ^ { ( l ) } \\} _ { l = 1 } ^ { L }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbf { M } _ { m } = \\{ M _ { m } ^ { ( l , c ) } \\in \\{ 0 , 1 \\} \\} _ { l = 1 , c = 1 } ^ { L , C _ { m } ^ { ( l ) } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", with "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "C _ { m } ^ { ( l ) }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "being the number of output channels in layer l. Each mask "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "M _ { m } ^ { ( l , c ) } = 0"
+                    },
+                    {
+                        "type": "text",
+                        "content": "indicates that the c-th channel in the l-th layer of branch m is pruned during inference."
+                    }
+                ]
+            },
+            "bbox": [
+                498,
+                779,
+                892,
+                867
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Given a pretrained detector, we seek an optimal compact mask Mc under pruning ratio "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\rho ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "formulated as an optimization over detection loss L and training loss "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\ell \\left[ 2 \\right] :"
+                    }
+                ]
+            },
+            "bbox": [
+                498,
+                868,
+                893,
+                901
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/da122c61c14a4e836e36c2142320c8e1ad658ba393e23f0aed74edbced627f79.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 2. Overveiw of InterPruner: Given multi-scale channels from RGB and infrared backbones, TIC evaluates each channel’s contribution "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "C _ { q }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "via loss variation. MIRA then exposes cross-modal redundancy "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "R _ { q }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "through alternating masking and compensability assessment. In parallel, SPCA extracts scene semantics from VLM using RGB-IR pairs and prompts to produce a semantic weight w(x). These three cues are aggregated into "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "S _ { q }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "for channel ranking and pruning, yielding a compact detector."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                101,
+                85,
+                867,
+                391
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                75,
+                488,
+                400,
+                503
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\begin{array} { r l } & { \\displaystyle \\operatorname* { m i n } _ { \\widehat { \\mathbf { M } } \\in { \\mathcal { S } } } { \\mathcal { L } \\big ( \\mathbf { W } ^ { * } ( \\widehat { \\mathbf { M } } ) , \\widehat { \\mathbf { M } } \\big ) } , } \\\\ & { \\widehat { \\mathbf { M } } \\in { \\mathcal { S } } } \\\\ & { \\widehat { \\mathbf { M } } \\mathbf { \\widetilde { \\mathbf { \\Lambda } } } ( \\widehat { \\mathbf { M } } ) = \\arg \\displaystyle \\operatorname* { m i n } _ { \\mathbf { W } } { \\ell \\big ( \\widehat { \\mathbf { M } } \\odot \\mathbf { W } \\big ) } + R ( \\mathbf { W } ) , } \\end{array}\\tag{2}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/86ae49da408bd917a1b1e906c61fbedc4e9be760f808c58569e0e872643edf97.jpg"
+                }
+            },
+            "bbox": [
+                96,
+                512,
+                428,
+                568
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "R ( \\cdot )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is a regularization term, and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "s"
+                    },
+                    {
+                        "type": "text",
+                        "content": "denotes the feasible set of masks satisfying the pruning ratio "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\rho ."
+                    }
+                ]
+            },
+            "bbox": [
+                76,
+                578,
+                468,
+                609
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.2. Taylor-Implicit Criterion"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                76,
+                617,
+                307,
+                633
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The original model parameters W are trained to convergence "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbf { W } ^ { * }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "under the mask M. Removing a single channel gives a new mask "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\widetilde { \\mathbf { M } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and its retrained optimum is "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\widetilde { \\mathbf { W } } ^ { * }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "Here, we define two types of loss changes. The immediate loss change "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\Delta \\mathcal { L } _ { e l }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is the post-pruning loss increase without parameter update:"
+                    }
+                ]
+            },
+            "bbox": [
+                75,
+                641,
+                470,
+                733
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\Delta \\mathcal { L } _ { e l } = \\mathcal { L } ( \\mathbf { W } ^ { * } , \\widetilde { \\mathbf { M } } ) - \\mathcal { L } ( \\mathbf { W } ^ { * } , \\mathbf { M } ) .\\tag{3}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/006197f4c8feb28f9c4fd7bb6186882ad874765ccfe50795e505aeaca9ec442d.jpg"
+                }
+            },
+            "bbox": [
+                151,
+                742,
+                392,
+                762
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The real loss change "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\Delta \\mathcal { L } _ { r l }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is the loss increase after pruning with full retraining to convergence:"
+                    }
+                ]
+            },
+            "bbox": [
+                75,
+                772,
+                470,
+                803
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\Delta \\mathcal { L } _ { r l } = \\mathcal { L } ( \\widetilde { \\mathbf { W } } ^ { * } , \\widetilde { \\mathbf { M } } ) - \\mathcal { L } ( \\mathbf { W } ^ { * } , \\mathbf { M } ) .\\tag{4}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/7ba8ce366efdb54a77037587256d05bf6bcfd7c867e872fc0d1e8288edc01ac6.jpg"
+                }
+            },
+            "bbox": [
+                151,
+                811,
+                392,
+                832
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Directly computing "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\Delta \\mathcal { L } _ { r l }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "for each channel is infeasible. By subtracting Eq.3 and Eq.4, "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\Delta \\mathcal { L } _ { r l }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "can be rewritten as:"
+                    }
+                ]
+            },
+            "bbox": [
+                76,
+                842,
+                467,
+                873
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\Delta \\mathcal { L } _ { r l } = \\Delta \\mathcal { L } _ { e l } + \\mathcal { L } ( \\widetilde { \\mathbf { W } } ^ { * } , \\widetilde { \\mathbf { M } } ) - \\mathcal { L } ( \\mathbf { W } ^ { * } , \\widetilde { \\mathbf { M } } ) .\\tag{5}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/87ae78a3c9112252ffb9f6dee67b034b3ebafdafddb5f31ffdf6e03a15575dc8.jpg"
+                }
+            },
+            "bbox": [
+                124,
+                882,
+                419,
+                901
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Since "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\Delta \\mathcal { L } _ { e l }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "can be directly computed from the weights "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbf { W } ^ { * }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", our goal is to estimate the recovery loss without finetuning, which is defined as"
+                    }
+                ]
+            },
+            "bbox": [
+                498,
+                488,
+                892,
+                532
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\Delta \\mathcal { L } _ { r e c } = \\mathcal { L } ( \\widetilde { \\mathbf { W } } ^ { * } , \\widetilde { \\mathbf { M } } ) - \\mathcal { L } ( \\mathbf { W } ^ { * } , \\widetilde { \\mathbf { M } } ) .\\tag{6}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/740533573105ad0dc8738284b22c803319b11627d265604e28814000dadf8274.jpg"
+                }
+            },
+            "bbox": [
+                570,
+                537,
+                820,
+                556
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Let "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\Delta \\mathbf { W } = \\widetilde { \\mathbf { W } } ^ { * } - \\mathbf { W } ^ { * }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "denote the parameter displacement after pruning and fine-tuning. Since "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\widetilde { \\mathbf { W } } ^ { * }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is a local optimum under Mf, it satisfies:"
+                    }
+                ]
+            },
+            "bbox": [
+                496,
+                564,
+                892,
+                613
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\nabla _ { \\mathbf { W } } \\mathcal { L } ( \\widetilde { \\mathbf { W } } ^ { * } , \\widetilde { \\mathbf { M } } ) = \\nabla _ { \\mathbf { W } } \\mathcal { L } ( \\mathbf { W } ^ { * } + \\Delta \\mathbf { W } , \\widetilde { \\mathbf { M } } ) = 0\\tag{7}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/bb46811cfb88527a5b6af065d7e8fdcd064b34ab16acc2af127aa3a557be06bb.jpg"
+                }
+            },
+            "bbox": [
+                524,
+                617,
+                848,
+                637
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Taylor Expansion We expand the real loss function and its gradient (Eq.7) around "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbf { W } ^ { * }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "in Eq.8 and Eq.9, respectively."
+                    }
+                ]
+            },
+            "bbox": [
+                498,
+                652,
+                892,
+                698
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\begin{array} { r l r } {  { \\mathcal { L } ( \\widetilde { \\mathbf { W } } ^ { * } , \\widetilde { \\mathbf { M } } ) = \\mathcal { L } ( \\mathbf { W } ^ { * } + \\Delta \\mathbf { W } , \\widetilde { \\mathbf { M } } ) } } & { ( 8 ) } \\\\ & { } & { = \\mathcal { L } ( \\mathbf { W } ^ { * } , \\widetilde { \\mathbf { M } } ) + \\mathbf { g } ^ { T } \\Delta \\mathbf { W } + \\frac { 1 } { 2 } \\Delta \\mathbf { W } ^ { T } \\mathbf { H } \\Delta \\mathbf { W } } \\\\ & { } & { + \\frac { 1 } { 6 } \\mathbf { T } ( \\Delta \\mathbf { W } , \\Delta \\mathbf { W } , \\Delta \\mathbf { W } ) + O ( \\| \\Delta \\mathbf { W } \\| ^ { 4 } ) , } \\end{array}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/6f249a12455538cc2da278dc0d44e63ce821a3bae7a727574d32ef95a6167493.jpg"
+                }
+            },
+            "bbox": [
+                506,
+                703,
+                887,
+                784
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\begin{array} { r l } & { \\nabla _ { \\mathbf { W } } \\mathcal { L } ( \\mathbf { W } ^ { * } + \\Delta \\mathbf { W } , \\widetilde { \\mathbf { M } } ) = 0 } \\\\ & { = \\mathbf { g } + \\mathbf { H } \\Delta \\mathbf { W } + \\frac { 1 } { 2 } \\mathbf { T } ( \\Delta \\mathbf { W } , \\Delta \\mathbf { W } ) + o ( \\| \\Delta \\mathbf { W } \\| ^ { 3 } ) . } \\end{array}\\tag{9}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/b0522422486e6f83334c7a13f287828ab38a6a02af03f997fd2696a74cca784d.jpg"
+                }
+            },
+            "bbox": [
+                514,
+                799,
+                854,
+                848
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where we assume "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\| \\Delta \\mathbf { W } \\|"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is small, so higher-order terms are negligible. Here g, H, and T are the first-, second-, and third-order derivatives of L evaluated at "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( \\mathbf { W } ^ { * } , \\widetilde { \\mathbf { M } } )"
+                    }
+                ]
+            },
+            "bbox": [
+                498,
+                853,
+                892,
+                901
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Implicit Function By the implicit function theorem, for sufficiently small "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbf { g } , \\Delta \\mathbf { W }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "admits a unique power series expansion in g, with "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\Delta \\mathbf { W } ^ { ( 1 ) }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\Delta { \\bf W } ^ { ( 2 ) }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "being the first- and second-order terms:"
+                    }
+                ]
+            },
+            "bbox": [
+                75,
+                90,
+                470,
+                151
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\Delta \\mathbf { W } = \\Delta \\mathbf { W } ^ { ( 1 ) } + \\Delta \\mathbf { W } ^ { ( 2 ) } + O ( \\| \\mathbf { g } \\| ^ { 3 } ) .\\tag{10}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/667a6807770d4295e1c96948d391d9ece7bab2dc78cc1c4cfdb590a2abcea5a0.jpg"
+                }
+            },
+            "bbox": [
+                140,
+                160,
+                405,
+                179
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Substituting Eq.10 into Eq.9 and collecting terms by order yields:"
+                    }
+                ]
+            },
+            "bbox": [
+                76,
+                189,
+                468,
+                220
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\Delta \\mathbf { W } ^ { ( 1 ) } = - \\mathbf { H } ^ { - 1 } \\mathbf { g } ,\\tag{11}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/c59b172daeeae9e09cba300fe9c8a14dca4bf39ef447bcc0c6a48fc2d5e58b90.jpg"
+                }
+            },
+            "bbox": [
+                135,
+                229,
+                274,
+                247
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\Delta \\mathbf { W } ^ { ( 2 ) } = - \\frac { 1 } { 2 } \\mathbf { H } ^ { - 1 } \\mathbf { T } ( \\Delta \\mathbf { W } ^ { ( 1 ) } , \\Delta \\mathbf { W } ^ { ( 1 ) } ) .\\tag{12}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/ba9195ed614401d036b435f19761bd97c5cc511a31abfd6be296aec6362c06e7.jpg"
+                }
+            },
+            "bbox": [
+                135,
+                251,
+                408,
+                280
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Thus, the second-order approximation of ∆W is"
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                287,
+                421,
+                303
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\Delta { \\mathbf W } \\approx - { \\mathbf H } ^ { - 1 } { \\mathbf g } - \\frac { 1 } { 2 } { \\mathbf H } ^ { - 1 } { \\mathbf T } ( \\Delta { \\mathbf W } ^ { ( 1 ) } , \\Delta { \\mathbf W } ^ { ( 1 ) } ) + O ( \\| { \\mathbf g } \\| ^ { 3 } ) .\\tag{13}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/87a6b8ef37e666541747bd9830b99084f0d02b431dc3125654149a0c8adc93fb.jpg"
+                }
+            },
+            "bbox": [
+                76,
+                313,
+                467,
+                342
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Taylor-Implicit Criterion Combining Eq.13 with Eq.8 and eliminating higher-order terms via Eq.11–12 yields:"
+                    }
+                ]
+            },
+            "bbox": [
+                75,
+                371,
+                468,
+                402
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\Delta \\mathcal { L } _ { r e c } = - \\frac { 1 } { 2 } \\mathbf { g } ^ { T } \\mathbf { H } ^ { - 1 } \\mathbf { g } - \\frac { 1 } { 6 } \\mathbf { T } ( \\mathbf { H } ^ { - 1 } \\mathbf { g } , \\mathbf { H } ^ { - 1 } \\mathbf { g } , \\mathbf { H } ^ { - 1 } \\mathbf { g } )\\tag{14}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/d1fe29f3582e6fb7fd8086c7b7c8347214dfd8eaa68945f17af4ced9f88dddac.jpg"
+                }
+            },
+            "bbox": [
+                84,
+                424,
+                433,
+                453
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Finally, our Taylor-Implicit Criterion is defined as"
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                462,
+                428,
+                477
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "C _ { q } = \\Delta \\mathcal { L } _ { e l } ^ { \\mathrm { q } } - \\left( \\frac { 1 } { 2 } \\mathbf { g } _ { q } ^ { \\intercal } \\mathbf { H } _ { q } ^ { - 1 } \\mathbf { g } _ { q } + \\frac { 1 } { 6 } \\mathbf { T } _ { q } ( \\mathbf { H } _ { q } ^ { - 1 } \\mathbf { g } _ { q } , \\mathbf { H } _ { q } ^ { - 1 } \\mathbf { g } _ { q } , \\mathbf { H } _ { q } ^ { - 1 } \\mathbf { g } _ { q } ) \\right)\\tag{15}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/89811943f5b422deb7a2bddb5ea05a6f8bc029f882a2c333cfdf20d3cd869f7a.jpg"
+                }
+            },
+            "bbox": [
+                76,
+                486,
+                496,
+                518
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "This criterion estimates each channel’s importance via its contribution to the detection loss. Channels with smaller "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "C _ { q }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "are less critical and prioritized for pruning."
+                    }
+                ]
+            },
+            "bbox": [
+                75,
+                532,
+                470,
+                579
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.3. Modality Interaction Redundancy Analyzer"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                76,
+                587,
+                450,
+                603
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "To analyze the role of each channel under cross-modal interaction, we alternately mask all channels in one modality by setting "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbf { M } _ { r g b } = \\mathbf { 0 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "or "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbf { M } _ { i r } = \\mathbf { 0 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", and observe the loss variation of the other branch after short adaptation."
+                    }
+                ]
+            },
+            "bbox": [
+                75,
+                609,
+                470,
+                671
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Reactivation via Short Adaptation. The discrete mask "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "M _ { m } ^ { ( l , c ) } \\in \\{ 0 , 1 \\}"
+                    },
+                    {
+                        "type": "text",
+                        "content": "controls channel retention but is nondifferentiable for gradient-based optimization. Therefore, we introduce a continuous scalar gate "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "z _ { q } \\in [ 0 , 1 ]"
+                    },
+                    {
+                        "type": "text",
+                        "content": "for each channel "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "q = ( m , l , c )"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", which scales the corresponding channel weights as "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbf { W } _ { m } ^ { ( l , c ) } ( z _ { q } ) = z _ { q } \\cdot \\mathbf { W } _ { m } ^ { ( l , c ) }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". Here, "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "z _ { q } ~ = ~ 1"
+                    },
+                    {
+                        "type": "text",
+                        "content": "preserves the channel while "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "z _ { q } = 0"
+                    },
+                    {
+                        "type": "text",
+                        "content": "effectively disables it."
+                    }
+                ]
+            },
+            "bbox": [
+                75,
+                689,
+                470,
+                799
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Take the infrared branch as the active modality for example. Each reactivation measurement starts from "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbf { W } ^ { * }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", so the two modalities do not affect each other’s results. With the RGB branch disabled, the model undergoes B-step gradient adaptation on the infrared branch."
+                    }
+                ]
+            },
+            "bbox": [
+                75,
+                799,
+                470,
+                875
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathbf { W } ^ { b + 1 } = \\mathbf { W } ^ { b } - \\eta \\nabla _ { \\mathbf { W } } \\mathcal { L } \\big ( \\mathbf { W } ^ { b } \\big ) , b = 0 , 1 , \\ldots , B - 1 ,\\tag{16}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/dbfdc96a9a30f3a31d4927bf270df1f6e01db68de4a468ac7dc81ef73f9496a3.jpg"
+                }
+            },
+            "bbox": [
+                84,
+                883,
+                429,
+                901
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where η is the short-adaptation learning rate. During this procedure, the masked RGB branch is disabled, forcing the active infrared branch to update its parameters. Here, underutilized channels originally masked by the RGB branch contribute substantially more to loss reduction. We term this reactivation and it serves as an indicator of cross-modal redundancy. Strong reactivation reveals channels that were suppressed, while essential channels show little change."
+                    }
+                ]
+            },
+            "bbox": [
+                496,
+                92,
+                893,
+                213
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Channel Redundancy Measurement. We further quantify the loss variation during the B-batch adaptation. "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "G _ { q }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is defined as the directional derivative of the detection loss with respect to "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "z _ { q } ."
+                    },
+                    {
+                        "type": "text",
+                        "content": "This value reflects each channel’s importance under the current mask configuration:"
+                    }
+                ]
+            },
+            "bbox": [
+                498,
+                229,
+                893,
+                306
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "G _ { q } ( \\mathbf { W } ) = \\left. \\frac { \\partial \\mathcal { L } ( \\mathbf { W } , z _ { q } ) } { \\partial z _ { q } } \\right| _ { z _ { q } = 1 } = \\left. \\mathbf { W } _ { m } ^ { ( l , c ) } , \\frac { \\partial \\mathcal { L } ( \\mathbf { W } ) } { \\partial \\mathbf { W } _ { m } ^ { ( l , c ) } } \\right. .\\tag{17}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/a58472d1d7fe54915c1c5579303402d5c82dbff1c34ae74b0ad63ba72996139b.jpg"
+                }
+            },
+            "bbox": [
+                514,
+                314,
+                872,
+                352
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Given a set of B batches, we compute the variation of "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "G _ { q }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "as redundency measurement."
+                    }
+                ]
+            },
+            "bbox": [
+                500,
+                364,
+                893,
+                396
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "R _ { q } = \\frac { 1 } { B } \\left| \\sum _ { b = 1 } ^ { B } \\left( G _ { q } ( \\mathbf { W } ^ { B } ) - G _ { q } ( \\mathbf { W } ^ { 0 } ) \\right) \\right| .\\tag{18}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/48736ca148925f16e80937fa41bfdfe91730ed7d0e2c64b8f811d5f2d843c277.jpg"
+                }
+            },
+            "bbox": [
+                560,
+                405,
+                830,
+                448
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "A large "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "R _ { q }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "indicates that the channel becomes more responsive when the opposite modality is absent. This suggests its functionality is suppressed in the original dualstream model. Conversely, a small "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "R _ { q }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "implies that the channel’s contribution remains largely unchanged regardless of whether the other modality is present. This indicates that it carries modality-specific information and cannot be easily compensated. Therefore, "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "R _ { q }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "serves as a reliable indicator of cross-modal redundancy. Channels with higher reactivation scores are more dispensable and should be prioritized for pruning."
+                    }
+                ]
+            },
+            "bbox": [
+                498,
+                457,
+                893,
+                625
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.4. Scene-Prior Channel Anchor"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                500,
+                632,
+                759,
+                647
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The relative reliability of RGB and thermal modalities varies with imaging conditions. To adapt pruning decisions accordingly, we introduce a Scene-Prior Channel Anchor (SPCA) that extracts structured scene knowledge from each image pair and converts it into channel-wise pruning weights. SPCA is implemented as a lightweight MLP and applied only to intermediate layers, where effective crossmodal fusion and task-relevant visual pattern recognition primarily occur."
+                    }
+                ]
+            },
+            "bbox": [
+                496,
+                656,
+                893,
+                794
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Modality-aware prompt learning. For each aligned RGB-Infrared pair, we use a frozen Qwen2.5-VL model with a fixed text prompt to generate structured scene descriptions. Additionally, K learnable soft prompts "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathrm { ~ \\bf ~ P ~ } \\in"
+                    },
+                    {
+                        "type": "text",
+                        "content": "R<sup>K×dQ</sup> is also inserted into the multimodal input to make the encoding sensitive to modality reliability."
+                    }
+                ]
+            },
+            "bbox": [
+                496,
+                809,
+                893,
+                901
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/ef1e3c1fddde35bba01501bb27ec908979712f83f38951aff3879e7f8a92f75c.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 3. Comparison of the Pruning Method. While existing methods are suboptimal and fragile under varying lighting conditions, our SPCA enables adaptive pruning decisions conditioned on scene context."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                86,
+                90,
+                464,
+                261
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We optimize P using modality-difference supervision from a frozen CLIP image encoder. Specifically, we define the RGB-Infrared discrepancy direction "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbf { v } _ { i } ^ { - }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and common direction "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbf { v } _ { i } ^ { + }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "from the normalized CLIP embeddings of each pair. Let "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbf { H } _ { i } ^ { P }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "be the prompt tokens’ hidden states. Their pooled representation is projected into the CLIP space via a linear layer A to obtain "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbf { u } _ { i } ."
+                    },
+                    {
+                        "type": "text",
+                        "content": "The prompt-learning objective is:"
+                    }
+                ]
+            },
+            "bbox": [
+                75,
+                353,
+                470,
+                476
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathcal { L } _ { \\mathrm { p r o m p t } } = \\frac { 1 } { B } \\sum _ { i = 1 } ^ { B } ( 1 - \\mathbf { u } _ { i } ^ { \\top } \\mathbf { v } _ { i } ^ { - } ) + \\lambda _ { 1 } \\frac { 1 } { B } \\sum _ { i = 1 } ^ { B } ( \\mathbf { u } _ { i } ^ { \\top } \\mathbf { v } _ { i } ^ { + } ) ^ { 2 } + \\lambda _ { 2 } \\mathcal { L } _ { \\mathrm { c o n } } ,\\tag{19}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/8a693faf6f1252420bfd75cb65a246b3724ad688b9f06023feb391d9e1e19f22.jpg"
+                }
+            },
+            "bbox": [
+                76,
+                483,
+                477,
+                525
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "which aligns prompts with RGB-thermal discrepancy, suppresses common information, and separates different pairs, with only P and A trainable."
+                    }
+                ]
+            },
+            "bbox": [
+                75,
+                537,
+                470,
+                583
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Structured semantic encoding. With the learned prompt "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbf { P } ^ { * }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", Qwen2.5-VL generates a structured description for each RGB-IR pair:"
+                    }
+                ]
+            },
+            "bbox": [
+                75,
+                601,
+                470,
+                646
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathcal { D } _ { i } = G _ { \\mathrm { Q w e n } } ( x _ { i } ^ { r } , x _ { i } ^ { t } ; \\mathbf { P } ^ { * } ) = \\{ d _ { i } ^ { \\mathrm { e n v } } , d _ { i } ^ { \\mathrm { s c e n e } } , d _ { i } ^ { \\mathrm { o b j } } , d _ { i } ^ { \\mathrm { t h e r m } } \\} ,\\tag{20}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/67b55278d7858eb49436846cde5529ac940a1fc7e994163d379cfc2b6fd7edc5.jpg"
+                }
+            },
+            "bbox": [
+                84,
+                654,
+                457,
+                674
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "covering illumination, scene context, object-level evidence, and thermal properties. These four text fields are encoded by the CLIP text encoder and averaged along the field dimension to obtain a scene-level semantic embedding "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbf { z } _ { i } ~ \\in"
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbb { R } ^ { 7 6 8 }"
+                    }
+                ]
+            },
+            "bbox": [
+                75,
+                685,
+                470,
+                761
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Channel-wise pruning modulation. Prompt learning and semantic description generation are performed offline before pruning calibration. The core of SPCA is to transform scene representation into channel-wise weights that modulate the pruning criterion. Let "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\textit { b } = \\ ( m , l )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "denote layer l in modality branch "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "m \\in \\{ r , t \\}"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", and let "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "C _ { b }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "be its number of output channels. We implement the modulation network as a lightweight two-layer MLP that maps the"
+                    }
+                ]
+            },
+            "bbox": [
+                75,
+                780,
+                470,
+                901
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "768-dimensional CLIP text embedding "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbf { z } _ { i }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "to channel-wise weights:"
+                    }
+                ]
+            },
+            "bbox": [
+                498,
+                90,
+                892,
+                122
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\delta _ { i , b } = \\operatorname { t a n h } \\left( { \\mathbf { W } } _ { 2 } \\operatorname { R e L U } \\left( { \\mathbf { W } } _ { 1 } \\mathbf { z } _ { i } + { \\mathbf { b } } _ { 1 } \\right) + { \\mathbf { b } } _ { 2 } \\right) \\in \\mathbb { R } ^ { C _ { b } } .\\tag{21}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/d4de6101b24483244d6f9576424c411ec9839bfc2c2dd94986bc8a0147a153c2.jpg"
+                }
+            },
+            "bbox": [
+                517,
+                148,
+                870,
+                166
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "To prevent the semantic module from uniformly scaling all channels in a branch, we center and normalize the residual:"
+                    }
+                ]
+            },
+            "bbox": [
+                498,
+                181,
+                892,
+                224
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\widehat { \\delta } _ { i , b } = \\frac { \\delta _ { i , b } - \\mathrm { M e a n } ( \\delta _ { i , b } ) } { \\operatorname* { m a x } \\left( 1 , \\lVert \\delta _ { i , b } - \\mathrm { M e a n } ( \\delta _ { i , b } ) \\rVert _ { \\infty } \\right) } .\\tag{22}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/21a9ebaf1be445767862367c9dd6e8f2e9debbc9416fcab75714c1df2957225c.jpg"
+                }
+            },
+            "bbox": [
+                557,
+                223,
+                831,
+                257
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The channel-wise semantic weights are defined as follow, where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\gamma"
+                    },
+                    {
+                        "type": "text",
+                        "content": "controls the modulation range, yielding "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "{ \\bf w } _ { i , b } \\in"
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "[ 1 - \\gamma , 1 + \\gamma ] ^ { C _ { b } }"
+                    }
+                ]
+            },
+            "bbox": [
+                498,
+                263,
+                892,
+                310
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\begin{array} { r } { \\mathbf { w } _ { i , b } = \\mathbf { 1 } + \\gamma \\widehat { \\delta } _ { i , b } , } \\end{array}\\tag{23}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/c78a5611563e23a71291567773fafbafdb49c59c9b35a904cee4c13fb7421fb9.jpg"
+                }
+            },
+            "bbox": [
+                633,
+                320,
+                758,
+                340
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The lightweight MLP is optimized via the detection objective with differentiable channel masks. Since physical pruning requires a fixed architecture, we average the sample-dependent weights over the calibration set:"
+                    }
+                ]
+            },
+            "bbox": [
+                496,
+                353,
+                893,
+                415
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\overline { { w } } _ { m , l , c } = \\frac { 1 } { N _ { \\mathrm { c a l } } } \\sum _ { i = 1 } ^ { N _ { \\mathrm { c a l } } } w _ { i , m , l , c } .\\tag{24}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/c1d0a2f40e4b1e7ae77a9b0dc229c55d903e71a1caeba9de628028e891743172.jpg"
+                }
+            },
+            "bbox": [
+                599,
+                425,
+                790,
+                467
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The averaged weights are substituted into Eq. (25) to determine the final channel ranking."
+                    }
+                ]
+            },
+            "bbox": [
+                498,
+                478,
+                892,
+                510
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.5. Unified Channel Selection"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                500,
+                518,
+                736,
+                535
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "With the channel contribution "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "C _ { q }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "from TIC and the cross-modal redundancy "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "R _ { q }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "from MIRA established, we now integrate them into a unified importance score. A channel should be preserved if it is highly contributive to the detection task, and penalized if it is redundantly substitutable by the other modality. Besides, we introduce a scene-conditioned weight "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "w _ { i , m , l , c } ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "predicted by our SPCA module, which adaptively adjusts the redundancy penalty according to the semantic context. The final importance score for channel c in layer l of modality branch m is formulated as:"
+                    }
+                ]
+            },
+            "bbox": [
+                496,
+                541,
+                893,
+                709
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "S _ { i , m , l , c } = \\alpha \\overline { { C } } _ { m , l , c } - \\beta w _ { i , m , l , c } \\overline { { R } } _ { m , l , c } ,\\tag{25}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/9690c7429f8713497dc600db5831b65d4e16c8b04f44b202ceb5dcb7b2b022a4.jpg"
+                }
+            },
+            "bbox": [
+                563,
+                724,
+                828,
+                742
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\overline { { C } } _ { m , l , c }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\overline { { R } } _ { m , l , c }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "are the normalized contribution and redundancy scores, and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\alpha , \\beta"
+                    },
+                    {
+                        "type": "text",
+                        "content": "are fixed global weights. The sample-dependent "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "w _ { i , m , l , c } ~ \\in ~ [ 1 - \\gamma , 1 + \\gamma ]"
+                    },
+                    {
+                        "type": "text",
+                        "content": "modulates the redundancy penalty: "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "w _ { i , m , l , c } > 1"
+                    },
+                    {
+                        "type": "text",
+                        "content": "amplifies the penalty, making the channel more likely to be pruned, while "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "w _ { i , m , l , c } < 1"
+                    },
+                    {
+                        "type": "text",
+                        "content": "reduces it, allowing retention even if redundant."
+                    }
+                ]
+            },
+            "bbox": [
+                496,
+                748,
+                893,
+                854
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "With the unified importance score "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "S _ { i , m , l , c } ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", we jointly prune the RGB and infrared backbones. For each modality, channels in each layer are sorted in ascending order of their scores, with lower scores indicating higher dispensability. Under an equal-width constraint, we prune the same number of channels from both modalities within each layer pair to preserve structural compatibility for subsequent fusion modules. To maintain robustness, we pre-select the top 10% of channels with the highest contribution scores "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "C _ { q }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and exclude them from pruning. The global pruning budget is then allocated across all layers via a greedy strategy. At each step, the lowest-scored available channel across all layers is pruned, and the next channel from the same layer enters the candidate pool, until the target ratio "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\rho"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is met. This enables global competition across layers while maintaining per-layer RGB/IR balance. Thus, we obtain the compact model."
+                    }
+                ]
+            },
+            "bbox": [
+                496,
+                854,
+                893,
+                901
+            ]
+        }
+    ],
+    [
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/a01fffa754b21e3f8502852974547adaaf73408ed532aa468b359d3d7029c780.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 1. Comparison of mAP<sub>50</sub> (%) across different channel importance criteria and pruning ratios on the DroneVehicle and FLIR datasets. The best results are highlighted in bold."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td rowspan=\"2\">Channel Criterion</td><td colspan=\"3\">DroneVehicle</td><td colspan=\"3\">FLIR</td></tr><tr><td>30%</td><td>50%</td><td>70%</td><td>30%</td><td>50%</td><td>70%</td></tr><tr><td>Norm Pruning [5]  $\\ell _ { 1 }$ </td><td>67.6</td><td>66.3</td><td>46.7</td><td>64.4</td><td>56.4</td><td>41.5</td></tr><tr><td>Network Slimming [12]</td><td>67.8</td><td>66.0</td><td>64.8</td><td>49.8</td><td>49.2</td><td>44.2</td></tr><tr><td>Intra-Fusion [19]</td><td>75.8</td><td>64.6</td><td>47.9</td><td>66.6</td><td>48.3</td><td>31.3</td></tr><tr><td>BilevelPruning [3]</td><td>77.2</td><td>72.3</td><td>70.4</td><td>75.6</td><td>74.8</td><td>73.5</td></tr><tr><td>REPrune [14]</td><td>67.0</td><td>63.5</td><td>59.4</td><td>55.3</td><td>53.7</td><td>53.1</td></tr><tr><td>IRPruneDeXt [27]</td><td>76.7</td><td>76.1</td><td>63.7</td><td>73.1</td><td>72.5</td><td>45.4</td></tr><tr><td>Probabilistic Pruning [4]</td><td>74.2</td><td>71.8</td><td>65.3</td><td>70.5</td><td>67.1</td><td>58.7</td></tr><tr><td>CSP [9]</td><td>78.5</td><td>76.2</td><td>72.1</td><td>76.3</td><td>73.9</td><td>68.4</td></tr><tr><td>HOT-MKS [10]</td><td>80.4</td><td>78.0</td><td>73.4</td><td>74.1</td><td>70.3</td><td>63.3</td></tr><tr><td>InterPruner (Ours)</td><td>81.0</td><td>80.3</td><td>79.0</td><td>77.5</td><td>76.7</td><td>72.6</td></tr></table>",
+                "table_type": "complex_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                107,
+                88,
+                861,
+                287
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                75,
+                354,
+                472,
+                568
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4. Experiments"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                76,
+                587,
+                209,
+                606
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.1. Datasets"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                76,
+                614,
+                181,
+                631
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "FLIR. FLIR [26] focuses on complex outdoor driving scenarios, comprising 10,228 images (8,862 training, 1,366 testing) with annotations for Person, Car, Bicycle. It is characterized by crowded streets, significant scale variations, and cluttered backgrounds. These conditions pose a substantial challenge to the model’s ability to preserve structural details and distinguish objects in dense environments."
+                    }
+                ]
+            },
+            "bbox": [
+                75,
+                640,
+                470,
+                748
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "DroneVehicle. DroneVehicle [17] consists of 56,878 image pairs collected by UAVs, featuring an aerial perspective. It covers five vehicle categories (Car, Truck, Bus, Van, Freight-Car) and provides oriented bounding box annotations. The dataset introduces unique challenges such as small object scales, high density, and complex background textures, setting a high standard for evaluating the adaptability of multimodal detectors in aerial surveillance scenarios."
+                    }
+                ]
+            },
+            "bbox": [
+                75,
+                779,
+                470,
+                901
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.2. Implementation Details"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                500,
+                353,
+                717,
+                371
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We evaluate all models using mAP and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathrm { \\ m A P _ { 5 0 } } ."
+                    },
+                    {
+                        "type": "text",
+                        "content": ", and report their FLOPs and parameter counts. We implement InterPruner using the Ultralytics YOLOv8 framework with a pretrained C2DFF model [28] on NVIDIA RTX 3090 GPUs. For TIC and MIRA, we perform 8-batch adaptation with a learning rate of "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "1 \\times 1 0 ^ { - 3 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". For SPCA, the learnable 16-token Qwen2.5-VL prompt is optimized using AdamW at "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "1 \\times 1 0 ^ { - 2 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", with a frozen CLIP ViT-L/14 encoder providing modality-difference supervision. The pruned detector is fine-tuned with SGD at "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "1 \\times 1 0 ^ { - 3 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". The balancing coefficients α and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\beta"
+                    },
+                    {
+                        "type": "text",
+                        "content": "are both set to 1. For baselines requiring fine-tuning, we use "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "1 \\times 1 0 ^ { - 4 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "for 80 epochs at 30% and 50% pruning, and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "1 \\times 1 0 ^ { - 3 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "for 70% pruning."
+                    }
+                ]
+            },
+            "bbox": [
+                496,
+                377,
+                893,
+                575
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.3. Main Results"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                500,
+                584,
+                640,
+                599
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We conduct extensive experiments to validate the effectiveness of our proposed InterPruner. As seldom pruning method is specifically designed for the infrared-visible dual-modality setting, we adapt existing single-modality pruning methods to serve as baselines. This allows us to perform a comprehensive analysis and ultimately evaluate the superiority of our cross-modal pruning strategy. Specifically, we compare against L1 Norm, Network Slimming [12], Intra-Fusion [19], BilevelPruning [3], REPrune [14], IRPruneDecX [19], and CSP [9]."
+                    }
+                ]
+            },
+            "bbox": [
+                496,
+                608,
+                893,
+                761
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Comparison with Single Model Pruning Criteria. As shown in Table 1, directly applying existing single-branch pruning criteria to RGB-infrared detectors leads to performance degradation, especially under large pruning ratios. Magnitude-based methods "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( \\ell _ { 1 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "Norm Pruning [5], Network Slimming [12]) perform the worst in multimodal scenarios. This confirms that single-channel weights or scaling factors cannot discern cross-modal complementarity, thus inevitably remove vital branches."
+                    }
+                ]
+            },
+            "bbox": [
+                496,
+                780,
+                895,
+                901
+            ]
+        }
+    ],
+    [
+        {
+            "type": "chart",
+            "content": {
+                "image_source": {
+                    "path": "images/19d49698fb2e9e068b7d507ee09ae467375283b5f5b9aa925bcc469e20a3fb79.jpg"
+                },
+                "content": "",
+                "chart_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 4. Comparison with other pruning methods on the DroneVehicle dataset in terms of m "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathrm { A P 5 0 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and model size."
+                    }
+                ],
+                "chart_footnote": []
+            },
+            "bbox": [
+                81,
+                89,
+                464,
+                291
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                76,
+                366,
+                287,
+                380
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Recent works have explored structured pruning from various perspectives. Similarity-based approaches (Bilevel-Pruning [3], REPrune [14]) achieve 72.3% on DroneVehicle dataset at 50% pruning, demonstrating moderate performance. However, they merely focus on intra-modal geometric redundancy while completely ignoring inter-modal dependencies. Gradient-based method [10] outperforms other baselines (80.4% at 30% pruning on DroneVehicle), proving that Taylor expansion effectively retains loss-sensitive channels. Yet, localized gradient estimation proves brittle under extreme pruning, as evidenced by "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathrm { a 6 . 8 \\% \\ m A P _ { 5 0 } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "drop on FLIR dataset at the 70% ratio. Reconstructionbased methods (Intra-Fusion [19]) partially compensate for pruning-induced loss through feature reconstruction, but this comes at the cost of substantial computational overhead and limited scalability to high pruning ratios. Although some of these single-modality metrics perform well at low pruning ratios, they fundamentally lack the capacity to model cross-modal complementarity and thus fail under aggressive pruning. Therefore, InterPruner jointly assesses channel importance across modalities, achieving state-ofthe-art performance across all settings and maintaining robustness even at 70% pruning."
+                    }
+                ]
+            },
+            "bbox": [
+                75,
+                382,
+                472,
+                732
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Comparison with the Original Model under Varying Pruning Ratios Table 2 presents the performance and complexity of InterPruner across varying pruning ratios on FLIR and DroneVehicle. As pruning intensifies, parameter and FLOP counts decline substantially, yet m "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathrm { { A P } _ { 5 0 } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "exhibits only negligible degradation on both datasets. This underscores InterPruner’s insensitivity to specific pruning levels, achieving a flexible accuracy-efficiency trade-off and affirming the robustness of the proposed strategy."
+                    }
+                ]
+            },
+            "bbox": [
+                75,
+                763,
+                472,
+                902
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/4b1d4c9b616b15c142922fa335b8725fc97f7a51149c82ecb96e3264f21cf0e0.jpg"
+                },
+                "image_caption": [],
+                "image_footnote": []
+            },
+            "bbox": [
+                540,
+                90,
+                852,
+                252
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/c347022848dbcf7728b97aa1efaf13732abbc9435fb9162672378137622e2b1f.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 5. Feature visualizations of the RGB and Infrared branches before and after pruning under extremely dark condition. The pruned model focuses on more salient regions in both modalities, showing the effectiveness of InterPruner."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Dataset</td><td>Pruning Ratio</td><td> $\\mathrm { \\ m A P _ { 5 0 } }$ </td><td>(%) mAP(%)</td><td>Params (M)</td><td>FLOPs (G)</td></tr><tr><td rowspan=\"4\">FLIR</td><td>30%</td><td>77.5</td><td>41.5</td><td>4.695</td><td>11.4</td></tr><tr><td>50%</td><td>76.7</td><td>41.4</td><td>3.696</td><td>10.4</td></tr><tr><td>70%</td><td>72.6</td><td>38.7</td><td>2.767</td><td>7.9</td></tr><tr><td>-</td><td>76.8</td><td>40.8</td><td>6.580</td><td>14.6</td></tr><tr><td rowspan=\"4\">DroneVehicle</td><td>30%</td><td>81.0</td><td>60.4</td><td>4.446</td><td>9.5</td></tr><tr><td>50%</td><td>80.3</td><td>59.7</td><td>3.415</td><td>8.1</td></tr><tr><td>70%</td><td>79.0</td><td>58.4</td><td>2.598</td><td>7.2</td></tr><tr><td>-</td><td>80.2</td><td>59.8</td><td>6.580</td><td>14.6</td></tr></table>",
+                "table_type": "complex_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                503,
+                335,
+                887,
+                445
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/7130fd29e264a625cced3687e7b02554e15402ea39c290c205c9131f496ed75e.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 2. Performance comparison of pruned models at different ratios and the original model."
+                    },
+                    {
+                        "type": "text",
+                        "content": "Table 3. Ablation study of the proposed components on FLIR under different pruning ratios. Results are percentage."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td rowspan=\"2\"></td><td rowspan=\"2\">TIC MIRA SPCA</td><td colspan=\"2\">30%</td><td colspan=\"2\">50%</td><td colspan=\"2\">70%</td></tr><tr><td> $\\mathrm { \\ m A P 5 0 }$ </td><td>mAP</td><td> $\\mathrm { \\ m A P 5 0 }$ </td><td>mAP</td><td>mAP50 mAP</td><td></td></tr><tr><td>√</td><td></td><td>72.4</td><td>39.2</td><td>70.2</td><td>38.1</td><td>62.7</td><td>33.7</td></tr><tr><td>√</td><td>V</td><td>76.3</td><td>41.2</td><td>74.4</td><td>40.0</td><td>67.1</td><td>35.4</td></tr><tr><td>√</td><td>V √</td><td>77.5</td><td>41.5</td><td>76.7</td><td>41.4</td><td>72.6</td><td>38.7</td></tr></table>",
+                "table_type": "complex_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                503,
+                501,
+                895,
+                580
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.3.1 Component Ablations."
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                500,
+                648,
+                710,
+                664
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The ablation results are summarized in Table 3. TIC effectively estimates channel importance using high-order expansion and establishes a moderate baseline across pruning ratios. MIRA further boosts the performance and the gain grows with sparsity. We attribute this to its explicit crossmodal modeling, which prevents the removal of channels that are individually less important but provide complementary information to the other modality. Adding SPCA improves "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathrm { \\ m A P _ { 5 0 } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "by 5.5% at 70% pruning, and the improvement widens as pruning becomes aggressive. This suggests SPCA adapts selection to scene-dependent distributions, which is critical at high sparsity, where fixed criteria often fail. Ultimately, the full model preserves high precision across pruning ratios, confirming that TIC, MIRA, and SPCA collectively address dynamic channel importance."
+                    }
+                ]
+            },
+            "bbox": [
+                496,
+                672,
+                893,
+                902
+            ]
+        }
+    ],
+    [
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/e7cbd60c61eca334c9a6785483a27d0d058ee261f3782a7a3a8d127e5eef5986.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 4. Effect of Taylor expansion order in TIC on FLIR under different pruning ratios. Results are reported in mAP(%)."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>TIC Approximation</td><td>30%</td><td>50%</td><td>70%</td></tr><tr><td>First-order Taylor</td><td>38.2</td><td>37.9</td><td>35.1</td></tr><tr><td>Second-order Taylor</td><td>39.4</td><td>39.1</td><td>36.4</td></tr><tr><td>Third-order Taylor</td><td>41.5</td><td>41.4</td><td>38.7</td></tr><tr><td>Params (M)</td><td>4.695</td><td>3.696</td><td>2.767</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                98,
+                88,
+                449,
+                193
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.3.2 Analysis of Taylor-Implicit Criterion."
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                75,
+                261,
+                392,
+                276
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We investigate the influence of different Taylor approximation orders in TIC in Table 4. First-order Taylor only captures the immediate gradient response after channel removal, and it exhibits the poorest performance across all pruning ratios, yielding only 38.2% mAP at 30% channel pruning. While introducing the second-order term effectively improves the results by considering local curvature, it remains insufficient to model the nonlinearity inherent in our compensation-aware strategy. By incorporating the third-order term, TIC better models the nonlinear loss variation caused by channel removal and parameter compensation, leading to the best performance under all pruning ratios. These results confirm that high-order Taylor expansion outperforms lower-order alternatives by effectively modeling the loss induced by pruning and compensation, ensuring reliable channel importance estimation."
+                    }
+                ]
+            },
+            "bbox": [
+                75,
+                285,
+                472,
+                529
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.3.3 Sensitivity Analysis of Hyper-parameters in Unified Channel Selection"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                75,
+                547,
+                468,
+                578
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We ablate the trade-off ratio "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\beta / \\alpha"
+                    },
+                    {
+                        "type": "text",
+                        "content": "in Eq. (25) on the FLIR dataset under three distinct pruning ratios. As shown in Fig. 6, the mAP consistently peaks at "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\beta / \\alpha = 1 . 0"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", reaching 41.5%, 41.4%, and 38.7% respectively. This unified peak shows the optimal ratio is pruning-agnostic. In fact, deviations from this setting cause performance degradation. A small ratio ignores compensation potential, while a large one overemphasizes it and may discard vital features, especially under limited capacity. Therefore, setting "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\beta / \\alpha = 1 . 0"
+                    },
+                    {
+                        "type": "text",
+                        "content": "ensures an optimal trade-off between information retention and pruning efficiency, validating that our criterion remains effective even under aggressive pruning."
+                    }
+                ]
+            },
+            "bbox": [
+                75,
+                587,
+                472,
+                771
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "5. Conclusion"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                76,
+                784,
+                197,
+                800
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "In this paper, we propose InterPruner, an interactive structured pruning framework for RGB-infrared object detectors. The framework first assesses channel importance via a Taylor-Implicit Criterion, then identifies cross-modal redundancy through a Modality Interaction Redundancy Analyzer, and finally leverages a Scene-Prior Channel Anchor that adapts pruning to semantic context. This pruning paradigm offers new insights for lightweight multimodal perception, with natural extensions to other resourceconstrained applications, such as heterogeneous segmentation, medical imaging, and autonomous systems, where preserving cross-modal information with minimal overhead is critical."
+                    }
+                ]
+            },
+            "bbox": [
+                75,
+                810,
+                470,
+                901
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/4a10e4402dbdba30e5fbd57a73c86ecb2c3feff478bfe5e569d2ddbf12e9bedd.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 5. Ablation study of the "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\beta / \\alpha"
+                    },
+                    {
+                        "type": "text",
+                        "content": "on the FLIR dataset across different pruning ratios. Results are percentage."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td rowspan=\"2\"> $\\beta / \\alpha$ </td><td colspan=\"2\">30%</td><td colspan=\"2\">50%</td><td colspan=\"2\">70%</td></tr><tr><td> $\\mathrm { \\ m A P _ { 5 0 } }$ </td><td> $\\mathrm { m A P }$ </td><td> $\\mathrm { \\ m A P { 5 0 } }$ </td><td>mAP</td><td> $\\mathrm { \\ m A P _ { 5 0 } }$ </td><td> $\\mathrm { m A P }$ </td></tr><tr><td>0.0</td><td>72.4</td><td>39.2</td><td>70.2</td><td>38.1</td><td>62.7</td><td>33.7</td></tr><tr><td>0.25</td><td>73.5</td><td>39.4</td><td>72.2</td><td>38.6</td><td>67.1</td><td>35.6</td></tr><tr><td>0.50</td><td>74.3</td><td>39.8</td><td>73.6</td><td>39.0</td><td>69.7</td><td>37.2</td></tr><tr><td>1.00</td><td>77.5</td><td>41.5</td><td>76.7</td><td>41.4</td><td>72.6</td><td>38.7</td></tr><tr><td>2.00</td><td>72.0</td><td>38.5</td><td>71.2</td><td>38.2</td><td>67.5</td><td>35.8</td></tr></table>",
+                "table_type": "complex_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                504,
+                89,
+                887,
+                205
+            ]
+        },
+        {
+            "type": "chart",
+            "content": {
+                "image_source": {
+                    "path": "images/3989d0dc5a339eba8ceff3d00a0d5164a11acf46abcaea05cee6a74bd235db74.jpg"
+                },
+                "content": "",
+                "chart_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 6. Visualization of the "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\beta / \\alpha"
+                    },
+                    {
+                        "type": "text",
+                        "content": "ablation study in Table 5."
+                    }
+                ],
+                "chart_footnote": []
+            },
+            "bbox": [
+                503,
+                263,
+                887,
+                450
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                496,
+                506,
+                893,
+                612
+            ]
+        }
+    ],
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "References"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                78,
+                89,
+                176,
+                106
+            ]
+        },
+        {
+            "type": "list",
+            "content": {
+                "list_type": "reference_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[1] Benjamin Bergner, Christoph Lippert, and Aravindh Mahendran. Token cropr: Faster vits for quite a few tasks, 2024. 1"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[2] Hongrong Cheng, Miao Zhang, and Javen Qinfeng Shi. Influence function based second-order channel pruningevaluating true loss changes for pruning is possible without retraining, 2023. 2, 3"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[3] Shangqian Gao, Yanfu Zhang, Feihu Huang, and Heng Huang. Bilevelpruning: Unified dynamic and static channel pruning for convolutional neural networks. In 2024 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), pages 16090–16100, 2024. 1, 2, 6, 7"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[4] Kwanhee Lee and Hyang-Won Lee. Dynamic network compression via probabilistic channel pruning. Neural Networks, 193:108080, 2026. 6"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[5] Hao Li, Asim Kadav, Igor Durdanovic, Hanan Samet, and Hans Peter Graf. Pruning filters for efficient convnets. arXiv preprint arXiv:1608.08710, 2016. 6"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[6] Ting Li, Mao Ye, Tianwen Wu, Nianxin Li, Shuaifeng Li, Song Tang, and Luping Ji. Pseudo visible feature fine-grained fusion for thermal object detection. In 2025 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), pages 6710–6719, 2025. 1"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[7] Yawei Li, Kamil Adamczewski, Wen Li, Shuhang Gu, Radu Timofte, and Luc Van Gool. Revisiting random channel pruning for neural network compression, 2022. 2"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[8] Yuxuan Li, Xiang Li, Yunheng Li, Yicheng Zhang, Yimian Dai, Qibin Hou, Ming-Ming Cheng, and Jian Yang. Sm3det: A unified model for multi-modal remote sensing object detection, 2025. 1"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[9] Yang Li, Liejun Wang, and Minchi Kuang. Csp: Channel and space pruning for compressing deep convolutional neural networks. IEEE Transactions on Multimedia, 28:4146– 4157, 2026. 2, 6"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[10] Suyun Lian, Yang Zhao, Jiajian Cai, Muxin Liao, Stefan Poslad, and Jihong Pei. A lightweight pruning framework with minimal retraining using taylor expansion and multiknowledge preservation strategy. Engineering Applications ofArtificial Intelligence, 168:114004, 2026. 6, 7"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[11] Chang Liu, Xin Ma, Xiaochen Yang, Yuxiang Zhang, and Yanni Dong. Como: Cross-mamba interaction and offsetguided fusion for multimodal object detection, 2024. 2"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[12] Zhuang Liu, Jianguo Li, Zhiqiang Shen, Gao Huang, Shoumeng Yan, and Changshui Zhang. Learning efficient convolutional networks through network slimming. In 2017 IEEE International Conference on Computer Vision (ICCV), pages 2755–2763, 2017. 1, 2, 6"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[13] Mingge Lu, Jingwei Sun, Junqing Lin, Zechun Zhou, and Guangzhong Sun. Lua-llm: Learning unstructured-sparsity allocation for large language models. In D. Belgrave, C. Zhang, H. Lin, R. Pascanu, P. Koniusz, M. Ghassemi, and N. Chen, editors, Advances in Neural Information Processing Systems, volume 38, pages 123455–123481. Curran Associates, Inc., 2025. 1"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[14] Mincheol Park, Dongjin Kim, Cheonjun Park, Yuna Park, Gyeong Eun Gong, Won Woo Ro, and Suhyun Kim."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Reprune: Channel pruning via kernel representative selection, 2024. 6, 7"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[15] Loveneet Saini, Mirko Meuter, Hasan Tercan, and Tobias Meisen. Attentivegru: Recurrent spatio-temporal modeling for advanced radar-based bev object detection. In 2025 IEEE/CVF Conference on Computer Vision and Pattern Recognition Workshops (CVPRW), pages 2406–2415. IEEE, 2025. 1"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[16] Jifeng Shen, Haibo Zhan, Xin Zuo, Heng Fan, Xiaohui Yuan, Jun Li, and Wankou Yang. IRDFusion: Iterative relationmap difference guided feature fusion for multispectral object detection. Pattern Recognition, 176:113189, 2026. 1, 2"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[17] Yiming Sun, Bing Cao, Pengfei Zhu, and Qinghua Hu. Drone-based rgb-infrared cross-modality vehicle detection via uncertainty-aware learning. IEEE Transactions on Circuits and Systems for Video Technology, pages 1–1, 2022. 6"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[18] Zhanyan Tang, Zhihao Wu, Mu Li, Jie Wen, Bob Zhang, Yong Xu, and Jianqiang Li. Adaptive fine-grained fusion network for multimodal uav object detection. IEEE Transactions on Image Processing, 35:1870–1882, 2026. 1, 2"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[19] Alexander Theus, Olin Geimer, Friedrich Wicke, Thomas Hofmann, Sotiris Anagnostidis, and Sidak Pal Singh. Towards meta-pruning via optimal transport, 2024. 6, 7"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[20] Kunyu Wang, Xueyang Fu, Xin Lu, Chengjie Ge, Chengzhi Cao, Wei Zhai, and Zheng-Jun Zha. Efficient test-time adaptive object detection via sensitivity-guided pruning, 2025. 2"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[21] Jiaqi Wu, Zhen Wang, Enhao Huang, Kangqing Shen, Yulin Wang, Yang Yue, Yifan Pu, and Gao Huang. Bridging the rgb-ir gap: Consensus and discrepancy modeling for textguided multispectral detection, 2026. 1"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[22] Lanhu Wu, Zilin Gao, Hao Fei, Mong-Li Lee, and Wynne Hsu. Leaf-mamba: Local emphatic and adaptive fusion state space model for rgb-d salient object detection. In Proceedings of the 33rd ACM International Conference on Multimedia, MM ’25, page 1013–1022. ACM, October 2025. 1"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[23] Haitian Yang, Juan Fang, Yiren Zhu, et al. Crossweaver: Towards efficient cross-modal interweaving and decoupling for weakly-aligned multispectral object detection. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) Findings, 2026. 1"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[24] Maoxun Yuan, Bo Cui, Tianyi Zhao, Jiayi Wang, Shan Fu, Xue Yang, and Xingxing Wei. Unirgb-ir: A unified framework for visible-infrared semantic tasks via adapter tuning. In Proceedings of the 33rd ACM International Conference on Multimedia, MM ’25, page 2409–2418. ACM, October 2025. 2"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[25] Zheng Zhan, Zhenglun Kong, Yifan Gong, Yushu Wu, Zichong Meng, Hangyu Zheng, Xuan Shen, Stratis Ioannidis, Wei Niu, Pu Zhao, and Yanzhi Wang. Exploring token pruning in vision state space models. In The Thirty-eighth Annual Conference on Neural Information Processing Systems, 2024. 1"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[26] Heng Zhang, Elisa Fromont, Sebastien Lef´ evre, and Bruno` Avignon. Multispectral fusion for object detection with cyclic fuse-and-refine blocks. In 2020 IEEE International Conference on Image Processing (ICIP), pages 1–5, October 2020. 6"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                84,
+                114,
+                468,
+                155
+            ]
+        }
+    ],
+    [
+        {
+            "type": "list",
+            "content": {
+                "list_type": "reference_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[27] Mingjin Zhang, Jin Feng, Handi Yang, Jie Guo, Yunsong Li, and Xinbo Gao. Irprunedext: Efficient infrared small target detection via musical wavelet-regularized channel pruning. IEEE Transactions on Neural Networks and Learning Systems, 36(12):20229–20242, 2025. 2, 6"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[28] Yue Zhang, Jinbao Chen, Jianyuan Wang, Donghao Shi, Shu Han, and Lixiao Deng. C2dff-net for object detection in multimodal remote sensing images. IEEE Transactions on Geoscience and Remote Sensing, 63:1–16, 2025. 1, 2, 6"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[29] Tianyi Zhao, Maoxun Yuan, Feng Jiang, Nan Wang, and Xingxing Wei. Removal then selection: A coarse-to-fine fusion perspective for rgb-infrared object detection, 2024. 2"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[30] Haodong Zhu, Wenhao Dong, Linlin Yang, Hong Li, Yuguang Yang, Yangyang Ren, Qingcheng Zhu, Zichao Feng, Changbai Li, Shaohui Lin, Runqi Wang, Xiaoyan Luo, and Baochang Zhang. Wavemamba: Wavelet-driven mamba fusion for rgb-infrared object detection, 2025. 1"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                78,
+                93,
+                468,
+                160
+            ]
+        }
+    ]
+]
