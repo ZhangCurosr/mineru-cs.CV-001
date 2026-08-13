@@ -1,0 +1,1588 @@
+[
+    {
+        "type": "text",
+        "text": "Automated binary classification of hazelnut X-ray images: A deep-learning benchmark for quality assessment",
+        "text_level": 1,
+        "bbox": [
+            112,
+            116,
+            883,
+            170
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "G. Sportelli<sup>1,2†</sup>, N. Belcari<sup>1,2†</sup>, R. Pace<sup>3\\*</sup>, U. Bernardo<sup>4</sup>, S. Sultana<sup>1</sup>, A. Toncelli<sup>1</sup>, M. Giaccone<sup>3</sup>",
+        "bbox": [
+            111,
+            175,
+            862,
+            194
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "† These authors contributed equally to this work. Corresponding author: robertapace@cnr.it.",
+        "bbox": [
+            112,
+            210,
+            503,
+            247
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "¹ Department of Physics “E. Fermi”, University of Pisa, Largo Bruno Pontecorvo 3, 56127 Pisa, Italy",
+        "bbox": [
+            112,
+            258,
+            784,
+            275
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "² National Institute for Nuclear Physics (INFN), Pisa Division, Largo Bruno Pontecorvo 3, 56127 Pisa, Italy",
+        "bbox": [
+            112,
+            273,
+            826,
+            289
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "³ Institute for Agriculture and Forestry Systems in the Mediterranean, National Research Council of Italy (ISAFOM-CNR), Piazzale Enrico Fermi 1, Località Porto del Granatello, 80055 Portici, Naples, Italy",
+        "bbox": [
+            111,
+            287,
+            883,
+            318
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "⁴ Institute for Sustainable Plant Protection, National Research Council of Italy (IPSP-CNR), Piazzale Enrico Fermi 1,   \n80055 Portici, Naples, Italy",
+        "bbox": [
+            111,
+            318,
+            883,
+            348
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Abstract",
+        "text_level": 2,
+        "bbox": [
+            114,
+            92,
+            218,
+            113
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "Non-destructive X-ray imaging can reveal internal hazelnut defects that are difficult to detect by external inspection alone; however, automated interpretation remains challenging because of subtle radiographic differences among classes, marked class imbalance, and limited annotated data. Here, we present a benchmark for binary hazelnut quality classification (healthy versus defective) based on 799 segmented single-kernel X-ray images (224 × 224 pixels, grayscale), grouped into 101 acquisition units. Seven single-model configurations and ten probabilityaggregation ensembles were evaluated using a group-wise split-rotation protocol across five data splits generated using different random seeds. Decision thresholds were selected on the validation set, and performance was assessed deterministically on validation and test sets. Under the expertreassessed annotation condition, the average-probability ensemble of the binary cross-entropytrained convolutional neural network and frozen Swin Transformer achieved the highest mean balanced accuracy (86.3% ± 1.8%, five seeds), with several other ensembles providing comparable performance. Across methods, substantial split-to-split variability was observed, indicating that multi-split evaluation is essential for reliable model comparison at this dataset scale. Expert reassessment of 15 kernels changed mean balanced accuracy by up to 3.4 percentage points (mean +1.4 pp across 17 methods), while having no material effect on cross-split variance. The results highlight both the potential of deep learning for automated X-ray-based hazelnut quality assessment and the importance of rigorous evaluation and label curation in small, imbalanced agricultural imaging datasets.",
+        "bbox": [
+            111,
+            119,
+            887,
+            455
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "Keywords: Agricultural imaging; food quality inspection; internal defect detection; kernel grading; non-destructive testing.",
+        "bbox": [
+            111,
+            463,
+            883,
+            501
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "1. Introduction",
+        "text_level": 2,
+        "bbox": [
+            112,
+            523,
+            287,
+            544
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "Hazelnut (Corylus avellana L.) is a high-value tree nut crop whose commercial quality depends strongly on kernel integrity and on the absence of internal defects (Pedrotti et al., 2021; Giaccone et al., 2026). This requirement is particularly relevant within the Pontic–Caucasian hazelnut production system, where Türkiye is the world’s leading producer and, together with Georgia and Azerbaijan, accounts for approximately 69% of global hazelnut production (FAOSTAT, 2026). In this region, Corylus avellana var. pontica, across its various cultivars, is the most widely represented taxon (Mirotadze et al., 2009). Among these cultivars, “Anakliuri” is of particular industrial interest and therefore represents a relevant case study for the development of automated quality assessment methods. Compared with Corylus avellana var. avellana, C. avellana var. pontica is characterized by longer husks that more completely enclose the nut, a trait that can complicate post-harvest handling.",
+        "bbox": [
+            111,
+            551,
+            885,
+            744
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "Among the defects of greatest industrial relevance, stink bug damage and rotten kernels are particularly problematic because they directly affect marketability and processing suitability and are among the main determinants of lot downgrading and reduced economic value (Valeriano et al., 2022; Spataro et al., 2024). For example, in the Italian market, 2025 purchase quotations for in-shell hazelnuts indicate that increasing the incidence of hidden rot from $\\leq 1 \\% \\ 1 0 \\ \\leq \\ 5 \\%$ is associated with a price reduction of approximately 27%, confirming the substantial economic impact of rotten kernels (Bio Nocciola, 2026).",
+        "bbox": [
+            111,
+            744,
+            885,
+            867
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "In the Pontic–Caucasian production context, delays in drying and processing may further promote quality deterioration, particularly the development of rotten defects associated with fungal infection and the potential risk of mycotoxin contamination, including aflatoxins (Battilani et al., 2018; Camardo Leggieri et al., 2022; Salvatore et al., 2023; Aghayev et al., 2025). This makes rapid and reliable internal quality assessment especially relevant not only for commercial grading but also for food safety management. Stink bug feeding represents another major source of kernel deterioration in hazelnut-producing areas and may also interact with fungal spoilage, as feeding injuries can facilitate secondary fungal colonization of damaged kernels (Scarpari et al., 2018).",
+        "bbox": [
+            111,
+            866,
+            885,
+            902
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            111,
+            90,
+            885,
+            196
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Previous studies have demonstrated that commercial hazelnuts are susceptible to stink bug damage throughout kernel development (Hedstrom et al., 2014; de Benedetta et al., 2023). Beyond visible deterioration, stink bug attack can also result in hidden internal defects and broader metabolomic alterations that may not be detectable by external inspection alone, further complicating quality assessment (Ozdemir et al., 2023; Squara et al., 2024; de Benedetta et al., 2026).",
+        "bbox": [
+            111,
+            195,
+            885,
+            284
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Because many relevant defects are internal, conventional quality assessment based on kernel inspection remains informative, but it is labour-intensive, time-consuming, and poorly suited to inline industrial sorting (Pannico et al., 2015). For this reason, non-destructive imaging methods have attracted increasing interest in fruit and nut quality control. In particular, X-ray radiography is well suited to the inspection of dense biological structures because it can reveal internal organization, tissue alterations, and other structural anomalies while remaining compatible with rapid industrial workflows (Kotwaliwale et al., 2014; Mahanti et al., 2022; Brandoli et al., 2025). Deep learning has been increasingly applied to food classification, grading, and safety assessment, although dataset quality, model reliability, and real-time deployment remain important challenges (Zhao et al., 2025). Recent studies have combined X-ray radiography with deep learning or anomaly-detection methods to identify internal disorders in pears and apples (Van De Looverbosch et al., 2022; Tempelaere et al., 2023, 2024), internal rot in avocados (Matsui et al., 2023), and internal defects in walnuts, seeds, camellia seeds, and chestnuts (Zhang et al., 2023a; Zhang et al., 2024; Hamdy et al., 2024; Chen et al., 2025; Ma et al., 2025; Ma et al., 2026). Together, these studies demonstrate the broader potential of X-ray-based artificial intelligence for automated internal quality assessment across fruit, nut, and seed products (Zhang et al., 2023b). Specifically in hazelnuts, terahertz and X-ray-based approaches have highlighted the need for objective, nondestructive methods capable of detecting hidden defects beyond conventional grading (Gennari et al., 2023).",
+        "bbox": [
+            111,
+            282,
+            887,
+            614
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Publicly available X-ray datasets specifically designed for hazelnut quality classification remain very limited. Early X-ray-based hazelnut studies focused mainly on features derived from greylevel distributions and statistical image descriptors rather than end-to-end deep learning (Colangeli et al., 2014; Khosa and Pasero, 2014). To the best of our knowledge, the dataset released by Mele et al. (2025) in association with the study by Vitale et al. (2025) is currently the only publicly available X-ray dataset specifically designed for deep-learning-based hazelnut quality classification. The study confirmed the potential of pretrained convolutional neural networks for detecting stink bug damage, while also highlighting the difficulty of developing reliable industrial classifiers from a limited number of biological specimens. More generally, these applications frequently involve small sample sizes, class imbalance, and label noise, which may reduce the learnability of subtle defect classes and produce overoptimistic or unstable performance estimates if validation is not carefully designed (Karimi et al., 2020; Shi et al., 2024). These limitations motivate the use of transfer learning, anomaly detection, data augmentation or synthetic data generation, careful label curation, and robust validation strategies (Van De Looverbosch et al., 2022; Tempelaere et al., 2023; Hamdy et al., 2024; Zhao et al., 2025). Deep learning architectures are therefore especially attractive because they can learn complex textural and structural patterns directly from images and have already shown promising performance in food inspection and Xray-based classification tasks (Ünal and Aktaş, 2023).",
+        "bbox": [
+            109,
+            613,
+            887,
+            896
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            111,
+            90,
+            883,
+            126
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "Transfer learning from ImageNet-pretrained models is often adopted when domain-specific datasets are limited (Shin et al., 2016; Tajbakhsh et al., 2016; Kim et al., 2022). However, radiographic images differ substantially from natural colour images because they encode densitydependent attenuation rather than surface-reflectance information (van Dael et al., 2019). Moreover, its effectiveness depends on the degree of correspondence between the source and target domains (Zhao et al., 2024). Pretrained representations may not always capture the most informative features for subtle X-ray defect discrimination, especially when fine-tuning data are limited (Mei et al., 2022; Hosseinzadeh Taher et al., 2025). This further reinforces the importance of rigorous evaluation strategies when developing automated classifiers for industrial use (Varoquaux and Cheplygina, 2022; Bradshaw et al., 2023). Within this framework, careful label curation becomes a central methodological requirement rather than a secondary annotation step.",
+        "bbox": [
+            111,
+            126,
+            885,
+            318
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "In this study, we apply deep learning models to X-ray images of individual kernels of C. avellana var. pontica, cv. Anakliuri, to assess the feasibility of robust binary classification between healthy and defective kernels under industrially relevant conditions. We further examine the extent to which classification performance is influenced by dataset characteristics, label quality, and model architecture. The findings may inform the design of reliable and scalable AI-assisted sorting solutions for the hazelnut industry.",
+        "bbox": [
+            111,
+            318,
+            885,
+            424
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "2. Materials and Methods",
+        "text_level": 2,
+        "bbox": [
+            112,
+            445,
+            406,
+            467
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "2.1 Hazelnut samples, quality assessment, and annotation conditions",
+        "text_level": 2,
+        "bbox": [
+            111,
+            488,
+            784,
+            508
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "The dataset consisted of 799 hazelnut kernels (C. avellana var. pontica) of the Georgian cultivar Anakliuri. The samples were harvested in 2024 from an organic orchard located in Zugdidi, in the Samegrelo region of western Georgia (42°30′29″N, 41°52′21″E), and managed according to the local agronomic practices. The hazelnuts were sampled according to Gennari et al. (2023) from a commercial lot of approximately two tons that was expected to contain a relatively high proportion of defective kernels. After harvest, the hazelnuts were dried to a final moisture content of 6%, determined according to Method 2 of the UNECE standard (UNECE, 2025). From shelling until X-ray acquisition, the kernels were stored under vacuum at a constant temperature of $4 ~ ^ { \\circ } \\mathrm { C }$ to preserve quality and prevent further alterations.",
+        "bbox": [
+            111,
+            518,
+            885,
+            675
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "After mechanical shelling and before any destructive opening or cutting, the intact kernels were subjected to X-ray acquisition. Kernel quality was initially assessed by trained personnel through external visual inspection, following the inspection procedure and commercial evaluation criteria described in the UNECE standard for hazelnut kernels (UNECE, 2025). Kernels were assigned to the following externally assessable quality classes: healthy (H), stink bug-damaged (“cimiciato”, C), rotten (R), and oily-appearing alteration (“oil-rancidity”, O). After X-ray imaging, only kernels appearing externally healthy were manually opened and sectioned into four parts to identify internal alterations that could not be detected externally. Kernels showing internal rot in the absence of externally visible symptoms were classified as hidden rotten (HR).",
+        "bbox": [
+            111,
+            675,
+            885,
+            833
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "To assess the effect of annotation quality on model performance, two annotation conditions were considered. The initial condition corresponded to the labels assigned during the combined external and internal assessment. Under the initial annotation condition, the dataset contained 138 healthy (17.3%) and 661 defective (82.7%) kernels. Following the first round of model training and evaluation, a subset of kernels that had appeared externally healthy but had subsequently been assigned to a defect class after internal inspection underwent targeted expert reassessment. This review revealed that some kernels previously labelled as defective did not exhibit the defects indicated by their original labels. Accordingly, under the reassessed annotation condition, the binary labels of 15 kernels were changed from defective to healthy, while all remaining labels were left unchanged. The 15 kernels relabelled as healthy had originally comprised 7 hidden rotten, 4 stink bug-damaged, and 4 oil-rancidity kernels. Under the reassessed annotation condition, the dataset contained 153 healthy (19.1%) and 646 defective (80.9%) kernels (Table 1). No sample was added, removed, or relabelled outside these 15 reclassifications. The complete training and evaluation protocol was then repeated using the same data partitions, thereby isolating the effect of label reassessment on model performance.",
+        "bbox": [
+            111,
+            833,
+            885,
+            904
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            111,
+            90,
+            885,
+            284
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "table",
+        "img_path": "images/43fe1619916f6f4ff8492fd8f6cb9716ff91f2002b153518952d568b2a36d147.jpg",
+        "table_caption": [
+            "Table 1. Distribution of hazelnut kernels among the five quality classes (n = 799) under the reassessed annotation condition."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td rowspan=1 colspan=1>Class</td><td rowspan=1 colspan=1>Count</td><td rowspan=1 colspan=1>Percentage %</td></tr><tr><td rowspan=1 colspan=1>Stink bug-damaged (C)</td><td rowspan=1 colspan=1>424</td><td rowspan=1 colspan=1>53.1</td></tr><tr><td rowspan=1 colspan=1>Healthy (H)</td><td rowspan=1 colspan=1>153</td><td rowspan=1 colspan=1>19.1</td></tr><tr><td rowspan=1 colspan=1>Rotten (R)</td><td rowspan=1 colspan=1>125</td><td rowspan=1 colspan=1>15.6</td></tr><tr><td rowspan=1 colspan=1>Hidden rotten (HR)</td><td rowspan=1 colspan=1>70</td><td rowspan=1 colspan=1>8.8</td></tr><tr><td rowspan=1 colspan=1>Oil-rancidity (O)</td><td rowspan=1 colspan=1>27</td><td rowspan=1 colspan=1>3.4</td></tr><tr><td rowspan=1 colspan=1>Total</td><td rowspan=1 colspan=1>799</td><td rowspan=1 colspan=1>100.0</td></tr></table>",
+        "bbox": [
+            114,
+            314,
+            537,
+            449
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "2.2 X-ray imaging specifics",
+        "text_level": 2,
+        "bbox": [
+            112,
+            469,
+            383,
+            491
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "All hazelnut kernels were imaged using the Computed Tomography (CT) component of a preclinical SPECT/CT scanner (MILabs U-SPECT/CT). The CT subsystem (MILabs U-CT) comprises a microfocus X-ray source operating in the 10–65 kV range and a high-resolution gadolinium-oxysulfide / CMOS (GOS/CMOS) flat-panel detector with a native 1536 × 1944 pixel array. A single planar projection was performed using a source-to-detector distance (SDD) of 298.04 mm and a source-to-isocentre distance (SID) of 222.42 mm corresponding to a geometric magnification (SDD / SID) of 1.34. The tube voltage was set to 65 kV with a current of 0.25 mA and an exposure of 35 ms. The beam was filtered with 500 µm of Al. A 2 × 2 binning was applied to all images, resulting in $7 6 8 \\times 9 7 2$ -pixel images with a 16-bit depth.",
+        "bbox": [
+            109,
+            500,
+            887,
+            660
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "2.3 Dataset and task definition",
+        "text_level": 2,
+        "bbox": [
+            112,
+            678,
+            416,
+            696
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "The dataset consisted of the 799 segmented X-ray images of individual hazelnut kernels grouped into 101 acquisition units, each acquisition unit corresponding to one original X-ray scan containing up to eight kernels (Figures 1 and 2); the corresponding identifier in the released dataset is the sample\\_id column. Images were stored as $2 2 4 \\times 2 2 4$ pixel grayscale PNG files.",
+        "bbox": [
+            111,
+            707,
+            885,
+            777
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Grouping was required because kernels belonging to the same acquisition unit shared imaging conditions and could exhibit correlated appearance.",
+        "bbox": [
+            111,
+            777,
+            883,
+            813
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "For the primary task, the label was mapped to a binary target, with healthy kernels as the negative class and all defect classes as the positive class (Figure 3). In the binary encoding, $\\mathbf { y } = 1$ denoted defective kernels whereas $\\mathtt { y } = 0$ denoted healthy kernels.",
+        "bbox": [
+            111,
+            813,
+            883,
+            866
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "image",
+        "img_path": "images/74fa76cb0cf8f286e5fc3b54a34641e7814f87e4aed2bcef1b7b626a1ed0ebf9.jpg",
+        "image_caption": [
+            "Figure 1. CT preview image from the X-ray scanner showing eight hazelnuts in a single acquisition before segmentation."
+        ],
+        "image_footnote": [
+            "Stink bug-damaged (C)"
+        ],
+        "bbox": [
+            117,
+            92,
+            879,
+            483
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            119,
+            585,
+            137,
+            672
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "image",
+        "img_path": "images/9207041b681578664cbb976e87cebc350b010fe35f8bae8f02b30684014ae440.jpg",
+        "image_caption": [],
+        "image_footnote": [
+            "p(defect)=0.68",
+            "Healthy (H)"
+        ],
+        "bbox": [
+            166,
+            580,
+            302,
+            679
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "image",
+        "img_path": "images/522717f97f1a214e51c493bae55d297c1ddf354902456fc086011dffadb43fa0.jpg",
+        "image_caption": [],
+        "image_footnote": [
+            "p(defect)=0.55",
+            "Rotten (R)",
+            "none in test set",
+            "Hidden rotten (HR)"
+        ],
+        "bbox": [
+            312,
+            579,
+            444,
+            679
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "image",
+        "img_path": "images/10da143db2ec8c6335d4bd63ca5d340416946b22556a0f611e2371c3db2e16a1.jpg",
+        "image_caption": [],
+        "image_footnote": [
+            "p(defect)=0.69",
+            "Oil-rancidity (0)"
+        ],
+        "bbox": [
+            601,
+            579,
+            732,
+            679
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "image",
+        "img_path": "images/123c2636ea07aac4d97e4af8a0599b61240e9573348ba515a44c620fe08fa209.jpg",
+        "image_caption": [],
+        "image_footnote": [
+            "p(defect)=0.68",
+            ""
+        ],
+        "bbox": [
+            746,
+            580,
+            877,
+            678
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "image",
+        "img_path": "images/ab456179286c2c6f83d6709d4ce033a35931774def793829d64b77fd3b7ec520.jpg",
+        "image_caption": [],
+        "image_footnote": [
+            "p(defect)=0.90"
+        ],
+        "bbox": [
+            169,
+            709,
+            300,
+            810
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "image",
+        "img_path": "images/4b5dc8faf70d054d7ba58a12208c3a3965d778df366d609d792a6c2a701bd806.jpg",
+        "image_caption": [],
+        "image_footnote": [
+            "p(defect)=0.86"
+        ],
+        "bbox": [
+            312,
+            709,
+            444,
+            809
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "image",
+        "img_path": "images/ba691026c4d44d214825c66f7905477fabab362a07a00b2f9a4afb35cebe8d05.jpg",
+        "image_caption": [],
+        "image_footnote": [
+            "p(defect)=0.99"
+        ],
+        "bbox": [
+            457,
+            709,
+            588,
+            809
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "image",
+        "img_path": "images/96a3d6235dab8be23bd9a83eea434a3483f835e130259e51b1da75fde8054787.jpg",
+        "image_caption": [],
+        "image_footnote": [
+            "p(defect)=0.84"
+        ],
+        "bbox": [
+            602,
+            709,
+            733,
+            809
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "image",
+        "img_path": "images/849474de6d241f0caea711f9da592f9f3736c2cfcafe19ea9ce585f26a896520.jpg",
+        "image_caption": [],
+        "image_footnote": [
+            "p(defect)=0.80"
+        ],
+        "bbox": [
+            745,
+            710,
+            877,
+            809
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Figure 2. Test-set examples arranged according to the true quality class (columns, as defined in Table 1) and binary model prediction (rows). Predictions were obtained from the top-ranked ensemble (average-probability aggregation of BinaryNutCNN with binary cross-entropy loss and frozen Swin Transformer Tiny) on split seed 42. Each image is annotated with the ensemble's estimated probability of defect. Grey cells indicate class/prediction combinations absent from the test fold.",
+        "bbox": [
+            111,
+            834,
+            885,
+            910
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "chart",
+        "img_path": "images/1e3c9eb469d2bcea067817403c56f8ebbce2d620e0557a40f948ec55d12ec6fc.jpg",
+        "content": "",
+        "chart_caption": [
+            "Dataset class distribution - Revised annotation (n=799)",
+            "Figure 3. Distribution of samples across the five quality classes and the corresponding binary grouping (healthy versus defective) used for the benchmark."
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            117,
+            117,
+            882,
+            454
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "2.4 Preprocessing, group-wise splitting, and augmentation",
+        "text_level": 2,
+        "bbox": [
+            111,
+            518,
+            686,
+            539
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "All images are resized to 224 × 224 px and normalized. For models requiring three-channel input, the grayscale image is replicated across channels prior to applying standard ImageNet normalization. Augmentation is limited to random horizontal and vertical flips applied only to the training set, reflecting the arbitrary orientation of segmented nuts while avoiding transformations that may distort subtle radiographic cues. Geometric transformations such as affine warping are excluded because they can alter the apparent thickness profile and edge geometry that encode density-dependent attenuation in X-ray images, potentially introducing artifacts unrelated to genuine anatomical variation.",
+        "bbox": [
+            111,
+            542,
+            885,
+            683
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "To prevent data leakage, splitting is performed at the sample\\_id (group) level with a 70%/15%/15% train/validation/test partition. Stratification is applied based on the majority class within each sample\\_id group. To ensure that both annotation conditions are evaluated on identical data partitions, stratified splitting is always performed using the initial-condition labels; the reassessed condition inherits these splits without regeneration. This prevents changes in per-group majority labels from altering the fold assignments between conditions, which would confound the comparison. This procedure is referred to as split rotation: the dataset is partitioned multiple times using different random seeds, and each model configuration is trained and evaluated independently on every partition, so that performance statistics reflect variability due to the data split rather than a single arbitrary partition. The model initialization seed is held constant across runs in order to isolate variability attributable to the data partition. Validation and test evaluation are deterministic: no stochastic augmentation is applied and no sampling-based rebalancing is used for validation or test loaders.",
+        "bbox": [
+            111,
+            683,
+            885,
+            910
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "As a supplementary sensitivity analysis, the complete benchmark was repeated using nut-level splitting, treating each of the 799 images as an independent sample rather than grouping by acquisition unit. This configuration allowed kernels from the same acquisition unit to be distributed across the training, validation, and test subsets. The group-wise protocol was retained as the primary methodology.",
+        "bbox": [
+            111,
+            90,
+            885,
+            180
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "2.5 Models and ensembles",
+        "text_level": 2,
+        "bbox": [
+            112,
+            198,
+            374,
+            218
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "Seven single-model configurations are evaluated. These include BinaryNutCNN, a lightweight custom convolutional neural network (CNN) with approximately 0.42 million parameters, and three ImageNet-pretrained backbones adapted for binary classification: Swin Transformer Tiny, EfficientNet-B0, and ResNet-18. BinaryNutCNN is trained from scratch on grayscale input. For the Swin Transformer, both full fine-tuning and a frozen-backbone variant are included to assess the impact of domain mismatch and model capacity.",
+        "bbox": [
+            111,
+            223,
+            885,
+            329
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "BinaryNutCNN consists of four convolutional blocks, each comprising a 3×3 convolution, batch normalization, and ReLU activation, with channel widths of 32, 64, 128, and 256; the first three blocks apply 2×2 max-pooling for spatial reduction, and the fourth applies global average pooling. The classifier head is a two-layer fully connected network (256→128→1) with ReLU activation and 50% dropout, producing a single logit for binary classification. Three loss configurations are evaluated for the custom CNN: (i) standard binary cross-entropy (BCE), (ii) focal loss (alpha = 0.75, gamma = 1.0), which down-weights well-classified examples to focus training on hard cases, and (iii) BCE with pos\\_weight = 2.0, which doubles the loss contribution of positive (defect) samples to increase sensitivity to false negatives. Note that the pos\\_weight = 2.0 configuration deliberately stacks loss-level and sampling-level rebalancing: as described in Section 2.6, all training runs use a WeightedRandomSampler that already draws healthy and defect samples with equal expected frequency.",
+        "bbox": [
+            111,
+            328,
+            885,
+            537
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "Ten ensembles are constructed by combining a custom-CNN configuration with a pretrained backbone using probability aggregation at inference. Specifically, the following five pairs are considered: (i) BinaryNutCNN (BCE) with Swin Transformer Tiny (full); (ii) BinaryNutCNN (BCE) with Swin Transformer Tiny (frozen); (iii) BinaryNutCNN (BCE) with EfficientNet-B0; (iv) BinaryNutCNN (focal) with Swin Transformer Tiny (full); (v) BinaryNutCNN (focal) with Swin Transformer Tiny (frozen). Each pair is aggregated with two rules: average probability and maximum probability, yielding ten ensemble configurations. Aggregation operates on sigmoid probabilities: each constituent model's raw logit output is passed through a sigmoid function, and the resulting probabilities are combined by element-wise averaging or element-wise maximum. The decision threshold is then selected on the aggregated validation-set probabilities using the same grid-search procedure as for single models.",
+        "bbox": [
+            111,
+            537,
+            885,
+            732
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "table",
+        "img_path": "images/4d21454a9eef722253316bf3d7c1a5184d8456d71fac4b14be15cce23e5cf418.jpg",
+        "table_caption": [
+            "Table 2. Overview of the evaluated model families and representative capacities."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td rowspan=1 colspan=1>Family</td><td rowspan=1 colspan=1>Input</td><td rowspan=1 colspan=1>Trainableparameters</td><td rowspan=1 colspan=1>Notes</td></tr><tr><td rowspan=1 colspan=1>BinaryNutCNN (BCE)</td><td rowspan=1 colspan=1>Gray</td><td rowspan=1 colspan=1>~0.42M</td><td rowspan=1 colspan=1>Trained from scratch; standardBCE loss</td></tr><tr><td rowspan=1 colspan=1>BinaryNutCNN (focal)</td><td rowspan=1 colspan=1>Gray</td><td rowspan=1 colspan=1>~0.42M</td><td rowspan=1 colspan=1>Trained from scratch; focal loss(α=0.75, γ=1.0)</td></tr><tr><td rowspan=1 colspan=1>BinaryNutCNN (pw2)</td><td rowspan=1 colspan=1>Gray</td><td rowspan=1 colspan=1>~0.42M</td><td rowspan=1 colspan=1>Trained from scratch; BCE withpos_weight=2.0</td></tr><tr><td rowspan=1 colspan=1>Swin Transformer Tiny(full)</td><td rowspan=1 colspan=1>RGB</td><td rowspan=1 colspan=1>~27.5M</td><td rowspan=1 colspan=1>End-to-end fine-tuning</td></tr><tr><td rowspan=1 colspan=1>Swin Transformer Tiny(frozen)</td><td rowspan=1 colspan=1>RGB</td><td rowspan=1 colspan=1>~770</td><td rowspan=1 colspan=1>Frozen backbone; only the linearclassification head is trained</td></tr><tr><td rowspan=1 colspan=1>EfficientNet-B0 (full)</td><td rowspan=1 colspan=1>RGB</td><td rowspan=1 colspan=1>~4.0M</td><td rowspan=1 colspan=1>End-to-end fine-tuning</td></tr><tr><td rowspan=1 colspan=1>ResNet-18 (full)</td><td rowspan=1 colspan=1>RGB</td><td rowspan=1 colspan=1>~11.2M</td><td rowspan=1 colspan=1>End-to-end fine-tuning</td></tr></table>",
+        "bbox": [
+            114,
+            111,
+            844,
+            445
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "2.6 Training and evaluation protocol",
+        "text_level": 2,
+        "bbox": [
+            112,
+            468,
+            478,
+            488
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "Models are trained for up to 50 epochs with early stopping (patience 15 epochs, monitoring validation balanced accuracy). Class imbalance during training is addressed by a WeightedRandomSampler that assigns each sample a weight equal to the inverse of its class count in the training fold, so that healthy and defect samples are drawn with equal expected frequency; sampling is with replacement, with the number of draws per epoch equal to the training set size.",
+        "bbox": [
+            111,
+            492,
+            883,
+            580
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "CNN models use AdamW with learning rate $3 \\times 1 0 ^ { - 4 }$ and weight decay $1 0 ^ { - 4 } .$ , with a ReduceLROnPlateau scheduler (factor 0.5, patience 5 epochs). Pretrained backbones (EfficientNet-B0, ResNet-18) use AdamW with learning rate $1 0 ^ { - 4 }$ and weight decay $1 0 ^ { - 4 }$ , also with ReduceLROnPlateau. The Swin Transformer configurations use AdamW with learning rate $1 0 ^ { - 4 }$ (full fine-tuning) or $1 0 ^ { - 3 }$ (frozen backbone), weight decay 0.01, BCEWithLogitsLoss with pos\\_weight = 3.0, and a cosine-annealing schedule with linear warmup over 5 epochs. Gradient clipping is applied to all models with max norm 2.0.",
+        "bbox": [
+            111,
+            580,
+            885,
+            704
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "table",
+        "img_path": "images/30136c952402620ca729ab2c8431f3133a6b1143867bb4739259c8f608b40717.jpg",
+        "table_caption": [
+            "Table 3. Key training and evaluation settings shared across methods."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td rowspan=1 colspan=1>Item</td><td rowspan=1 colspan=1>Setting</td></tr><tr><td rowspan=1 colspan=1>Data splits</td><td rowspan=1 colspan=1>Group-wise by sample id, 70%/15%/15% train/validation/test,stratified by majority label per group</td></tr><tr><td rowspan=1 colspan=1>Split rotation</td><td rowspan=1 colspan=1>Five split seeds with a fixed model-initialization seed</td></tr><tr><td rowspan=1 colspan=1>Augmentation</td><td rowspan=1 colspan=1>Random horizontal and vertical flips applied to the training set only</td></tr><tr><td rowspan=1 colspan=1>Early stopping</td><td rowspan=1 colspan=1>Patience 15 epochs based on validation balanced accuracy</td></tr><tr><td rowspan=1 colspan=1>Training</td><td rowspan=1 colspan=1>Up to 50 epochs with early stopping</td></tr><tr><td rowspan=1 colspan=1>Thresholdselection</td><td rowspan=1 colspan=1>Validation-set grid search from 0.10 to 0.90 in steps of 0.02</td></tr><tr><td rowspan=1 colspan=1>Primary metric</td><td rowspan=1 colspan=1>Balanced accuracy</td></tr><tr><td rowspan=1 colspan=1>Secondarymetrics</td><td rowspan=1 colspan=1>Healthy recall, defect recall, false positives, and false negatives</td></tr></table>",
+        "bbox": [
+            114,
+            111,
+            844,
+            421
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "2.7 Hardware",
+        "text_level": 2,
+        "bbox": [
+            112,
+            444,
+            254,
+            463
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "All experiments were run on a Linux workstation (Ubuntu 20.04.6 LTS, kernel 5.4) equipped with an AMD EPYC 7543 32-core CPU (64 threads), 1 TiB of system RAM, and four NVIDIA A100- SXM4 accelerators with 40 GB of on-board memory each (NVIDIA driver 575.57.08, CUDA runtime 12.9). Training and evaluation were implemented in Python 3.12 with PyTorch 2.10 (CUDA 12.8 build), torchvision 0.25 and cuDNN 9.10, and used a single A100 GPU per run (no data or model parallelism). The complete benchmark (17 methods × 5 split seeds × 2 annotation conditions) ran end-to-end in 38.4 minutes of wall-clock time.",
+        "bbox": [
+            111,
+            468,
+            885,
+            592
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "3. Results",
+        "text_level": 2,
+        "bbox": [
+            112,
+            609,
+            228,
+            630
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "3.1 Benchmark performance under the reassessed annotation condition",
+        "text_level": 2,
+        "bbox": [
+            111,
+            632,
+            815,
+            651
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "Under the expert-reassessed annotation condition, ensemble configurations occupied the seven highest-ranking positions. The best-performing method was the average-probability ensemble combining the BCE-trained CNN and the frozen Swin Transformer (ens\\_avg\\_bce\\_frozen), which achieved a mean balanced accuracy of $8 6 . 3 \\% \\pm \\ 1 . 8 \\%$ across the five splits (Table 4). This configuration also showed one of the lowest levels of cross-split variability among the evaluated methods. The remaining top-ranked ensembles achieved mean balanced accuracies ranging from 83.1% to 85.1%.",
+        "bbox": [
+            111,
+            652,
+            885,
+            773
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "For ens\\_avg\\_bce\\_frozen, mean defect recall was $7 9 . 4 \\% \\pm 2 . 0 \\%$ , whereas mean healthy recall was $9 3 . 1 \\% \\pm 5 . 0 \\%$ . The corresponding absolute error counts averaged $2 0 . 6 \\pm 2 . 0$ false negatives per split (range: 18–24) and $1 . { \\overset { } { 8 } } \\pm 1 . 2$ false positives per split (range: 0–3), with test folds comprising 126–128 kernels. Validation-selected decision thresholds ranged from 0.42 to 0.78, indicating that the selected operating point varied across validation-set compositions (Table S4).",
+        "bbox": [
+            111,
+            773,
+            885,
+            863
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "table",
+        "img_path": "images/f3a957a49b766c9925c166391e2ffed304b297ddf2efb4730a0213642b766833.jpg",
+        "table_caption": [
+            "Table 4. Top-ranked methods under the reassessed annotation condition (balanced accuracy, five-seed mean ± standard deviation)."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td rowspan=1 colspan=1>Rank</td><td rowspan=1 colspan=1>Method</td><td rowspan=1 colspan=1>Mean</td><td rowspan=1 colspan=1>Std</td></tr><tr><td rowspan=1 colspan=1>1</td><td rowspan=1 colspan=1>ens_avg_bce_frozen</td><td rowspan=1 colspan=1>86.3%</td><td rowspan=1 colspan=1>1.8%</td></tr><tr><td rowspan=1 colspan=1>2</td><td rowspan=1 colspan=1>ens_avg_focal_frozen</td><td rowspan=1 colspan=1>85.1%</td><td rowspan=1 colspan=1>2.9%</td></tr><tr><td rowspan=1 colspan=1>3</td><td rowspan=1 colspan=1>ens_max_bce_full</td><td rowspan=1 colspan=1>83.8%</td><td rowspan=1 colspan=1>4.0%</td></tr><tr><td rowspan=1 colspan=1>4</td><td rowspan=1 colspan=1>ens_avg_effnet</td><td rowspan=1 colspan=1>83.4%</td><td rowspan=1 colspan=1>4.5%</td></tr><tr><td rowspan=1 colspan=1>5</td><td rowspan=1 colspan=1>ens_max_bce_frozen</td><td rowspan=1 colspan=1>83.3%</td><td rowspan=1 colspan=1>4.6%</td></tr><tr><td rowspan=1 colspan=1>6</td><td rowspan=1 colspan=1>ens_avg_focal_full</td><td rowspan=1 colspan=1>83.1%</td><td rowspan=1 colspan=1>3.6%</td></tr><tr><td rowspan=1 colspan=1>7</td><td rowspan=1 colspan=1>ens_max_effnet</td><td rowspan=1 colspan=1>83.1%</td><td rowspan=1 colspan=1>4.5%</td></tr></table>",
+        "bbox": [
+            114,
+            111,
+            573,
+            342
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "3.2 Sensitivity to expert reassessment",
+        "text_level": 2,
+        "bbox": [
+            111,
+            369,
+            482,
+            390
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "Mean balanced accuracy differed between the two annotation conditions by −0.5 to +3.4 percentage points depending on the configuration. Selected configurations are summarized in Table 5; complete per-seed results under the reassessed and initial annotation conditions are reported in Tables S1 and S2 respectively, with the corresponding per-seed differences in Table S3. Thirteen of the seventeen evaluated methods showed a positive mean change (up to +3.4 pp for ens\\_max\\_focal\\_full and +3.1 pp for ens\\_avg\\_bce\\_frozen), while four methods showed small negative changes within one standard deviation of zero (−0.1 to −0.5 pp). At the individual-split level the effect was not uniform: on some seeds the reassessed condition performed slightly worse than the initial one (Table S3). Cross-split variability was essentially unchanged between conditions (average standard deviation 3.44% under the initial condition and 3.46% under the reassessed condition), with 9 methods showing a marginal increase and 8 a marginal decrease.",
+        "bbox": [
+            109,
+            401,
+            887,
+            595
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "table",
+        "img_path": "images/9640ddb99f1d167f929d0bfcf8e6c3ba7f690985eb8b1c5da94517ce141da6fa.jpg",
+        "table_caption": [
+            "Table 5. Selected method performance under two annotation conditions (balanced accuracy, five-seed mean ± standard deviation)."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td rowspan=1 colspan=1>Method</td><td rowspan=1 colspan=1>Initial condition</td><td rowspan=1 colspan=1>Reassessed condition</td><td rowspan=1 colspan=1>Delta</td></tr><tr><td rowspan=1 colspan=1>swin_full</td><td rowspan=1 colspan=1> $8 0 . 4 \\% \\pm 5 . 2 \\%$ </td><td rowspan=1 colspan=1> $8 2 . 6 \\% \\pm 3 . 7 \\%$ </td><td rowspan=1 colspan=1>+2.2%</td></tr><tr><td rowspan=1 colspan=1>ens_avg_bce_full</td><td rowspan=1 colspan=1>82.1% ± 3.7%</td><td rowspan=1 colspan=1> $8 2 . 9 \\% \\pm 1 . 6 \\%$ </td><td rowspan=1 colspan=1>+0.8%</td></tr><tr><td rowspan=1 colspan=1>cnn_bce</td><td rowspan=1 colspan=1>79.7% ± 4.4%</td><td rowspan=1 colspan=1>81.5% ± 3.4%</td><td rowspan=1 colspan=1>+1.8%</td></tr><tr><td rowspan=1 colspan=1>ens_avg_effnet</td><td rowspan=1 colspan=1>83.7% ± 1.4%</td><td rowspan=1 colspan=1>83.4% ± 4.5%</td><td rowspan=1 colspan=1>-0.3%</td></tr><tr><td rowspan=1 colspan=1>Efficientnet</td><td rowspan=1 colspan=1>81.5% ± 3.1%</td><td rowspan=1 colspan=1>82.8% ± 3.4%</td><td rowspan=1 colspan=1>+1.4%</td></tr><tr><td rowspan=1 colspan=1>swin_frozen</td><td rowspan=1 colspan=1>81.3% ± 2.5%</td><td rowspan=1 colspan=1>81.2% ± 2.2%</td><td rowspan=1 colspan=1>-0.1%</td></tr><tr><td rowspan=1 colspan=1>ens_avg_bce_frozen</td><td rowspan=1 colspan=1> $8 3 . 1 \\% \\pm 3 . 4 \\%$ </td><td rowspan=1 colspan=1> $8 6 . 3 \\% \\pm 1 . 8 \\%$ </td><td rowspan=1 colspan=1>+3.1%</td></tr></table>",
+        "bbox": [
+            114,
+            633,
+            838,
+            863
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "3.3 Split-to-split variability",
+        "text_level": 2,
+        "bbox": [
+            111,
+            90,
+            385,
+            112
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Balanced accuracy varied systematically across data splits under the expert-reassessed annotation condition (Figure 4). For the top-ranked method, ens\\_avg\\_bce\\_frozen, performance ranged from 83.8% to 88.9%, corresponding to a span of 5.1 percentage points, whereas the other methods shown exhibited wider ranges. Despite differences in their absolute performance, the methods tended to improve or decline on the same splits. This co-variation suggests that, at this dataset scale, evaluation performance is strongly influenced by test-fold composition, particularly by which acquisition units contribute healthy samples, in addition to differences among model architectures.",
+        "bbox": [
+            111,
+            116,
+            885,
+            256
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "No method achieved the highest balanced accuracy on every split. Moreover, among the leading configurations, split-to-split variability was of the same order as the small differences in their mean balanced accuracy. Accordingly, the ordering in Table 4 should be interpreted as a ranking based on the five-split means rather than as evidence of consistent per-split dominance (Table S1).",
+        "bbox": [
+            111,
+            256,
+            885,
+            327
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "chart",
+        "img_path": "images/2b878eba0fdf051fd0113cb527e22d030abbaee0af081e0a584edf549a2812b6.jpg",
+        "content": "",
+        "chart_caption": [
+            "Figure 4. Per-split balanced accuracy for the five top-ranked methods under the reassessed annotation condition. Each marker represents one method, and each x-axis position represents one data partition; marker shapes identify methods as indicated in the legend."
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            122,
+            335,
+            846,
+            760
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "3.4 Sensitivity to the data-partitioning strategy",
+        "text_level": 2,
+        "bbox": [
+            111,
+            835,
+            575,
+            856
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "As a supplementary sensitivity analysis, the complete benchmark was repeated using nut-level splitting, which allowed kernels originating from the same acquisition unit to be distributed across the training, validation, and test subsets. Across the 17 evaluated methods, mean balanced accuracy was 81.5% under nut-level splitting and 82.8% under group-wise splitting. Thus, sharing acquisition units across data subsets did not yield higher average performance in this analysis, providing no indication that acquisition-specific characteristics produced an optimistic performance advantage. The group-wise protocol was therefore retained as the primary evaluation strategy because it prevents acquisition-level information leakage and provides a more conservative estimate of generalization to previously unseen acquisitions.",
+        "bbox": [
+            111,
+            859,
+            885,
+            897
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            109,
+            90,
+            885,
+            215
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "4. Discussion",
+        "text_level": 2,
+        "bbox": [
+            112,
+            236,
+            264,
+            257
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "4.1 Industrial rationale, X-ray ambiguity, and label quality",
+        "text_level": 2,
+        "bbox": [
+            111,
+            276,
+            694,
+            297
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "The healthy-versus-defective formulation adopted in this study reflects the primary operational decision in industrial sorting: whether a kernel can remain in the production stream or should be rejected, downgraded, or redirected for further inspection, rather than whether it can be assigned to a specific pathological or physiological category (Patel et al., 2011; Moscetti et al., 2015). This framing is appropriate for commercial lots in which rotten kernels, hidden rot, stink bug damage, and oil-rancidity-related alterations may coexist and lead to similar consequences for commercial value, processing suitability, and sensory quality (Memoli et al., 2017; Pedrotti et al., 2021; de Benedetta et al., 2023; Spataro et al., 2024; de Benedetta et al., 2026). Moreover, the pronounced imbalance among the original five quality classes, with some defect categories represented by relatively few samples (Figure 3), would make multiclass modelling at the present dataset scale prone to unstable class-specific estimates and overinterpretation of performance (Brishti et al., 2025; Steinert et al., 2024). The binary benchmark therefore provides a more reliable assessment of model feasibility without implying defect-specific diagnosis.",
+        "bbox": [
+            111,
+            301,
+            885,
+            529
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Aggregation into a single defective class does not, however, eliminate the biological and radiographic heterogeneity of the samples. The defects arise from distinct but sometimes interconnected processes: stink bug feeding may alter kernel tissues and facilitate secondary microbial colonization, whereas rot and oil-rancidity-related alterations involve different structural and biochemical changes (Scarpari et al., 2018; Memoli et al., 2017; de Benedetta et al., 2023; de Benedetta et al., 2026). In two-dimensional X-ray images, these processes may produce weak, localized, or partially overlapping patterns, including subtle density variations, small cavities, tissue discontinuities, and changes in internal texture (Gennari et al., 2023). As illustrated in Figure 2, kernels belonging to different defect classes may therefore show similar radiographic appearances, while mildly affected kernels may remain difficult to distinguish from healthy ones even under a binary formulation.",
+        "bbox": [
+            111,
+            529,
+            885,
+            720
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "The expert reassessment nevertheless highlighted an important aspect of reference-label construction. Despite the two-stage physical inspection protocol combining external UNECE grading and destructive sectioning of externally healthy kernels, a small subset of internal-defect cases remained ambiguous upon subsequent review. This suggests that targeted expert reassessment can provide an additional quality-control step when developing datasets in which internal defect categories are inherently difficult to define.",
+        "bbox": [
+            111,
+            720,
+            885,
+            827
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "4.2 Model performance and evaluation robustness",
+        "text_level": 2,
+        "bbox": [
+            112,
+            845,
+            573,
+            864
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "Under the expert-reassessed annotation condition, the best-performing method achieved a mean balanced accuracy of $8 6 . 3 \\% \\pm 1 . 8 \\%$ across the five data splits. Ensemble configurations occupied the seven highest-ranking positions, although several obtained comparable results. The benchmark therefore supports the usefulness of probability aggregation at the present dataset scale but does not identify a uniquely superior architecture. Notably, ensembles incorporating the frozen Swin Transformer remained competitive, indicating that full backbone fine-tuning was not required to achieve strong performance. More generally, no systematic relationship emerged between trainable parameter count and sensitivity to expert reassessment, suggesting that model capacity alone did not explain the observed performance differences.",
+        "bbox": [
+            111,
+            873,
+            885,
+            910
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            111,
+            90,
+            885,
+            213
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "Expert reassessment changed mean balanced accuracy by −0.5 to +3.4 percentage points across the 17 methods, with a mean change of +1.4 percentage points (Table S3). Average cross-split variability was essentially unchanged (3.44% under the initial and 3.46% under the reassessed condition), and label quality therefore affected the overall level of measured performance only modestly without altering its dependence on data partitioning. Even for the top-ranked method, balanced accuracy ranged from 83.8% to 88.9% across splits, and different methods tended to improve or decline on the same partitions. This co-variation indicates that test-fold composition, including the limited number of healthy kernels and independent acquisition units, substantially influenced the resulting estimates. Consequently, small differences among the leading methods should not be overinterpreted, and rankings based on a single train–validation–test partition would be unreliable (Table S1; Allgaier and Pryss, 2024; Bradshaw et al., 2023).",
+        "bbox": [
+            111,
+            213,
+            885,
+            405
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "The supplementary nut-level analysis provided no evidence that sharing acquisition units across subsets artificially increased performance: mean balanced accuracy was 81.5% under nut-level splitting and 82.8% under group-wise splitting. Nevertheless, group-wise partitioning remains methodologically preferable because it prevents acquisition-level information leakage and evaluates generalization to previously unseen acquisitions. Taken together, these findings identify curated annotations and repeated group-wise evaluation as essential requirements for obtaining reliable performance estimates from small, imbalanced agricultural imaging datasets.",
+        "bbox": [
+            111,
+            405,
+            885,
+            529
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "4.3 Operational interpretation of errors and thresholds",
+        "text_level": 2,
+        "bbox": [
+            111,
+            545,
+            656,
+            564
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "False positives and false negatives have different consequences in industrial sorting. A false negative corresponds to a defective kernel classified as healthy and potentially retained in the accepted product stream. This is generally the more critical error when the objective is to minimize residual defectiveness, because it may affect lot quality, commercial value, and sensory properties and, for defects associated with rot or fungal contamination, may also raise food-safety concerns (Salvatore et al., 2023; Gavilán-CuiCui et al., 2025; Casu et al., 2026). Conversely, a false positive results in the rejection or reinspection of a healthy kernel, reducing product recovery and increasing operational costs. The acceptable balance between these errors therefore depends on the intended role of the system: a conservative pre-screening application may prioritize defect recall while tolerating more false positives (Komisarenko and Kull, 2025).",
+        "bbox": [
+            111,
+            569,
+            885,
+            744
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "In this benchmark, decision thresholds were selected on the validation set to maximize balanced accuracy, providing a consistent criterion for model comparison under class imbalance (Brodersen et al., 2010). These thresholds should not, however, be interpreted as universal industrial operating points. For the top-ranked method, they ranged from 0.42 to 0.78 across splits (Table S4), indicating sensitivity to validation-set composition. Before deployment, the threshold should therefore be recalibrated using independent, production-representative lots and selected according to the acceptable residual defectiveness, desired product recovery, available reinspection capacity, and specific objectives of the sorting line (Esposito et al., 2021; Romaniello et al., 2024).",
+        "bbox": [
+            111,
+            743,
+            885,
+            886
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "4.4 Limitations and industrial translation",
+        "text_level": 2,
+        "bbox": [
+            111,
+            92,
+            524,
+            109
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "The present study should be interpreted as a controlled benchmark rather than a deployment-ready sorting solution. The dataset comprised 799 segmented kernel images from 101 acquisition units and represented a single cultivar (‘Anakliuri’, Corylus avellana var. pontica) and production context. Its biological variability was therefore limited, particularly for minority categories such as hidden rot and oil-rancidity-related alterations. Broader evaluation will require larger and more balanced datasets encompassing different cultivars, production areas, seasons, post-harvest histories, defect severities, and acquisition conditions, with greater representation of healthy kernels and minority defects.",
+        "bbox": [
+            111,
+            116,
+            885,
+            256
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "The reported performance is also specific to the experimental X-ray system used to generate the dataset. This configuration, originally developed for three-dimensional small-animal imaging, provided controlled, high-quality images but was not designed for in-line hazelnut sorting. Because image resolution, contrast, noise, energy spectrum, and projection geometry depend on the acquisition chain, the present results should not be regarded as scanner-independent estimates. Industrial translation will require a dedicated, compact, and high-throughput platform in which tube voltage, tube current, exposure time, conveyor speed, radiation dose, defect detectability, and classification performance are optimized jointly. Dual- or multi-energy configurations may also be investigated if they provide additional sensitivity to subtle internal alterations without compromising throughput.",
+        "bbox": [
+            111,
+            256,
+            885,
+            430
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "Finally, prospective validation on independent industrial lots is essential to assess generalization and establish stable operating thresholds. Evaluation should extend beyond balanced accuracy to operational outcomes such as residual defectiveness, product recovery, reinspection workload, lotgrading accuracy, and scanning throughput. Such validation will determine whether the proposed approach can provide measurable benefits under realistic production conditions and clarify its most appropriate role as a decision-support component within an industrial quality control system.",
+        "bbox": [
+            111,
+            430,
+            885,
+            536
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "5. Conclusions",
+        "text_level": 2,
+        "bbox": [
+            112,
+            558,
+            281,
+            579
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "This study provides evidence that two-dimensional X-ray imaging combined with deep-learning ensembles can support the non-destructive separation of healthy and defective hazelnut kernels. Its main contribution lies not in identifying a universally superior architecture, but in establishing a rigorous evaluation framework in which annotation quality and independence among acquisition groups are integral to model assessment. The proposed benchmark therefore provides a methodological basis for future research and for the development of dedicated X-ray sorting systems. Further studies should determine whether this approach can deliver consistent benefits under production-representative conditions.",
+        "bbox": [
+            111,
+            590,
+            885,
+            731
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "References",
+        "text_level": 2,
+        "bbox": [
+            112,
+            753,
+            241,
+            775
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "Aghayev, F., Bandyopadhyay, R., Battilani, P., Ortega-Beltran, A., 2025. Mycotoxin contamination of hazelnut grown in Azerbaijan and Aspergillus communities associated with the crop. Plant Dis. 109, 1630–1634. https://doi.org/10.1094/PDIS-12-24-2623-SC.",
+            "Allgaier, J., Pryss, R., 2024. Cross-validation visualized: A narrative guide to advanced methods. Mach. Learn. Knowl. Extr. 6, 1378–1388. https://doi.org/10.3390/make6020065."
+        ],
+        "bbox": [
+            114,
+            786,
+            883,
+            854
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "Battilani, P., Chiusa, G., Arciuolo, R., Somenzi, M., Fontana, M., Castello, G., Spigolon, N., 2018. Diaporthe as the main cause of hazelnut defects in the Caucasus region. Phytopathol. Mediterr. 57, 320–333. https://doi.org/10.14601/Phytopathol\\_Mediterr-22872.",
+            "Bio Nocciola S.r.l., 2026. Prezzi e quotazioni. https://www.bionocciola.it/it/prezzi-e-quotazioni/ (accessed 23 May 2026).",
+            "Bradshaw, T.J., Huemann, Z., Hu, J., Rahmim, A., 2023. A guide to cross-validation for artificial intelligence in medical imaging. Radiol. Artif. Intell. 5, e220232. https://doi.org/10.1148/ryai.220232.",
+            "Brandoli, C., Gargiulo, L., Mele, G., Todeschini, C., Sgarbi, E., Giaccone, M., 2025. Threedimensional characterization of hazelnut (Corylus avellana L.) fruit development based on X-ray micro-computed tomography. Sci. Rep. 15, 34401. https://doi.org/10.1038/s41598-025-17344-z.",
+            "Brishti, F., Zhang, F., Mohammed, S., Bai, L., Wu, F., Chen, B., 2025. Imbalanced classification with label noise: A systematic review and comparative analysis. ICT Express 11, 1127– 1145. https://doi.org/10.1016/j.icte.2025.09.011.",
+            "Brodersen, K.H., Ong, C.S., Stephan, K.E., Buhmann, J.M., 2010. The balanced accuracy and its posterior distribution. In: Proceedings of the 20th International Conference on Pattern Recognition (ICPR), pp. 3121–3124. https://doi.org/10.1109/ICPR.2010.764.",
+            "Camardo Leggieri, M., Arciuolo, R., Chiusa, G., Castello, G., Spigolon, N., Battilani, P., 2022. DEFHAZ: A mechanistic weather-driven predictive model for Diaporthe eres infection and defective hazelnut outbreaks. Plants 11, 3553. https://doi.org/10.3390/plants11243553.",
+            "Casu, A., Chiusa, G., Zagottis, E., Genova, G., Battilani, P., 2026. Effect of post-harvest management on Aspergillus flavus growth and aflatoxin contamination of stored hazelnuts. Toxins 18, 38. https://doi.org/10.3390/toxins18010038.",
+            "Chen, S., Li, L., Chen, X., Zeng, Q., Yu, X., Yue, X., Wan, S., 2025. Walnut quality classification based on X-ray and multi-domain feature fusion. J. Food Process Eng. 48, e70258. https://doi.org/10.1111/jfpe.70258.",
+            "Colangeli, M., Rugiano, F., Pasero, E., 2014. Pattern recognition at different scales: A statistical perspective. Chaos Solitons Fractals 64, 48–66. https://doi.org/10.1016/j.chaos.2013.10.006.",
+            "de Benedetta, F., De Pascale, S., Giaccone, M., Troise, A.D., Ferracane, R., Avventura, G., Scaloni, A., Bernardo, U., 2026. Metabolomic characterization of stink bug-damaged hazelnuts: Cultivar-specific defense responses and associated chemical signatures. Food Chem. 519, 149655. https://doi.org/10.1016/j.foodchem.2026.149655.",
+            "de Benedetta, F., Giaccone, M., Pica, F., Lisanti, M.T., Vinale, F., Turrà, D., Giacca, G.M., Bernardo, U., 2023. Fruit phenology of two hazelnut cultivars and incidence of damage by Halyomorpha halys in treated and untreated hazel groves. Horticulturae 9, 727. https://doi.org/10.3390/horticulturae9060727.",
+            "Esposito, C., Landrum, G.A., Schneider, N., Stiefl, N., Riniker, S., 2021. GHOST: Adjusting the decision threshold to handle imbalanced data in machine learning. J. Chem. Inf. Model. 61,"
+        ],
+        "bbox": [
+            112,
+            90,
+            883,
+            160
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "2623–2640. https://doi.org/10.1021/acs.jcim.1c00160.",
+            "FAOSTAT, 2026. FAOSTAT statistical database. Food and Agriculture Organization of the United Nations, Rome. https://www.fao.org/faostat/ (accessed 2 April 2026).",
+            "Gavilán-CuiCui, G., Lagos-Muñoz, R., Ellena, F.M., Di Matteo, A., Morina, F., Meriño-Gergichevich, C., 2025. Unraveling mechanisms of enzymatic browning in nuts and their relationship with pre- and post-harvest factors: Management strategies for mitigation. Molecules 30, 3866. https://doi.org/10.3390/molecules30193866.",
+            "Gennari, F., Pagano, M., Toncelli, A., Lisanti, M.T., Paoletti, R., Roversi, P.F., Tredicucci, A., Giaccone, M., 2023. Terahertz imaging for non-invasive classification of healthy and cimiciato-infected hazelnuts. Heliyon 9, e19891. https://doi.org/10.1016/j.heliyon.2023.e19891.",
+            "Giaccone, M., Ferrara, E., Cice, D., Modarelli, G.C., Vanacore, L., Bonfante, A., Rega, P., Esposito, A., Pacifico, S., Basile, A., De Mascellis, R., Pace, R., Artimonov, I., Cirillo, C., Petriccione, M., 2026. Valorization of hazelnut shells as substrate component for nursery potted cultivation of GF 677 rootstock. Acta Hortic. 1457, 13–20. https://doi.org/10.17660/ActaHortic.2026.1457.2.",
+            "Hamdy, S., Charrier, A., Le Corre, L., Rasti, P., Rousseau, D., 2024. Toward robust and highthroughput detection of seed defects in X-ray images via deep learning. Plant Methods 20, 63. https://doi.org/10.1186/s13007-024-01195-2.",
+            "Hedstrom, C.S., Shearer, P.W., Miller, J.C., Walton, V.M., 2014. The effects of kernel feeding by Halyomorpha halys (Hemiptera: Pentatomidae) on commercial hazelnuts. J. Econ. Entomol. 107, 1858–1865. https://doi.org/10.1603/EC14263.",
+            "Hosseinzadeh Taher, M.R., Haghighi, F., Gotway, M.B., Liang, J., 2025. Large-scale benchmarking and boosting transfer learning for medical image analysis. Med. Image Anal. 102, 103487. https://doi.org/10.1016/j.media.2025.103487.",
+            "Karimi, D., Dou, H., Warfield, S.K., Gholipour, A., 2020. Deep learning with noisy labels: Exploring techniques and remedies in medical image analysis. Med. Image Anal. 65, 101759. https://doi.org/10.1016/j.media.2020.101759.",
+            "Khosa, I., Pasero, E., 2014. Feature extraction in X-ray images for hazelnuts classification. In: Proceedings of the 2014 International Joint Conference on Neural Networks (IJCNN), Beijing, China, pp. 2354–2360. https://doi.org/10.1109/IJCNN.2014.6889661.",
+            "Kim, H.E., Cosa-Linan, A., Santhanam, N., Jannesari, M., Maros, M.E., Ganslandt, T., 2022. Transfer learning for medical image classification: A literature review. BMC Med. Imaging 22, 69. https://doi.org/10.1186/s12880-022-00793-7.",
+            "Komisarenko, V., Kull, M., 2025. Cost-sensitive classification with cost uncertainty: Do we need surrogate losses? Mach. Learn. 114, 132. https://doi.org/10.1007/s10994-024-06634-8."
+        ],
+        "bbox": [
+            168,
+            90,
+            504,
+            126
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "Kotwaliwale, N., Singh, K., Kalne, A., Jha, S.N., Seth, N., Kar, A., 2014. X-ray imaging methods for internal quality evaluation of agricultural produce. J. Food Sci. Technol. 51, 1–15. https://doi.org/10.1007/s13197-011-0485-y.",
+            "Ma, M., Fu, H., Wang, Y., Lu, Z., Wang, Z., Cheng, J., Liu, X., Dai, H., Pi, F., Wang, J., 2025. Nondestructive classification of internal defects in camellia seeds and chestnuts using Xray imaging: Optimization and comparison of deep learning classifiers. Food Control 176, 111367. https://doi.org/10.1016/j.foodcont.2025.111367.",
+            "Ma, M., Zhang, M., Fu, H., Wang, Y., Yang, N., Dai, H., Pi, F., Liu, X., Wang, J., 2026. A nondestructive workflow integrating X-ray computed tomography and machine learning for multi-defect identification and kernel plumpness assessment of in-shell walnuts. Food Control 182, 111879. https://doi.org/10.1016/j.foodcont.2025.111879.",
+            "Mahanti, N.K., Pandiselvam, R., Kothakota, A., Ishwarya, P.S., Chakraborty, S.K., Kumar, M., Cozzolino, D., 2022. Emerging non-destructive imaging techniques for fruit damage detection: Image processing and analysis. Trends Food Sci. Technol. 120, 418–438. https://doi.org/10.1016/j.tifs.2021.12.021.",
+            "Matsui, T., Sugimori, H., Koseki, S., Koyama, K., 2023. Automated detection of internal fruit rot in Hass avocado via deep learning-based semantic segmentation of X-ray images. Postharvest Biol. Technol. 203, 112390. https://doi.org/10.1016/j.postharvbio.2023.112390.",
+            "Mei, X., Liu, Z., Robson, P.M., Marinelli, B., Huang, M., Doshi, A., Jacobi, A., Cao, C., Link, K.E., Yang, T., Wang, Y., Greenspan, H., Deyer, T., Fayad, Z.A., Yang, Y., 2022. RadImageNet: An open radiologic deep learning research dataset for effective transfer learning. Radiol. Artif. Intell. 4, e210315. https://doi.org/10.1148/ryai.210315.",
+            "Mele, G., Gargiulo, L., Vitale, A., Napolitano, A.G., Giaccone, M., 2025. X-ray images of hazelnut kernels. Mendeley Data, Version 1. https://doi.org/10.17632/3wvvr7rz57.1.",
+            "Memoli, A., Albanese, D., Esti, M., Lombardelli, C., Crescitelli, A., Di Matteo, M., Benucci, I., 2017. Effect of bug damage and mold contamination on fatty acids and sterols of hazelnut oil. Eur. Food Res. Technol. 243, 651–658. https://doi.org/10.1007/s00217-016-2778-x.",
+            "Mirotadze, N., Gogitidze, V., Mikadze, N., Goginava, L., Mirotadze, M., 2009. Agro-ecological zones of hazelnut in Georgia. Acta Hortic. 845, 291–294. https://doi.org/10.17660/ActaHortic.2009.845.43.",
+            "Moscetti, R., Saeys, W., Keresztes, J.C., Goodarzi, M., Cecchini, M., Monarca, D., Massantini, R., 2015. Hazelnut quality sorting using high dynamic range short-wave infrared hyperspectral imaging. Food Bioprocess Technol. 8, 1593–1604. https://doi.org/10.1007/s11947-015-1503-2.",
+            "Ozdemir, I.O., Karakaya, O., Ates, U., Ozturk, B., Uluca, M., Tuncer, C., 2023. Characterization of hazelnut kernel responses to brown marmorated stink bug [Halyomorpha halys Stal (Hemiptera: Pentatomidae)] infestations: Changes in bioactive compounds and fatty acid composition. J. Food Compos. Anal. 124, 105696. https://doi.org/10.1016/j.jfca.2023.105696."
+        ],
+        "bbox": [
+            112,
+            90,
+            885,
+            142
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "Pannico, A., Schouten, R.E., Basile, B., Romano, R., Woltering, E.J., Cirillo, C., 2015. Nondestructive detection of flawed hazelnut kernels and lipid oxidation assessment using NIR spectroscopy. J. Food Eng. 160, 42–48. https://doi.org/10.1016/j.jfoodeng.2015.03.015.",
+            "Patel, K.K., Kar, A., Jha, S.N., Khan, M.A., 2011. Machine vision system: A tool for quality inspection of food and agricultural products. J. Food Sci. Technol. 49, 123–141. https://doi.org/10.1007/s13197-011-0321-4.",
+            "Pedrotti, M., Khomenko, I., Genova, G., Castello, G., Spigolon, N., Fogliano, V., Biasioli, F., 2021. Quality control of raw hazelnuts by rapid and non-invasive fingerprinting of volatile compound release. LWT 143, 111089. https://doi.org/10.1016/j.lwt.2021.111089.",
+            "Romaniello, R., Barrasso, A.E., Perone, C., Tamborrino, A., Berardi, A., Leone, A., 2024. Optimisation of an industrial optical sorter of legumes for gluten-free production using hyperspectral imaging techniques. Foods 13, 404. https://doi.org/10.3390/foods13030404.",
+            "Salvatore, M.M., Andolfi, A., Nicoletti, R., 2023. Mycotoxin contamination in hazelnut: Current status, analytical strategies, and future prospects. Toxins 15, 99. https://doi.org/10.3390/toxins15020099.",
+            "Scarpari, M., Di Giambattista, G., Vitale, S., Luongo, L., Belisario, A., De Gregorio, T., Schreiber, G., 2018. First report of kernel dry rot caused by Eremothecium coryli on hazelnut in northwestern Italy. Plant Dis. 102, 2652. https://doi.org/10.1094/PDIS-05-18-0773-PDN.",
+            "Shi, J., Zhang, K., Guo, C., Yang, Y., Xu, Y., Wu, J., 2024. A survey of label-noise deep learning for medical image analysis. Med. Image Anal. 95, 103166. https://doi.org/10.1016/j.media.2024.103166.",
+            "Shin, H.-C., Roth, H.R., Gao, M., Lu, L., Xu, Z., Nogues, I., Yao, J., Mollura, D., Summers, R.M., 2016. Deep convolutional neural networks for computer-aided detection: CNN architectures, dataset characteristics and transfer learning. IEEE Trans. Med. Imaging 35, 1285–1298. https://doi.org/10.1109/TMI.2016.2528162.",
+            "Spataro, F., Rosso, F., Genova, G., Caligiani, A., 2024. Untargeted UHPLC-HRMS as a new tool for the detection of rotten defect markers in hazelnuts of different origins. Microchem. J. 197, 109743. https://doi.org/10.1016/j.microc.2023.109743.",
+            "Squara, S., Moraglio, S., Caratti, A., Fina, A., Liberto, E., Bicchi, C., Weinert, C.H., Soukup, S.T., Tavella, L., Cordero, C., 2024. Unrevealing the Halyomorpha halys damage fingerprint on hazelnut metabolome by multiomic platforms and AI-aided strategies. J. Agric. Food Chem. 72, 24109–24129. https://doi.org/10.1021/acs.jafc.4c06888.",
+            "Steinert, S., Ruf, V., Dzsotjan, D., Großmann, N., Schmidt, A., Kuhn, J., Küchemann, S., 2024. A refined approach for evaluating small datasets via binary classification using machine learning. PLoS One 19, e0301276. https://doi.org/10.1371/journal.pone.0301276.",
+            "Tajbakhsh, N., Shin, J.Y., Gurudu, S.R., Hurst, R.T., Kendall, C.B., Gotway, M.B., Liang, J., 2016. Convolutional neural networks for medical image analysis: Full training or fine tuning?"
+        ],
+        "bbox": [
+            112,
+            90,
+            883,
+            160
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "IEEE Trans. Med. Imaging 35, 1299–1312. https://doi.org/10.1109/TMI.2016.2535302.",
+            "Tempelaere, A., Phan, H.M., Van De Looverbosch, T., Verboven, P., Nicolai, B., 2023. Nondestructive internal disorder segmentation in pear fruit by X-ray radiography and AI. Comput. Electron. Agric. 212, 108142. https://doi.org/10.1016/j.compag.2023.108142.",
+            "Tempelaere, A., Van Doorselaer, L., He, J., Verboven, P., Nicolai, B.M., 2024. BraeNet: Internal disorder detection in ‘Braeburn’ apple using X-ray imaging data. Food Control 155, 110092. https://doi.org/10.1016/j.foodcont.2023.110092.",
+            "Ünal, Z., Aktaş, H., 2023. Classification of hazelnut kernels with deep learning. Postharvest Biol. Technol. 197, 112225. https://doi.org/10.1016/j.postharvbio.2022.112225.",
+            "UNECE, 2025. UNECE Standard DDP-04 concerning the marketing and commercial quality control of hazelnut kernels: DDP-04 Hazelnut Kernels—2025. United Nations Economic Commission for Europe, Geneva. https://unece.org/sites/default/files/2025-12/DDP-04-HazelnutKernels%202025\\_E.pdf (accessed 6 June 2026).",
+            "Valeriano, T., Fischer, K., Ginaldi, F., Giustarini, L., Castello, G., Bregaglio, S., 2022. Rotten hazelnuts prediction via simulation modeling—A case study on the Turkish hazelnut sector. Front. Plant Sci. 13, 766493. https://doi.org/10.3389/fpls.2022.766493.",
+            "van Dael, M., Verboven, P., Zanella, A., Sijbers, J., Nicolai, B., 2019. Combination of shape and X-ray inspection for apple internal quality control: In silico analysis of the methodology based on X-ray computed tomography. Postharvest Biol. Technol. 148, 218–227. https://doi.org/10.1016/j.postharvbio.2018.05.020.",
+            "Van De Looverbosch, T., He, J., Tempelaere, A., Kelchtermans, K., Verboven, P., Tuytelaars, T., Sijbers, J., Nicolai, B., 2022. Inline nondestructive internal disorder detection in pear fruit using explainable deep anomaly detection on X-ray images. Comput. Electron. Agric. 197, 106962. https://doi.org/10.1016/j.compag.2022.106962.",
+            "Varoquaux, G., Cheplygina, V., 2022. Machine learning for medical imaging: Methodological failures and recommendations for the future. npj Digit. Med. 5, 48. https://doi.org/10.1038/s41746-022-00592-y.",
+            "Vitale, A., Giaccone, M., Napolitano, A.G., de Benedetta, F., Gargiulo, L., Mele, G., 2025. Cimiciato defect detection in hazelnuts: CNN models applied on X-ray images. J. Agric. Food Res. 22, 102072. https://doi.org/10.1016/j.jafr.2025.102072.",
+            "Zhang, H., Ji, S., Shao, M., Pu, H., Zhang, L., 2023a. Non-destructive internal defect detection of in-shell walnuts by X-ray technology based on improved Faster R-CNN. Appl. Sci. 13, 7311. https://doi.org/10.3390/app13127311.",
+            "Zhang, H., Ning, X., Pu, H., Ji, S., 2024. A novel approach for the non-destructive detection of shriveling degrees in walnuts using improved YOLOv5n based on X-ray images. Postharvest Biol. Technol. 214, 113007. https://doi.org/10.1016/j.postharvbio.2024.113007."
+        ],
+        "bbox": [
+            168,
+            90,
+            883,
+            125
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "Zhang, Y., Deng, L., Zhu, H., Wang, W., Ren, Z., Zhou, Q., Lu, S., Sun, S., Zhu, Z., Gorriz, J.M., Wang, S., 2023b. Deep learning in food category recognition. Inf. Fusion 98, 101859. https://doi.org/10.1016/j.inffus.2023.101859.",
+            "Zhao, J., Yu, Y., Lu, S., Huang, Y., Yu, X., Mao, X., Yu, Y., Li, Z., Liu, H., 2025. Convolutional neural networks in the realm of food quality and safety evaluation: Current achievements and future prospects. Trends Food Sci. Technol. 163, 105162. https://doi.org/10.1016/j.tifs.2025.105162.",
+            "Zhao, Z., Alzubaidi, L., Zhang, J., Duan, Y., Gu, Y., 2024. A comparison review of transfer learning and self-supervised learning: Definitions, applications, advantages and limitations. Expert Syst. Appl. 242, 122807. https://doi.org/10.1016/j.eswa.2023.122807."
+        ],
+        "bbox": [
+            112,
+            90,
+            882,
+            142
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "Data availability",
+        "text_level": 2,
+        "bbox": [
+            112,
+            309,
+            258,
+            328
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "The dataset supporting this study, including the segmented X-ray images, sample metadata, expertreassessed annotations, and data partitions used for model training, validation, and testing, is publicly available on Zenodo at https://doi.org/10.5281/zenodo.21739932.",
+        "bbox": [
+            111,
+            337,
+            885,
+            391
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "Declaration of competing interest",
+        "text_level": 2,
+        "bbox": [
+            112,
+            400,
+            400,
+            417
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "The authors declare that they have no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper.",
+        "bbox": [
+            111,
+            426,
+            883,
+            464
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "Acknowledgments",
+        "text_level": 2,
+        "bbox": [
+            112,
+            473,
+            274,
+            491
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "The authors gratefully acknowledge Pakka Georgia LLC (Zugdidi, Georgia) for supplying the hazelnut samples used in this study.",
+        "bbox": [
+            111,
+            500,
+            883,
+            536
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "Funding",
+        "text_level": 2,
+        "bbox": [
+            112,
+            545,
+            191,
+            563
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "The research was carried out with the cooperation and contribution of the Hazelnut Company division of Ferrero Group (FERRERO S.R.L.).",
+        "bbox": [
+            111,
+            577,
+            883,
+            613
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "Declaration of generative AI",
+        "text_level": 2,
+        "bbox": [
+            112,
+            627,
+            357,
+            645
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "During the preparation of this work, the authors used Generative AI tools to support language editing and improve the clarity, structure, and consistency of the manuscript. After using these tools, the authors reviewed and edited the content as needed and take full responsibility for the content of the published article.",
+        "bbox": [
+            111,
+            660,
+            885,
+            731
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "Author Contributions: Conceptualization, M.G., N.B., G.S., A.T.; methodology, M.G., R.P., U.B., N.B., G.S., A.T.; validation, M.G., R.P., G.S.; formal analysis, M.G., R.P., G.S.; investigation, M.G., R.P., N.B., S.S.; data curation, M.G., R.P., G.S., S.S.; software, G.S.; visualization, M.G., R.P., G.S.; writing-original draft preparation, M.G., R.P., G.S.; writing-review and editing, M.G., R.P., U.B., N.B., G.S., A.T.; supervision, M.G., U.B., A.T.; funding acquisition, M.G., U.B., A.T. All authors have read and agreed to the published version of the manuscript."
+        ],
+        "bbox": [
+            111,
+            744,
+            883,
+            851
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "Supplementary materials",
+        "text_level": 2,
+        "bbox": [
+            112,
+            116,
+            437,
+            140
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "text",
+        "text": "Companion tables to the main article, reporting the full split-rotation benchmark broken down by individual split seed. Values are balanced accuracy on the test fold, expressed in %, computed with the same training and evaluation protocol described in Section 2.6 of the main article. The five split seeds are [42, 123, 456, 789, 2024] and the model-initialization seed is 42 for all runs. Testfold sizes are 128, 127, 126, 128, 128 kernels for seeds 42, 123, 456, 789 and 2024 respectively (train ≈ 546, val ≈ 126). Stratification is always performed on the initial-condition labels, so each of the two annotation conditions uses identical data partitions. Rows in Tables S1–S3 are ordered by decreasing mean balanced accuracy under the reassessed annotation condition; the first seven correspond to the methods reported in Table 4 of the main article. Mean and standard deviation are computed with population variance (ddof = 0), matching the convention used in Tables 4 and 5.",
+        "bbox": [
+            111,
+            145,
+            887,
+            337
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "table",
+        "img_path": "images/1793974b04a4baf5abbdffa788d085ba1bbf24baa73edaf307fb3f4471f7d053.jpg",
+        "table_caption": [
+            "Table S1. Balanced accuracy per split seed — reassessed annotation condition."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td colspan=\"1\" rowspan=\"1\">#</td><td colspan=\"1\" rowspan=\"1\">Method</td><td colspan=\"1\" rowspan=\"1\">Seed42</td><td colspan=\"1\" rowspan=\"1\">Seed123</td><td colspan=\"1\" rowspan=\"1\">Seed456</td><td colspan=\"1\" rowspan=\"1\">Seed789</td><td colspan=\"1\" rowspan=\"1\">Seed2024</td><td colspan=\"1\" rowspan=\"1\">Mean</td><td colspan=\"1\" rowspan=\"1\">Std</td><td colspan=\"1\" rowspan=\"1\">Min</td><td colspan=\"1\" rowspan=\"1\">Max</td></tr><tr><td colspan=\"1\" rowspan=\"1\">1</td><td colspan=\"1\" rowspan=\"1\">ens_avg(cnn_bce +swin_frozen)</td><td colspan=\"1\" rowspan=\"1\">87.39</td><td colspan=\"1\" rowspan=\"1\">84.82</td><td colspan=\"1\" rowspan=\"1\">83.84</td><td colspan=\"1\" rowspan=\"1\">86.35</td><td colspan=\"1\" rowspan=\"1\">88.89</td><td colspan=\"1\" rowspan=\"1\">86.26</td><td colspan=\"1\" rowspan=\"1\">1.80</td><td colspan=\"1\" rowspan=\"1\">83.84</td><td colspan=\"1\" rowspan=\"1\">88.89</td></tr><tr><td colspan=\"1\" rowspan=\"1\">2</td><td colspan=\"1\" rowspan=\"1\">ens_avg(cnn_focal +swin_frozen)</td><td colspan=\"1\" rowspan=\"1\">84.20</td><td colspan=\"1\" rowspan=\"1\">84.59</td><td colspan=\"1\" rowspan=\"1\">80.81</td><td colspan=\"1\" rowspan=\"1\">86.31</td><td colspan=\"1\" rowspan=\"1\">89.63</td><td colspan=\"1\" rowspan=\"1\">85.11</td><td colspan=\"1\" rowspan=\"1\">2.88</td><td colspan=\"1\" rowspan=\"1\">80.81</td><td colspan=\"1\" rowspan=\"1\">89.63</td></tr><tr><td colspan=\"1\" rowspan=\"1\">3</td><td colspan=\"1\" rowspan=\"1\">ens_max(cnn_bce +swin_full)</td><td colspan=\"1\" rowspan=\"1\">89.66</td><td colspan=\"1\" rowspan=\"1\">79.26</td><td colspan=\"1\" rowspan=\"1\">80.98</td><td colspan=\"1\" rowspan=\"1\">87.29</td><td colspan=\"1\" rowspan=\"1\">81.85</td><td colspan=\"1\" rowspan=\"1\">83.81</td><td colspan=\"1\" rowspan=\"1\">3.97</td><td colspan=\"1\" rowspan=\"1\">79.26</td><td colspan=\"1\" rowspan=\"1\">89.66</td></tr><tr><td colspan=\"1\" rowspan=\"1\">4</td><td colspan=\"1\" rowspan=\"1\">ens_avg(cnn_bce +effnet)</td><td colspan=\"1\" rowspan=\"1\">91.48</td><td colspan=\"1\" rowspan=\"1\">82.42</td><td colspan=\"1\" rowspan=\"1\">78.96</td><td colspan=\"1\" rowspan=\"1\">84.35</td><td colspan=\"1\" rowspan=\"1\">79.91</td><td colspan=\"1\" rowspan=\"1\">83.42</td><td colspan=\"1\" rowspan=\"1\">4.45</td><td colspan=\"1\" rowspan=\"1\">78.96</td><td colspan=\"1\" rowspan=\"1\">91.48</td></tr><tr><td colspan=\"1\" rowspan=\"1\">5</td><td colspan=\"1\" rowspan=\"1\">ens_max(cnn_bce +swin_frozen)</td><td colspan=\"1\" rowspan=\"1\">91.36</td><td colspan=\"1\" rowspan=\"1\">78.07</td><td colspan=\"1\" rowspan=\"1\">80.13</td><td colspan=\"1\" rowspan=\"1\">84.35</td><td colspan=\"1\" rowspan=\"1\">82.78</td><td colspan=\"1\" rowspan=\"1\">83.34</td><td colspan=\"1\" rowspan=\"1\">4.55</td><td colspan=\"1\" rowspan=\"1\">78.07</td><td colspan=\"1\" rowspan=\"1\">91.36</td></tr><tr><td colspan=\"1\" rowspan=\"1\">6</td><td colspan=\"1\" rowspan=\"1\">ens_avg(cnn_focal +swin_full)</td><td colspan=\"1\" rowspan=\"1\">87.39</td><td colspan=\"1\" rowspan=\"1\">78.78</td><td colspan=\"1\" rowspan=\"1\">80.47</td><td colspan=\"1\" rowspan=\"1\">87.29</td><td colspan=\"1\" rowspan=\"1\">81.67</td><td colspan=\"1\" rowspan=\"1\">83.12</td><td colspan=\"1\" rowspan=\"1\">3.56</td><td colspan=\"1\" rowspan=\"1\">78.78</td><td colspan=\"1\" rowspan=\"1\">87.39</td></tr><tr><td colspan=\"1\" rowspan=\"1\">7</td><td colspan=\"1\" rowspan=\"1\">ens_max(cnn_bce +effnet)</td><td colspan=\"1\" rowspan=\"1\">91.93</td><td colspan=\"1\" rowspan=\"1\">81.46</td><td colspan=\"1\" rowspan=\"1\">79.12</td><td colspan=\"1\" rowspan=\"1\">81.45</td><td colspan=\"1\" rowspan=\"1\">81.57</td><td colspan=\"1\" rowspan=\"1\">83.11</td><td colspan=\"1\" rowspan=\"1\">4.51</td><td colspan=\"1\" rowspan=\"1\">79.12</td><td colspan=\"1\" rowspan=\"1\">91.93</td></tr><tr><td colspan=\"1\" rowspan=\"1\">8</td><td colspan=\"1\" rowspan=\"1\">ens_avg(cnn_bce +swin_full)</td><td colspan=\"1\" rowspan=\"1\">83.98</td><td colspan=\"1\" rowspan=\"1\">81.21</td><td colspan=\"1\" rowspan=\"1\">81.48</td><td colspan=\"1\" rowspan=\"1\">85.33</td><td colspan=\"1\" rowspan=\"1\">82.41</td><td colspan=\"1\" rowspan=\"1\">82.88</td><td colspan=\"1\" rowspan=\"1\">1.56</td><td colspan=\"1\" rowspan=\"1\">81.21</td><td colspan=\"1\" rowspan=\"1\">85.33</td></tr><tr><td colspan=\"1\" rowspan=\"1\">9</td><td colspan=\"1\" rowspan=\"1\">EfficientNet-B0</td><td colspan=\"1\" rowspan=\"1\">89.20</td><td colspan=\"1\" rowspan=\"1\">81.46</td><td colspan=\"1\" rowspan=\"1\">79.12</td><td colspan=\"1\" rowspan=\"1\">82.88</td><td colspan=\"1\" rowspan=\"1\">81.57</td><td colspan=\"1\" rowspan=\"1\">82.85</td><td colspan=\"1\" rowspan=\"1\">3.40</td><td colspan=\"1\" rowspan=\"1\">79.12</td><td colspan=\"1\" rowspan=\"1\">89.20</td></tr><tr><td colspan=\"1\" rowspan=\"1\">10</td><td colspan=\"1\" rowspan=\"1\">Swin-T (full)</td><td colspan=\"1\" rowspan=\"1\">86.82</td><td colspan=\"1\" rowspan=\"1\">78.78</td><td colspan=\"1\" rowspan=\"1\">80.47</td><td colspan=\"1\" rowspan=\"1\">87.29</td><td colspan=\"1\" rowspan=\"1\">79.63</td><td colspan=\"1\" rowspan=\"1\">82.60</td><td colspan=\"1\" rowspan=\"1\">3.68</td><td colspan=\"1\" rowspan=\"1\">78.78</td><td colspan=\"1\" rowspan=\"1\">87.29</td></tr><tr><td colspan=\"1\" rowspan=\"1\">11</td><td colspan=\"1\" rowspan=\"1\">ens_max(cnn_focal +swin_full)</td><td colspan=\"1\" rowspan=\"1\">85.11</td><td colspan=\"1\" rowspan=\"1\">80.00</td><td colspan=\"1\" rowspan=\"1\">79.97</td><td colspan=\"1\" rowspan=\"1\">87.29</td><td colspan=\"1\" rowspan=\"1\">78.24</td><td colspan=\"1\" rowspan=\"1\">82.12</td><td colspan=\"1\" rowspan=\"1\">3.46</td><td colspan=\"1\" rowspan=\"1\">78.24</td><td colspan=\"1\" rowspan=\"1\">87.29</td></tr><tr><td colspan=\"1\" rowspan=\"1\">12</td><td colspan=\"1\" rowspan=\"1\">ens_max(cnn_focal +swin_frozen)</td><td colspan=\"1\" rowspan=\"1\">83.07</td><td colspan=\"1\" rowspan=\"1\">87.25</td><td colspan=\"1\" rowspan=\"1\">76.43</td><td colspan=\"1\" rowspan=\"1\">82.88</td><td colspan=\"1\" rowspan=\"1\">79.81</td><td colspan=\"1\" rowspan=\"1\">81.89</td><td colspan=\"1\" rowspan=\"1\">3.61</td><td colspan=\"1\" rowspan=\"1\">76.43</td><td colspan=\"1\" rowspan=\"1\">87.25</td></tr><tr><td colspan=\"1\" rowspan=\"1\">13</td><td colspan=\"1\" rowspan=\"1\">BinaryNutCNN(pw2)</td><td colspan=\"1\" rowspan=\"1\">86.25</td><td colspan=\"1\" rowspan=\"1\">84.11</td><td colspan=\"1\" rowspan=\"1\">74.75</td><td colspan=\"1\" rowspan=\"1\">80.43</td><td colspan=\"1\" rowspan=\"1\">82.87</td><td colspan=\"1\" rowspan=\"1\">81.68</td><td colspan=\"1\" rowspan=\"1\">3.95</td><td colspan=\"1\" rowspan=\"1\">74.75</td><td colspan=\"1\" rowspan=\"1\">86.25</td></tr><tr><td colspan=\"1\" rowspan=\"1\">14</td><td colspan=\"1\" rowspan=\"1\">BinaryNutCNN(BCE)</td><td colspan=\"1\" rowspan=\"1\">87.95</td><td colspan=\"1\" rowspan=\"1\">79.52</td><td colspan=\"1\" rowspan=\"1\">77.95</td><td colspan=\"1\" rowspan=\"1\">81.41</td><td colspan=\"1\" rowspan=\"1\">80.83</td><td colspan=\"1\" rowspan=\"1\">81.53</td><td colspan=\"1\" rowspan=\"1\">3.43</td><td colspan=\"1\" rowspan=\"1\">77.95</td><td colspan=\"1\" rowspan=\"1\">87.95</td></tr><tr><td colspan=\"1\" rowspan=\"1\">15</td><td colspan=\"1\" rowspan=\"1\">BinaryNutCNN(focal)</td><td colspan=\"1\" rowspan=\"1\">82.84</td><td colspan=\"1\" rowspan=\"1\">88.94</td><td colspan=\"1\" rowspan=\"1\">74.92</td><td colspan=\"1\" rowspan=\"1\">83.33</td><td colspan=\"1\" rowspan=\"1\">77.50</td><td colspan=\"1\" rowspan=\"1\">81.51</td><td colspan=\"1\" rowspan=\"1\">4.90</td><td colspan=\"1\" rowspan=\"1\">74.92</td><td colspan=\"1\" rowspan=\"1\">88.94</td></tr><tr><td colspan=\"1\" rowspan=\"1\">16</td><td colspan=\"1\" rowspan=\"1\">Swin-T (frozen)</td><td colspan=\"1\" rowspan=\"1\">83.07</td><td colspan=\"1\" rowspan=\"1\">77.59</td><td colspan=\"1\" rowspan=\"1\">79.63</td><td colspan=\"1\" rowspan=\"1\">82.88</td><td colspan=\"1\" rowspan=\"1\">82.78</td><td colspan=\"1\" rowspan=\"1\">81.19</td><td colspan=\"1\" rowspan=\"1\">2.20</td><td colspan=\"1\" rowspan=\"1\">77.59</td><td colspan=\"1\" rowspan=\"1\">83.07</td></tr><tr><td colspan=\"1\" rowspan=\"1\">17</td><td colspan=\"1\" rowspan=\"1\">ResNet-18</td><td colspan=\"1\" rowspan=\"1\">84.89</td><td colspan=\"1\" rowspan=\"1\">79.03</td><td colspan=\"1\" rowspan=\"1\">81.99</td><td colspan=\"1\" rowspan=\"1\">82.96</td><td colspan=\"1\" rowspan=\"1\">76.76</td><td colspan=\"1\" rowspan=\"1\">81.12</td><td colspan=\"1\" rowspan=\"1\">2.89</td><td colspan=\"1\" rowspan=\"1\">76.76</td><td colspan=\"1\" rowspan=\"1\">84.89</td></tr></table>",
+        "bbox": [
+            112,
+            362,
+            892,
+            875
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "table",
+        "img_path": "",
+        "table_caption": [],
+        "table_footnote": [],
+        "bbox": [
+            112,
+            88,
+            893,
+            621
+        ],
+        "page_idx": 22
+    },
+    {
+        "type": "table",
+        "img_path": "images/cdfd666ee3f150c729b202d72174df74335a357eafdea2bce3f6070ee705bd76.jpg",
+        "table_caption": [
+            "Table S2. Balanced accuracy per split seed — initial annotation condition",
+            "Row order follows Table S1 (ranked by mean under the reassessed condition), so per-method comparison across conditions is done by reading the same row in S1 and S2."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td colspan=\"1\" rowspan=\"1\">#</td><td colspan=\"1\" rowspan=\"1\">Method</td><td colspan=\"1\" rowspan=\"1\">Seed42</td><td colspan=\"1\" rowspan=\"1\">Seed123</td><td colspan=\"1\" rowspan=\"1\">Seed456</td><td colspan=\"1\" rowspan=\"1\">Seed789</td><td colspan=\"1\" rowspan=\"1\">Seed2024</td><td colspan=\"1\" rowspan=\"1\">Mean</td><td colspan=\"1\" rowspan=\"1\">Std</td><td colspan=\"1\" rowspan=\"1\">Min</td><td colspan=\"1\" rowspan=\"1\">Max</td></tr><tr><td colspan=\"1\" rowspan=\"1\">1</td><td colspan=\"1\" rowspan=\"1\">ens_avg(cnn_bce +swin_frozen)</td><td colspan=\"1\" rowspan=\"1\">81.01</td><td colspan=\"1\" rowspan=\"1\">82.52</td><td colspan=\"1\" rowspan=\"1\">79.89</td><td colspan=\"1\" rowspan=\"1\">82.63</td><td colspan=\"1\" rowspan=\"1\">89.55</td><td colspan=\"1\" rowspan=\"1\">83.12</td><td colspan=\"1\" rowspan=\"1\">3.37</td><td colspan=\"1\" rowspan=\"1\">79.89</td><td colspan=\"1\" rowspan=\"1\">89.55</td></tr><tr><td colspan=\"1\" rowspan=\"1\">2</td><td colspan=\"1\" rowspan=\"1\">ens_avg(cnn_focal +swin_frozen)</td><td colspan=\"1\" rowspan=\"1\">77.98</td><td colspan=\"1\" rowspan=\"1\">82.05</td><td colspan=\"1\" rowspan=\"1\">84.00</td><td colspan=\"1\" rowspan=\"1\">83.58</td><td colspan=\"1\" rowspan=\"1\">86.31</td><td colspan=\"1\" rowspan=\"1\">82.78</td><td colspan=\"1\" rowspan=\"1\">2.76</td><td colspan=\"1\" rowspan=\"1\">77.98</td><td colspan=\"1\" rowspan=\"1\">86.31</td></tr><tr><td colspan=\"1\" rowspan=\"1\">3</td><td colspan=\"1\" rowspan=\"1\">ens max(cnn_bce +swin_full)</td><td colspan=\"1\" rowspan=\"1\">82.95</td><td colspan=\"1\" rowspan=\"1\">71.52</td><td colspan=\"1\" rowspan=\"1\">79.40</td><td colspan=\"1\" rowspan=\"1\">87.44</td><td colspan=\"1\" rowspan=\"1\">85.35</td><td colspan=\"1\" rowspan=\"1\">81.33</td><td colspan=\"1\" rowspan=\"1\">5.59</td><td colspan=\"1\" rowspan=\"1\">71.52</td><td colspan=\"1\" rowspan=\"1\">87.44</td></tr><tr><td colspan=\"1\" rowspan=\"1\">4</td><td colspan=\"1\" rowspan=\"1\">ens_avg(cnn_bce +effnet)</td><td colspan=\"1\" rowspan=\"1\">85.44</td><td colspan=\"1\" rowspan=\"1\">82.01</td><td colspan=\"1\" rowspan=\"1\">82.52</td><td colspan=\"1\" rowspan=\"1\">85.08</td><td colspan=\"1\" rowspan=\"1\">83.59</td><td colspan=\"1\" rowspan=\"1\">83.73</td><td colspan=\"1\" rowspan=\"1\">1.35</td><td colspan=\"1\" rowspan=\"1\">82.01</td><td colspan=\"1\" rowspan=\"1\">85.44</td></tr><tr><td colspan=\"1\" rowspan=\"1\">5</td><td colspan=\"1\" rowspan=\"1\">ens max(cnn_bce +swin_frozen)</td><td colspan=\"1\" rowspan=\"1\">84.41</td><td colspan=\"1\" rowspan=\"1\">86.30</td><td colspan=\"1\" rowspan=\"1\">84.49</td><td colspan=\"1\" rowspan=\"1\">80.75</td><td colspan=\"1\" rowspan=\"1\">81.62</td><td colspan=\"1\" rowspan=\"1\">83.51</td><td colspan=\"1\" rowspan=\"1\">2.04</td><td colspan=\"1\" rowspan=\"1\">80.75</td><td colspan=\"1\" rowspan=\"1\">86.30</td></tr><tr><td colspan=\"1\" rowspan=\"1\">6</td><td colspan=\"1\" rowspan=\"1\">ens_avg(cnn_focal +swin_full)</td><td colspan=\"1\" rowspan=\"1\">81.01</td><td colspan=\"1\" rowspan=\"1\">78.19</td><td colspan=\"1\" rowspan=\"1\">81.81</td><td colspan=\"1\" rowspan=\"1\">87.44</td><td colspan=\"1\" rowspan=\"1\">84.90</td><td colspan=\"1\" rowspan=\"1\">82.67</td><td colspan=\"1\" rowspan=\"1\">3.20</td><td colspan=\"1\" rowspan=\"1\">78.19</td><td colspan=\"1\" rowspan=\"1\">87.44</td></tr><tr><td colspan=\"1\" rowspan=\"1\">7</td><td colspan=\"1\" rowspan=\"1\">ens max(cnn_bce +effnet)</td><td colspan=\"1\" rowspan=\"1\">84.89</td><td colspan=\"1\" rowspan=\"1\">84.37</td><td colspan=\"1\" rowspan=\"1\">79.86</td><td colspan=\"1\" rowspan=\"1\">85.55</td><td colspan=\"1\" rowspan=\"1\">83.13</td><td colspan=\"1\" rowspan=\"1\">83.56</td><td colspan=\"1\" rowspan=\"1\">2.01</td><td colspan=\"1\" rowspan=\"1\">79.86</td><td colspan=\"1\" rowspan=\"1\">85.55</td></tr><tr><td colspan=\"1\" rowspan=\"1\">8</td><td colspan=\"1\" rowspan=\"1\">ens_avg(cnn_bce +swin_full)</td><td colspan=\"1\" rowspan=\"1\">78.10</td><td colspan=\"1\" rowspan=\"1\">77.72</td><td colspan=\"1\" rowspan=\"1\">82.29</td><td colspan=\"1\" rowspan=\"1\">86.96</td><td colspan=\"1\" rowspan=\"1\">85.35</td><td colspan=\"1\" rowspan=\"1\">82.08</td><td colspan=\"1\" rowspan=\"1\">3.73</td><td colspan=\"1\" rowspan=\"1\">77.72</td><td colspan=\"1\" rowspan=\"1\">86.96</td></tr><tr><td colspan=\"1\" rowspan=\"1\">9</td><td colspan=\"1\" rowspan=\"1\">EfficientNet-B0</td><td colspan=\"1\" rowspan=\"1\">83.50</td><td colspan=\"1\" rowspan=\"1\">82.01</td><td colspan=\"1\" rowspan=\"1\">79.86</td><td colspan=\"1\" rowspan=\"1\">85.55</td><td colspan=\"1\" rowspan=\"1\">76.57</td><td colspan=\"1\" rowspan=\"1\">81.50</td><td colspan=\"1\" rowspan=\"1\">3.09</td><td colspan=\"1\" rowspan=\"1\">76.57</td><td colspan=\"1\" rowspan=\"1\">85.55</td></tr><tr><td colspan=\"1\" rowspan=\"1\">10</td><td colspan=\"1\" rowspan=\"1\">Swin-T (full)</td><td colspan=\"1\" rowspan=\"1\">80.52</td><td colspan=\"1\" rowspan=\"1\">71.52</td><td colspan=\"1\" rowspan=\"1\">79.40</td><td colspan=\"1\" rowspan=\"1\">87.44</td><td colspan=\"1\" rowspan=\"1\">83.08</td><td colspan=\"1\" rowspan=\"1\">80.39</td><td colspan=\"1\" rowspan=\"1\">5.23</td><td colspan=\"1\" rowspan=\"1\">71.52</td><td colspan=\"1\" rowspan=\"1\">87.44</td></tr><tr><td colspan=\"1\" rowspan=\"1\">11</td><td colspan=\"1\" rowspan=\"1\">ens_max(cnn_focal +swin_full)</td><td colspan=\"1\" rowspan=\"1\">79.07</td><td colspan=\"1\" rowspan=\"1\">71.52</td><td colspan=\"1\" rowspan=\"1\">79.40</td><td colspan=\"1\" rowspan=\"1\">87.91</td><td colspan=\"1\" rowspan=\"1\">75.61</td><td colspan=\"1\" rowspan=\"1\">78.70</td><td colspan=\"1\" rowspan=\"1\">5.41</td><td colspan=\"1\" rowspan=\"1\">71.52</td><td colspan=\"1\" rowspan=\"1\">87.91</td></tr><tr><td colspan=\"1\" rowspan=\"1\">12</td><td colspan=\"1\" rowspan=\"1\">ens_max(cnn_focal +swin_frozen)</td><td colspan=\"1\" rowspan=\"1\">77.01</td><td colspan=\"1\" rowspan=\"1\">83.00</td><td colspan=\"1\" rowspan=\"1\">84.49</td><td colspan=\"1\" rowspan=\"1\">84.05</td><td colspan=\"1\" rowspan=\"1\">76.97</td><td colspan=\"1\" rowspan=\"1\">81.10</td><td colspan=\"1\" rowspan=\"1\">3.39</td><td colspan=\"1\" rowspan=\"1\">76.97</td><td colspan=\"1\" rowspan=\"1\">84.49</td></tr><tr><td colspan=\"1\" rowspan=\"1\">13</td><td colspan=\"1\" rowspan=\"1\">BinaryNutCNN(pw2)</td><td colspan=\"1\" rowspan=\"1\">80.04</td><td colspan=\"1\" rowspan=\"1\">83.96</td><td colspan=\"1\" rowspan=\"1\">73.32</td><td colspan=\"1\" rowspan=\"1\">78.56</td><td colspan=\"1\" rowspan=\"1\">78.94</td><td colspan=\"1\" rowspan=\"1\">78.96</td><td colspan=\"1\" rowspan=\"1\">3.41</td><td colspan=\"1\" rowspan=\"1\">73.32</td><td colspan=\"1\" rowspan=\"1\">83.96</td></tr><tr><td colspan=\"1\" rowspan=\"1\">14</td><td colspan=\"1\" rowspan=\"1\">BinaryNutCNN(BCE)</td><td colspan=\"1\" rowspan=\"1\">81.50</td><td colspan=\"1\" rowspan=\"1\">83.94</td><td colspan=\"1\" rowspan=\"1\">72.35</td><td colspan=\"1\" rowspan=\"1\">77.14</td><td colspan=\"1\" rowspan=\"1\">83.59</td><td colspan=\"1\" rowspan=\"1\">79.70</td><td colspan=\"1\" rowspan=\"1\">4.40</td><td colspan=\"1\" rowspan=\"1\">72.35</td><td colspan=\"1\" rowspan=\"1\">83.94</td></tr><tr><td colspan=\"1\" rowspan=\"1\">15</td><td colspan=\"1\" rowspan=\"1\">BinaryNutCNN(focal)</td><td colspan=\"1\" rowspan=\"1\">77.13</td><td colspan=\"1\" rowspan=\"1\">84.43</td><td colspan=\"1\" rowspan=\"1\">75.26</td><td colspan=\"1\" rowspan=\"1\">79.97</td><td colspan=\"1\" rowspan=\"1\">78.94</td><td colspan=\"1\" rowspan=\"1\">79.15</td><td colspan=\"1\" rowspan=\"1\">3.09</td><td colspan=\"1\" rowspan=\"1\">75.26</td><td colspan=\"1\" rowspan=\"1\">84.43</td></tr><tr><td colspan=\"1\" rowspan=\"1\">16</td><td colspan=\"1\" rowspan=\"1\">Swin-T (frozen)</td><td colspan=\"1\" rowspan=\"1\">77.01</td><td colspan=\"1\" rowspan=\"1\">82.52</td><td colspan=\"1\" rowspan=\"1\">84.49</td><td colspan=\"1\" rowspan=\"1\">80.75</td><td colspan=\"1\" rowspan=\"1\">81.67</td><td colspan=\"1\" rowspan=\"1\">81.29</td><td colspan=\"1\" rowspan=\"1\">2.47</td><td colspan=\"1\" rowspan=\"1\">77.01</td><td colspan=\"1\" rowspan=\"1\">84.49</td></tr><tr><td colspan=\"1\" rowspan=\"1\">17</td><td colspan=\"1\" rowspan=\"1\">ResNet-18</td><td colspan=\"1\" rowspan=\"1\">81.98</td><td colspan=\"1\" rowspan=\"1\">85.31</td><td colspan=\"1\" rowspan=\"1\">80.10</td><td colspan=\"1\" rowspan=\"1\">74.19</td><td colspan=\"1\" rowspan=\"1\">76.16</td><td colspan=\"1\" rowspan=\"1\">79.55</td><td colspan=\"1\" rowspan=\"1\">3.99</td><td colspan=\"1\" rowspan=\"1\">74.19</td><td colspan=\"1\" rowspan=\"1\">85.31</td></tr></table>",
+        "bbox": [
+            114,
+            688,
+            908,
+            868
+        ],
+        "page_idx": 22
+    },
+    {
+        "type": "table",
+        "img_path": "",
+        "table_caption": [],
+        "table_footnote": [],
+        "bbox": [
+            112,
+            87,
+            911,
+            906
+        ],
+        "page_idx": 23
+    },
+    {
+        "type": "table",
+        "img_path": "images/b1e9b09e2a6261df52a94192ca5ef3a54985440d872b716ca323f9941597355a.jpg",
+        "table_caption": [
+            "Table S3. Per-seed delta (reassessed − initial), in balanced-accuracy percentage points. Positive values indicate that the reassessed condition improved performance on that split. Thirteen of the seventeen methods show a positive mean delta and four show a small negative one; at the individual-split level the sign varies within each row, with more mixed behaviour across seeds compared with the ranking observed on the mean."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td colspan=\"1\" rowspan=\"1\">#</td><td colspan=\"1\" rowspan=\"1\">Method</td><td colspan=\"1\" rowspan=\"1\">Seed42</td><td colspan=\"1\" rowspan=\"1\">Seed123</td><td colspan=\"1\" rowspan=\"1\">Seed456</td><td colspan=\"1\" rowspan=\"1\">Seed789</td><td colspan=\"1\" rowspan=\"1\">Seed2024</td><td colspan=\"1\" rowspan=\"1\">MeanΔ</td><td colspan=\"1\" rowspan=\"1\">MinΔ</td><td colspan=\"1\" rowspan=\"1\">Max ∆</td></tr><tr><td colspan=\"1\" rowspan=\"1\">1</td><td colspan=\"1\" rowspan=\"1\">ens_avg(cnn_bce +swin_frozen)</td><td colspan=\"1\" rowspan=\"1\">+6.38</td><td colspan=\"1\" rowspan=\"1\">+2.30</td><td colspan=\"1\" rowspan=\"1\">+3.95</td><td colspan=\"1\" rowspan=\"1\">+3.72</td><td colspan=\"1\" rowspan=\"1\">-0.66</td><td colspan=\"1\" rowspan=\"1\">+3.14</td><td colspan=\"1\" rowspan=\"1\">-0.66</td><td colspan=\"1\" rowspan=\"1\">+6.38</td></tr><tr><td colspan=\"1\" rowspan=\"1\">2</td><td colspan=\"1\" rowspan=\"1\">ens_avg(cnn_focal +swin_frozen)</td><td colspan=\"1\" rowspan=\"1\">+6.22</td><td colspan=\"1\" rowspan=\"1\">+2.54</td><td colspan=\"1\" rowspan=\"1\">-3.19</td><td colspan=\"1\" rowspan=\"1\">+2.74</td><td colspan=\"1\" rowspan=\"1\">+3.32</td><td colspan=\"1\" rowspan=\"1\">+2.32</td><td colspan=\"1\" rowspan=\"1\">-3.19</td><td colspan=\"1\" rowspan=\"1\">+6.22</td></tr><tr><td colspan=\"1\" rowspan=\"1\">3</td><td colspan=\"1\" rowspan=\"1\">ens_max(cnn_bce +swin_full)</td><td colspan=\"1\" rowspan=\"1\">+6.71</td><td colspan=\"1\" rowspan=\"1\">+7.75</td><td colspan=\"1\" rowspan=\"1\">+1.58</td><td colspan=\"1\" rowspan=\"1\">-0.14</td><td colspan=\"1\" rowspan=\"1\">-3.50</td><td colspan=\"1\" rowspan=\"1\">+2.48</td><td colspan=\"1\" rowspan=\"1\">-3.50</td><td colspan=\"1\" rowspan=\"1\">+7.75</td></tr><tr><td colspan=\"1\" rowspan=\"1\">4</td><td colspan=\"1\" rowspan=\"1\">ens_avg(cnn_bce +effnet)</td><td colspan=\"1\" rowspan=\"1\">+6.04</td><td colspan=\"1\" rowspan=\"1\">+0.41</td><td colspan=\"1\" rowspan=\"1\">-3.57</td><td colspan=\"1\" rowspan=\"1\">-0.73</td><td colspan=\"1\" rowspan=\"1\">-3.68</td><td colspan=\"1\" rowspan=\"1\">-0.30</td><td colspan=\"1\" rowspan=\"1\">-3.68</td><td colspan=\"1\" rowspan=\"1\">+6.04</td></tr><tr><td colspan=\"1\" rowspan=\"1\">5</td><td colspan=\"1\" rowspan=\"1\">ens_max(cnn_bce +swin_frozen)</td><td colspan=\"1\" rowspan=\"1\">+6.96</td><td colspan=\"1\" rowspan=\"1\">-8.23</td><td colspan=\"1\" rowspan=\"1\">-4.35</td><td colspan=\"1\" rowspan=\"1\">+3.61</td><td colspan=\"1\" rowspan=\"1\">+1.16</td><td colspan=\"1\" rowspan=\"1\">-0.17</td><td colspan=\"1\" rowspan=\"1\">-8.23</td><td colspan=\"1\" rowspan=\"1\">+6.96</td></tr><tr><td colspan=\"1\" rowspan=\"1\">6</td><td colspan=\"1\" rowspan=\"1\">ens_avg(cnn_focal +swin_full)</td><td colspan=\"1\" rowspan=\"1\">+6.38</td><td colspan=\"1\" rowspan=\"1\">+0.59</td><td colspan=\"1\" rowspan=\"1\">-1.34</td><td colspan=\"1\" rowspan=\"1\">-0.14</td><td colspan=\"1\" rowspan=\"1\">-3.23</td><td colspan=\"1\" rowspan=\"1\">+0.45</td><td colspan=\"1\" rowspan=\"1\">-3.23</td><td colspan=\"1\" rowspan=\"1\">+6.38</td></tr><tr><td colspan=\"1\" rowspan=\"1\">7</td><td colspan=\"1\" rowspan=\"1\">ens_max(cnn_bce +effnet)</td><td colspan=\"1\" rowspan=\"1\">+7.04</td><td colspan=\"1\" rowspan=\"1\">-2.91</td><td colspan=\"1\" rowspan=\"1\">-0.74</td><td colspan=\"1\" rowspan=\"1\">-4.10</td><td colspan=\"1\" rowspan=\"1\">-1.56</td><td colspan=\"1\" rowspan=\"1\">-0.45</td><td colspan=\"1\" rowspan=\"1\">-4.10</td><td colspan=\"1\" rowspan=\"1\">+7.04</td></tr><tr><td colspan=\"1\" rowspan=\"1\">8</td><td colspan=\"1\" rowspan=\"1\">ens_avg(cnn_bce +swin_full)</td><td colspan=\"1\" rowspan=\"1\">+5.88</td><td colspan=\"1\" rowspan=\"1\">+3.49</td><td colspan=\"1\" rowspan=\"1\">-0.81</td><td colspan=\"1\" rowspan=\"1\">-1.63</td><td colspan=\"1\" rowspan=\"1\">-2.95</td><td colspan=\"1\" rowspan=\"1\">+0.80</td><td colspan=\"1\" rowspan=\"1\">-2.95</td><td colspan=\"1\" rowspan=\"1\">+5.88</td></tr><tr><td colspan=\"1\" rowspan=\"1\">9</td><td colspan=\"1\" rowspan=\"1\">EfficientNet-B0</td><td colspan=\"1\" rowspan=\"1\">+5.71</td><td colspan=\"1\" rowspan=\"1\">-0.55</td><td colspan=\"1\" rowspan=\"1\">-0.74</td><td colspan=\"1\" rowspan=\"1\">-2.67</td><td colspan=\"1\" rowspan=\"1\">+5.01</td><td colspan=\"1\" rowspan=\"1\">+1.35</td><td colspan=\"1\" rowspan=\"1\">-2.67</td><td colspan=\"1\" rowspan=\"1\">+5.71</td></tr><tr><td colspan=\"1\" rowspan=\"1\">10</td><td colspan=\"1\" rowspan=\"1\">Swin-T (full)</td><td colspan=\"1\" rowspan=\"1\">+6.29</td><td colspan=\"1\" rowspan=\"1\">+7.27</td><td colspan=\"1\" rowspan=\"1\">+1.07</td><td colspan=\"1\" rowspan=\"1\">-0.14</td><td colspan=\"1\" rowspan=\"1\">-3.45</td><td colspan=\"1\" rowspan=\"1\">+2.21</td><td colspan=\"1\" rowspan=\"1\">-3.45</td><td colspan=\"1\" rowspan=\"1\">+7.27</td></tr><tr><td colspan=\"1\" rowspan=\"1\">11</td><td colspan=\"1\" rowspan=\"1\">ens_max(cnn_focal +swin_full)</td><td colspan=\"1\" rowspan=\"1\">+6.05</td><td colspan=\"1\" rowspan=\"1\">+8.48</td><td colspan=\"1\" rowspan=\"1\">+0.57</td><td colspan=\"1\" rowspan=\"1\">-0.61</td><td colspan=\"1\" rowspan=\"1\">+2.63</td><td colspan=\"1\" rowspan=\"1\">+3.42</td><td colspan=\"1\" rowspan=\"1\">-0.61</td><td colspan=\"1\" rowspan=\"1\">+8.48</td></tr><tr><td colspan=\"1\" rowspan=\"1\">12</td><td colspan=\"1\" rowspan=\"1\">ens_max(cnn_focal +swin_frozen)</td><td colspan=\"1\" rowspan=\"1\">+6.06</td><td colspan=\"1\" rowspan=\"1\">+4.25</td><td colspan=\"1\" rowspan=\"1\">-8.06</td><td colspan=\"1\" rowspan=\"1\">-1.17</td><td colspan=\"1\" rowspan=\"1\">+2.85</td><td colspan=\"1\" rowspan=\"1\">+0.79</td><td colspan=\"1\" rowspan=\"1\">-8.06</td><td colspan=\"1\" rowspan=\"1\">+6.06</td></tr><tr><td colspan=\"1\" rowspan=\"1\">13</td><td colspan=\"1\" rowspan=\"1\">BinaryNutCNN(pw2)</td><td colspan=\"1\" rowspan=\"1\">+6.21</td><td colspan=\"1\" rowspan=\"1\">+0.15</td><td colspan=\"1\" rowspan=\"1\">+1.43</td><td colspan=\"1\" rowspan=\"1\">+1.87</td><td colspan=\"1\" rowspan=\"1\">+3.93</td><td colspan=\"1\" rowspan=\"1\">+2.72</td><td colspan=\"1\" rowspan=\"1\">+0.15</td><td colspan=\"1\" rowspan=\"1\">+6.21</td></tr><tr><td colspan=\"1\" rowspan=\"1\">14</td><td colspan=\"1\" rowspan=\"1\">BinaryNutCNN(BCE)</td><td colspan=\"1\" rowspan=\"1\">+6.46</td><td colspan=\"1\" rowspan=\"1\">-4.42</td><td colspan=\"1\" rowspan=\"1\">+5.59</td><td colspan=\"1\" rowspan=\"1\">+4.27</td><td colspan=\"1\" rowspan=\"1\">-2.75</td><td colspan=\"1\" rowspan=\"1\">+1.83</td><td colspan=\"1\" rowspan=\"1\">-4.42</td><td colspan=\"1\" rowspan=\"1\">+6.46</td></tr><tr><td colspan=\"1\" rowspan=\"1\">15</td><td colspan=\"1\" rowspan=\"1\">BinaryNutCNN(focal)</td><td colspan=\"1\" rowspan=\"1\">+5.71</td><td colspan=\"1\" rowspan=\"1\">+4.51</td><td colspan=\"1\" rowspan=\"1\">-0.35</td><td colspan=\"1\" rowspan=\"1\">+3.36</td><td colspan=\"1\" rowspan=\"1\">-1.44</td><td colspan=\"1\" rowspan=\"1\">+2.36</td><td colspan=\"1\" rowspan=\"1\">-1.44</td><td colspan=\"1\" rowspan=\"1\">+5.71</td></tr><tr><td colspan=\"1\" rowspan=\"1\">16</td><td colspan=\"1\" rowspan=\"1\">Swin-T (frozen)</td><td colspan=\"1\" rowspan=\"1\">+6.06</td><td colspan=\"1\" rowspan=\"1\">-4.93</td><td colspan=\"1\" rowspan=\"1\">-4.86</td><td colspan=\"1\" rowspan=\"1\">+2.13</td><td colspan=\"1\" rowspan=\"1\">+1.11</td><td colspan=\"1\" rowspan=\"1\">-0.10</td><td colspan=\"1\" rowspan=\"1\">-4.93</td><td colspan=\"1\" rowspan=\"1\">+6.06</td></tr><tr><td colspan=\"1\" rowspan=\"1\">17</td><td colspan=\"1\" rowspan=\"1\">ResNet-18</td><td colspan=\"1\" rowspan=\"1\">+2.91</td><td colspan=\"1\" rowspan=\"1\">-6.28</td><td colspan=\"1\" rowspan=\"1\">+1.89</td><td colspan=\"1\" rowspan=\"1\">+8.77</td><td colspan=\"1\" rowspan=\"1\">+0.60</td><td colspan=\"1\" rowspan=\"1\">+1.58</td><td colspan=\"1\" rowspan=\"1\">-6.28</td><td colspan=\"1\" rowspan=\"1\">+8.77</td></tr></table>",
+        "bbox": [
+            114,
+            170,
+            883,
+            887
+        ],
+        "page_idx": 24
+    },
+    {
+        "type": "table",
+        "img_path": "",
+        "table_caption": [],
+        "table_footnote": [],
+        "bbox": [
+            112,
+            85,
+            883,
+            368
+        ],
+        "page_idx": 25
+    },
+    {
+        "type": "table",
+        "img_path": "images/5c5b75fddd69e8e154080e0fe2ff675c2bb5c8eef225d2be5da5260d329b52f3.jpg",
+        "table_caption": [
+            "Table S4. Detailed per-seed metrics for the top-ranked method (ens\\_avg\\_bce\\_frozen, reassessed condition). Balanced accuracy, healthy recall, defect recall, absolute false positives / false negatives, and the validation-set-optimised decision threshold used on that split. Test-fold sizes are 128, 127, 126, 128, 128 kernels for seeds 42, 123, 456, 789, 2024, of which the healthy class comprises 40, 23, 27, 26, 20 kernels respectively."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td rowspan=1 colspan=1>Splitseed</td><td rowspan=1 colspan=1>Threshold</td><td rowspan=1 colspan=1>Balacc(%)</td><td rowspan=1 colspan=1>Healthyrecall</td><td rowspan=1 colspan=1>Defectrecall</td><td rowspan=1 colspan=1>Falsepositives</td><td rowspan=1 colspan=1>Falsenegatives</td></tr><tr><td rowspan=1 colspan=1>42</td><td rowspan=1 colspan=1>0.78</td><td rowspan=1 colspan=1>87.39</td><td rowspan=1 colspan=1>97.5%</td><td rowspan=1 colspan=1>77.3%</td><td rowspan=1 colspan=1>1</td><td rowspan=1 colspan=1>20</td></tr><tr><td rowspan=1 colspan=1>123</td><td rowspan=1 colspan=1>0.50</td><td rowspan=1 colspan=1>84.82</td><td rowspan=1 colspan=1>87.0%</td><td rowspan=1 colspan=1>82.7%</td><td rowspan=1 colspan=1>3</td><td rowspan=1 colspan=1>18</td></tr><tr><td rowspan=1 colspan=1>456</td><td rowspan=1 colspan=1>0.42</td><td rowspan=1 colspan=1>83.84</td><td rowspan=1 colspan=1>88.9%</td><td rowspan=1 colspan=1>78.8%</td><td rowspan=1 colspan=1>3</td><td rowspan=1 colspan=1>21</td></tr><tr><td rowspan=1 colspan=1>789</td><td rowspan=1 colspan=1>0.62</td><td rowspan=1 colspan=1>86.35</td><td rowspan=1 colspan=1>92.3%</td><td rowspan=1 colspan=1>80.4%</td><td rowspan=1 colspan=1>2</td><td rowspan=1 colspan=1>20</td></tr><tr><td rowspan=1 colspan=1>2024</td><td rowspan=1 colspan=1>0.52</td><td rowspan=1 colspan=1>88.89</td><td rowspan=1 colspan=1>100.0%</td><td rowspan=1 colspan=1>77.8%</td><td rowspan=1 colspan=1>0</td><td rowspan=1 colspan=1>24</td></tr><tr><td rowspan=1 colspan=1>mean±std</td><td rowspan=1 colspan=1></td><td rowspan=1 colspan=1>86.26 ±1.80</td><td rowspan=1 colspan=1>93.1% ±5.0%</td><td rowspan=1 colspan=1>79.4% ±2.0%</td><td rowspan=1 colspan=1>1.8 ± 1.2</td><td rowspan=1 colspan=1>20.6 ± 2.0</td></tr></table>",
+        "bbox": [
+            114,
+            444,
+            864,
+            671
+        ],
+        "page_idx": 25
+    }
+]

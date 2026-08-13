@@ -1,0 +1,1684 @@
+[
+    {
+        "type": "text",
+        "text": "CT-∆Bench: A Benchmark for Longitudinal 3D Medical Imaging Difference Reporting with Vision-Language Models",
+        "text_level": 1,
+        "bbox": [
+            171,
+            98,
+            826,
+            142
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Kegeng Tang, Jingbo Wang, Shaogang Ren & Zihao Wang<sup>∗</sup> University of Tennessee at Chattanooga {hcw575,ydk297,sren9,zihao.wang}@tennessee.edu",
+        "bbox": [
+            179,
+            166,
+            620,
+            210
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Abstract",
+        "text_level": 2,
+        "bbox": [
+            459,
+            246,
+            539,
+            262
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "In medical imaging, the clinical value of Computed Tomography (CT) lies not only in depicting current disease status, but crucially in enabling longitudinal comparison of serial scans to determine disease evolution, a process that underpins response assessment, recurrence detection, and ongoing patient management. Yet, despite this central role of temporal comparison in clinical decision-making, existing medical foundation models remain largely confined to single-study understanding, leaving temporally grounded cross-examination insufficiently addressed. To address this gap, we study longitudinal imaging difference reporting, a task in which a model takes two temporally separated scans from the same patient and generates a clinically meaningful report describing interval changes between them. We introduce CT-∆Bench, a dedicated benchmark for this task with patient-level splitting to prevent information leakage. To better evaluate this task beyond surface-level text similarity, we further develop change-aware metrics specifically designed to capture clinically meaningful longitudinal changes, and conduct an independent physician validation to assess the reliability of the synthesized references and event extraction pipeline. We also compare direct paired-CT reasoning with an indirect two-stage pipeline that first generates single-timepoint reports and then performs textual differencing. Finally, we propose DeltaMed, a baseline model for direct paired-CT difference reporting, and train it on the benchmark training set. Together, these contributions lay the groundwork for temporally aware medical foundation models that better reflect real-world",
+        "bbox": [
+            228,
+            276,
+            767,
+            616
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "1 Introduction",
+        "text_level": 2,
+        "bbox": [
+            173,
+            640,
+            318,
+            656
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Medical imaging plays a central role in modern clinical care, with modalities such as X-ray, ultrasound, magnetic resonance imaging (MRI), and computed tomography (CT) providing complementary information for diagnosis, treatment planning, and disease monitoring (Hussain et al., 2022; Zheng et al., 2026). In many settings, their value lies not only in characterizing a single examination, but also in enabling longitudinal comparison across time (Zhou et al., 2025). Among these modalities, CT is particularly important for cancer surveillance, post-treatment assessment, and follow-up of chronic thoracic and progressive diseases, where clinicians often compare prior and current scans to determine whether abnormalities have newly appeared, progressed, regressed, resolved, or remained stable (Gai et al., 2025; Zheng et al., 2025; Wang et al., 2025).",
+        "bbox": [
+            169,
+            671,
+            826,
+            813
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Despite this clinical importance, automated radiology report generation has so far focused mainly on single-study understanding. Existing CT-oriented report generation studies and 3D medical vision-language models still predominantly generate descriptions for one CT volume at a time, rather than directly reasoning over temporally paired scans (Bai et al., 2024; Chen et al., 2024; Hamamci et al., 2024; Sloan et al., 2024). However, follow-up interpretation depends not only on what is present, but also on what has changed, and such temporal judgments are often more clinically actionable than static descriptions alone. This problem is especially challenging for CT because paired-volume reasoning is computationally demanding, anatomical correspondence across time points is often imperfect, and many clinically important changes are subtle and localized (Yu et al., 2023). In addition, when generating natural-language summaries of temporal differences, models are particularly vulnerable to omission and hallucination (Gai et al., 2025; Jain et al., 2021; Yu et al., 2023). As a result, longitudinal CT difference reporting is substantially more demanding than conventional single-study CT report generation.",
+        "bbox": [
+            169,
+            818,
+            826,
+            890
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "aside_text",
+        "text": "arXiv:2608.11534v1 [cs.CL] 12 Aug 2026",
+        "bbox": [
+            27,
+            353,
+            65,
+            799
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "header",
+        "text": "Published as a conference paper at COLM 2026",
+        "bbox": [
+            171,
+            31,
+            516,
+            47
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "page_footnote",
+        "text": "<sup>∗</sup>Corresponding author.",
+        "bbox": [
+            191,
+            895,
+            352,
+            910
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "page_footnote",
+        "text": "<sup>1</sup>Code and data available at https://huggingface.co/datasets/tangkg/CT-DeltaBench",
+        "bbox": [
+            191,
+            909,
+            763,
+            924
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "page_number",
+        "text": "1",
+        "bbox": [
+            493,
+            948,
+            503,
+            959
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            169,
+            103,
+            828,
+            231
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "To address this gap, we study longitudinal CT difference reporting, in which a model receives two CT scans from the same patient and generates a clinically meaningful description of interval changes. We address this problem by establishing a dedicated benchmark, CT-∆Bench, with patient-level splitting to enable rigorous evaluation of paired-CT reasoning without information leakage. To better assess clinically meaningful temporal changes, we further develop change-aware evaluation metrics, motivated by the known limitations of conventional text-based metrics in radiology report generation (Delbrouck et al., 2022; Ostmeier et al., 2024). Finally, we investigate both direct and indirect solution paradigms for this task, including direct paired-CT reasoning, indirect two-stage report differencing, and a dedicated baseline model, DeltaMed, trained on the benchmark training set.",
+        "bbox": [
+            169,
+            236,
+            828,
+            377
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "The main contributions of this work are as follows: 1) We formulate longitudinal CT difference reporting as a distinct benchmark task and introduce CT-∆Bench, a novel benchmark with patient-level splitting for systematic evaluation. 2) We develop change-aware evaluation metrics that better assess clinically meaningful longitudinal changes beyond surface-level text similarity. 3) We benchmark multiple large models under zero-shot and fine-tuning settings, including a controlled comparison between direct paired-CT reasoning and indirect two-stage pipelines. 4) We propose DeltaMed, a baseline 3D model for direct paired-CT difference reporting, and train it on the benchmark training set.",
+        "bbox": [
+            169,
+            381,
+            826,
+            496
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "2 Related Work",
+        "text_level": 2,
+        "bbox": [
+            171,
+            513,
+            328,
+            530
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "2.1 Single-study Medical Image Report Generation",
+        "text_level": 2,
+        "bbox": [
+            171,
+            546,
+            566,
+            561
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "Automatic medical report generation has been studied primarily in radiology, especially for chest X-ray, where public datasets such as IU X-Ray, MIMIC-CXR, and CheXpert enabled large-scale development of image-to-text models (Demner-Fushman et al., 2016; Johnson et al., 2019; Irvin et al., 2019). Early approaches largely adapted generic image captioning architectures to produce reports from a single image or study, while later work emphasized longer-form generation, stronger visual–text alignment, improved factual consistency, and more clinically meaningful evaluation (Miura et al., 2021; Nicolson et al., 2023). More recently, this line of research has expanded to other medical imaging modalities, including CT, MRI, and volumetric settings, often supported by emerging medical vision-language models. Nevertheless, most existing methods still follow a single-study formulation, in which the model generates a report for one exam at a time rather than explicitly reasoning over temporal relationships across multiple examinations from the same patient (Sloan et al., 2024).",
+        "bbox": [
+            169,
+            571,
+            826,
+            753
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "2.2 Longitudinal Medical Image Understanding",
+        "text_level": 2,
+        "bbox": [
+            171,
+            770,
+            544,
+            786
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "A second line of work incorporates temporal context, prior studies, or longitudinal structure into medical vision–language learning, although most of it focuses on chest X-ray rather than volumetric imaging. For example, Zhu et al. (2023) construct Longitudinal-MIMIC and use prior chest X-rays together with prior reports to improve current-report drafting; BioViL-T explicitly models temporal structure from image–report sequences and introduces MS-CXR-T for temporal biomedical vision–language evaluation (Bannur et al., 2023); and MAIRA-2 incorporates realistic reporting context, including prior exams when available, into grounded report generation (Bannur et al., 2024). More broadly, these studies show that longitudinal information can improve medical image understanding and report generation.",
+        "bbox": [
+            169,
+            796,
+            828,
+            924
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "header",
+        "text": "Published as a conference paper at COLM 2026",
+        "bbox": [
+            171,
+            31,
+            517,
+            47
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "page_number",
+        "text": "2",
+        "bbox": [
+            491,
+            946,
+            504,
+            959
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "However, prior methods are still generally framed as current-exam reporting, where prior studies are used as auxiliary context, rather than as direct generation of a difference-aware report whose primary purpose is to summarize interval change (Zhu et al., 2023; Bannur et al., 2024; 2023). In addition, most existing work remains centered on 2D chest X-rays rather than paired volumetric CT reasoning. In contrast, our benchmark focuses on direct paired-CT reasoning and explicit evaluation of clinically meaningful longitudinal change.",
+        "bbox": [
+            169,
+            103,
+            826,
+            190
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "2.3 Medical Benchmarks and Evaluation for Report Generation",
+        "text_level": 2,
+        "bbox": [
+            171,
+            204,
+            656,
+            220
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Public datasets and benchmarks have been central to medical report generation research. Classic resources such as IU X-Ray, MIMIC-CXR, and CheXpert supported much of the chest X-ray literature (Demner-Fushman et al., 2016; Johnson et al., 2019; Irvin et al., 2019), while more recent benchmarks such as CT-RATE, RadBench, and M3D-Bench broaden the scope toward 3D imaging, multimodal interaction, and general-purpose medical foundation models (Wu et al., 2025; Bai et al., 2024). Despite this progress, most existing benchmarks still primarily evaluate single-study description, classification, retrieval, or question answering rather than explicit cross-timepoint difference reporting.",
+        "bbox": [
+            169,
+            231,
+            826,
+            344
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Evaluation has likewise become a major challenge. Traditional lexical metrics such as BLEU and ROUGE are easy to compute but often correlate poorly with clinical correctness. To address this, prior work has introduced more report-aware and fact-aware evaluation methods. CheXbert extracts structured labels from radiology reports for label-based assessment (Smit et al., 2020), RadGraph defines a graph schema of entities and relations in radiology text (Jain et al., 2021), and Yu et al. show that RadGraph F1 and RadCliQ correlate better with radiologist judgment than purely lexical metrics (Yu et al., 2023). More recently, GREEN uses large language models to identify clinically significant report errors in a more interpretable way (Ostmeier et al., 2024). Collectively, these studies suggest that medical report evaluation should move beyond surface similarity toward factual and clinically meaningful correctness.",
+        "bbox": [
+            169,
+            348,
+            828,
+            503
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "3 Benchmark",
+        "text_level": 2,
+        "bbox": [
+            171,
+            522,
+            308,
+            539
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "3.1 Problem Definition",
+        "text_level": 2,
+        "bbox": [
+            171,
+            554,
+            359,
+            569
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "We study longitudinal CT difference reporting, a benchmark task that evaluates whether a model can reason over two CT scans acquired from the same patient at different time points and generate a clinically meaningful report describing interval changes (Fig. 1). Formally, each sample consists of a paired input $\\left( { { I } _ { { t } _ { 1 } } } , { { I } _ { { t } _ { 2 } } } \\right)$ , where $I _ { t _ { 1 } }$ and $I _ { t _ { 2 } }$ denote the earlier and follow-up CT scans, respectively. The target output is a difference-aware report $R _ { \\Delta }$ that summarizes clinically relevant temporal changes between the two studies, such as newly appeared findings, progression, regression, resolution, or stability.",
+        "bbox": [
+            169,
+            580,
+            826,
+            681
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Compared with conventional single-study CT report generation, this task requires explicit cross-timepoint reasoning. The benchmark is designed to evaluate not only whether a model can describe each scan individually, but also whether it can correctly identify and provide meaningful clinical changes description.",
+        "bbox": [
+            169,
+            685,
+            825,
+            744
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "3.2 Benchmark Construction",
+        "text_level": 2,
+        "bbox": [
+            171,
+            758,
+            400,
+            773
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "We establish a longitudinal benchmark on top of CT-RATE (Hamamci et al., 2026), a public dataset of 3D CT volumes and radiology reports. We identify patients with multiple CT studies and form longitudinal pairs by selecting two scans acquired at different time points for the same patient, denoted as an earlier scan $I _ { t _ { 1 } }$ and a follow-up scan $I _ { t _ { 2 } }$ . Their corresponding radiology reports are denoted as $R _ { t _ { 1 } }$ and $\\dot { R } _ { t _ { 2 } }$",
+        "bbox": [
+            169,
+            785,
+            825,
+            858
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "CT-RATE provides report data from different time points, but does not include explicit clinically meaningful longitudinal descriptions. We construct a longitudinal target report for each paired sample using Gemini-2.5-Flash. Specifically, only the Findings and Impression sections from the prior and follow-up reports are used as model input. Given the source sections from $R _ { t _ { 1 } }$ and $R _ { t _ { 2 } }$ , the model is instructed to generate a clinically grounded difference report that summarizes only the interval changes between the two studies in radiology-style natural language. The prompt explicitly encourages change-focused summarization while discouraging copying or exhaustively restating the full content of the original reports.",
+        "bbox": [
+            169,
+            861,
+            826,
+            920
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "header",
+        "text": "Published as a conference paper at COLM 2026",
+        "bbox": [
+            171,
+            31,
+            517,
+            47
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "page_number",
+        "text": "3",
+        "bbox": [
+            493,
+            946,
+            504,
+            960
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "image",
+        "img_path": "images/53826dbb6b3b15c9c490b3e9b60635f2a99e4954b1fbbd391c075b85d6733f6e.jpg",
+        "image_caption": [
+            "Figure 1: Task illustration of longitudinal CT difference reporting. Given a prior CT scan $I _ { t _ { 1 } }$ and a follow-up CT scan $I _ { t _ { 2 } }$ from the same patient, the model generates a differenceaware report $R _ { \\Delta }$ describing clinically meaningful interval changes, such as new, resolved, increased, decreased, or stable findings."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            217,
+            112,
+            772,
+            348
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            169,
+            457,
+            825,
+            516
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "As shown in Fig. 2(a), the extracted report sections are passed to Gemini-2.5-Flash to generate a structured reference difference report consisting of Difference Findings and Difference Impression. The synthesized report is denoted as ${ \\check { R _ { \\Delta } } }$ . It serves as the reference target for longitudinal CT difference reporting and focuses on temporal change description rather than single-timepoint report reconstruction. Each benchmark sample is therefore represented as a triple group: $\\left( \\mathsf { \\tilde { I } } _ { t _ { 1 } } , \\mathsf { I } _ { t _ { 2 } } , \\mathsf { R } _ { \\Delta } \\right)$ , where the input is a paired CT study and the output is a difference-aware report. This construction enables systematic evaluation of models on longitudinal paired-CT reasoning and change-focused report generation.",
+        "bbox": [
+            169,
+            520,
+            825,
+            633
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "The resulting benchmark is divided into training and validation sets for model training and evaluation. To prevent information leakage across subsets, we perform the split at the patient level. Specifically, each paired CT-report sample in the benchmark is drawn from a different patient. The training set contains 2,638 paired studies, and the validation set contains 169 paired studies.",
+        "bbox": [
+            169,
+            638,
+            826,
+            710
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "3.3 Clinical Validation",
+        "text_level": 2,
+        "bbox": [
+            171,
+            726,
+            356,
+            741
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "Because CT-∆Bench relies on LLM-synthesized reference difference reports and LLM-based event extraction, we further conduct an independent clinical validation to assess the reliability of these two components. We randomly sample 50 cases from the validation set and invite two physicians from different hospitals to independently review the prior and follow-up CT reports, the Gemini-synthesized difference reports, and the Qwen-extracted change events using a structured rating form.",
+        "bbox": [
+            169,
+            751,
+            826,
+            838
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "For the synthesized reference reports, the physicians assess overall acceptability, correctness, and completeness on a five-point Likert scale, and additionally determine whether each report is clinically acceptable and whether it contains severe hallucinations or omissions. For the extracted change events, they evaluate overall correctness and identify erroneous events or missed important events.",
+        "bbox": [
+            169,
+            842,
+            826,
+            914
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "header",
+        "text": "Published as a conference paper at COLM 2026",
+        "bbox": [
+            173,
+            31,
+            517,
+            47
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "page_number",
+        "text": "4",
+        "bbox": [
+            493,
+            948,
+            504,
+            959
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "image",
+        "img_path": "images/08996d8b6574f05b7953f2c6cd35d0a5c1a8dff082a384513746bd6285dd5ab3.jpg",
+        "image_caption": [
+            "Figure 2: Overview of benchmark construction and evaluation for CT-∆Bench. (a) Benchmark construction. For each longitudinal CT pair from the same patient, we retain only the Findings and Impression sections from the prior and follow-up radiology reports, and prompt Gemini-2.5-Flash to synthesize a reference difference report containing Difference Findings and Difference Impression. (b) Evaluation metrics. Model-generated difference reports are evaluated using both general text metrics (ROUGE-L, BERTScore, and BLEURT) and changeaware metrics. For change-aware evaluation, Qwen-14B is used to extract atomic change events with five change types (New, Resolved, Increased, Decreased, and Stable), followed by event-level matching to compute Change-F1, Missing Rate, Hallucination Rate, and Change Type Accuracy."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            176,
+            103,
+            821,
+            381
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "As shown in Table 1, the synthesized reference reports achieve average scores of 4.82/5 for overall acceptability, 4.83/5 for correctness, and 4.84/5 for completeness. Among the 100 physician evaluations, 99 are judged clinically acceptable, with no severe hallucination or severe omission. The Qwen-based event extraction achieves an average correctness score of 4.83/5, with only 3/100 evaluations identifying erroneous events and 3/100 identifying missed important events.",
+        "bbox": [
+            169,
+            561,
+            826,
+            647
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "We further measure inter-physician consistency. The two physicians achieve 97.5% positiverating agreement (195/200), where both physicians assigning a score of 4 or 5 is counted as agreement, across the Likert-scale assessments and 97.2% agreement (243/250) across the binary clinical judgments. These results provide targeted clinical evidence that the synthesized references and event extraction pipeline are sufficiently reliable for benchmarkscale evaluation.",
+        "bbox": [
+            169,
+            651,
+            826,
+            737
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "3.4 Evaluation Protocol",
+        "text_level": 2,
+        "bbox": [
+            171,
+            752,
+            361,
+            767
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "As illustrated in Fig. 2(b), we evaluate longitudinal CT difference reporting from two complementary perspectives: text-level quality and event-level change correctness. Since clinically valid difference reports may vary substantially in wording while describing the same temporal findings, text-based metrics alone are insufficient (Jain et al., 2021; Yu et al., 2023). We therefore report both conventional generation metrics and a structured event-based evaluation.",
+        "bbox": [
+            169,
+            779,
+            828,
+            864
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Text evaluation metrics. To measure overall textual similarity between a model-generated difference report $\\widehat { R } _ { \\Delta }$ and the reference report $R _ { \\Delta } ,$ we report three standard text-generation metrics: ROUGE-L (Lin, 2004), BERTScore (Zhang et al., 2019), and BLEURT (Sellam et al.,",
+        "bbox": [
+            169,
+            878,
+            826,
+            925
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "header",
+        "text": "Published as a conference paper at COLM 2026",
+        "bbox": [
+            173,
+            31,
+            517,
+            47
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "page_number",
+        "text": "5",
+        "bbox": [
+            493,
+            946,
+            504,
+            960
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "table",
+        "img_path": "images/b4022194d1d17347cb5dfeb5011914919001f42232e6403fa7cb08de82c22f45.jpg",
+        "table_caption": [
+            "Table 1: Clinical validation on 50 randomly sampled validation cases. Two physicians from different hospitals independently evaluated each case."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Metric</td><td>Physician 1</td><td>Physician 2</td><td>Overall</td></tr><tr><td>Reference difference report</td><td></td><td></td><td></td></tr><tr><td>Overall acceptability</td><td>4.86</td><td>4.78</td><td>4.82</td></tr><tr><td>Correctness</td><td>4.88</td><td>4.78</td><td>4.83</td></tr><tr><td>Completeness</td><td>4.86</td><td>4.82</td><td>4.84</td></tr><tr><td>Clinically acceptable</td><td>50/50</td><td>49/50</td><td>99/100</td></tr><tr><td>Severe hallucination</td><td>0/50</td><td>0/50</td><td>0/100</td></tr><tr><td>Severe omission</td><td>0/50</td><td>0/50</td><td>0/100</td></tr><tr><td>Change-event extraction</td><td></td><td></td><td></td></tr><tr><td>Overall correctness</td><td>4.84</td><td>4.82</td><td>4.83</td></tr><tr><td>Erroneous event</td><td>3/50</td><td>0/50</td><td>3/100</td></tr><tr><td>Missed important event</td><td>0/50</td><td>3/50</td><td>3/100</td></tr></table>",
+        "bbox": [
+            284,
+            142,
+            714,
+            314
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "2020). ROUGE-L measures longest common subsequence overlap and reflects surfacelevel lexical similarity. BERTScore evaluates semantic similarity based on contextual token embeddings. BLEURT further provides a learned quality score that is generally more robust to paraphrasing and wording variation. These metrics capture fluency and semantic alignment at the report level, but they do not explicitly assess whether the predicted report correctly identifies the clinically meaningful interval changes.",
+        "bbox": [
+            169,
+            337,
+            826,
+            424
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Event evaluation metrics. To directly evaluate whether a generated report correctly captures clinically meaningful interval changes, we propose an event-based evaluation protocol that compares extracted change events rather than surface text alone. Following the changeaware evaluation pipeline in Fig. 2(b), we use Qwen2.5-14B-Instruct to extract temporal events from both the generated report $\\widehat { R } _ { \\Delta }$ and the reference report $R _ { \\Delta } .$ . Each report is converted into a set of atomic events, where each event is represented as a change label paired with a short free-text description of the corresponding finding. Concretely, each event follows a simple (type, text) format, where text denotes the finding mention and type specifies its temporal status. We use five clinically interpretable change categories: NEW, RESOLVED, INCREASED, DECREASED, and STABLE, corresponding respectively to lesion emergence, disappearance, progression, regression, and no substantial interval change. The extracted event sets are then used for event-level matching and for computing the four change-aware metrics described below.",
+        "bbox": [
+            169,
+            436,
+            828,
+            621
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Let $E _ { \\mathrm { p r e d } }$ and $E _ { \\mathrm { r e f } }$ denote the event sets extracted from the predicted and reference reports, respectively. Under the fuzzy event-matching rule described in Appendix A.3, we compute",
+        "bbox": [
+            169,
+            626,
+            826,
+            657
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "equation",
+        "img_path": "images/4090aae377856ac48eda1f5bb0ac8f6ba147897bb033049986dcd867ec13f491.jpg",
+        "text": "$$\n\\mathrm { T P } : = | E _ { \\mathrm { p r e d } } \\cap E _ { \\mathrm { r e f } } | , \\qquad \\mathrm { F P } : = | E _ { \\mathrm { p r e d } } \\setminus E _ { \\mathrm { r e f } } | , \\qquad \\mathrm { F N } : = | E _ { \\mathrm { r e f } } \\setminus E _ { \\mathrm { p r e d } } | ,\\tag{1}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            246,
+            659,
+            748,
+            678
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "following the standard precision–recall formulation (Manning, 2008), where TP, FP, and FN denote the numbers of true-positive, false-positive, and false-negative events, respectively. Accordingly, we have Precision $\\displaystyle : = \\frac { \\mathrm { T P } } { \\mathrm { T P } + \\mathrm { F P } }$ and Recall $: = \\frac { \\mathrm { T P } } { \\mathrm { T P + F N } }$",
+        "bbox": [
+            171,
+            678,
+            826,
+            727
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Definition 1 (Task-specific event-level metrics). We define the event-level Hallucination Rate as",
+        "bbox": [
+            169,
+            727,
+            825,
+            755
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "equation",
+        "img_path": "images/cf8a6c301ae37d89ff4e913809013199c081505b12f2c3b5ee947c346265898e.jpg",
+        "text": "$$\n\\mathrm { H a l l u c i n a t i o n R a t e } : = \\frac { \\mathrm { F P } } { | E _ { \\mathrm { p r e d } } | } = \\frac { \\mathrm { F P } } { \\mathrm { T P } + \\mathrm { F P } } .\\tag{2}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            343,
+            751,
+            651,
+            785
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "Let $N _ { \\mathrm { t y p e - c o r r e c t } }$ denote the number of matched events whose predicted change type agrees with the reference change type. We further define the Change Type Accuracy as",
+        "bbox": [
+            169,
+            792,
+            825,
+            824
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "equation",
+        "img_path": "images/e67126cdf162087dfd1d09b23593af5e90d35eb905a9975dc24fb044baf5cbc9.jpg",
+        "text": "$$\n\\mathrm { C h a n g e \\ T y p e \\ A c c u r a c y : = \\frac { N _ { t y p e \\mathrm { - } c o r r e c t } } { T P } . }\\tag{3}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            352,
+            825,
+            642,
+            856
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "In addition, we report two conventional event-detection metrics, namely the Change-F1 score and the Missing Rate, given by",
+        "bbox": [
+            169,
+            863,
+            823,
+            893
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "equation",
+        "img_path": "images/e8ab092d287c3a74e3ffb64095bead67ff77a7fca62db8cacc07e27ba52aafc3.jpg",
+        "text": "$$\n\\mathrm { C h a n g e - F 1 } : = \\frac { 2 \\mathrm { T P } } { 2 \\mathrm { T P } + \\mathrm { F P } + \\mathrm { F N } } \\quad , \\quad \\mathrm { M i s s i n g ~ R a t e } : = \\frac { \\mathrm { F N } } { | E _ { \\mathrm { r e f } } | } = \\frac { \\mathrm { F N } } { \\mathrm { T P } + \\mathrm { F N } } .\\tag{4}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            238,
+            895,
+            758,
+            929
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "header",
+        "text": "Published as a conference paper at COLM 2026",
+        "bbox": [
+            171,
+            31,
+            517,
+            47
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "page_number",
+        "text": "6",
+        "bbox": [
+            493,
+            948,
+            504,
+            960
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "image",
+        "img_path": "images/a814da549651657d7388a78be0af9eb0d68ea8a2f449d40dd66b73979fbd056d.jpg",
+        "image_caption": [
+            "Figure 3: Architecture of DeltaMed for longitudinal CT difference reporting. A prior CT and a follow-up CT are encoded by two MedSigLIP vision encoders with shared weights to obtain $z _ { t _ { 1 } }$ and $z _ { t _ { 2 } }$ . A difference branch $\\boldsymbol { z } _ { t _ { 2 } } - \\boldsymbol { z } _ { t _ { 1 } }$ explicitly models temporal change. The resulting features are concatenated, fused, and passed through a multimodal projector and Gemma 3 4B to generate the final difference report. Frozen and trainable components are shown in gray and green, respectively."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            179,
+            102,
+            818,
+            333
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "At the event level, Change-F1 quantifies the overall agreement between predicted and reference change events. Missing Rate captures the proportion of reference events that are omitted in the prediction, whereas Hallucination Rate reflects the proportion of predicted events that are not supported by the reference. Change Type Accuracy measures whether the temporal semantic status assigned to a matched event is consistent with the reference annotation.",
+        "bbox": [
+            169,
+            460,
+            826,
+            545
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "3.5 Proposed Baseline Model",
+        "text_level": 2,
+        "bbox": [
+            171,
+            561,
+            405,
+            577
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "To address the gap in existing work on longitudinal CT difference reporting, we introduce DeltaMed, a dual-branch vision-language framework that explicitly models temporal change between a prior CT study and a follow-up CT study. Given a paired input $\\left( I _ { t _ { 1 } } ^ { \\mathsf { ^ { - } } } , I _ { t _ { 2 } } \\right)$ , where $I _ { t _ { 1 } }$ denotes the prior CT and $I _ { t _ { 2 } }$ denotes the follow-up CT, DeltaMed first encodes the two time points separately using a shared visual encoder. Concretely, each scan is processed by the same MedSigLIP vision encoder (Sellergren et al., 2025), producing two visual representations, $\\boldsymbol { z } _ { t _ { 1 } }$ and $z _ { t _ { 2 } }$ . Sharing the encoder weights ensures that the two studies are mapped into a consistent feature space while avoiding unnecessary parameter growth.",
+        "bbox": [
+            169,
+            587,
+            825,
+            702
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "To explicitly capture longitudinal change, DeltaMed constructs a difference-aware representation based on both scan-specific and temporal difference features. After obtaining $\\boldsymbol { z } _ { t _ { 1 } }$ and $z _ { t _ { 2 } } ,$ we compute an additional difference branch, $z _ { t _ { 2 } } - z _ { t _ { 1 } }$ , which is intended to encode directional interval change from the prior study to the follow-up study. The three feature streams, $z _ { t _ { 1 } } , z _ { t _ { 2 } } ,$ and $z _ { t _ { 2 } } - z _ { t _ { 1 } } ,$ , are then concatenated and passed through a lightweight temporal fusion module consisting of a linear projection followed by a normalization layer. This produces a fused longitudinal representation for downstream report generation.",
+        "bbox": [
+            169,
+            707,
+            826,
+            806
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "The fused visual features are subsequently passed through the original multimodal projector and then fed into a Gemma 3 4B language model to generate the final difference report. In this way, DeltaMed performs direct joint reasoning over paired CT studies rather than relying on two independently generated single-study reports followed by textual differencing.",
+        "bbox": [
+            169,
+            810,
+            826,
+            882
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "Training Objective: Let H denote the fused longitudinal visual representation that encodes temporally evolving evidence across the prior and follow-up CT studies, and let $Y =$ $\\left( y _ { 1 } , \\dots , y _ { T } \\right)$ denote the target difference-report sequence. We cast report generation as a conditional autoregressive decoding process and train the model by minimizing the sequence-level negative log-likelihood:",
+        "bbox": [
+            171,
+            887,
+            825,
+            917
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "header",
+        "text": "Published as a conference paper at COLM 2026",
+        "bbox": [
+            173,
+            31,
+            517,
+            47
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "page_number",
+        "text": "7",
+        "bbox": [
+            493,
+            946,
+            504,
+            959
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            169,
+            103,
+            825,
+            148
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "equation",
+        "img_path": "images/8612aecb9b2f455795c0f152bf5e333e4b12454fd8ddc985ba63301f12c2d55a.jpg",
+        "text": "$$\n\\mathcal { L } _ { \\mathrm { g e n } } = - \\sum _ { t = 1 } ^ { T } \\log P ( y _ { t } \\mid y _ { < t } , H ) .\\tag{5}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            383,
+            155,
+            611,
+            194
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "To preserve pretrained knowledge and reduce training cost, we adopt a parameter-efficient fine-tuning strategy: only the temporal fusion module and LoRA adapters inserted into the language model are updated, while the MedSigLIP vision encoder, the original multimodal projector, and the base Gemma 3 4B (Gemma Team, 2025) weights remain frozen.",
+        "bbox": [
+            169,
+            200,
+            825,
+            258
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "4 Experiments",
+        "text_level": 2,
+        "bbox": [
+            171,
+            277,
+            318,
+            295
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "4.1 Experimental Setup and Baselines",
+        "text_level": 2,
+        "bbox": [
+            171,
+            309,
+            468,
+            325
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "We conduct experiments on CT-∆Bench, a benchmark for longitudinal CT difference reporting introduced in this work. Each sample consists of a paired input $\\left( { { I } _ { { t } _ { 1 } } } , { { I } _ { { t } _ { 2 } } } \\right)$ from the same patient, where $I _ { t _ { 1 } }$ denotes the prior CT and $I _ { t _ { 2 } }$ denotes the follow-up CT, together with a reference difference report $R _ { \\Delta }$ . To prevent subject leakage across data partitions, we split the benchmark at the patient level into training and validation sets. In this work, zero-shot evaluation is primarily conducted on the validation set, while supervised fine-tuning uses the training split under different data regimes.",
+        "bbox": [
+            169,
+            335,
+            826,
+            435
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "We consider three experimental settings. First, we benchmark five existing medical visionlanguage models in the zero-shot setting to evaluate their out-of-the-box ability on longitudinal CT difference reporting. The evaluated models include MedGemma-1.5-4B (Sellergren et al., 2025), M3D-LaMed-Phi-3-4B (Bai et al., 2024), RadFM-13B (Wu et al., 2025), Med3DVLM-Qwen2.5-7B (Xin et al., 2025), and Merlin-RadLLaMA-7B (Blankemeier et al., 2026). Since most of these models are not specifically designed or optimized for jointly processing two CT studies as input, we directly feed each model with the paired CT studies in a zero-shot manner to assess its ability to perform longitudinal difference reporting without task-specific adaptation. Second, using the same set of models, we study a two-stage pipeline in which each model first generates an individual report for the prior CT and the follow-up CT separately. The resulting two single-study reports are then provided as textual input to the language model component of the same model, which is tasked with generating the final difference report. Third, we evaluate supervised fine-tuning under three training-data regimes, 1%, 10%, and 100%, by applying LoRA to both DeltaMed and a direct paired-CT MedGemma baseline. All experiments are conducted on two 80GB NVIDIA A100 GPUs.",
+        "bbox": [
+            169,
+            439,
+            828,
+            662
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "We report both text-level and event-level metrics. Specifically, we use ROUGE-L, BERTScore, and BLEURT to measure lexical and semantic similarity between generated reports and reference reports, and use Change-F1, Missing Rate, Hallucination Rate, and Change Type Accuracy to directly assess whether a model correctly captures clinically meaningful temporal changes. This combined evaluation protocol is necessary because multiple clinically valid difference reports may use different wording to describe the same interval changes, so text-level similarity alone cannot fully reflect clinical correctness. For all zero-shot experiments, we use a unified task instruction asking the model to generate a clinically meaningful difference report focused on interval changes only, without any in-context demonstrations. For supervised experiments, models are fine-tuned on the CT-∆Bench training split and evaluated on the same validation set using the identical metric suite.",
+        "bbox": [
+            169,
+            667,
+            826,
+            824
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "4.2 Results and Analysis",
+        "text_level": 2,
+        "bbox": [
+            171,
+            838,
+            370,
+            854
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "Zero-shot benchmarking of existing models. Table 2 shows that all evaluated models perform poorly on the proposed benchmark in the zero-shot setting, especially on the change-aware metrics. Across all models, Change-F1 remains extremely low, ranging only from 0 to 0.0175. In particular, RadFM-13B completely fails to recover matched change events, with Change-F1 of 0, Missing Rate of 1, and Hallucination Rate of 1. Even the best event-level result, achieved by MedGemma-1.5-4B, yields only a Change-F1 of 0.0175, together with a Missing Rate of 0.9849 and a Hallucination Rate of 0.979. These numbers indicate that current models rarely identify clinically meaningful interval changes correctly, while also frequently generating unsupported change statements.",
+        "bbox": [
+            169,
+            864,
+            826,
+            924
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "header",
+        "text": "Published as a conference paper at COLM 2026",
+        "bbox": [
+            171,
+            31,
+            517,
+            47
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "page_number",
+        "text": "8",
+        "bbox": [
+            493,
+            948,
+            504,
+            960
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "table",
+        "img_path": "images/432a5433e681da9326c7bc22b79e91957250cf850034c4c185b5c76d041979e2.jpg",
+        "table_caption": [],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>MODEL</td><td>ROUGE-L↑</td><td>BERTScore↑</td><td>BLEURT↑</td><td>Change-F1↑</td><td>Missing R↓</td><td>Hallucination R↓</td><td>Change Type Acc.↑</td></tr><tr><td>MedGemma-1.5-4B</td><td>0.0754</td><td>0.7931</td><td>0.3611</td><td>0.0175</td><td>0.9849</td><td>0.9791</td><td>0.5909</td></tr><tr><td>M3D-LaMed-Phi-3-4B</td><td>0.0890</td><td>0.7986</td><td>0.3706</td><td>0.0051</td><td>0.9966</td><td>0.9899</td><td>0.4000</td></tr><tr><td>RadFM-13B</td><td>0.0537</td><td>0.7597</td><td>0.3157</td><td>0.0000</td><td>1.0000</td><td>1.0000</td><td>0.0000</td></tr><tr><td>Med3DVLM-Qwen2.5-7B</td><td>0.0980</td><td>0.7964</td><td>0.3822</td><td>0.0138</td><td>0.9918</td><td>0.9562</td><td>0.0000</td></tr><tr><td>Merlin-RadLLaMA-7B</td><td>0.0705</td><td>0.8059</td><td>0.3493</td><td>0.0034</td><td>0.9979</td><td>0.9897</td><td>1.0000</td></tr></table>",
+        "bbox": [
+            173,
+            103,
+            825,
+            167
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "table",
+        "img_path": "images/0d90f092dadd2cf88afa60cce941ad9ce6cbb2f5acb8b2b87fee27f4da15110a.jpg",
+        "table_caption": [
+            "Table 2: Zero-shot performance of different models on CT-∆Bench. Standard text-generation metrics (ROUGE-L, BERTScore, and BLEURT) are reported together with change-aware metrics, including Change-F1, Missing Rate (R), Hallucination Rate (R), and Change Type Accuracy.",
+            "Table 3: Performance of the two-stage difference reporting pipeline on CT-∆Bench. In this setting, each model first generates separate reports for the prior CT and the follow-up CT, and then uses the two generated single-study reports as textual input to produce the final difference report."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>MODEL</td><td>ROUGE-L↑</td><td>BERTScore↑</td><td>BLEURT↑</td><td>Change-F1↑</td><td>Missing R↓</td><td>Hallucination R↓</td><td>Change Type Acc.↑</td></tr><tr><td>MedGemma-1.5-4B</td><td>0.0886</td><td>0.7822</td><td>0.3303</td><td>0.0078</td><td>0.9952</td><td>0.9790</td><td>0.4286</td></tr><tr><td>M3D-LaMed-Phi-3-4B</td><td>0.0448</td><td>0.2957</td><td>0.3635</td><td>0.0212</td><td>0.9877</td><td>0.9250</td><td>0.3889</td></tr><tr><td>RadFM-13B</td><td>0.0753</td><td>0.8159</td><td>0.3545</td><td>0.0542</td><td>0.9603</td><td>0.9147</td><td>0.2414</td></tr><tr><td>Med3DVLM-Qwen2.5-7B</td><td>0.1450</td><td>0.8213</td><td>0.3579</td><td>0.0614</td><td>0.9500</td><td>0.9204</td><td>0.2055</td></tr><tr><td>Merlin-RadLLaMA-7B</td><td>0.0803</td><td>0.8006</td><td>0.3841</td><td>0.0000</td><td>1.0000</td><td>1.0000</td><td>0.0000</td></tr></table>",
+        "bbox": [
+            173,
+            258,
+            825,
+            324
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            169,
+            425,
+            826,
+            498
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "The results also reveal a clear disconnect between text-level similarity and temporal change correctness. Med3DVLM-Qwen2.5-7B achieves the best ROUGE-L (0.098) and BLEURT (0.3822), and Merlin-RadLLaMA-7B achieves the best BERTScore (0.8059), yet their changeaware metrics remain poor. In particular, Med3DVLM-Qwen2.5-7B reaches only 0.0138 Change-F1, while Merlin-RadLLaMA-7B falls to 0.0034 despite its strongest BERTScore. This contrast suggests that conventional text-generation metrics may overestimate performance for longitudinal difference reporting, where correct identification of temporal changes is more important than surface-level textual similarity. Change Type Accuracy should also be interpreted jointly with event matching quality. For instance, Merlin-RadLLaMA-7B obtains Change Type Accuracy of 1, but this occurs together with Change-F1 of only 0.0034, indicating that the apparently strong type accuracy is supported by very few matched events. Overall, these findings highlight a substantial gap between existing zero-shot medical vision-language models and the clinical demands of longitudinal CT difference reporting.",
+        "bbox": [
+            169,
+            502,
+            826,
+            700
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "Two-stage difference reporting based on separately generated CT reports. We further evaluate a two-stage difference reporting pipeline in which each model first generates separate reports for the prior CT and the follow-up CT, and then uses the two reports as textual input to produce the final difference report. As shown in Table 3, the two-stage pipeline yields mixed results compared with direct zero-shot paired-CT prompting in Table 2. The largest gains are observed for RadFM-13B and Med3DVLM-Qwen2.5-7B, both of which show improved Change-F1 together with lower Missing Rate and Hallucination Rate. M3D-LaMed-Phi-3-4B also improves on event-level metrics, although its text-level scores become less stable. In contrast, MedGemma-1.5-4B becomes slightly worse on change-aware metrics, and Merlin-RadLLaMA-7B degrades most severely, with Change-F1 dropping to 0.0000. Overall, these results suggest that indirect textual differencing can help some models recover temporal change information, but the benefit is inconsistent and remains inferior to reliable grounded paired-image reasoning. This inconsistent behavior is likely due to error propagation from the intermediate single-study reports. In the two-stage setting, the final difference report can only compare findings preserved in the first-stage reports. If a singlestudy report omits a finding, the corresponding interval change becomes unrecoverable; conversely, hallucinated findings may be amplified into spurious changes during textual differencing. This explains why models producing more informative single-study reports, such as RadFM-13B and Med3DVLM-Qwen2.5-7B, benefit more from the two-stage pipeline, whereas models with noisier or less complete intermediate reports may degrade.",
+        "bbox": [
+            169,
+            712,
+            828,
+            924
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "header",
+        "text": "Published as a conference paper at COLM 2026",
+        "bbox": [
+            171,
+            31,
+            517,
+            47
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "page_number",
+        "text": "9",
+        "bbox": [
+            493,
+            946,
+            504,
+            959
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "table",
+        "img_path": "images/3f335c3aedf679747878d571eb107a6ecd6da5d482219e57e49325ea113ac479.jpg",
+        "table_caption": [
+            "Table 4: Performance of DeltaMed and the direct paired-CT MedGemma baseline under different supervised fine-tuning regimes on CT-∆Bench. Both methods are evaluated at 1%, 10%, and 100% training-data regimes."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>MODEL</td><td>Regime</td><td>ROUGE-L↑</td><td>BERTScore↑</td><td>BLEURT↑</td><td>Change-F1↑</td><td>Missing R↓</td><td>Hallucination R↓</td><td>Change Type Acc.↑</td></tr><tr><td rowspan=\"3\">MedGemma</td><td>1%</td><td>0.0716</td><td>0.7791</td><td>0.3430</td><td>0.0010</td><td>0.9993</td><td>0.9984</td><td>1.0000</td></tr><tr><td>10%</td><td>0.1724</td><td>0.8196</td><td>0.3458</td><td>0.0649</td><td>0.9110</td><td>0.9489</td><td>0.7538</td></tr><tr><td>100%</td><td>0.2825</td><td>0.8665</td><td>0.4063</td><td>0.1577</td><td>0.8856</td><td>0.7462</td><td>0.4671</td></tr><tr><td rowspan=\"3\">DeltaMed</td><td>1%</td><td>0.1348</td><td>0.7978</td><td>0.3549</td><td>0.0909</td><td>0.9288</td><td>0.8744</td><td>0.5385</td></tr><tr><td>10%</td><td>0.1831</td><td>0.8028</td><td>0.3803</td><td>0.1313</td><td>0.9093</td><td>0.8565</td><td>0.5424</td></tr><tr><td>100%</td><td>0.2899</td><td>0.8558</td><td>0.4006</td><td>0.1980</td><td>0.8301</td><td>0.8057</td><td>0.4902</td></tr></table>",
+        "bbox": [
+            179,
+            102,
+            816,
+            181
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            169,
+            268,
+            828,
+            340
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "DeltaMed and direct paired-CT MedGemma under different fine-tuning regimes. We further compare DeltaMed with a direct paired-CT MedGemma-1.5-4B baseline under three supervised fine-tuning regimes using 1%, 10%, and 100% of the training set, with LoRA applied in all cases. As shown in Table 4, both models improve as more training data become available, but DeltaMed consistently achieves better event-level change detection across all regimes. In the 1% regime, DeltaMed improves Change-F1 from 0.001 to 0.091 while reducing Missing Rate from 0.999 to 0.929 and Hallucination Rate from 0.998 to 0.874. In the 10% regime, DeltaMed still outperforms MedGemma on Change-F1 (0.1313 vs. 0.0649), Missing Rate (0.9093 vs. 0.9110), and Hallucination Rate (0.8565 vs. 0.9489). Under full-data fine-tuning, DeltaMed remains better on Change-F1 (0.1980 vs. 0.1577) and Missing Rate (0.8301 vs. 0.8856), although MedGemma attains a lower Hallucination Rate. Text-level metrics are more mixed: DeltaMed achieves higher ROUGE-L in all three regimes, whereas MedGemma becomes slightly stronger in BERTScore and BLEURT at higher-data regimes; however, these gains do not translate into better change-aware performance. Change Type Accuracy should also be interpreted jointly with event matching quality, since MedGemma reaches 1 in the 1% regime despite a Change-F1 of only 0.001. Overall, these results suggest that DeltaMed provides a stronger inductive bias for longitudinal change understanding than a generic direct paired-CT adaptation of MedGemma, especially in low-data settings.",
+        "bbox": [
+            169,
+            353,
+            826,
+            607
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "5 Conclusion",
+        "text_level": 2,
+        "bbox": [
+            171,
+            625,
+            310,
+            641
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "In this work, we introduce CT-∆Bench, a dedicated benchmark for longitudinal CT difference reporting, a clinically important yet underexplored task that requires models to reason over paired CT studies and generate reports describing interval changes. To support this setting, we construct a patient-level benchmark based on longitudinal CT pairs, develop change-aware evaluation metrics that go beyond surface-form text similarity, and systematically benchmark existing medical vision-language models under both direct paired-CT and indirect two-stage settings. Our results show that current models remain far from solving this task, especially when evaluated on clinically meaningful event-level change correctness rather than only text-level similarity. We further propose DeltaMed, a simple baseline that explicitly models temporal difference through paired-CT reasoning and a difference branch. Experimental results show that DeltaMed provides stronger event-level change detection than a direct paired-CT MedGemma baseline across multiple fine-tuning regimes, particularly when supervision is limited. Overall, our study establishes a clearer task formulation, a reproducible evaluation framework, and a strong baseline for future research on temporally aware medical foundation models for longitudinal clinical imaging.",
+        "bbox": [
+            169,
+            656,
+            828,
+            868
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "header",
+        "text": "Published as a conference paper at COLM 2026",
+        "bbox": [
+            173,
+            31,
+            517,
+            47
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "page_number",
+        "text": "10",
+        "bbox": [
+            488,
+            946,
+            509,
+            960
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "Acknowledgments",
+        "text_level": 2,
+        "bbox": [
+            171,
+            102,
+            346,
+            119
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "We thank Xiao Xiao from Chongqing Medical University and Zhidu Wang from The Third Bethune Hospital of Jilin University for their valuable assistance with the clinical validation of CT-∆Bench.",
+        "bbox": [
+            169,
+            133,
+            825,
+            176
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "Ethics Statement",
+        "text_level": 2,
+        "bbox": [
+            171,
+            196,
+            326,
+            213
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "CT-∆Bench uses LLM-synthesized, report-derived reference reports and is intended solely for controlled research evaluation rather than clinical deployment. Although our physician validation provides a targeted assessment of reference and event-extraction quality, any clinical use would require larger-scale prospective expert validation of both the benchmark references and model outputs.",
+        "bbox": [
+            169,
+            228,
+            826,
+            300
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "References",
+        "text_level": 2,
+        "bbox": [
+            171,
+            319,
+            276,
+            335
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "Fan Bai, Yuxin Du, Tiejun Huang, Max Q-H Meng, and Bo Zhao. M3d: Advancing 3d medical image analysis with multi-modal large language models. arXiv preprint arXiv:2404.00578, 2024.",
+            "Shruthi Bannur, Stephanie Hyland, Qianchu Liu, Fernando Perez-Garcia, Maximilian Ilse, Daniel C Castro, Benedikt Boecking, Harshita Sharma, Kenza Bouzid, Anja Thieme, et al. Learning to exploit temporal structure for biomedical vision-language processing. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition, pp. 15016–15027, 2023.",
+            "Shruthi Bannur, Kenza Bouzid, Daniel C Castro, Anton Schwaighofer, Anja Thieme, Sam Bond-Taylor, Maximilian Ilse, Fernando Pérez-García, Valentina Salvatelli, Harshita Sharma, et al. Maira-2: Grounded radiology report generation. arXiv preprint arXiv:2406.04449, 2024.",
+            "Louis Blankemeier, Ashwin Kumar, Joseph Paul Cohen, Jiaming Liu, Longchao Liu, Dave Van Veen, Syed Jamal Safdar Gardezi, Hongkun Yu, Magdalini Paschali, Zhihong Chen, et al. Merlin: a computed tomography vision–language foundation model and dataset. Nature, pp. 1–11, 2026.",
+            "Hao Chen, Wei Zhao, Yingli Li, Tianyang Zhong, Yisong Wang, Youlan Shang, Lei Guo, Junwei Han, Tianming Liu, Jun Liu, et al. 3d-ct-gpt: Generating 3d radiology reports through integration of large vision-language models. arXiv preprint arXiv:2409.19330, 2024.",
+            "Jean-Benoit Delbrouck, Pierre Chambon, Christian Bluethgen, Emily Tsai, Omar Almusa, and Curtis Langlotz. Improving the factual correctness of radiology report generation with semantic rewards. In Findings of the Association for Computational Linguistics: EMNLP 2022, pp. 4348–4360, 2022.",
+            "Dina Demner-Fushman, Marc D Kohli, Marc B Rosenman, Sonya E Shooshan, Laritza Rodriguez, Sameer Antani, George R Thoma, and Clement J McDonald. Preparing a collection of radiology examinations for distribution and retrieval. Journal of the American Medical Informatics Association, 23(2):304–310, 2016.",
+            "Xiaotang Gai, Jiaxiang Liu, Yichen Li, Zijie Meng, Jian Wu, and Zuozhu Liu. 3d-rad: A comprehensive 3d radiology med-vqa dataset with multi-temporal analysis and diverse diagnostic tasks. arXiv preprint arXiv:2506.11147, 2025.",
+            "Gemma Team. Gemma 3 technical report. arXiv preprint arXiv:2503.19786, 2025.",
+            "Ibrahim Ethem Hamamci, Sezgin Er, and Bjoern Menze. Ct2rep: Automated radiology report generation for 3d medical imaging. In International Conference on Medical Image Computing and Computer-Assisted Intervention, pp. 476–486. Springer, 2024."
+        ],
+        "bbox": [
+            173,
+            343,
+            825,
+            386
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "header",
+        "text": "Published as a conference paper at COLM 2026",
+        "bbox": [
+            171,
+            32,
+            517,
+            47
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "page_number",
+        "text": "11",
+        "bbox": [
+            488,
+            948,
+            508,
+            959
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "Ibrahim Ethem Hamamci, Sezgin Er, Chenyu Wang, Furkan Almas, Ayse Gulnihan Simsek, Sevval Nil Esirgun, Irem Dogan, Omer Faruk Durugol, Benjamin Hou, Suprosanna Shit, et al. Generalist foundation models from a multimodal dataset for 3d computed tomography. Nature Biomedical Engineering, pp. 1–19, 2026.",
+            "Shah Hussain, Iqra Mubeen, Niamat Ullah, Syed Shahab Ud Din Shah, Bakhtawar Abduljalil Khan, Muhammad Zahoor, Riaz Ullah, Farhat Ali Khan, and Mujeeb A Sultan. Modern diagnostic imaging technique applications and risk factors in the medical field: a review. BioMed research international, 2022(1):5164970, 2022.",
+            "Jeremy Irvin, Pranav Rajpurkar, Michael Ko, Yifan Yu, Silviana Ciurea-Ilcus, Chris Chute, Henrik Marklund, Behzad Haghgoo, Robyn Ball, Katie Shpanskaya, et al. Chexpert: A large chest radiograph dataset with uncertainty labels and expert comparison. In Proceedings of the AAAI conference on artificial intelligence, volume 33, pp. 590–597, 2019.",
+            "Saahil Jain, Ashwin Agrawal, Adriel Saporta, SQ Truong, Du Nguyen Duong, Tan Bui, Pierre Chambon, Yuhao Zhang, Matthew P Lungren, Andrew Y Ng, et al. Radgraph: Extracting clinical entities and relations from radiology reports (2021). arXiv preprint arXiv:2106.14463, 2021.",
+            "Alistair EW Johnson, Tom J Pollard, Seth J Berkowitz, Nathaniel R Greenbaum, Matthew P Lungren, Chih-ying Deng, Roger G Mark, and Steven Horng. Mimic-cxr, a de-identified publicly available database of chest radiographs with free-text reports. Scientific data, 6(1): 317, 2019.",
+            "Chin-Yew Lin. Rouge: A package for automatic evaluation of summaries. In Text summarization branches out, pp. 74–81, 2004.",
+            "Christopher D Manning. Introduction to information retrieval. Syngress Publishing„ 2008.",
+            "Yasuhide Miura, Yuhao Zhang, Emily Tsai, Curtis Langlotz, and Dan Jurafsky. Improving factual completeness and consistency of image-to-text radiology report generation. In Proceedings of the 2021 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, pp. 5288–5304, 2021.",
+            "Aaron Nicolson, Jason Dowling, and Bevan Koopman. Improving chest x-ray report generation by leveraging warm starting. Artificial intelligence in medicine, 144:102633, 2023.",
+            "Sophie Ostmeier, Justin Xu, Zhihong Chen, Maya Varma, Louis Blankemeier, Christian Bluethgen, Arne Edward Michalson Md, Michael Moseley, Curtis Langlotz, Akshay S Chaudhari, et al. Green: Generative radiology report evaluation and error notation. In Findings of the association for computational linguistics: EMNLP 2024, pp. 374–390, 2024.",
+            "Thibault Sellam, Dipanjan Das, and Ankur Parikh. Bleurt: Learning robust metrics for text generation. In Proceedings of the 58th annual meeting of the association for computational linguistics, pp. 7881–7892, 2020.",
+            "Andrew Sellergren, Sahar Kazemzadeh, Tiam Jaroensri, Atilla Kiraly, Madeleine Traverse, Timo Kohlberger, Shawn Xu, Fayaz Jamil, Cían Hughes, Charles Lau, et al. Medgemma technical report. arXiv preprint arXiv:2507.05201, 2025.",
+            "Phillip Sloan, Philip Clatworthy, Edwin Simpson, and Majid Mirmehdi. Automated radiology report generation: A review of recent advances. IEEE Reviews in Biomedical Engineering, 18:368–387, 2024.",
+            "Akshay Smit, Saahil Jain, Pranav Rajpurkar, Anuj Pareek, Andrew Y Ng, and Matthew Lungren. Combining automatic labelers and expert annotations for accurate radiology report labeling using bert. In Proceedings of the 2020 conference on empirical methods in natural language processing (EMNLP), pp. 1500–1519, 2020.",
+            "Zihao Wang, Annelise M Kulpanowski, William A Copen, Eric S Rosenthal, Jacob A Dodelson, David E McCrory, Brian L Edlow, W Taylor Kimberly, Edilberto Amorim, M Brandon Westover, et al. Automated detection of severe cerebral edema using explainable deep transfer learning after hypoxic ischemic brain injury. Resuscitation, 214:110652, 2025."
+        ],
+        "bbox": [
+            173,
+            103,
+            825,
+            161
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "header",
+        "text": "Published as a conference paper at COLM 2026",
+        "bbox": [
+            171,
+            31,
+            517,
+            47
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "page_number",
+        "text": "12",
+        "bbox": [
+            488,
+            946,
+            509,
+            959
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "Chaoyi Wu, Xiaoman Zhang, Ya Zhang, Hui Hui, Yanfeng Wang, and Weidi Xie. Towards generalist foundation model for radiology by leveraging web-scale 2d&3d medical data. Nature Communications, 16(1):7866, 2025.",
+            "Yu Xin, Gorkem Can Ates, Kuang Gong, and Wei Shao. Med3dvlm: An efficient visionlanguage model for 3d medical image analysis. IEEE Journal of Biomedical and Health Informatics, 2025.",
+            "F Yu, M Endo, R Krishnan, I Pan, A Tsai, EP Reis, EKUN Fonseca, HMH Lee, ZSH Abad, AY Ng, et al. Evaluating progress in automatic chest x-ray radiology report generation. patterns, 2023.",
+            "Tianyi Zhang, Varsha Kishore, Felix Wu, Kilian Q Weinberger, and Yoav Artzi. Bertscore: Evaluating text generation with bert. arXiv preprint arXiv:1904.09675, 2019.",
+            "Guowei Zheng, Pengbo Bo, Liangliang Liu, Zhaoyang Cong, Kegeng Tang, and Caiming Zhang. Corosam: enhancing sam with frequency and orientation awareness for coronary artery segmentation in x-ray angiography. In 2025 IEEE International Conference on Bioinformatics and Biomedicine (BIBM), pp. 3349–3356. IEEE, 2025.",
+            "Guowei Zheng, Pengbo Bo, Songhua Xu, Linqin Wang, Zhaoyang Cong, Liangliang Liu, Ziyang Zhao, and Caiming Zhang. Enhancing segment anything model with spatial context and textural detail for cardiac mri segmentation. Biomedical Signal Processing and Control, 112:108437, 2026.",
+            "Shaoyang Zhou, Yingshu Li, Yunyi Liu, Lingqiao Liu, Lei Wang, and Luping Zhou. A review of longitudinal radiology report generation: Dataset composition, methods, and performance evaluation. arXiv preprint arXiv:2510.12444, 2025.",
+            "Qingqing Zhu, Tejas Sudharshan Mathai, Pritam Mukherjee, Yifan Peng, Ronald M Summers, and Zhiyong Lu. Utilizing longitudinal chest x-rays and reports to pre-fill radiology reports. In International Conference on Medical Image Computing and Computer-Assisted Intervention, pp. 189–198. Springer, 2023."
+        ],
+        "bbox": [
+            173,
+            103,
+            826,
+            146
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "header",
+        "text": "Published as a conference paper at COLM 2026",
+        "bbox": [
+            171,
+            31,
+            517,
+            47
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "page_number",
+        "text": "13",
+        "bbox": [
+            488,
+            946,
+            509,
+            960
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "A Appendix",
+        "text_level": 2,
+        "bbox": [
+            171,
+            101,
+            303,
+            121
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "A.1 Prompt Template",
+        "text_level": 2,
+        "bbox": [
+            171,
+            132,
+            348,
+            151
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "We use Gemini 2.5 Flash with the Longitudinal Difference Report Synthesis Prompt to synthesize longitudinal differential report data from paired original CT report JSONs. The source data consist of two CT reports from the same patient at different time points (Report A as prior and Report B as current), using only the Findings\\_EN and Impressions\\_EN fields. The target data are structured longitudinal comparison reports in JSON format, containing patient\\_id, VolumeName\\_A, VolumeName\\_B, Findings\\_EN, and Impressions\\_EN.",
+        "bbox": [
+            169,
+            159,
+            826,
+            246
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "code",
+        "sub_type": "algorithm",
+        "code_caption": [],
+        "code_footnote": [],
+        "code_body": "Longitudinal Difference Report Synthesis Prompt   \nYou are a radiology longitudinal report synthesizer. Use ONLY the provided two   \noriginal CT report JSON objects and focus ONLY on their Findings\\_EN and   \nImpressions\\_EN fields. Do NOT use ClinicalInformation\\_EN, Technique\\_EN, any   \nlabel vectors, or external medical knowledge. Do NOT invent details that are   \nnot stated.   \nINPUT:   \n- Report A JSON (prior / earlier exam): {REPORT\\_A\\_JSON}   \n- Report B JSON (current / later exam): {REPORT\\_B\\_JSON}   \nPATIENT ID RULE:   \nDerive \"patient\\_id\" automatically from VolumeName by taking the substring before the   \nlast two underscore-separated tokens.   \nExample: \"train\\_10006\\_a\\_1.nii.gz\" -> \"train\\_10006\"   \nTASK:   \n1) Parse VolumeName\\_A and VolumeName\\_B from the two JSON inputs.   \n2) Treat Report A as PRIOR and Report B as CURRENT. Write a differential (interval  \nchange) summary describing B relative to A.   \n3) Base every statement strictly on Findings\\_EN and Impressions\\_EN text from the two   \nreports.   \n4) Do not use or summarize ClinicalInformation\\_EN or Technique\\_EN.   \n5) If a finding is only mentioned in one report, describe it as \"mentioned/not   \nmentioned\" rather than assuming true absence/presence clinically.   \n6) When content overlaps, explicitly state whether it is unchanged/stable between   \nreports.   \n7) Keep the writing concise, clinically phrased, and change-focused.   \nOUTPUT:   \nReturn ONE valid JSON object ONLY (no markdown, no extra text), with EXACTLY these   \nkeys:   \n- \"patient\\_id\"   \n- \"VolumeName\\_A\"   \n- \"VolumeName\\_B\"   \n- \"Findings\\_EN\"   \n- \"Impressions\\_EN\"   \nFIELD GUIDELINES:   \n- Findings\\_EN: Write one coherent paragraph based only on Findings\\_EN and   \nImpressions\\_EN content: start with stable findings (airways, mediastinum/lymph   \nnodes, pleura/pericardium, cardiovascular, lungs), then list interval   \ndifferences/newly mentioned items. Mention important additions in the current   \nreport as \"newly documented/mentioned\".   \n- Impressions\\_EN: 2-4 sentences summarizing overall interval change and the most   \nclinically relevant newly documented items vs stable findings.   \nNow generate the output JSON.",
+        "bbox": [
+            178,
+            252,
+            820,
+            901
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "header",
+        "text": "Published as a conference paper at COLM 2026",
+        "bbox": [
+            171,
+            31,
+            517,
+            47
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "page_number",
+        "text": "14",
+        "bbox": [
+            488,
+            946,
+            509,
+            960
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "We use Qwen2.5-14B-Instruct with the Longitudinal Change Event Extraction Prompt to convert the original longitudinal CT difference reports (Findings\\_EN + Impressions\\_EN) into structured target data consisting of atomic change events labeled as NEW, RESOLVED, INCREASED, DECREASED, or STABLE.",
+        "bbox": [
+            169,
+            103,
+            828,
+            161
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "code",
+        "sub_type": "algorithm",
+        "code_caption": [],
+        "code_footnote": [],
+        "code_body": "Longitudinal Change Event Extraction Prompt   \nYou are an information extractor for longitudinal CT DIFFERENCE reports.   \nINPUT   \n- patient\\_id: {PATIENT\\_ID}   \n- DELTA\\_REPORT\\_TEXT (Findings + Impression ONLY):   \n{DELTA\\_REPORT\\_TEXT}   \nOUTPUT (JSON ONLY)   \nReturn exactly:   \n{   \n\"patient\\_id\": \"<patient\\_id>\",   \n\"events\": [   \n{\"type\": \"NEW|RESOLVED|INCREASED|DECREASED|STABLE\", \"text\": \"<short event>\"},   \n]   \n}   \nRULES   \n1) Use ONLY DELTA\\_REPORT\\_TEXT. No external knowledge. Do NOT invent details.   \n2) Extract ATOMIC change events (one finding/change per event). Split combined   \nsentences.   \n3) Allowed types ONLY: NEW, RESOLVED, INCREASED, DECREASED, STABLE.   \n4) Remove ALL numbers and measurements from \"text\" (mm/cm/% and any digits).   \n5) If the change type/direction is not explicit or not confident, OMIT the event (no   \n\"uncertain/indeterminate\").   \n6) Do not output items that are only \"not mentioned\" or \"limited evaluation\" without   \na clear change.   \n7) Keep \"text\" concise, clinically phrased, no section headers, no duplicates.   \nNow output the JSON only.",
+        "bbox": [
+            179,
+            166,
+            818,
+            598
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "A.2 Data Cases",
+        "text_level": 2,
+        "bbox": [
+            171,
+            618,
+            302,
+            633
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "The following example illustrates a synthesized longitudinal difference report in CT-∆Bench. It is represented as a JSON object containing the patient identifier, paired volume names, and difference-aware Findings\\_EN and Impressions\\_EN fields.",
+        "bbox": [
+            169,
+            643,
+            828,
+            689
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "Longitudinal Difference Report Example",
+        "text_level": 2,
+        "bbox": [
+            186,
+            696,
+            498,
+            713
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "code",
+        "sub_type": "algorithm",
+        "code_caption": [],
+        "code_footnote": [],
+        "code_body": "{   \n\"patient\\_id\": \"train\\_2163\",   \n\"VolumeName\\_A\": \"train\\_2163\\_a\\_1.nii.gz\",   \n\"VolumeName\\_B\": \"train\\_2163\\_b\\_1.nii.gz\",   \n\"Findings\\_EN\": \"The trachea and main bronchi, mediastinal lymph nodes, heart and   \nmediastinal vascular structures, esophagus, pleural spaces, bilateral adrenal   \nglands, and abdominal and bone structures were mentioned as natural or within   \nnormal limits in the prior report but are not explicitly described in the   \ncurrent report. In the current examination, the peripherally arranged and round  \nlooking ground glass-like densities previously observed in almost all areas of   \nboth lungs are noted to be reduced in volume, fainter, and observed in a more   \namorphous morphology. The crazy paving appearances and consolidations noted in   \nthe prior report are not explicitly mentioned in the current report.   \nInterstitial scars are again evident.\",",
+        "bbox": [
+            187,
+            726,
+            813,
+            912
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "header",
+        "text": "Published as a conference paper at COLM 2026",
+        "bbox": [
+            171,
+            31,
+            517,
+            47
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "page_number",
+        "text": "15",
+        "bbox": [
+            488,
+            946,
+            509,
+            960
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "code",
+        "sub_type": "algorithm",
+        "code_caption": [],
+        "code_footnote": [],
+        "code_body": "\"Impressions\\_EN\": \"The prior report suggested viral pneumonia, possibly COVID,   \nwith a differential diagnosis. The current examination's findings are evaluated   \nin favor of regression of the previously noted ground glass densities. No   \nexplicit impression is given in the current report.\"   \n}",
+        "bbox": [
+            191,
+            106,
+            805,
+            188
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "The following example illustrates the event extraction output used for change-aware evaluation. Each longitudinal difference report is converted into a JSON object containing the patient identifier and a list of atomic change events, where each event is represented by a change type and a short free-text text description.",
+        "bbox": [
+            169,
+            200,
+            826,
+            261
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "code",
+        "sub_type": "algorithm",
+        "code_caption": [],
+        "code_footnote": [],
+        "code_body": "Longitudinal Change Event Extraction Example   \n{   \n\"patient\\_id\": \"valid\\_403\",   \n\"events\": [   \n{   \n\"type\": \"INCREASED\",   \n\"text\": \"Size of mediastinal lymph nodes\"   \n},<sub>{</sub>   \n\"type\": \"NEW\",   \n\"text\": \"Ground-glass opacities in upper zones and lower lobes\"   \n},<sub>{</sub>   \n\"type\": \"NEW\",   \n\"text\": \"Mild emphysema\"   \n},<sub>{</sub>   \n\"type\": \"NEW\",   \n\"text\": \"Hepatosteatosis\"   \n},   \n{   \n\"type\": \"RESOLVED\",   \n\"text\": \"Pneumonic consolidations\"   \n},<sub>{</sub>   \n\"type\": \"STABLE\",   \n\"text\": \"Bronchial wall thickening\"   \n},<sub>{</sub>   \n\"type\": \"INCREASED\",   \n\"text\": \"Number of subpleural blebs\"   \n},   \n{   \n\"type\": \"NEW\",   \n\"text\": \"Sequelae changes at apical levels\"   \n},   \n{   \n\"type\": \"DECREASED\",   \n\"text\": \"Density in liver\"   \n},<sub>{</sub>   \n\"type\": \"INCREASED\",   \n\"text\": \"Degenerative changes in bone structures\"   \n}   \n]   \n}",
+        "bbox": [
+            173,
+            266,
+            821,
+            901
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "header",
+        "text": "Published as a conference paper at COLM 2026",
+        "bbox": [
+            171,
+            31,
+            517,
+            47
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "page_number",
+        "text": "16",
+        "bbox": [
+            488,
+            946,
+            509,
+            960
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "A.3 Fuzzy Event Matching Details",
+        "text_level": 2,
+        "bbox": [
+            171,
+            103,
+            444,
+            119
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "To support event-level evaluation, we align the reference and predicted event sets by patient\\_id and then perform fuzzy event matching between the two sets. Since predicted and reference events may use different but semantically similar phrasings, exact string matching is often too brittle for longitudinal difference reporting. We therefore adopt a normalized matching procedure that combines text canonicalization, hard clinical constraints, and soft similarity scoring.",
+        "bbox": [
+            169,
+            128,
+            828,
+            215
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "Text canonicalization. For each event text, we first apply canonicalization to reduce superficial lexical variation. Specifically, we lowercase the text, apply phrase-level synonym normalization (e.g., ground-glass opacities → ground glass opacity), and perform token-level normalization such as plural-to-singular conversion and common lexical variant normalization. This step is intended to make semantically equivalent event descriptions more directly comparable.",
+        "bbox": [
+            169,
+            228,
+            828,
+            314
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "Clinical constraint filtering. From the canonicalized event text, we further extract simple clinical cues, including laterality labels (e.g., left, right, bilateral) and coarse anatomy tags (e.g., lung, pleura, mediastinum, and lymph node). A candidate reference–prediction pair is rejected if it exhibits a hard conflict, namely disjoint laterality labels or disjoint anatomy tags. This step reduces clearly implausible matches before soft similarity is computed.",
+        "bbox": [
+            169,
+            328,
+            826,
+            401
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "Soft similarity scoring and one-to-one matching. For all remaining candidate pairs, we compute a soft textual similarity score using token-level F1 on the canonicalized event texts. Pairs with similarity below a threshold of τ = 0.5 are discarded. We then enforce a one-to-one matching between reference and predicted events by maximizing the number of valid matches, using total similarity as a secondary criterion. For large event sets, a greedy approximation is used for efficiency. Matched pairs are treated as aligned events for subsequent evaluation, while unmatched reference and predicted events are treated as misses and spurious predictions, respectively.",
+        "bbox": [
+            169,
+            414,
+            826,
+            529
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "Change type comparison. After event matching is established, change labels are compared only within the matched event pairs. In this way, change type correctness is evaluated conditioned on successful event alignment, rather than on the full unmatched event sets.",
+        "bbox": [
+            169,
+            541,
+            825,
+            585
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "header",
+        "text": "Published as a conference paper at COLM 2026",
+        "bbox": [
+            171,
+            31,
+            517,
+            47
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "page_number",
+        "text": "17",
+        "bbox": [
+            488,
+            946,
+            509,
+            960
+        ],
+        "page_idx": 16
+    }
+]
