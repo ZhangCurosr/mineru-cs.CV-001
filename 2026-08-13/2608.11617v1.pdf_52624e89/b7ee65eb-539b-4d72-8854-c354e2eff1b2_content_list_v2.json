@@ -1,0 +1,1921 @@
+[
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "KANResDif: Learning Local Residual Difusion via Kolmogorov-Arnold Network for Ambiguous Medical Image Segmentation"
+                    }
+                ],
+                "level": 1
+            },
+            "bbox": [
+                227,
+                140,
+                776,
+                208
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Fanding Li<sup>1</sup>, Chenglin Wang<sup>1</sup>, Xiangyu Li<sup>1B</sup>, Xingyu Qiu<sup>1</sup>, Xinghua Ma<sup>1</sup>, Xiangming Yin<sup>1</sup>, Haiyang Li<sup>1</sup>, Suyu Dong<sup>2</sup>, Wei Wang<sup>3</sup>, Kuanquan Wang<sup>1</sup>, Gongning Luo<sup>1</sup>, and Shuo Li<sup>4</sup>"
+                    }
+                ]
+            },
+            "bbox": [
+                228,
+                234,
+                774,
+                281
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "<sup>1</sup> Faculty of Computing, Harbin Institute of Technology, Harbin, China 2 College of Computer and Control Engineering, Northeast Forestry University, Harbin, China"
+                    }
+                ]
+            },
+            "bbox": [
+                233,
+                292,
+                767,
+                334
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Faculty of Computing, Harbin Institute of Technology, Shenzhen, China <sup>4</sup> Department of Computer and Data Science and Department of Biomedical Engineering, Case Western Reserve University, Cleveland, Ohio 44106, United States lixiangyu@hit.edu.cn"
+                    }
+                ]
+            },
+            "bbox": [
+                217,
+                334,
+                784,
+                391
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Abstract. Ambiguous medical image segmentation aims to provide a series of diverse but plausible segmentation hypotheses. However, existing methods introduce stochasticity in a fixed and pre-defined manner, failing to form a progressive semantic modeling process. To address these challenges, we propose KANResDif to learn local residual difusion with Kolmogorov-Arnold Network, thereby assigning distinct roles across stages for ambiguity modeling. Specifically, we propose Independent Time Encoding that ofers spline-based time embeddings instead of linear ones from MLPs, which enhances the independence across inference stages and assigns progressive semantic roles to diferent stages. We propose Residual Schrödinger Bridge that injects deterministic residual prior with learnable weights by constructing local Schrödinger Bridge instead of following manually settings, achieving a flexible deterministic–stochastic interaction and stage-aware ambiguity modeling thanks to local optimal difusion path. Extensive experimental results on two public datasets demonstrate that KANResDif achieves SOTA performance on GED and HM-IoU, with maximum improvements of 16.8% and 7.7%, respectively, while maintaining competitive performance on the MDM metric. Source code is available at https://github.com/PerceptionComputingLab/KANResDiff."
+                    }
+                ]
+            },
+            "bbox": [
+                259,
+                421,
+                740,
+                700
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Keywords: Ambiguous Medical Image Segmentation · Difusion Model · Kolmogorov-Arnold Network · Schrödinger Bridge."
+                    }
+                ]
+            },
+            "bbox": [
+                261,
+                712,
+                740,
+                742
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "1 Introduction"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                217,
+                765,
+                375,
+                781
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Ambiguous medical image segmentation (AMIS), aiming to generate a series of diverse yet anatomically consistent predictions that reflect the underlying annotation distribution [13,18], relies on the explicit introduction of stochasticity during inference to capture the inherent variability in clinical annotations. By exploring multiple anatomically consistent solutions, stochastic inference provides a more reliable and comprehensive basis for clinical decision-making, improving robustness against ambiguous boundaries and inter-observer variability [10,16]."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                794,
+                787,
+                840
+            ]
+        },
+        {
+            "type": "page_aside_text",
+            "content": {
+                "page_aside_text_content": [
+                    {
+                        "type": "text",
+                        "content": "arXiv:2608.11617v1 [cs.CV] 12 Aug 2026"
+                    }
+                ]
+            },
+            "bbox": [
+                27,
+                351,
+                66,
+                800
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/ee7a2f2c3163425ae72a48b90019be4d267613a42998acd9a709dd0168b07472.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 1. (a) Traditional MLP-based time embeddings can only be optimized globally. (b) Our proposed KANResDif enhances indepedence across timesteps via spline-based time embeddings, which can be locally optimized. (c) Traditional residual difusion leads to large gap between forward and backward difusion path, hindering efective semantics modeling. (d) Our proposed KANResDif constructs local Schrödinger Bridge with dynamic residual components to form a least-costed difusion path, where forward and backward difusion paths are close to each other."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                222,
+                142,
+                785,
+                285
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                214,
+                429,
+                787,
+                489
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "However, existing AMIS methods introduce stochasticity in a fixed and inflexible manner during inference, leading to improper stochastic intensity, where randomness is either over-injected or under-explored. Existing methods can be broadly categorized into three groups: cVAE-based models [10,2], logit distributionbased models [14,21], and difusion models [13,19]. In the former two categories, ambiguity is introduced only at the final prediction stage, whereas in the latter, stochasticity is incorporated throughout the entire inference trajectory. Consequently, existing methods are constrained by fixed stochastic formulations, failing to establish an AMIS-specific progressive semantic modeling process."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                491,
+                797,
+                627
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Residual-based difusion [7,17] has demonstrated potential in alleviating dynamic stochasticity injection thanks to the mechanism that explicitly involves deterministic predictors into difusion formulation. Residual-based difusion enables a unified inference mechanism in which the relative roles of determinism and stochasticity can be explicitly controlled, which is widely used in multiple areas such as classification, regression and image super-resolution."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                627,
+                787,
+                718
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "However, directly applying Residual-based difusion for dynamic and progressive stochasticity injection for AMIS remains challenging due to: (1) Insuficient independence among inference states hinders the ability to represent heterogeneous ambiguity and undermine efective ambiguityaware inference in AMIS. (Fig. 1(a)) Residual-based difusion typically represents inference stages using time embeddings parameterized by MLPs, which induces strong parameter coupling and limited efective independence across inference steps. While such a design is generally suficient for holistic generative tasks such as classification [7], regression [7], and image super-resolution [17], it becomes insuficient for AMIS, where ambiguity must be progressively constructed along inference, requiring greater independence across intermediate stages. (2) Stage-agnostic residual interaction constrains the flexibility of deterministic–stochastic coordination, limiting efective ambiguityaware inference in AMIS. (Fig. 1(c)) Residual-based difusion typically introduces deterministic predictors through a fixed residual formulation, where the relative contribution between deterministic predictors and stochasticity in difusion is predefined across inference stages. However, inference stages play different roles in ambiguity modeling in AMIS: early stages emphasize structural consistency and later stages express stochasticity to capture diverse plausible segmentations, requiring dynamic and stage-specific residual injection."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                719,
+                787,
+                842
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "2"
+                    }
+                ]
+            },
+            "bbox": [
+                217,
+                116,
+                228,
+                126
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "F. Li et al."
+                    }
+                ]
+            },
+            "bbox": [
+                271,
+                114,
+                344,
+                127
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                214,
+                146,
+                787,
+                329
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "To address the aforementioned challenges, we propose KANResDif to learn local residual difusion via Kolmogorov-Arnold Networks (KANs) for a flexible deterministic–stochastic coordination with both better independence across inference stages and dynamic, stage-specific residual injection. Specifically, (1) We propose Independent Time Encoding, a time reparameterization with localized function representations to reduce cross-stage interference during diffusion inference, enhancing local independence across inference stages. Specifically, ITE models the temporal variable with locally supported basis functions, such that optimizations at one inference stage minimally afect others, thereby enhancing step-wise independence and assigning progressive ambiguity modeling across timesteps. (Fig. 1(b)) (2) We propose Residual Schrödinger Bridge (RSB), an AMIS-specific residual interaction strategy by constructing Schrödinger Bridge at each inference stages, assigning local residual weights. Specifically, RSB assigns step-specific residual weights to difusion formulations by constructing Schrödinger Bridge across timesteps, ensuring an optimal stochastic inference by intruducing dynamic residual deterministic components, thereby achieving a flexible determinism injection for difusion in AMIS. (Fig. 1(d))"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                330,
+                789,
+                588
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "In summary, our main contributions are as follows:"
+                    }
+                ]
+            },
+            "bbox": [
+                238,
+                589,
+                609,
+                603
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "– We propose KANResDif to learn local residual difusion, the first paradigm that enables dynamic and progressive stochastic modeling for ambiguous medical image segmentation, thereby establishing a principled semantic modeling trajectory for ambiguity representation."
+                    }
+                ]
+            },
+            "bbox": [
+                225,
+                622,
+                787,
+                683
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "– The proposed ITE introduces a novel time-embedding reparameterization strategy based on locally supported basis functions, which significantly enhances the independence across diferent timesteps and facilitates a progressive ambiguity modeling process."
+                    }
+                ]
+            },
+            "bbox": [
+                225,
+                684,
+                787,
+                746
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The proposed RSB introduces a novel residual guidance mechanism by constructing a local Schrödinger Bridge, which dynamically regulates the contribution of residual deterministic components, thereby enabling flexible and adaptive determinism injection into the difusion process for AMIS."
+                    }
+                ]
+            },
+            "bbox": [
+                225,
+                747,
+                787,
+                808
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "– Experimental results on the LIDC dataset and ISIC subset demonstrate that KANResDif outperforms existing methods across evaluation metrics."
+                    }
+                ]
+            },
+            "bbox": [
+                223,
+                809,
+                785,
+                840
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "KANResDif for Ambiguous Medical Image Segmentation"
+                    }
+                ]
+            },
+            "bbox": [
+                348,
+                114,
+                732,
+                128
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "3"
+                    }
+                ]
+            },
+            "bbox": [
+                774,
+                116,
+                785,
+                127
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/054ad4622b92f3ce0a7c5a7b53328e3015ef19a9a6f5655f1f787f622a968fe6.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 2. The proposed KANResDif achieves superior performance via a flexible deterministic–stochastic interaction in difusion models by enhancing independence across inference steps (ITE, Sec. 2.1) and assigning dynamic residual weights to construct local Schrödinger Bridges (RSB, Sec. 2.2)."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                223,
+                145,
+                779,
+                318
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "2 Methods"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                419,
+                339,
+                435
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The proposed KANResDif (Fig. 2) achieves a flexible deterministic–stochastic interaction in difusion models via Kolmogorov-Arnold Networks from two aspects: Firstly, a time embedding strategy with locally supported basis functions enhances independence across timesteps, assigning a progressive ambiguity modeling role to each timestep (ITE, Sec. 2.1 ). Secondly, local Schrödinger Bridges are constructed via introducing deterministic prior residual with dynamic stageaware weights to difusion formulations, achieving a flexible determinism injection to stochasticity of difusion models, thereby forming a flexible deterministic–stochastic coordination in AMIS (RSB, Sec. 2.2)."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                448,
+                787,
+                585
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "2.1 Independent Time Encoding Constructs a Progressive Ambiguity Modeling Procedure."
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                604,
+                715,
+                636
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The proposed Independent Time Encoding (ITE) reparameterizes time embeddings with locally supported basis functions, enhancing local optimization independence across timesteps, thereby ensuring a progressive ambiguity modeling strategy along inference stages."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                641,
+                787,
+                703
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Difusion models approximate T consecutive denoising networks with a single network taking time embeddings from MLPs as input due to excessive memory. Gradients from MLP-based time embeddings at timestep "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "t _ { 1 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is:"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                702,
+                787,
+                748
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\frac { \\partial L ( t _ { 1 } ) } { \\partial W } = \\frac { \\partial L } { \\partial g ( t _ { 1 } ) } \\cdot \\frac { \\partial g ( t _ { 1 } ) } { \\partial W } \\neq 0 .\\tag{1}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/e0c5957425a02d5878e8ce727c5d08b6b329753566a788b8f142f6fc0edebe98.jpg"
+                }
+            },
+            "bbox": [
+                392,
+                753,
+                611,
+                787
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "since parameter set W is shared across all timesteps with MLP-based time embeddings, the embedding of any timestep "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "t _ { 2 } \\neq t _ { 1 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is optimized as eq. 2. Consequently, all time embeddings are modified with optimization at timestep "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "t _ { 1 } ,"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                794,
+                787,
+                842
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "4"
+                    }
+                ]
+            },
+            "bbox": [
+                217,
+                116,
+                228,
+                126
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "F. Li et al."
+                    }
+                ]
+            },
+            "bbox": [
+                271,
+                114,
+                344,
+                127
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/54fead1e538d4caac6ca48c724941f02d7b4ba90e405b7889af7a9a9fcc915da.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 3. Comparative qualitative results on LIDC dataset among ground truths, two advanced methods and the proposed KANResDif demonstrate both better alignment with ground truths and higher per-sample accuracy."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                215,
+                143,
+                785,
+                268
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "causing inadequate independence across timesteps for AMIS:"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                354,
+                655,
+                371
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "{ \\frac { \\partial L ( t _ { 2 } ) } { \\partial g ( t _ { 1 } ) } } = { \\frac { \\partial L ( t _ { 2 } ) } { \\partial W } } \\cdot { \\frac { \\partial W } { \\partial g ( t _ { 1 } ) } } \\neq 0 .\\tag{2}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/e288854c61500bb44ee182ae75cca9db88430be21c160ace73635a01a75155a1.jpg"
+                }
+            },
+            "bbox": [
+                390,
+                382,
+                612,
+                417
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "In our ITE, time embeddings are formulated with B-splines as eq. 3 for independent optimization during training, enabling a progressive semantic accumulation for plausible ambiguity modeling:"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                431,
+                787,
+                477
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "g _ { s p l i n e } ( t ) = \\sum _ { i } c _ { i } \\times B _ { i , p } ( t ) ; B _ { i , p } ( t ) = 0 , { \\mathrm { w h e n ~ } } t \\not \\in [ t _ { i } , t _ { i + p + 1 } )\\tag{3}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/0ba6903c5622b52693c6c17c5a6e0fc702241c12a1b4f5786e5b325bcc226455.jpg"
+                }
+            },
+            "bbox": [
+                284,
+                491,
+                715,
+                521
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "B _ { i , p } ( \\cdot )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "denotes the "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathrm { i ^ { t h } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "B-spline basis function with degree p and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "c _ { i }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "are learnable coeficients. Therefore, for the optimization at "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "t _ { 3 } \\ \\in \\ [ t _ { i } , t _ { i + p + 1 } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", the gradient of loss function "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "L ( t _ { 3 } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is calculated as follows:"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                536,
+                787,
+                583
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\frac { \\partial L ( t _ { 3 } ) } { \\partial c _ { i } } = \\frac { \\partial L } { \\partial g ( t _ { 3 } ) } \\cdot B _ { i , p } ( t _ { 3 } )\\tag{4}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/8ff74708726079a35a52d735678dde2d73d073aba8deb9798200a4b4ffd0d36c.jpg"
+                }
+            },
+            "bbox": [
+                406,
+                595,
+                596,
+                628
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Consequently, if "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "t _ { 4 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "does not fall within the support interval of the B-spline basis functions for "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "t _ { 3 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", i.e., t<sub>4</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\notin \\left[ t _ { i } , t _ { i + p + 1 } \\right)"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", then"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                642,
+                785,
+                674
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\frac { \\partial L ( t _ { 4 } ) } { \\partial c _ { i } } = \\frac { \\partial L } { \\partial g ( t _ { 3 } ) } \\cdot B _ { i , p } ( t _ { 4 } ) = 0\\tag{5}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/402f120893af65c5c294c8951e113b381f86711d43c6f04be790f635cfec71a4.jpg"
+                }
+            },
+            "bbox": [
+                390,
+                685,
+                612,
+                720
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "achieving local independent optimization with spline-based parameterizations, thereby ensuring a progressive ambiguity modeling strategy."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                732,
+                784,
+                763
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "For implementation, we utilize cubic B-spline (i.e. p = 3) that provides a balanced trade-of between smooth temporal evolution and local parameter updates. Kolmogorov-Arnold Network provides a principled instantiation of spline-based time encoding via its resistance to forgetting and continuous output, making it a suitable and necessary choice for implementation of ITE."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                765,
+                787,
+                840
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "KANResDif for Ambiguous Medical Image Segmentation"
+                    }
+                ]
+            },
+            "bbox": [
+                348,
+                114,
+                732,
+                128
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "5"
+                    }
+                ]
+            },
+            "bbox": [
+                774,
+                116,
+                785,
+                127
+            ]
+        }
+    ],
+    [
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/396568d2b97fa68a00194fd9c898298ab8c9eda1b8c071ec48876685b78a2c90.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 1. Quantitative results on LIDC dataset show the superior performance of KANResDif. Bold represents the best per column."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Methods</td><td> $\\mathrm { G E D _ { 1 6 } \\downarrow }$ </td><td> $\\mathrm { G E D _ { 3 2 } \\downarrow }$ </td><td> $\\mathrm { G E D _ { 1 0 0 } \\downarrow }$ </td><td> $\\mathrm { \\left| H M - I o U _ { 3 2 } \\right. }$ </td><td>↑|  $\\mathrm { M D M } _ { 3 2 } \\uparrow$ </td></tr><tr><td>Prob. Unet[10]</td><td> $0 . 3 1 0 { \\scriptstyle \\pm 0 . 0 1 0 }$ </td><td> $0 . 3 0 3 { \\scriptstyle \\pm 0 . 0 1 0 }$ </td><td> $0 . 2 5 2 _ { \\pm 0 . 0 0 4 }$ </td><td> $0 . 5 4 8 { \\scriptstyle \\pm 0 . 0 0 0 }$ </td><td> $0 . 6 8 1 { \\scriptstyle \\pm 0 . 0 2 0 }$ </td></tr><tr><td>MoSE[6]</td><td> $0 . 2 1 8 { \\scriptstyle \\pm 0 . 0 0 3 }$ </td><td> $0 . 1 9 5 { \\scriptstyle \\pm 0 . 0 0 2 }$ </td><td> $0 . 1 8 9 { \\scriptstyle \\pm 0 . 0 0 2 }$ </td><td> $0 . 6 2 4 { \\scriptstyle \\pm 0 . 0 0 4 }$ </td><td> $0 . 7 6 7 { \\scriptstyle \\pm 0 . 0 0 4 }$ </td></tr><tr><td> $\\mathrm { P ^ { 2 } S A M [ 1 2 ] }$ </td><td> $0 . 2 0 8 { \\scriptstyle \\pm 0 . 0 0 0 }$ </td><td> $0 . 2 0 6 _ { \\pm 0 . 0 0 0 }$ </td><td> $0 . 2 0 6 _ { \\pm 0 . 0 0 0 }$ </td><td> $0 . 6 2 7 { \\scriptstyle \\pm 0 . 0 0 0 }$ </td><td> $0 . 9 3 9 { \\scriptstyle \\pm 0 . 0 0 0 }$ </td></tr><tr><td>CIMD[16]</td><td> $0 . 2 3 4 { \\scriptstyle \\pm 0 . 0 0 5 }$ </td><td> $0 . 2 1 8 { \\scriptstyle \\pm 0 . 0 0 5 }$ </td><td> $0 . 2 1 0 { \\scriptstyle \\pm 0 . 0 0 5 }$ </td><td> $0 . 5 9 2 { \\scriptstyle \\pm 0 . 0 0 2 }$ </td><td> $0 . 9 1 5 { \\scriptstyle \\pm 0 . 0 0 4 }$ </td></tr><tr><td>AB[4]</td><td> $0 . 2 1 3 { \\scriptstyle \\pm 0 . 0 0 1 }$ </td><td> $0 . 1 9 6 _ { \\pm 0 . 0 0 2 }$ </td><td> $0 . 1 9 3 _ { \\pm 0 . 0 0 2 }$ </td><td> $0 . 6 1 9 { \\scriptstyle \\pm 0 . 0 0 1 }$ </td><td> $0 . 7 9 2 _ { \\pm 0 . 0 0 2 }$ </td></tr><tr><td>CCDM[19]</td><td> $0 . 2 1 2 _ { \\pm 0 . 0 0 1 }$ </td><td> $0 . 1 9 4 { \\scriptstyle \\pm 0 . 0 0 1 }$ </td><td> $0 . 1 8 3 _ { \\pm 0 . 0 0 2 }$ </td><td> $0 . 6 3 1 { \\scriptstyle \\pm 0 . 0 0 2 }$ </td><td> $0 . 7 9 0 { \\scriptstyle \\pm 0 . 0 0 3 }$ </td></tr><tr><td>SSB[1]</td><td></td><td> $0 . 2 4 5 { \\scriptstyle \\pm 0 . 0 0 3 }$ </td><td> $0 . 2 0 8 { \\scriptstyle \\pm 0 . 0 0 1 }$ </td><td></td><td> $\\mathbf { 0 . 9 4 2 _ { \\pm 0 . 0 0 1 } }$ </td></tr><tr><td>ContourMS[18]</td><td> $0 . 2 3 1 { \\scriptstyle \\pm 0 . 0 0 3 }$ </td><td> $0 . 2 1 2 _ { \\pm 0 . 0 0 2 }$ </td><td> $0 . 2 0 3 _ { \\pm 0 . 0 0 3 }$ </td><td> $0 . 6 5 1 { \\scriptstyle \\pm 0 . 0 0 5 }$ </td><td></td></tr><tr><td>KANResDiff(Ours)</td><td> ${ \\bf 0 . 1 8 7 { _ { \\pm 0 } } }$  003</td><td> $\\mathbf { 0 . 1 8 1 { \\scriptstyle \\pm 0 . 0 0 2 } }$ </td><td> $\\mathbf { 0 . 1 7 2 _ { \\pm 0 . 0 0 1 } }$ </td><td> $\\mathbf { 0 . 7 0 1 { \\scriptstyle \\pm 0 . 0 0 1 } }$ </td><td> $0 . 9 3 0 { \\scriptstyle \\pm 0 . 0 0 2 }$ </td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                220,
+                181,
+                779,
+                335
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "2.2 Residual Schrödinger Bridge Forms a Flexible Determinism Coordination with Stochastic Difusion Models."
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                364,
+                758,
+                395
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The proposed Residual Schrödinger Bridge (RSB) assigns dynamic weights instead of manually predefined weights to residual components by constructing local Schrödinger Bridges across inference stages, thereby achieving the least costly difusion process and forming a flexible determinism coordination with stochastic difusion models. Deterministic residual prior is significant in ambiguous medical image as a constraint of overall plausibility. Traditional residual difusion models introduce residual components into inference via fixed formulation as eq. 6 without maintaining the true anatomy of difusion paths in latent space, failing to preserve the semantic plausibility modeling [13,15]."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                405,
+                787,
+                542
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "x _ { t } = \\sqrt { ( \\bar { \\alpha } _ { t } ) } \\times x _ { 0 } + ( 1 - \\sqrt { ( \\bar { \\alpha } _ { t } ) } ) \\times f _ { \\phi } ( X ) + \\sqrt { 1 - \\bar { \\alpha } _ { t } } \\times \\epsilon\\tag{6}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/315109c8b5f81aa53fea38f5ab443941ddb712ecc086c5bfdad45e372f3865d7.jpg"
+                }
+            },
+            "bbox": [
+                300,
+                553,
+                702,
+                573
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "To address the limitations, we optimize the difusion path for AMIS by constructing Schrödinger Bridges across inference stages and regarding residual components as additional refinement to original stochastic difusion path. Specifically, ambiguity-aware inference procedure of the proposed RSB is:"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                579,
+                787,
+                640
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "x _ { t } = \\sum _ { i = 1 } ^ { n } \\frac { \\sqrt { \\bar { \\alpha _ { t } } } } { n } \\times x _ { 0 i } + h _ { \\mathrm { R S B } } ( t ) \\times f _ { \\phi } ( X ) + \\sqrt { 1 - \\bar { \\alpha _ { t } } } \\times \\epsilon\\tag{7}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/f5d3e4c453e7c764282cd715c30afaad6c0c4063ea1c05c2445030e5842ac936.jpg"
+                }
+            },
+            "bbox": [
+                305,
+                650,
+                696,
+                689
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "h _ { \\mathrm { R S B } } ( t )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is the dynamic weight at timestep t, serving both the refinement of original difusion path to construct a Schrödinger Bridge and a flexible determinism injection maintaining overall plausibility. n denotes the number of plausible predictions, making the proposed RSB an AMIS-efective approach."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                700,
+                787,
+                761
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "To form a Schrödinger Bridge, the inference procedure in eq. 7 should follow SB-formed forward and backward PDEs as eq. 8 and 9, where the residual term "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "h _ { \\mathrm { R S B } } ( t ) \\times f _ { \\phi } ( X )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "serves as the control drift for minimum cost optimization:"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                761,
+                787,
+                808
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathrm { d } X _ { t } = \\Big ( \\sqrt { ( \\bar { \\alpha } _ { t } ) } X _ { t } + h _ { \\mathrm { R S B } } ( t ) f _ { \\phi } ( X ) + \\beta ( t ) \\nabla _ { x } \\log \\varPsi ( X _ { t } , t ) \\Big ) \\mathrm { d } t + \\sqrt { \\beta ( t ) } \\mathrm { d } W _ { t }\\tag{8}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/aeb126a0b02e5657e354026558fc47960d84f6d7566ab733913f531d1a64caa6.jpg"
+                }
+            },
+            "bbox": [
+                227,
+                818,
+                751,
+                843
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "6"
+                    }
+                ]
+            },
+            "bbox": [
+                217,
+                116,
+                228,
+                126
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "F. Li et al."
+                    }
+                ]
+            },
+            "bbox": [
+                269,
+                114,
+                344,
+                127
+            ]
+        }
+    ],
+    [
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/f9882a62d9b0f474db684cb220e6e6cca505de6eec3ef9145c62723f08a4ef03.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 2. Quantitative results on ISIC3 subset dataset show the superiority of KAN-ResDif. Bold represents the best per column."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Methods</td><td> $\\mathrm { G E D _ { 1 6 } \\downarrow }$ </td><td> $\\mathrm { G E D _ { 3 2 } \\downarrow }$ </td><td> $\\mathrm { G E D _ { 1 0 0 } \\downarrow }$ </td><td> $\\mathrm { \\left| H M - I o U _ { 3 2 } \\right. }$  ↑|</td><td> $\\mathrm { M D M } _ { 3 2 } \\uparrow$ </td></tr><tr><td>Prob. Unet[10]</td><td> $0 . 2 0 2 _ { \\pm 0 . 0 0 3 }$ </td><td> $0 . 1 8 7 _ { \\pm 0 . 0 0 3 }$ </td><td> $0 . 1 7 1 { \\scriptstyle \\pm 0 . 0 0 2 }$ </td><td> $0 . 6 9 7 { \\scriptstyle \\pm 0 . 0 0 5 }$ </td><td> $0 . 9 2 7 { \\scriptstyle \\pm 0 . 0 0 3 }$ </td></tr><tr><td>SSN[14]</td><td> $0 . 1 9 7 { \\scriptstyle \\pm 0 . 0 0 7 }$ </td><td> $0 . 1 8 1 { \\scriptstyle \\pm 0 . 0 0 4 }$ </td><td> $0 . 1 6 7 { \\scriptstyle \\pm 0 . 0 0 2 }$ </td><td> $0 . 7 0 0 { \\scriptstyle \\pm 0 . 0 0 4 }$ </td><td> $0 . 9 3 9 { \\scriptstyle \\pm 0 . 0 0 1 }$ </td></tr><tr><td>c-Prob. Unet[20]</td><td> $0 . 2 0 8 { \\scriptstyle \\pm 0 . 0 0 4 }$ </td><td> $0 . 2 0 2 _ { \\pm 0 . 0 0 5 }$ </td><td> $0 . 1 7 9 { \\scriptstyle \\pm 0 . 0 0 2 }$ </td><td> $0 . 7 1 9 { \\scriptstyle \\pm 0 . 0 0 4 }$ </td><td> $0 . 9 2 5 { \\scriptstyle \\pm 0 . 0 0 4 }$ </td></tr><tr><td> $\\mathrm { c - S S N [ 2 0 ] }$ </td><td> $0 . 2 0 0 { \\scriptstyle \\pm 0 . 0 0 7 }$ </td><td> $0 . 1 9 5 { \\scriptstyle \\pm 0 . 0 0 7 }$ </td><td> $0 . 1 7 7 { \\scriptstyle \\pm 0 . 0 0 1 }$ </td><td> $0 . 7 2 5 { \\scriptstyle \\pm 0 . 0 0 4 }$ </td><td> $0 . 9 3 1 { \\scriptstyle \\pm 0 . 0 0 3 }$ </td></tr><tr><td>MoSE[6]</td><td> $0 . 3 0 4 { \\scriptstyle \\pm 0 . 0 0 3 }$ </td><td> $0 . 2 7 5 { \\scriptstyle \\pm 0 . 0 0 4 }$ </td><td> $0 . 2 3 2 _ { \\pm 0 . 0 0 1 }$ </td><td> $0 . 6 7 3 { \\scriptstyle \\pm 0 . 0 0 1 }$ </td><td></td></tr><tr><td>ContourMS[18]</td><td> $0 . 2 2 3 { \\scriptstyle \\pm 0 . 0 0 3 }$ </td><td> $0 . 2 0 2 _ { \\pm 0 . 0 0 2 }$ </td><td> $0 . 1 7 4 { \\scriptstyle \\pm 0 . 0 0 1 }$ </td><td> $0 . 7 6 4 { \\scriptstyle \\pm 0 . 0 0 5 }$ </td><td></td></tr><tr><td>KANResDiff(Ours)</td><td> $\\mathbf { 0 . 1 6 0 _ { \\pm 0 . 0 0 3 } }$ </td><td>0.151±0.002 0.139±0.003</td><td></td><td> $\\mathbf { 0 . 7 7 3 { \\scriptstyle \\pm 0 . 0 0 2 } }$ </td><td> $\\mathbf { 0 . 9 4 2 _ { \\pm 0 . 0 0 3 } }$ </td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                222,
+                181,
+                779,
+                306
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathrm { d } X _ { t } = \\Big ( \\sqrt { ( \\bar { \\alpha } _ { t } ) } X _ { t } + h _ { \\mathrm { R S B } } ( t ) f _ { \\phi } ( X ) - \\beta ( t ) \\nabla _ { x } \\log \\varPsi ( X _ { t } , t ) \\Big ) \\mathrm { d } t + \\sqrt { \\beta ( t ) } \\mathrm { d } W _ { t } .\\tag{9}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/7aba70b26dc6816a6ae12727ba5e31c525ea2d473ce4a051ea5f4a30ada1e810.jpg"
+                }
+            },
+            "bbox": [
+                223,
+                332,
+                753,
+                356
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "For implementation, we perform refinement based on a pretrained DDPM with fixed noise schedule. The forward and backward procedures of SB are iteratively optimized to be as similar as possible for each timestep t. Specifically, the optimization and training objectives of two procedures are as follows:"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                359,
+                789,
+                420
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Forward Procedure: For the forward procedure, we aim to achieve a Schrödinger Bridge difusion path. Therefore, "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "h _ { \\mathrm { R S B } } ( t )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is optimized to matching the control drift to the SB correction term:"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                420,
+                795,
+                464
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathcal { L } _ { \\mathrm { R S B } } ^ { ( 2 n + 1 ) } = \\mathbb { E } _ { t , x _ { t } } \\left[ \\left. u _ { \\phi } ( x _ { t } , t ) - \\beta ( t ) \\nabla _ { x } \\log \\varPsi ( x _ { t } , t ) \\right. ^ { 2 } \\right] .\\tag{10}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/44f34d2ce592b74001fd986fe969e2d5f08a96822fc2870d9c5c4709b64bc35b.jpg"
+                }
+            },
+            "bbox": [
+                313,
+                468,
+                686,
+                494
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Backward Procedure: For the backward procedure, we aim to update the predictions with the latest difusion path. Hence, the magnitude of the control drift is regularized to ensure minimal deviation from the pretrained difusion:"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                500,
+                787,
+                545
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathcal { L } _ { \\mathrm { R S B } } ^ { ( 2 n + 2 ) } = \\mathbb { E } _ { t , x _ { t } } \\left[ \\left. \\nabla _ { x } \\log p _ { t } ^ { \\mathrm { S B } } ( x _ { t } ) - \\nabla _ { x } \\log p _ { t } ^ { \\mathrm { d a t a } } ( x _ { t } ) \\right. ^ { 2 } \\right] .\\tag{11}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/6abf6f6809b2385b11ef93806492847c7aa52c5ba395b3794650a2b8b710bab8.jpg"
+                }
+            },
+            "bbox": [
+                302,
+                551,
+                699,
+                577
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3 Experiments"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                593,
+                375,
+                611
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.1 Experimental Setup."
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                621,
+                431,
+                637
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Datasets. Two public datasets are selected for evaluation: LIDC-IDRI [8] and ISIC3 subset [5,20]. LIDC dataset consists of lung CT scans with four corresponding segmentation labels, preprocessed following [10,11]. ISIC3 subset from [20] provides dermoscopic images of skin lesions with three corresponding labels. Implementation Details. All training and inference procedures are conducted on a single RTX 4090 GPU. We set "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathrm { { T } = 1 0 0 0 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and a batchsize of 8 for all experiments. Models are optimized using an Adam optimizer [9] with a learning rate of "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "1 0 ^ { - 4 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". ITE and RSB are both trained for 600 epochs."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                643,
+                787,
+                763
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Evaluation Metrics. Generalized Energy Distance (GED) [3], Hungarian Matching IoU (HM-IoU) [6], and Maximum Dice Matching (MDM) [16] are adopted for evaluation. These metrics assess distributional alignment, overall matching accuracy, and maximum individual performance. Subscript n denotes the use of n samples. All results are reported as mean ± standard deviation over five runs."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                763,
+                795,
+                840
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "KANResDif for Ambiguous Medical Image Segmentation"
+                    }
+                ]
+            },
+            "bbox": [
+                348,
+                114,
+                732,
+                128
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "7"
+                    }
+                ]
+            },
+            "bbox": [
+                774,
+                116,
+                785,
+                127
+            ]
+        }
+    ],
+    [
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/c64b9490cc412da4e66c6154cf4fa1145cbb1fdb71ccce66f9cb1e9d1ed2bb38.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 3. Ablation study on LIDC dataset demonstrates efectiveness of innovative components. Bold represents the best per column."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Methods</td><td>|ITE RSB|</td><td> $\\mathrm { G E D _ { 1 0 0 } }$ </td><td>↓  $\\mathrm { \\left| H M - I o U _ { 3 2 } \\right. }$ </td><td>↑|  $\\mathrm { M D M _ { 3 2 } } \\ ^ { \\prime }$  ←</td></tr><tr><td>Baseline (ResDiff) ResDiff with ITE</td><td>× X √ ×</td><td> $0 . 1 8 7 _ { \\pm 0 . 0 0 2 }$   $0 . 1 8 1 { \\scriptstyle \\pm 0 . 0 0 3 }$ </td><td> $0 . 6 6 7 _ { \\pm 0 . 0 0 2 }$   $0 . 6 8 3 { \\scriptstyle \\pm 0 . 0 0 1 }$ </td><td> $0 . 9 0 3 _ { \\pm 0 . 0 0 3 }$   $0 . 9 0 8 { \\scriptstyle \\pm 0 . 0 0 2 }$ </td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                276,
+                181,
+                723,
+                265
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.2 Experimental Results."
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                297,
+                444,
+                313
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Quantitative Evaluations. Table 1 and 2 report the quantitative comparisons among KANResDif and advanced methods on LIDC dataset and ISIC subset. KANResDif consistently achieves the best performance by reducing "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathrm { G E D _ { 1 6 } } ."
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathrm { G E D _ { 3 2 } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathrm { G E D _ { 1 0 0 } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "by a maximum of 18.8%, 16.6%, and 16.8%, respectively, indicating that the proposed dynamic and progressive stochastic modeling enables more efective ambiguity representation under all sampling strategies. A maximum of 7.7% improvement in "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathrm { H M } \\mathrm { - } \\mathrm { I o U } _ { 3 2 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "further demonstrates the superior fidelity of the generated samples from KANResDif. Meanwhile, KANResDif maintains MDM performance comparable to supervised sample-level segmentation methods, demonstrating competitive individual accuracy."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                324,
+                787,
+                476
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Qualitative Evaluations. Fig. 3 illustrates the segmentation visualization comparison across ground truths, the proposed KANResDif and advanced methods. Predictions from KANResDif better meet the pattern with ground truths compared with other methods, further validating its superiority."
+                    }
+                ]
+            },
+            "bbox": [
+                215,
+                477,
+                787,
+                536
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Ablation Study. Table 3 shows the ablation study on LIDC dataset evaluating four model variants: ResDif baseline, ResDif with ITE, ResDif with RSB and KANResDif. Introducing ITE and RSB both lead to consistent improvements across all metrics, indicating the efectiveness of innovative components. Performance is further boosted with both components are jointly applied, which further verifies that ITE and RSB are complementary and that their integration efectively improves both segmentation accuracy and diversity."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                537,
+                787,
+                645
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4 Conclusion"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                669,
+                359,
+                685
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "In this work, we proposed KANResDif for learning local residual difusion, promoting a flexible stochastic intensity instead of predefined injection for ambiguous medical image segmentation. Specifically, KANResDif ofers a progressive, dedicated ambiguity-aware semantic modeling process by assigning independent and local residual-based difusion formulation across stages. The proposed Independent Time Encoding ofers spline-based time embeddings that can be locally optimized, enhancing independence across stages. The proposed Residual Schrödinger Bridge introduces deterministic residual via learnable weights by constructing local optimal difusion path with Schrödinger Bridge, forming a flexible determinism coordination with stochasticity in difusion models. Experimental results on two public datasets demonstrate our KANResDif outperforms existing methods. Through multifaceted analysis and comprehensive evaluation, our KANResDif ofers a promising approach for ambiguous medical image segmentation that eliminates excessive or inadequate stochasticity."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                704,
+                789,
+                842
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "8"
+                    }
+                ]
+            },
+            "bbox": [
+                217,
+                116,
+                228,
+                126
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "F. Li et al."
+                    }
+                ]
+            },
+            "bbox": [
+                271,
+                114,
+                344,
+                127
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                214,
+                146,
+                787,
+                223
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Acknowledgments. This work was supported by the National Natural Science Foundation of China under Grant No. 62501195; the Shenzhen Medical Research Fund under Grant No. C2501016; the National Natural Science Foundation of China under Grant No. 82527807; the Science and Technology Innovation Committee of Shenzhen Municipality under Grant No. JCYJ20250604145426036; the Key Research & Development Program of Heilongjiang Province under Grant Nos. 2024ZX12C23 and 2023ZX01A08; and the Natural Science Foundation of Heilongjiang Province under Grant No. LH2024F019."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                237,
+                787,
+                349
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Disclosure of Interests. The authors have no competing interests to declare that are relevant to the content of this article."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                364,
+                785,
+                395
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "References"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                419,
+                325,
+                435
+            ]
+        },
+        {
+            "type": "list",
+            "content": {
+                "list_type": "reference_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "1. Baru, L.B., Dadi, K., Chakraborti, T., Bapi, R.S.: Ambiguous medical image segmentation using difusion schrödinger bridge. In: International Conference on Medical Image Computing and Computer-Assisted Intervention. pp. 25–35. Springer (2025)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "2. Baumgartner, C.F., Tezcan, K.C., Chaitanya, K., Hötker, A.M., Muehlematter, U.J., Schawkat, K., Becker, A.S., Donati, O., Konukoglu, E.: Phiseg: Capturing uncertainty in medical image segmentation. In: International Conference on Medical Image Computing and Computer-Assisted Intervention. pp. 119–127. Springer (2019)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "3. Bellemare, M.G., Danihelka, I., Dabney, W., Mohamed, S., Lakshminarayanan, B., Hoyer, S., Munos, R.: The cramer distance as a solution to biased wasserstein gradients. arXiv preprint arXiv:1705.10743 (2017)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "4. Chen, T., Zhang, R., Hinton, G.: Analog bits: Generating discrete data using diffusion models with self-conditioning. In: The Eleventh International Conference on Learning Representations (2023)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "5. Codella, N., Rotemberg, V., Tschandl, P., Celebi, M.E., Dusza, S., Gutman, D., Helba, B., Kalloo, A., Liopyris, K., Marchetti, M., et al.: Skin lesion analysis toward melanoma detection 2018: A challenge hosted by the international skin imaging collaboration (isic). arXiv preprint arXiv:1902.03368 (2019)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "6. Gao, Z., Chen, Y., Zhang, C., He, X.: Modeling multimodal aleatoric uncertainty in segmentation with mixture of stochastic experts. In: The Eleventh International Conference on Learning Representations (2023)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "7. Han, X., Zheng, H., Zhou, M.: Card: Classification and regression difusion models. Advances in Neural Information Processing Systems 35, 18100–18115 (2022)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "8. Kalpathy-Cramer, J., Zhao, B., Goldgof, D., Gu, Y., Wang, X., Yang, H., Tan, Y., Gillies, R., Napel, S.: A comparison of lung nodule segmentation algorithms: methods and results from a multi-institutional study. Journal of digital imaging 29, 476–487 (2016)"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                223,
+                452,
+                784,
+                506
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "KANResDif for Ambiguous Medical Image Segmentation"
+                    }
+                ]
+            },
+            "bbox": [
+                348,
+                114,
+                732,
+                128
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "9"
+                    }
+                ]
+            },
+            "bbox": [
+                774,
+                116,
+                785,
+                126
+            ]
+        }
+    ],
+    [
+        {
+            "type": "list",
+            "content": {
+                "list_type": "reference_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "9. Kingma, D.P., Ba, J.: Adam: A method for stochastic optimization. arXiv preprint arXiv:1412.6980 (2014)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "10. Kohl, S., Romera-Paredes, B., Meyer, C., De Fauw, J., Ledsam, J.R., Maier-Hein, K., Eslami, S., Jimenez Rezende, D., Ronneberger, O.: A probabilistic u-net for segmentation of ambiguous images. Advances in neural information processing systems 31 (2018)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "11. Kohl, S.A., Romera-Paredes, B., Maier-Hein, K.H., Rezende, D.J., Eslami, S., Kohli, P., Zisserman, A., Ronneberger, O.: A hierarchical probabilistic u-net for modeling multi-scale ambiguities. arXiv preprint arXiv:1905.13077 (2019)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "12. Li, C., Lin, Z., Liu, H., Liu, Y., Huang, Y., Ding, X., Tu, X., Yuan, Y., et al.: Pˆ 2sam: Probabilistically prompted sams are eficient segmentator for ambiguous medical images. In: ACM Multimedia (2024)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "13. Li, F., Li, X., Su, X., Qiu, X., Dong, S., Wang, W., Wang, K., Luo, G., Li, S.: Ambiguity-aware truncated flow matching for ambiguous medical image segmentation. arXiv preprint arXiv:2511.06857 (2025)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "14. Monteiro, M., Le Folgoc, L., Coelho de Castro, D., Pawlowski, N., Marques, B., Kamnitsas, K., Van der Wilk, M., Glocker, B.: Stochastic segmentation networks: Modelling spatially correlated aleatoric uncertainty. Advances in neural information processing systems 33, 12756–12767 (2020)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "15. Qiu, X., Yang, M., Ma, X., Li, F., Liang, D., Luo, G., Wang, W., Wang, K., Li, S.: Finding local difusion schrodinger bridge using kolmogorov-arnold network. In: Proceedings of the Computer Vision and Pattern Recognition Conference. pp. 23227–23236 (2025)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "16. Rahman, A., Valanarasu, J.M.J., Hacihaliloglu, I., Patel, V.M.: Ambiguous medical image segmentation using difusion models. In: Proceedings of the IEEE/CVF conference on computer vision and pattern recognition. pp. 11536–11546 (2023)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "17. Shang, S., Shan, Z., Liu, G., Wang, L., Wang, X., Zhang, Z., Zhang, J.: Resdif: Combining cnn and difusion model for image super-resolution. In: Proceedings of the AAAI Conference on Artificial Intelligence. vol. 38, pp. 8975–8983 (2024)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "18. Wang, J., Zhou, C., Huang, Y.: Contour-aware multi-expert model for ambiguous medical image segmentation. IEEE Transactions on Medical Imaging (2025)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "19. Zbinden, L., Doorenbos, L., Pissas, T., Huber, A.T., Sznitman, R., Márquez-Neila, P.: Stochastic segmentation with conditional categorical difusion models. In: Proceedings of the IEEE/CVF International Conference on Computer Vision. pp. 1119–1129 (2023)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "20. Zepf, K.M., Petersen, E.W., Frellsen, J., Feragen, A.: That label’s got style: Handling label style bias for uncertain image segmentation. In: Eleventh International Conference on Learning Representations (2023)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "21. Zhang, W., Zhang, X., Huang, S., Lu, Y., Wang, K.: Pixelseg: Pixel-by-pixel stochastic semantic segmentation for ambiguous medical images. In: Proceedings of the 30th ACM International Conference on Multimedia. pp. 4742–4750 (2022)"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                222,
+                147,
+                785,
+                174
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "10"
+                    }
+                ]
+            },
+            "bbox": [
+                217,
+                114,
+                236,
+                127
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "F. Li et al."
+                    }
+                ]
+            },
+            "bbox": [
+                269,
+                114,
+                346,
+                127
+            ]
+        }
+    ]
+]

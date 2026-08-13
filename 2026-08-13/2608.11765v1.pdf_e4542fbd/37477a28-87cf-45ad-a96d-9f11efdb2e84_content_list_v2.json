@@ -1,0 +1,2498 @@
+[
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "ProBAG: Prototype-Guided Boundary-Aware Graph Difusion for Weakly Supervised Histopathology Segmentation"
+                    }
+                ],
+                "level": 1
+            },
+            "bbox": [
+                240,
+                140,
+                761,
+                208
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Duy-Dong Nguyen<sup>1</sup>, Le-Van Thai<sup>1</sup>, Hoai Nhan Pham<sup>1</sup>, Ngoc Lam Quang Bui<sup>2</sup>, Tam Tran<sup>6(B)</sup> , and Zhi Huang<sup>7(B)</sup>"
+                    }
+                ]
+            },
+            "bbox": [
+                215,
+                234,
+                787,
+                265
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "<sup>1</sup> AI VIETNAM Lab, Vietnam"
+                    }
+                ]
+            },
+            "bbox": [
+                395,
+                276,
+                607,
+                290
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Department of Mechanical System Engineering, Jeonbuk National University, Republic of Korea"
+                    }
+                ]
+            },
+            "bbox": [
+                235,
+                290,
+                766,
+                319
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "<sup>3</sup> John T. Milliken Department of Medicine, Washington University School of Medicine, Saint Louis, MO, USA"
+                    }
+                ]
+            },
+            "bbox": [
+                240,
+                319,
+                763,
+                347
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "tamt@wustl.edu"
+                    }
+                ]
+            },
+            "bbox": [
+                444,
+                348,
+                558,
+                361
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "4 Perelman School of Medicine, University of Pennsylvania, USA zhi.huang@pennmedicine.upenn.edu"
+                    }
+                ]
+            },
+            "bbox": [
+                282,
+                359,
+                720,
+                390
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Abstract. Weakly supervised semantic segmentation enables histopathol ogy tissue segmentation from image-level annotations, avoiding costly pixel-level labeling by expert pathologists. However, CAM-based methods often localize only highly discriminative regions and remain unreliable near tissue interfaces. We propose ProBAG, a stage-1 pseudomask generator that combines dataset-specific visual prototypes with pathology-aligned CONCH text prototypes over multi-scale frozen UNI features. ProBAG introduces two complementary mechanisms: class-wise power recalibration that reshapes inter-class competition while preserving the total foreground activation mass at each pixel, and one-step graph difusion in which feature afinities are penalized by a late-transformer attention-context discrepancy used as a soft structural boundary cue. The resulting stage-1 pseudo-masks require neither CRF nor an external segmentation model; for complete two-stage comparison, they additionally supervise a downstream Phikon-FPN segmenter. Experiments on BCSS-WSSS and LUAD-HistoSeg show consistent gains over recent WSSS approaches, while ablations indicate that pathology-aligned text semantics provide the largest improvement and graph refinement provides a smaller complementary gain. The code is available at: https: //github.com/wterrr/WSSS"
+                    }
+                ]
+            },
+            "bbox": [
+                259,
+                425,
+                745,
+                704
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Keywords: Weakly supervised semantic segmentation · Histopathology · Text-visual prototypes · Boundary-aware graph difusion"
+                    }
+                ]
+            },
+            "bbox": [
+                261,
+                715,
+                740,
+                746
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "1 Introduction"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                217,
+                771,
+                375,
+                787
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Histopathology image segmentation is a core task in computational pathology, supporting quantitative analysis of tumor, stroma, lymphocyte, and necrosis regions in hematoxylin and eosin (H&E) images. Although deep learning has advanced digital pathology, dense semantic segmentation still requires costly pixel-level annotation by expert pathologists [3,4]. Weakly supervised semantic segmentation (WSSS) reduces this burden by learning pseudo-masks from cheaper annotations such as image-level tissue labels[16]."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                803,
+                785,
+                834
+            ]
+        },
+        {
+            "type": "page_aside_text",
+            "content": {
+                "page_aside_text_content": [
+                    {
+                        "type": "text",
+                        "content": "arXiv:2608.11765v1 [cs.CV] 12 Aug 2026"
+                    }
+                ]
+            },
+            "bbox": [
+                27,
+                351,
+                66,
+                800
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                214,
+                146,
+                787,
+                222
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Most image-level WSSS methods rely on class activation maps (CAMs), which localize discriminative regions for classifier predictions [20,28]. Prior work has improved CAM quality through seed expansion, afinity propagation, interpixel relations, equivariance constraints, transformer attention, and class reactivation [1,2,6,12,19,24]. However, CAM supervision remains indirect, as classifiers often attend only to the most discriminative regions rather than capturing full object extent [13,26]. This limitation is particularly severe in histopathology, where tissues exhibit strong visual similarity and substantial intra-class morphological variation [21]. As a result, CAM-derived pseudo-masks are often incomplete, class-biased, and unreliable near boundaries."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                222,
+                787,
+                373
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Recent histopathology WSSS studies incorporate stronger domain priors to address these challenges. WSSS4LUAD establishes lung adenocarcinoma tissue segmentation from patch-level labels [10], while PistoSeg exploits dataset synthesis and feature consistency [8]. TPRO introduces text prompting for tissue segmentation [27], and prototype-based prompting leverages visual prototype banks to mitigate inter-class homogeneity and intra-class heterogeneity [21]. These methods show that semantic and prototype priors significantly improve CAM localization. However, two challenges remain: class-dependent activation imbalance in fused CAMs, where highly activated regions dominate foreground prediction, and the lack of boundary-aware refinement beyond feature-similarity propagation in prototype-based methods."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                373,
+                787,
+                540
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Existing prototype-based WSSS methods primarily improve semantic localization, but two failure modes remain insuficiently separated. First, independently normalized class CAMs can exhibit markedly diferent activation distributions, allowing broad or sharply activated tissues to dominate pixel-wise competition. Second, feature-only afinity propagation can leak across interfaces between adjacent tissues with similar local appearance. ProBAG targets these failures separately through foreground-mass-preserving class recalibration and attention-context-regularized graph propagation."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                539,
+                787,
+                660
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Recent advances in pathology foundation models and vision-language models provide useful cues for addressing these challenges. Frozen vision transformers can provide dense multi-scale representations, while pathology-aligned vision-language models ofer semantically meaningful tissue embeddings [5,7,15]. These developments motivate a WSSS framework that jointly exploits visual prototypes, pathology text priors, and foundation-model attention cues. Recent studies have also demonstrated the utility of pathology foundation models for histopathology segmentation [9,22]."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                660,
+                787,
+                781
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Accordingly, our contribution lies not in introducing prototypes or graph propagation in isolation, but in coordinating pathology-aligned semantic prototypes with two explicit corrections for class competition and cross-interface difusion. Our main contributions are as follows:"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                781,
+                787,
+                811
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "2"
+                    }
+                ]
+            },
+            "bbox": [
+                217,
+                116,
+                228,
+                126
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Duy-Dong Nguyen et al."
+                    }
+                ]
+            },
+            "bbox": [
+                271,
+                114,
+                434,
+                128
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                214,
+                146,
+                787,
+                178
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "– We formulate subclass-aware hybrid prototypes by blending dataset-specific visual prototypes with CONCH pathology text prototypes and matching them to multi-scale features from a frozen UNI encoder."
+                    }
+                ]
+            },
+            "bbox": [
+                223,
+                189,
+                787,
+                234
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "– We propose an activation-balancing operator that performs class-wise power recalibration while exactly preserving each pixel’s original total foreground mass, thereby changing relative class allocation without creating or suppressing foreground evidence."
+                    }
+                ]
+            },
+            "bbox": [
+                225,
+                234,
+                787,
+                295
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We propose a one-step graph difusion mechanism that regularizes feature afinity with an attention-context discrepancy from late UNI blocks; this cue is treated as a soft structural proxy rather than an explicit boundary detector."
+                    }
+                ]
+            },
+            "bbox": [
+                236,
+                295,
+                787,
+                354
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "– We distinguish direct stage-1 pseudo-mask evaluation from downstream stage-2 segmentation and evaluate the framework on BCSS-WSSS and LUAD-HistoSeg, with limitations of cross-backbone comparisons stated explicitly."
+                    }
+                ]
+            },
+            "bbox": [
+                223,
+                356,
+                790,
+                401
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/189a0503abbfeb6b1932885869b140e0b97756bf4c9057dcdb83dd43532e6bf0.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 1. Overview of the ProBAG framework. Hybrid text–visual prototypes are matched with multi-scale features from a frozen pathology encoder to generate tissue CAMs, which are then fused, activation-balanced, and refined by boundary-aware graph difusion to produce pseudo masks."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                220,
+                438,
+                782,
+                707
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "ProBAG for Weakly Supervised Histopathology Segmentation"
+                    }
+                ]
+            },
+            "bbox": [
+                318,
+                114,
+                732,
+                128
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "3"
+                    }
+                ]
+            },
+            "bbox": [
+                774,
+                114,
+                785,
+                127
+            ]
+        }
+    ],
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "2 Methodology"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                145,
+                380,
+                162
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Overview. We study weakly supervised semantic segmentation (WSSS) in histopathology, where each image x has only an image-level multi-label annotation "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "y \\in \\{ 0 , 1 \\} ^ { C }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "over parent tissue classes. Stage 1, which constitutes ProBAG, combines hybrid prototype CAM learning, activation-balanced CAM fusion, and Boundary-Aware Graph Difusion (BAGD) to generate dense pseudo-masks without pixel-level supervision. Tables 2–4 evaluate these stage-1 masks directly. For the complete two-stage comparison in Table 1, the generated masks supervise a downstream Phikon-FPN model with LoRA; this stage-2 segmenter is an evaluation component rather than part of the proposed pseudo-mask generator. Stage-1 mask generation uses frozen UNI features and CONCH semantic guidance and does not rely on CRF or an external segmentation model."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                176,
+                787,
+                344
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "2.1 Hybrid Prototype CAM Learning"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                364,
+                542,
+                381
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "A frozen UNI ViT-L/16 pathology foundation encoder E extracts dense ViT tokens from the input image [7,5]. We take intermediate encoder blocks and transform them with a lightweight feature pyramid [14],"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                388,
+                785,
+                435
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\{ F _ { \\ell } \\} _ { \\ell = 1 } ^ { 4 } = \\mathrm { F P N } ( E ( x ) ) , \\quad F _ { \\ell } \\in \\mathbb { R } ^ { B \\times d _ { \\ell } \\times H _ { \\ell } \\times W _ { \\ell } } ,\\tag{1}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/d1d98b6664b8f5272e6f79e12e9d092d80089a9cad083d7dbad3dc93d6847b13.jpg"
+                }
+            },
+            "bbox": [
+                334,
+                444,
+                665,
+                463
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where lower levels retain finer spatial detail and the deepest level provides semantic features for graph refinement. Only the feature pyramid, prototype projections, and scale logits are trainable. The backbone roles are complementary: UNI supplies dense pathology features, CONCH supplies pathology-aligned text semantics, frozen MedCLIP is used only to encode CAM-mined regions for the contrastive auxiliary loss, and Phikon is reserved for the downstream stage-2 segmenter with LoRA. These models therefore occupy distinct functional roles, but the present study does not provide a controlled comparison against alternative pathology foundation models."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                473,
+                787,
+                611
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We represent each parent tissue class by several subclasses. Let "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\kappa _ { c }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "be the set of subclasses of parent class "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "c ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and let "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\pi ( k )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "map subclass k to its parent. For each subclass, a visual prototype "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "v _ { k }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "from the prototype bank is blended with a pathology text prototype "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "t _ { k }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "obtained from CONCH ViT-B/16 [15]:"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                609,
+                787,
+                672
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "p _ { k } = \\frac { \\alpha \\bar { t } _ { k } + ( 1 - \\alpha ) \\bar { v } _ { k } } { \\| \\alpha \\bar { t } _ { k } + ( 1 - \\alpha ) \\bar { v } _ { k } \\| _ { 2 } } ,\\tag{2}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/6ad8852801eef7e27f873b8ab77f46aefbafefb64fc5c63af6e8cf2693225640.jpg"
+                }
+            },
+            "bbox": [
+                405,
+                680,
+                593,
+                715
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\bar { t } _ { k }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\bar { v } _ { k }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "are "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\ell _ { 2 } \\cdot"
+                    },
+                    {
+                        "type": "text",
+                        "content": "-normalized and α controls the fixed text–visual contribution. A level-specific projection head maps the hybrid prototype to each pyramid dimension, yielding "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "p _ { \\ell , k }"
+                    }
+                ]
+            },
+            "bbox": [
+                215,
+                724,
+                785,
+                770
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "At scale "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\ell ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "subclass CAM logits are computed by scaled cosine similarity between normalized pixel features and projected prototypes:"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                768,
+                785,
+                800
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "A _ { \\ell , k } ( u ) = s _ { \\ell } \\left. \\frac { F _ { \\ell } ( u ) } { \\| F _ { \\ell } ( u ) \\| _ { 2 } } , \\frac { p _ { \\ell , k } } { \\| p _ { \\ell , k } \\| _ { 2 } } \\right. .\\tag{3}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/1675c1b314b9f6c6da3af1cdfbeb3ef77b3c31001ad302097395775c9b0b0485.jpg"
+                }
+            },
+            "bbox": [
+                372,
+                809,
+                627,
+                844
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "4"
+                    }
+                ]
+            },
+            "bbox": [
+                217,
+                116,
+                228,
+                126
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Duy-Dong Nguyen et al."
+                    }
+                ]
+            },
+            "bbox": [
+                271,
+                114,
+                434,
+                128
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Global average pooling gives image-level subclass logits "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "q _ { \\ell , k }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". Subclass logits are merged into parent predictions,"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                146,
+                787,
+                178
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "q _ { \\ell , c } ^ { \\mathrm { p a r } } = \\mathrm { M e r g e } ( \\{ q _ { \\ell , k } : k \\in \\mathcal { K } _ { c } \\} ) ,\\tag{4}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/333be625550d3c6261916312e27d3388a89fde4751c3634cd8aeeee10c9a9bef.jpg"
+                }
+            },
+            "bbox": [
+                390,
+                186,
+                607,
+                205
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "During stage-1 classification training, Merge is the arithmetic mean over subclasses, "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\begin{array} { r } { q _ { \\ell , c } ^ { \\mathrm { p a r } } = | \\boldsymbol { K } _ { c } | ^ { - 1 } \\sum _ { k \\in \\mathcal { K } _ { c } } q _ { \\ell , k } } \\end{array}"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". During pseudo-mask generation, subclass CAMs are instead aggregated by a softmax-weighted sum over subclass responses (the implementation option named "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathrm { \\ddot { \\ m a x } \\vec { \\tau } ) }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "before parent-level normalization."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                213,
+                785,
+                275
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "and optimized only with image-level labels:"
+                    }
+                ]
+            },
+            "bbox": [
+                238,
+                273,
+                553,
+                290
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathcal { L } _ { \\mathrm { c l s } } = \\sum _ { \\ell = 1 } ^ { 4 } \\rho _ { \\ell } \\mathrm { B C E } ( q _ { \\ell } ^ { \\mathrm { p a r } } , y ) .\\tag{5}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/7fc59aeb208a38ae06c4371d4366664dbfd5bdf276bae47e96b0dc8d02aa4c79.jpg"
+                }
+            },
+            "bbox": [
+                405,
+                299,
+                596,
+                340
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "CAM-guided prototype regularization. The deepest subclass CAMs are also used to mine foreground and background image regions. A dynamic threshold selects foreground regions for active subclasses; the complementary regions serve as background. These masked regions are encoded by a frozen MedCLIP vision encoder [25] and trained with foreground/background InfoNCE losses [17] against the corresponding tissue prototypes. The total objective is"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                348,
+                787,
+                440
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathcal { L } = \\mathcal { L } _ { \\mathrm { c l s } } + \\lambda _ { \\mathrm { n c e } } ( \\mathcal { L } _ { \\mathrm { F G } } + \\mathcal { L } _ { \\mathrm { B G } } + \\mu \\mathcal { R } _ { \\mathrm { c a m } } ) ,\\tag{6}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/0e097af5d56993f316fa93b397fd8ad048f6d2476cd26bf96b5affae13c88fcc.jpg"
+                }
+            },
+            "bbox": [
+                359,
+                450,
+                640,
+                467
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "R _ { \\mathrm { c a m } } = \\mathrm { m e a n } ( A _ { 4 } ) , \\lambda _ { \\mathrm { n c e } } = 0 . 0 5 , \\mu = 5 \\times 1 0 ^ { - 4 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", and the InfoNCE temperature is 0.07; the dynamic CAM threshold ratio is 0.5."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                476,
+                785,
+                507
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "2.2 Activation-Balanced CAM Fusion"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                527,
+                540,
+                542
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "For pseudo-mask generation, subclass CAMs are first merged into parent CAMs using the softmax-weighted subclass aggregation described above. Absent classes are masked using the image-level labels, and each parent CAM is independently normalized before resizing to the input resolution. We then fuse the intermediate and deep CAMs,"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                551,
+                787,
+                627
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "S _ { c } = \\sum _ { \\ell \\in \\mathcal { M } } \\omega _ { \\ell } A _ { \\ell , c } ^ { \\mathrm { p a r } } , \\qquad \\sum _ { \\ell \\in \\mathcal { M } } \\omega _ { \\ell } = 1 ,\\tag{7}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/880a94719c9c41b936fbf044500ea8fc7a388ce7ac07f11d40fd823e576ec9cf.jpg"
+                }
+            },
+            "bbox": [
+                375,
+                626,
+                622,
+                659
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where M denotes the selected CAM scales; in our implementation "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathcal { M } = \\{ 2 , 3 , 4 \\}"
+                    },
+                    {
+                        "type": "text",
+                        "content": "since the first-level CAM is spatially detailed but less semantically stable. The fused CAMs are not directly comparable across tissue classes, since some tissues produce broader or stronger activations than others. We therefore reshape class competition by class-wise power calibration while preserving the original foreground mass "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\begin{array} { r } { m ( u ) = \\sum _ { j } S _ { j } ( u ) } \\end{array}"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                664,
+                785,
+                756
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\widehat { S } _ { c } ( u ) = m ( u ) \\frac { ( S _ { c } ( u ) + \\epsilon ) ^ { \\gamma _ { c } } } { \\sum _ { j } ( S _ { j } ( u ) + \\epsilon ) ^ { \\gamma _ { j } } } , \\qquad \\widetilde { S } _ { c } = ( 1 - \\eta ) S _ { c } + \\eta \\widehat { S } _ { c } .\\tag{8}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/f52d72d5254bd2ffbe3115c9419abde3c94f62da35bfbc3d311237bb1743fc95.jpg"
+                }
+            },
+            "bbox": [
+                292,
+                766,
+                709,
+                801
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "This recalibrates class competition while preserving the foreground activation mass."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                809,
+                785,
+                839
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "ProBAG for Weakly Supervised Histopathology Segmentation"
+                    }
+                ]
+            },
+            "bbox": [
+                318,
+                114,
+                732,
+                128
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "5"
+                    }
+                ]
+            },
+            "bbox": [
+                774,
+                116,
+                785,
+                127
+            ]
+        }
+    ],
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "2.3 Boundary-Aware Graph Difusion"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                146,
+                540,
+                161
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The balanced CAMs are refined by BAGD, which builds a graph from the deepest feature map "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "F _ { 4 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", following the broader use of graph-based propagation in representation learning [11]. Let "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "f _ { i }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "denote the normalized feature token at graph node i. Feature afinity is computed as"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                169,
+                787,
+                231
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "K _ { i j } = \\langle f _ { i } , f _ { j } \\rangle , \\qquad N ( i ) = \\{ j : K _ { i j } \\geq \\delta \\} \\cup \\{ i \\} .\\tag{9}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/83cb4f7d61bd787a90bdb385b35ea5536bfaa88ef7aa52fdccac883b8c05f90b.jpg"
+                }
+            },
+            "bbox": [
+                333,
+                238,
+                666,
+                256
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Feature similarity alone may propagate scores across tissue interfaces. To reduce such leakage, we extract late-block self-attention profiles [23] from the frozen encoder, pool them to the F4 graph resolution, and normalize them. We use the discrepancy between pooled profiles as an attention-context distance—a soft proxy for structural separation rather than an explicit boundary detector:"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                263,
+                787,
+                342
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "D _ { i j } = \\frac { 1 } { 2 } \\| a _ { i } - a _ { j } \\| _ { 1 } .\\tag{10}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/70a5aa2a0c3fd9c941c3cc7c882b3b03208448027a5ab69c6d37c55f556b1153.jpg"
+                }
+            },
+            "bbox": [
+                429,
+                347,
+                571,
+                376
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "A large "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "D _ { i j }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "indicates that two nodes participate in diferent global attention contexts. Subtracting "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\beta D _ { i j }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "lowers the difusion probability across these contextually distinct edges, while "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "K _ { i j }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "retains local appearance afinity. The boundary-aware difusion graph is obtained by"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                382,
+                787,
+                444
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "L _ { i j } = K _ { i j } / \\tau - \\beta D _ { i j } , \\quad j \\in \\mathcal { N } ( i ) , \\qquad W _ { i j } = \\frac { \\exp ( L _ { i j } ) } { \\sum _ { r \\in \\mathcal { N } ( i ) } \\exp ( L _ { i r } ) } .\\tag{11}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/83c0bd7e05beaa8ad92915a326d956b89d64e314c7f2d1fc3e3b29559955c0c7.jpg"
+                }
+            },
+            "bbox": [
+                274,
+                450,
+                728,
+                486
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "For each class, the balanced CAM is downsampled to graph resolution as "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "s _ { c } \\in \\mathbb { R } ^ { n }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and refined by one residual difusion step:"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                493,
+                784,
+                525
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "z _ { c } = ( 1 - \\lambda _ { c } ) s _ { c } + \\lambda _ { c } W s _ { c } .\\tag{12}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/b51400f1c6c8ba2a81fa513ad9088b0dfd3f82193b7563bf6fd023eff8f46548.jpg"
+                }
+            },
+            "bbox": [
+                408,
+                532,
+                593,
+                549
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The interpolation weight "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\lambda _ { c } \\in [ 0 , 1 ]"
+                    },
+                    {
+                        "type": "text",
+                        "content": "controls the residual smoothing strength. In the released BCSS configuration, "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\lambda _ { c } = ( 0 . 3 5 , 0 . 3 5 , 0 . 2 0 , 0 . 4 5 )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "for (TUM, STR, LYM, NEC), the graph resolution is "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "7 \\times 7 , \\delta = 0 . 5 5 , \\tau = 0 . 1 0 , \\beta = 2 ."
+                    },
+                    {
+                        "type": "text",
+                        "content": "and the attention profile is extracted from block 23. Refined maps are upsampled and converted to pseudo-masks by foreground argmax,"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                558,
+                787,
+                635
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\hat { Y } ( u ) = \\arg \\operatorname* { m a x } _ { c \\in \\{ 1 , \\ldots , C \\} } Z _ { c } ( u ) .\\tag{13}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/258d78c8147daabc7f07c9952b9293eff9e3a216cad974e809c227bc38735ec0.jpg"
+                }
+            },
+            "bbox": [
+                400,
+                640,
+                599,
+                666
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We deliberately use one residual difusion step: the "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( 1 - \\lambda _ { c } ) s _ { c }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "term retains the original CAM evidence while "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\lambda _ { c } W s _ { c }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "applies a single context-constrained correction. Repeated propagation increasingly behaves as a low-pass filter and may erase small, irregular histological structures spanning only a few graph nodes."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                675,
+                787,
+                738
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3 Experiments"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                757,
+                375,
+                775
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.1 Datasets"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                786,
+                334,
+                801
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We evaluate on two histopathology WSSS datasets: BCSS-WSSS [3] and LUAD-HistoSeg [10]. BCSS-WSSS contains 31,826 H&E patches (train: 23,422, val:"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                809,
+                785,
+                840
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "6"
+                    }
+                ]
+            },
+            "bbox": [
+                217,
+                116,
+                228,
+                126
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Duy-Dong Nguyen et al."
+                    }
+                ]
+            },
+            "bbox": [
+                269,
+                114,
+                436,
+                128
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "3,418, test: 4,986) covering tumor (TUM), stroma (STR), lymphocyte (LYM), and necrosis (NEC). LUAD-HistoSeg has 17,291 patches (train: 16,678, val: 306, test: 307) covering tumor epithelium (TE), necrosis (NEC), lymphocytes (LYM), and tumor-associated stroma (TAS). Per standard WSSS, training uses only image-level labels; val/test sets use pixel masks."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                146,
+                785,
+                223
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.2 Implementation Details"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                244,
+                457,
+                260
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Stage-1 implementation. Experiments were run on an RTX PRO 4000 (24 GB). Frozen UNI blocks 5, 11, 17, and 23 [5] provide the four feature levels. Each parent class uses three visual/text subclasses, with fixed hybrid weight "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\alpha = 0 . 6"
+                    },
+                    {
+                        "type": "text",
+                        "content": "The released BCSS configuration uses AdamW with base learning rate "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "5 \\times 1 0 ^ { - 5 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "weight decay "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "1 0 ^ { - 3 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", efective batch size 16, classification scale weights (0, 0.1, 1, 1), "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\lambda _ { \\mathrm { n c e } } = 0 . 0 5"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", and validation-mIoU checkpoint selection. Pseudo-masks fuse scales 2–4 with weights (0.3, 0.3, 0.4) and use the activation-balance and BAGD settings reported above."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                270,
+                787,
+                390
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Stage-2 downstream evaluation. For Table 1 only, stage-1 pseudo-masks supervise a Phikon ViT-B backbone with an FPN decoder. The Phikon backbone is frozen except for LoRA adapters (rank 8, "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\alpha _ { \\mathrm { L o R A } } = 8 )"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", and the model is trained for 80 epochs with batch size 16 and AdamW learning rate "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "6 \\times 1 0 ^ { - 5 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "using noise-robust Bootstrapped CE (noise coeficient 0.3) plus Dice loss. The best checkpoint is selected by validation mIoU. Baselines use their oficial downstream implementations; therefore Table 1 compares complete systems rather than isolating pseudo-mask quality under a common stage-2 architecture."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                390,
+                787,
+                513
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.3 Comparison with State of the Art"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                534,
+                544,
+                549
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Quantitative Results. Table 1 reports our retrained baseline runs using official implementations and the dataset splits/evaluation pipeline used in this study; the values are therefore not copied from the original papers and their ordering is protocol-dependent. This is particularly visible on LUAD-HistoSeg, where our retrained CAM baseline exceeds TPRO and PBIP. On BCSS-WSSS, ProBAG improves over PBIP by +4.13 mIoU, +1.52 mDice, and +4.40 FwIoU. On LUAD-HistoSeg, it improves over the strongest retrained baseline, CAM, by +2.15 mIoU, +1.38 mDice, and +1.84 FwIoU. These margins describe complete two-stage systems and may reflect both pseudo-mask quality and diferences in foundation/downstream backbones; Tables 2–4 provide the more direct evidence for the proposed stage-1 components."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                559,
+                787,
+                726
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Qualitative Results. Figure 2 Figure 2 visually suggests that CAM, Grad-CAM, and PBIP can exhibit structural misalignment, difuse interfaces, and pixel-level noise, whereas ProBAG often produces more coherent regions and sharper-looking transitions. Compared with TPRO, it also preserves several fine structures that are missing in the shown examples. These visualizations are consistent with the intended role of BAGD, but they are qualitative and do not substitute for a boundary-sensitive quantitative metric."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                724,
+                787,
+                832
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "ProBAG for Weakly Supervised Histopathology Segmentation"
+                    }
+                ]
+            },
+            "bbox": [
+                318,
+                114,
+                732,
+                128
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "7"
+                    }
+                ]
+            },
+            "bbox": [
+                774,
+                116,
+                784,
+                127
+            ]
+        }
+    ],
+    [
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/2eade388c8e2c7dae12e9d002fbd37436a9f54d0ec8b94b5f7c534a5fb3c970b.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 1. Quantitative comparison of final segmentation performance on BCSS-WSSS and LUAD-HistoSeg. Results are from a single run for parity with baselines (ablations report mean±std). Note: PBIP’s LUAD results (marked with <sup>†</sup>) reflect stage-1 pseudomask evaluation, as we could not reproduce its stage-2."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td colspan=\"7\">BCSS-WSSS</td></tr><tr><td>Method</td><td colspan=\"2\">Metrics (%)</td><td colspan=\"4\">Per-class IoU (%)</td></tr><tr><td></td><td>mIoU</td><td>mDice FwIoU</td><td>TUM</td><td>STR</td><td>LYM</td><td>NEC</td></tr><tr><td>CAM (CVPR’16) [28]</td><td>63.32</td><td>77.29</td><td>68.53</td><td>72.98</td><td>68.13</td><td>56.19 55.99</td></tr><tr><td>Grad-CAM (ICCV&#x27;17) [20]</td><td>58.04</td><td>72.68 66.33</td><td>71.46</td><td>66.57</td><td>53.81</td><td>40.31</td></tr><tr><td>Proto2Seg (IPMI&#x27;23) [18]</td><td>57.42</td><td>72.24</td><td>63.25</td><td>58.28</td><td>53.27</td><td>54.89</td></tr><tr><td>TPRO (MICCAI&#x27;23) [27]</td><td>65.50</td><td>78.90</td><td>69.42 77.40</td><td>65.10</td><td>56.20</td><td>63.40</td></tr><tr><td>PBIP (ČVPR’25) [21]</td><td>69.03</td><td>82.84 71.93</td><td>78.13</td><td>65.56</td><td>62.11</td><td>70.31</td></tr><tr><td>Ours (ProBAG)</td><td>73.16 84.36</td><td>76.33</td><td>81.87</td><td>75.31</td><td>66.29</td><td>69.14</td></tr><tr><td colspan=\"7\">LUAD-HistoSeg</td></tr><tr><td rowspan=\"2\">Method</td><td>Metrics</td><td>(%)</td><td></td><td>Per-class IoU (%)</td><td></td><td></td></tr><tr><td>mIoU</td><td>mDice</td><td>FwIoU TE</td><td>NEC</td><td>LYM</td><td>TAS</td></tr><tr><td>CAM (CVPR’16) [28]</td><td>74.26 85.19</td><td>73.32</td><td>75.57</td><td>78.08</td><td>73.69</td><td>69.69</td></tr><tr><td>Grad-ČAM (ICCV&#x27;17) [20]</td><td>71.19 83.13</td><td>71.89</td><td>75.92</td><td>68.89</td><td>72.09</td><td>67.86</td></tr><tr><td>Proto2Seg (IPMI&#x27;23) [18]</td><td>61.64 75.67</td><td></td><td>69.58</td><td>43.64</td><td>70.63</td><td>62.70</td></tr><tr><td>TPRO (MICCAI&#x27;23) [27]</td><td>72.90</td><td>84.27</td><td>73.14</td><td>74.30 68.80</td><td>77.30</td><td>71.20</td></tr><tr><td>PBIP (CVPR&#x27;25) [21]†</td><td>66.05</td><td>79.39</td><td>62.55</td><td>60.70 71.80</td><td>72.50</td><td>59.20</td></tr><tr><td>Ours (ProBAG)</td><td>76.41</td><td>86.57</td><td>75.16</td><td>77.68</td><td>82.03 74.94</td><td>71.00</td></tr></table>",
+                "table_type": "complex_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                263,
+                208,
+                738,
+                435
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.4 Ablation Study"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                444,
+                392,
+                459
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Efect of Main Components. Table 2 shows that pathology text semantics provide the dominant improvement: adding text prototypes raises mIoU from 68.72% to 72.90% (+4.18) and mDice from 81.22% to 84.20% (+2.98). Blending text and visual prototypes adds a smaller +0.15 mIoU and +0.10 mDice. Adding the final activation-balance and BAGD configuration raises performance by a further +0.43 mIoU and +0.28 mDice. Thus, the measured gains are complementary but not equal in magnitude; most of the improvement comes from pathology-aligned semantic prototypes, while calibration and graph refinement provide smaller corrections. The stage-1 pseudo-masks reach 73.48% mIoU, close to and slightly above the 73.16% stage-2 BCSS result. This diference may reflect pseudo-label noise and downstream optimization, but the current experiments do not establish a unique cause. Stage 1 is therefore reported as a CRF-free standalone output, while stage 2 is retained for comparison with two-stage systems."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                469,
+                789,
+                667
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/0c19640a780f7e33679ea19854488c819ba2ade4ba5b3eb98d6c8cf71ba236f7.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 2. Efect of Main Components on initial pseudo masks for BCSS-WSSS."
+                    },
+                    {
+                        "type": "text",
+                        "content": "Efect of Text Encoder. Within the same ProBAG stage-1 framework, Table 3 shows that domain-specific language representations matter: replacing CLIP-style text features with CONCH increases mIoU by +1.42% and mDice"
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Setting</td><td>mIoU</td><td>mDice</td></tr><tr><td>Visual baseline</td><td> $6 8 . 7 2 \\pm 0 . 6 7$ </td><td> $8 1 . 2 2 \\pm 0 . 4 9$ </td></tr><tr><td>+ Text prototype</td><td> $7 2 . 9 0 \\pm 0 . 1 4$ </td><td> $8 4 . 2 0 \\pm 0 . 1 0$ </td></tr><tr><td>+ Hybrid prototype</td><td> $7 3 . 0 5 \\pm 0 . 0 9$ </td><td> $8 4 . 3 0 \\pm 0 . 0 6$ </td></tr><tr><td>+ Hybrid + BAGD</td><td> ${ \\bf 7 3 . 4 8 \\pm 0 . 2 0 }$ </td><td> $\\mathbf { 8 4 . 5 8 \\pm 0 . 1 4 }$ </td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                316,
+                707,
+                686,
+                780
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "8"
+                    }
+                ]
+            },
+            "bbox": [
+                217,
+                116,
+                228,
+                126
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Duy-Dong Nguyen et al."
+                    }
+                ]
+            },
+            "bbox": [
+                269,
+                114,
+                436,
+                128
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/acb55d3f34ba0a4ce4f04b31475b6aeced41235a463b9dce73e554efd537ecff.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 2. Qualitative comparison of final segmentation results on BCSS-WSSS and LUAD-HistoSeg test patches. GT denotes the ground truth segmentation."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                223,
+                142,
+                785,
+                353
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "by +0.99%. This controlled comparison supports the use of pathology-aligned text semantics, while not constituting a broader comparison of visual foundation backbones."
+                    }
+                ]
+            },
+            "bbox": [
+                215,
+                416,
+                785,
+                462
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/a32e5d3cd6d69716d767bd78b805a8b38db5999ab7f73a5417642998e23d20a0.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 3. Efect of Text Encoders on initial pseudo masks for BCSS-WSSS."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Text Encoder</td><td>mIoU</td><td>mDice</td></tr><tr><td>No text</td><td> $6 9 . 5 5 \\pm 0 . 7 7$ </td><td> $8 1 . 8 2 \\pm 0 . 5 4$ </td></tr><tr><td>CLIP</td><td> $7 2 . 0 6 \\pm 0 . 4 0$ </td><td> $8 3 . 5 9 \\pm 0 . 2 7$ </td></tr><tr><td>CONCH</td><td> ${ \\bf 7 3 . 4 8 \\pm 0 . 2 0 }$ </td><td> $\\mathbf { 8 4 . 5 8 \\pm 0 . 1 4 }$ </td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                334,
+                488,
+                668,
+                550
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/e1520136d1c2f88b3358f0f33443183453e9a831d967380cbf19a2ff5e00a2c0.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Efect of Boundary Penalty. Setting "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\beta = 0"
+                    },
+                    {
+                        "type": "text",
+                        "content": "retains feature-only graph difu-Table 4. Efect of the attention-boundary penalty "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\beta"
+                    },
+                    {
+                        "type": "text",
+                        "content": "on initial pseudo masks for BCSS-WSSS."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td> $\\beta$ </td><td>mIoU</td><td>mDice</td></tr><tr><td>0</td><td> $7 3 . 3 9 \\pm 0 . 2 2$ </td><td> $8 4 . 5 3 \\pm 0 . 1 6$ </td></tr><tr><td>1</td><td> $7 3 . 4 3 \\pm 0 . 1 9$ </td><td> $8 4 . 5 5 \\pm 0 . 1 4$ </td></tr><tr><td>2</td><td> $7 3 . 4 8 \\pm 0 . 2 0$ </td><td> $8 4 . 5 8 \\pm 0 . 1 4$ </td></tr><tr><td>3</td><td> ${ \\bf 7 3 . 5 0 \\pm 0 . 2 3 }$ </td><td> ${ \\bf 8 4 . 6 0 \\pm 0 . 1 5 }$ </td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                369,
+                616,
+                633,
+                690
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "sion, whereas "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\beta > 0"
+                    },
+                    {
+                        "type": "text",
+                        "content": "adds the attention-context penalty. Across "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\beta \\in [ 0 , 3 ]"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", the region-based metrics vary by less than 0.2% mIoU and 0.1% mDice. In particular, the "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\beta = 0"
+                    },
+                    {
+                        "type": "text",
+                        "content": "to "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\beta = 2"
+                    },
+                    {
+                        "type": "text",
+                        "content": "gap is 0.09% mIoU and 0.05% mDice, smaller than the reported standard deviations. These results show that the overall difusion pipeline is stable to "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\beta ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "but they do not by themselves establish a statistically separable benefit of the attention penalty on region metrics. We use "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\beta = 2"
+                    },
+                    {
+                        "type": "text",
+                        "content": "as a moderate fixed constraint rather than claiming it is uniquely optimal."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                699,
+                787,
+                806
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "ProBAG for Weakly Supervised Histopathology Segmentation"
+                    }
+                ]
+            },
+            "bbox": [
+                318,
+                114,
+                732,
+                128
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "9"
+                    }
+                ]
+            },
+            "bbox": [
+                774,
+                116,
+                785,
+                126
+            ]
+        }
+    ],
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.5 Discussion and Limitations"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                146,
+                485,
+                161
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "ProBAG combines established ingredients—prototype learning, multi-scale CAMs, and graph propagation—but targets two specific histopathology failure modes with explicit mechanisms: foreground-mass-preserving class recalibration and attention-context-regularized difusion. The current evidence is strongest for pathology-aligned text prototypes; the additional region-metric gain of the attention penalty is modest and should be complemented by boundary-specific evaluation. Table 1 compares complete systems with diferent foundation and stage-2 backbones and is reported from single runs, so it cannot isolate pseudomask quality as cleanly as the stage-1 ablations. We also do not conduct an exhaustive comparison of pathology foundation models. These limitations motivate common-backbone evaluation, multi-seed final results, and dedicated boundary metrics."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                171,
+                794,
+                353
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4 Conclusion"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                376,
+                359,
+                392
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We present ProBAG, a stage-1 weakly supervised histopathology segmentation framework that combines hybrid text–visual prototypes, foreground-masspreserving activation balance, and attention-context-regularized graph difusion. Results on BCSS-WSSS and LUAD-HistoSeg show consistent improvements over the retrained baselines, with ablations indicating that pathology-aligned text semantics account for the largest gain and graph refinement provides a smaller complementary correction. ProBAG produces pseudo-masks without CRF or an external segmentation model; a downstream Phikon-FPN is used only for the complete two-stage comparison. Future work will evaluate boundary-sensitive metrics, common-backbone controls, multi-seed final systems, stronger foundationmodel boundary cues, and large-scale multi-center data."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                407,
+                794,
+                575
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "References"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                598,
+                325,
+                614
+            ]
+        },
+        {
+            "type": "list",
+            "content": {
+                "list_type": "reference_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "1. Ahn, J., Cho, S., Kwak, S.: Weakly supervised learning of instance segmentation with inter-pixel relations (2019), https://arxiv.org/abs/1904.05044"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "2. Ahn, J., Kwak, S.: Learning pixel-level semantic afinity with image-level supervision for weakly supervised semantic segmentation (2018), https://arxiv.org/ abs/1803.10464"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "3. Amgad, M., Elfandy, H., Hussein, H., Atteya, L.A., Elsebaie, M.A.T., Abo Elnasr, L.S., Sakr, R.A., Salem, H.S.E., Ismail, A.F., Saad, A.M., Ahmed, J., Elsebaie, M.A.T., Rahman, M., Ruhban, I.A., Elgazar, N.M., Alagha, Y., Osman, M.H., Alhusseiny, A.M., Khalaf, M.M., Younes, A.A.F., Abdulkarim, A., Younes, D.M., Gadallah, A.M., Elkashash, A.M., Fala, S.Y., Zaki, B.M., Beezley, J., Chittajallu, D.R., Manthey, D., Gutman, D.A., Cooper, L.A.D.: Structured crowdsourcing enables convolutional segmentation of histology images. Bioinformatics 35(18), 3461– 3467 (09 2019). https://doi.org/10.1093/bioinformatics/btz083, https:// doi.org/10.1093/bioinformatics/btz083"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                225,
+                628,
+                784,
+                656
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "10"
+                    }
+                ]
+            },
+            "bbox": [
+                217,
+                114,
+                236,
+                127
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Duy-Dong Nguyen et al."
+                    }
+                ]
+            },
+            "bbox": [
+                271,
+                114,
+                434,
+                128
+            ]
+        }
+    ],
+    [
+        {
+            "type": "list",
+            "content": {
+                "list_type": "reference_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "4. Campanella, G., Hanna, M.G., Geneslaw, L., Miraflor, A.P., Silva, V.W.K., Busam, K.J., Brogi, E., Reuter, V.E., Klimstra, D.S., Fuchs, T.J.: Clinical-grade computational pathology using weakly supervised deep learning on whole slide images. Nature medicine 25, 1301 – 1309 (2019), https://api.semanticscholar.org/ CorpusID:196814162"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "5. Chen, R.J., Ding, T., Lu, M.Y., Williamson, D.F., Jaume, G., Chen, B., Zhang, A., Shao, D., Song, A.H., Shaban, M., et al.: Towards a general-purpose foundation model for computational pathology. Nature Medicine (2024)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "6. Chen, Z., Wang, T., Wu, X., Hua, X.S., Zhang, H., Sun, Q.: Class re-activation maps for weakly-supervised semantic segmentation (2022), https://arxiv.org/ abs/2203.00962"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "7. Dosovitskiy, A., Beyer, L., Kolesnikov, A., Weissenborn, D., Zhai, X., Unterthiner, T., Dehghani, M., Minderer, M., Heigold, G., Gelly, S., Uszkoreit, J., Houlsby, N.: An image is worth 16x16 words: Transformers for image recognition at scale (2021), https://arxiv.org/abs/2010.11929"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "8. Fang, Z., Chen, Y., Wang, Y., Wang, Z., Ji, X., Zhang, Y.: Weakly-supervised semantic segmentation for histopathology images based on dataset synthesis and feature consistency constraint. In: AAAI Conference on Artificial Intelligence (2023), https://api.semanticscholar.org/CorpusID:259735474"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "9. Fu, M., Fu, F., Ling, X., Yuan, H., Guan, T., He, Y., Zhu, L.: Multimodal prototype alignment for semi-supervised pathology image segmentation (2025), https://arxiv.org/abs/2508.19574"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "10. Han, C., Pan, X., Yan, L., Lin, H., Li, B., Yao, S., Lv, S., Shi, Z., Mai, J., Lin, J., Zhao, B., Xu, Z., Wang, Z., Wang, Y., Zhang, Y., Wang, H., Zhu, C., Lin, C., Mao, L., Wu, M., Duan, L., Zhu, J., Hu, D., Fang, Z., Chen, Y., Zhang, Y., Li, Y., Zou, Y., Yu, Y., Li, X., Li, H., Cui, Y., Han, G., Xu, Y., Xu, J., Yang, H., Li, C., Liu, Z., Lu, C., Chen, X., Liang, C., Zhang, Q., Liu, Z.: Wsss4luad: Grand challenge on weakly-supervised tissue semantic segmentation for lung adenocarcinoma (2022), https://arxiv.org/abs/2204.06455"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "11. Kipf, T.N., Welling, M.: Semi-supervised classification with graph convolutional networks (2017), https://arxiv.org/abs/1609.02907"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "12. Kolesnikov, A., Lampert, C.H.: Seed, expand and constrain: Three principles for weakly-supervised image segmentation (2016), https://arxiv.org/abs/1603. 06098"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "13. Lee, J., Oh, S.J., Yun, S., Choe, J., Kim, E., Yoon, S.: Weakly supervised semantic segmentation using out-of-distribution data (2022), https://arxiv.org/abs/ 2203.03860"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "14. Lin, T.Y., Dollár, P., Girshick, R., He, K., Hariharan, B., Belongie, S.: Feature pyramid networks for object detection (2017), https://arxiv.org/abs/1612.03144"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "15. Lu, M.Y., Chen, B., Williamson, D.F., Chen, R.J., Liang, I., Ding, T., Jaume, G., Odintsov, I., Le, L.P., Gerber, G., et al.: A visual-language foundation model for computational pathology. Nature Medicine 30, 863–874 (2024)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "16. Minaee, S., Boykov, Y., Porikli, F., Plaza, A., Kehtarnavaz, N., Terzopoulos, D.: Image segmentation using deep learning: A survey (2020), https://arxiv.org/ abs/2001.05566"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "17. van den Oord, A., Li, Y., Vinyals, O.: Representation learning with contrastive predictive coding (2019), https://arxiv.org/abs/1807.03748"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "18. Pan, W., Yan, J., Chen, H., Yang, J., Xu, Z., Li, X., Yao, J.: Human-machine interactive tissue prototype learning for label-eficient histopathology image segmentation (2023), https://arxiv.org/abs/2211.14491"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                223,
+                147,
+                785,
+                215
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "ProBAG for Weakly Supervised Histopathology Segmentation"
+                    }
+                ]
+            },
+            "bbox": [
+                318,
+                114,
+                733,
+                128
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "11"
+                    }
+                ]
+            },
+            "bbox": [
+                766,
+                116,
+                785,
+                127
+            ]
+        }
+    ],
+    [
+        {
+            "type": "list",
+            "content": {
+                "list_type": "reference_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "19. Ru, L., Zhan, Y., Yu, B., Du, B.: Learning afinity from attention: End-toend weakly-supervised semantic segmentation with transformers (2022), https: //arxiv.org/abs/2203.02664"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "20. Selvaraju, R.R., Cogswell, M., Das, A., Vedantam, R., Parikh, D., Batra, D.: Grad-cam: Visual explanations from deep networks via gradient-based localization. International Journal of Computer Vision 128(2), 336–359 (Oct 2019). https://doi.org/10.1007/s11263-019-01228-7, http://dx.doi.org/10.1007/ s11263-019-01228-7"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "21. Tang, Q., Fan, L., Pagnucco, M., Song, Y.: Prototype-based image prompting for weakly supervised histopathological image segmentation (2025), https://arxiv. org/abs/2503.12068"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "22. Van Thai, L., Nguyen, T.D., Pham, H.N., Thi, L.A.D., Nguyen, D.D., Bui, N.L.Q.: Unisemalign: Text-prototype alignment with a foundation encoder for semi-supervised histopathology segmentation. In: Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) Workshops. pp. 6803–6813 (June 2026)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "23. Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A.N., Kaiser, L., Polosukhin, I.: Attention is all you need (2023), https://arxiv.org/abs/1706. 03762"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "24. Wang, Y., Zhang, J., Kan, M., Shan, S., Chen, X.: Self-supervised equivariant attention mechanism for weakly supervised semantic segmentation (2020), https: //arxiv.org/abs/2004.04581"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "25. Wang, Z., Wu, Z., Agarwal, D., Sun, J.: Medclip: Contrastive learning from unpaired medical images and text (2022), https://arxiv.org/abs/2210.10163"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "26. Xie, J., Hou, X., Ye, K., Shen, L.: Cross language image matching for weakly supervised semantic segmentation (2022), https://arxiv.org/abs/2203.02668"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "27. Zhang, S., Zhang, J., Xie, Y., Xia, Y.: Tpro: Text-prompting-based weakly supervised histopathology tissue segmentation. In: International Conference on Medical Image Computing and Computer-Assisted Intervention (2023), https://api. semanticscholar.org/CorpusID:263673303"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "28. Zhou, B., Khosla, A., Lapedriza, A., Oliva, A., Torralba, A.: Learning deep features for discriminative localization (2015), https://arxiv.org/abs/1512.04150"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                215,
+                147,
+                784,
+                188
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "12"
+                    }
+                ]
+            },
+            "bbox": [
+                217,
+                116,
+                236,
+                126
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Duy-Dong Nguyen et al."
+                    }
+                ]
+            },
+            "bbox": [
+                269,
+                114,
+                436,
+                128
+            ]
+        }
+    ]
+]

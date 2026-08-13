@@ -1,0 +1,4336 @@
+[
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Through Van Gogh’s Eyes: Global Style Transfer with Difusion Model"
+                    }
+                ],
+                "level": 1
+            },
+            "bbox": [
+                222,
+                140,
+                779,
+                184
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Jeongha Lee*<sup>1,2</sup> , Yujin Kim*<sup>3</sup> , Ghazanfar Ali<sup>4</sup> , Suhyun Kim<sup>†5</sup> , and Jae-In Hwang<sup>†1</sup>"
+                    }
+                ]
+            },
+            "bbox": [
+                235,
+                212,
+                767,
+                243
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "<sup>1</sup>Korea Institute of Science and Technology, <sup>2</sup>University of Science and Technology, <sup>3</sup> Korea University, <sup>4</sup> Gachon University, <sup>5</sup> Kyung Hee University wjdgk1029@gmail.com, lakeeye1220@gmail.com, ghazan@gachon.ac.kr, dr.suhyun.kim@gmail.com, hji@kist.re.kr"
+                    }
+                ]
+            },
+            "bbox": [
+                223,
+                253,
+                779,
+                311
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/ef711e216736810131400b7403a121ef4a4c6bd85b957f34f745e4172a38d772.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 1: Artist-level Global Style Transfer results. Given a content image I (first col umn), our framework synthesizes an artistic image x<sub>0</sub> (second column) that reflects the global style of the target artist. The Artist Style Book (remaining columns) displays the top-6 real artworks from the artist’s corpus with the highest semantic similarity to "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "x _ { 0 } ."
+                    },
+                    {
+                        "type": "text",
+                        "content": ", measured by CLIP distance. This demonstrates that our generated results are influenced by a diverse range of the artist’s genuine works, successfully capturing the global stylistic distribution rather than overfitting to a single iconic exemplar."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                220,
+                338,
+                781,
+                693
+            ]
+        },
+        {
+            "type": "page_aside_text",
+            "content": {
+                "page_aside_text_content": [
+                    {
+                        "type": "text",
+                        "content": "arXiv:2608.11546v1 [cs.CV] 12 Aug 2026"
+                    }
+                ]
+            },
+            "bbox": [
+                27,
+                349,
+                66,
+                801
+            ]
+        },
+        {
+            "type": "page_footnote",
+            "content": {
+                "page_footnote_content": [
+                    {
+                        "type": "text",
+                        "content": "Equal contribution, <sup>†</sup> Corresponding author"
+                    }
+                ]
+            },
+            "bbox": [
+                232,
+                824,
+                540,
+                840
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Abstract. Artistic image synthesis aims to recreate the expressive visual identity of a target artist, yet existing methods often fail to capture an artist’s global style. Conventional style transfer methods transfer the style of one or a few reference artworks to a content image in a One-to-One manner, making them efective for artwork-level stylization but limited in representing the broader stylistic distribution of an artist. Text-to-image difusion models conditioned on artist names, such as ‘∼ in Van Gogh style’, ofer greater flexibility, but they often sufer from text-induced bias and reproduce patterns from only a few iconic works. To address these limitations, we introduce Global Style Transfer (GST), an artistic image synthesis paradigm, in a Many-to-One manner,that aggregates multiple artworks from a target artist and transfers their shared global style to a single content image. For GST, we propose Global Style Guidance (GSG), which learns a residual global style ofset "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\varDelta ( \\iota _ { t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "in the intermediate feature space, or h-space, of a difusion model under a fixed prompt. By learning artist-level style semantics purely from visual statistics, GSG mitigates text-dependent artistic bias. We further propose Content Alignment Guidance (CAG), a training-free perceptual guidance mechanism that preserves the semantic structure of the content image while allowing artist-specific geometric deformation. Experiments on WikiArt demonstrate that GST achieves superior stylistic fidelity, content preservation, and output diversity compared to existing style transfer and difusion-based artistic synthesis methods."
+                    }
+                ]
+            },
+            "bbox": [
+                259,
+                146,
+                741,
+                467
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Keywords: Global Style Transfer · Difusion Models · Artistic Image Synthesis"
+                    }
+                ]
+            },
+            "bbox": [
+                261,
+                479,
+                740,
+                507
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "1 Introduction"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                217,
+                535,
+                375,
+                550
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "If the great painters of the past were alive today, how would they perceive and depict our modern world on canvas? This question lies at the core of artistic image synthesis, which aims to recreate the expressive visual identity of a target artist. Existing approaches mainly fall into two paradigms: Style Transfer [6, 11, 16] and Text-to-Image (T2I) difusion-based artistic image synthesis [22, 34]. Conventional style transfer methods extract style from a single or a few reference artworks and transfer it to a content image, efectively reproducing the characteristics of specific artworks, called the One-to-One approach. Unfortunately, such instance-level style transfer fails to capture the broader stylistic distribution that defines an artist’s overall visual identity, shown in Fig. 2. On the other hand, T2I difusion models conditioned on artist names (e.g., ‘∼ in the style of Van Gogh’) ofer a more flexible synthesis pipeline but sufer from text-dependent artistic bias. T2I difusion model often reproduces textures and compositions from a handful of iconic works, collapsing the stylistic diversity of an artist into a narrow, mode-biased distribution. Consequently, neither paradigm reliably captures the coherent visual identity that defines an artist’s global style."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                568,
+                787,
+                809
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "To overcome these limitations, we introduce Global Style Transfer (GST), a new paradigm that reformulates artistic image synthesis as a Many-to-One approach. Instead of relying on a single reference artwork or a text prompt, GST aggregates multiple artworks from a target artist and transfers their shared global style to a single content image, as shown in Fig. 12. This formulation naturally mitigates instance-level bias by capturing coherent style representations across the full breadth of an artist’s artworks, and eliminates linguistic dependence by grounding stylistic guidance entirely in visual statistics. As a result, GST enables artist-level style transfer that faithfully reflects the coherent visual identity of the target artist while allowing diverse and expressive content re-rendering."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                809,
+                787,
+                840
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "2"
+                    }
+                ]
+            },
+            "bbox": [
+                217,
+                116,
+                228,
+                126
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "J. Lee et al."
+                    }
+                ]
+            },
+            "bbox": [
+                271,
+                114,
+                352,
+                127
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                214,
+                147,
+                787,
+                267
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Concretely, we realize Global Style Transfer through two complementary components. First, we propose Global Style Guidance (GSG), which operates in the intermediate h-space of a difusion U-Net bottleneck. GSG trains a lightweight Style Extraction Function (SEF) to predict a residual global style ofset ∆h<sub>t</sub> from multiple artworks under a fixed, unified text condition (e.g., ‘A painting’), thereby learning purely visual style semantics free from text-induced variance. Second, we propose Content Alignment Guidance (CAG), a training-free mechanism that performs DDIM inversion [26] on the content image and applies perceptual guidance at each difusion timestep. CAG preserves the abstract structure and semantic composition of the content while allowing style-driven geometric deformations, reflecting the expressive intent characteristic of a target artist."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                268,
+                787,
+                434
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Extensive experiments on WikiArt dataset [28] demonstrate that our framework achieves superior stylistic fidelity and content preservation compared to existing style transfer and T2I difusion-based artistic synthesis methods, while producing diverse outputs that better reflect the global stylistic spectrum of the target artist. Our main contributions are as follows:"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                435,
+                787,
+                511
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We introduce Global Style Transfer, a novel many-to-one artistic image synthesis paradigm that learns a unified global style distribution from multiple artworks of a target artist, overcoming the artwork (instance)-level and text-dependent artistic bias of prior methods."
+                    }
+                ]
+            },
+            "bbox": [
+                240,
+                525,
+                787,
+                585
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "– We propose Global Style Guidance (GSG), a guidance mechanism operating in h-space that learns artist-level global stylistic semantics only from visual statistics, mitigating linguistic dependence and artistic mode collapse. We propose Content Alignment Guidance (CAG), a training-free perceptual guidance that preserves the semantic integrity of the content while enabling artist-specific style-based deformation during the difusion process."
+                    }
+                ]
+            },
+            "bbox": [
+                223,
+                585,
+                787,
+                678
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "2 Related Works"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                702,
+                397,
+                718
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "2.1 Style Transfer (1 content image, 1 style image)"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                736,
+                648,
+                752
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Style Transfer aims to generate a stylized image by combining the semantic structure of a content image with the visual characteristics (e.g., texture, color, and brushstroke) of a style image, typically in a One-to-One setting (Content image: 1, Style image: 1) [8, 16]. Early Neural Style Transfer (NST) methods [6,15] achieved this by matching feature statistics between content and style images, while later methods improved stylization quality through normalization [11, 29], attention mechanisms [17, 20]. Recent difusion-based approaches, such as StyleInjection [2], CSGO [31], InST [35] and Dif-NST [24] further improve style fidelity by injecting style features into the denoising process. However, because these methods rely on only one or few style images, they capture instance-level style rather than the broader stylistic distribution of an artist."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                765,
+                787,
+                842
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Global Style Transfer"
+                    }
+                ]
+            },
+            "bbox": [
+                586,
+                114,
+                732,
+                128
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "3"
+                    }
+                ]
+            },
+            "bbox": [
+                774,
+                116,
+                785,
+                127
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/44e7838619fb8d5d976a4abf578416171822e47a84c5ac629630e53efa0829fc.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 2: Comparison between conventional style transfer and the proposed Global Style Transfer. (Top) Traditional style transfer applies the style of a single reference artwork to a content image, leading to instance-level overfitting. (Bottom) In contrast, Global Style Transfer leverages various artworks from the same artist to learn unified stylistic features, including color palettes, texture patterns, and brushwork, enabling richer style-based content deformation and more faithful artistic image synthesis."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                305,
+                148,
+                694,
+                414
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                214,
+                546,
+                787,
+                638
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "2.2 Style Personalization (× or 1 content image, Few style image)"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                661,
+                772,
+                678
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Recent style personalization methods focus on adapting pretrained text-to-image difusion models to generate images in a customized artistic style, typically using a small number of reference styles and either no content image or a single content image to be stylized (Content: × or 1, Style: few). These approaches fall into two categories. The first fine-tunes the difusion backbone itself: DreamBooth [23], Custom Difusion [12], and StyleDrop [25] fine-tune the model, cross-attention projections, or lightweight adapters, respectively, to bind the style to a unique identifier. The second embeds style into the specific module without modifying model weights: Textual Inversion [5] optimizes a word embedding for the target style, while StyleAligned [9] propagates stylistic consistency across generated images via shared attention at inference. However, these methods often memorize dominant visual patterns, limiting stylistic diversity."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                689,
+                787,
+                842
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "4"
+                    }
+                ]
+            },
+            "bbox": [
+                217,
+                116,
+                228,
+                126
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "J. Lee et al."
+                    }
+                ]
+            },
+            "bbox": [
+                271,
+                114,
+                352,
+                127
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/e5375291aca2d042a860a2e5c1d55d9a85bff19a21b4e13a54d7efbbc560860b.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 3: Overall framework of Global Style Transfer (GST). (Left) Global Style Guidance (GSG) trains a lightweight Style Extraction Function "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "f _ { t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "on multiple artworks under the fixed prompt ‘A painting’, learning a residual global style ofset "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\Delta \\mathbf { h } _ { t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "that modulates the U-Net bottleneck representation "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "h _ { t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "in a text-independent manner. During reverse difusion, "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\Delta \\mathbf { h } _ { t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "steers the denoising trajectory toward the artist’s global style distribution. (Right) Content Alignment Guidance (CAG) first maps the content image "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "I _ { c }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "into a noisy latent via DDIM inversion, then applies CLIP-based perceptual guidance at each timestep to align the semantic structure of the generated image with the content while permitting style-driven deformation, yielding artist-level stylization."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                227,
+                147,
+                776,
+                313
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                214,
+                483,
+                785,
+                513
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "In contrast to both methods, our Global Style Transfer learns an artist-level global style distribution from multiple artworks and applies it to a content image in Many-to-One manner, enabling faithful artistic synthesis without relying on single-instance style cues or text-dependent supervision."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                513,
+                787,
+                575
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3 Methods"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                597,
+                338,
+                612
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.1 Preliminary"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                626,
+                361,
+                641
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Latent Difusion Models. Latent Difusion Models (LDM) [22] operate in a lower-dimensional latent space, enabling cost-eficient and scalable text-conditioned image synthesis. Given an image "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "x _ { 0 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", an autoencoder "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathcal { E } : \\mathbb { R } ^ { k }  \\mathbb { R } ^ { d }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "maps images into the latent vector "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "z _ { 0 } = \\mathcal { E } ( x _ { 0 } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". A forward difusion process gradually adds Gaussian noise according to a variance schedule "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\beta _ { t } ."
+                    },
+                    {
+                        "type": "text",
+                        "content": ", yielding:"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                650,
+                802,
+                727
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "z _ { t } = \\sqrt { \\bar { \\alpha } _ { t } } z _ { 0 } + \\sqrt { 1 - \\bar { \\alpha } _ { t } } \\epsilon , \\ \\epsilon \\sim \\mathcal { N } ( 0 , I ) ,\\tag{1}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/f8c24852b66be01938bb5ea3194c84c3041db19cf762227c315516fb7bbd15ec.jpg"
+                }
+            },
+            "bbox": [
+                367,
+                736,
+                633,
+                752
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\begin{array} { r } { \\bar { \\alpha } _ { t } = \\prod _ { s = 1 } ^ { t } ( 1 - \\beta _ { s } ) } \\end{array}"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". Then, the denoising model "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\epsilon _ { \\theta }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "learns to predict the noise "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\boldsymbol { \\epsilon } _ { \\theta } \\big ( \\boldsymbol { z } _ { t } , t , \\boldsymbol { c } \\big )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "given the noisy latent "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "z _ { t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "at every time step t with text condition c encoded by the text encoder "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\tau _ { \\phi }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "during the sampling process as below:"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                761,
+                787,
+                808
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathbf { z } _ { t - 1 } = \\sqrt { \\bar { \\alpha } _ { t - 1 } } \\tilde { z } _ { 0 } + \\sqrt { 1 - \\bar { \\alpha } _ { t - 1 } - \\sigma _ { t } ^ { 2 } } \\epsilon _ { \\theta } ^ { t } \\bigl ( z _ { t } \\bigr ) + \\sigma _ { t } \\epsilon _ { t } ,\\tag{2}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/444e675196bb619c1422f1e421484f9f164799f734151291fcd021fba897977b.jpg"
+                }
+            },
+            "bbox": [
+                325,
+                819,
+                676,
+                843
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Global Style Transfer"
+                    }
+                ]
+            },
+            "bbox": [
+                588,
+                114,
+                732,
+                127
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "5"
+                    }
+                ]
+            },
+            "bbox": [
+                774,
+                116,
+                785,
+                126
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/f285fc74bc8d6c017f9842d805e3078e83c5716542f0ab4d8d7ad48d0f36c00b.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 4: Time-step robustness of Global Style Guidance in h-space. (Top) Artistic images generated at difusion timesteps "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "t = \\{ 0 , 1 0 , 2 5 , 5 0 \\}"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", showing increasing noise levels as t grows. (Bottom) t-SNE visualizations of 500 "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "h _ { t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "feature vectors from artworks by Van Gogh (yellow) and Monet (red) at the corresponding t. Despite progressive noise corruption, clusters remain well-separated across all timesteps, validating h-space as a stable domain for artist-level style representation during the difusion process."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                277,
+                142,
+                725,
+                319
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\sigma _ { t } ~ = ~ \\eta \\sqrt { ( 1 - { \\bar { \\alpha } } _ { t - 1 } ) / ( 1 - { \\bar { \\alpha } } _ { t } ) } \\sqrt { 1 - { \\bar { \\alpha } } _ { t } / { \\bar { \\alpha } } _ { t - 1 } } . ~ \\epsilon _ { \\theta } ^ { t } ( z _ { t } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "denotes the modelpredicted noise, abbreviated from "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\epsilon _ { \\theta } ( \\mathbf { z } _ { t } , t , c )"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\tilde { \\mathbf { z } } _ { 0 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "means the approximation of the clean latent "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbf { z } _ { 0 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "at time step t obtained via Tweedie’s formula. The training objective of the LDM is defined as:"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                441,
+                787,
+                505
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\begin{array} { r } { \\mathcal { L } _ { \\mathrm { L D M } } : = \\mathbb { E } _ { z \\sim \\mathcal { E } ( x ) , \\epsilon _ { t } , t } \\left[ \\| \\epsilon _ { \\theta } ( z _ { t } , t , c ) - \\epsilon _ { t } \\| _ { 2 } ^ { 2 } \\right] , } \\end{array}\\tag{3}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/4e3543e6355f40428f4ee55b17cb2665241b667cb68ceb853814dcb6e9e5e004.jpg"
+                }
+            },
+            "bbox": [
+                351,
+                516,
+                650,
+                535
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "After training, the difusion process starts from a noisy latent "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "z _ { t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and iteratively denoises it to "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "z _ { \\mathrm { 0 } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". The LDM then decodes "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "z _ { 0 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "into pixel space using the decoder "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathcal { D } : \\mathbb { R } ^ { d }  \\mathbb { R } ^ { k }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", yielding the clean image "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "x _ { 0 } = \\mathcal { D } ( z _ { 0 } )"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                546,
+                787,
+                593
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Asymmetric Reverse Process for Semantic Guidance. Asyrp [13] discovers that the pre-trained difusion model inherently contains a semantic space, referred to as the h-space, corresponding to the activations of the U-Net bottleneck layer. To enable controllable generation within LDM, Asyrp reformulates the reverse process by modifying Eq. (2) into an asymmetric form as follows:"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                616,
+                787,
+                693
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathbf { z } _ { t - 1 } = \\sqrt { \\bar { \\alpha } _ { t - 1 } } \\mathbf { P } _ { t } ( \\epsilon _ { \\theta } ^ { t } ( z _ { t } | \\varDelta \\mathbf { h } _ { t } ) ) + \\mathbf { D } _ { t } ( \\epsilon _ { \\theta } ^ { t } ( z _ { t } ) ) + \\sigma _ { t } \\epsilon _ { t } ,\\tag{4}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/787a2f3cd93fb972c4faaeaca973213f41c61de3fe2efaea5f96964db493257a.jpg"
+                }
+            },
+            "bbox": [
+                321,
+                705,
+                678,
+                722
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbf { P } _ { t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "denotes the predicted "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\tilde { \\mathbf { z } } _ { 0 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbf { D } _ { t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "represents the denoising direction toward "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbf { z } _ { t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". The asymmetric control updates only "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\epsilon _ { \\theta } ^ { t } ( { \\bf z } _ { t } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "via "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\epsilon _ { \\theta } ^ { t } ( \\mathbf { z } _ { t } | \\varDelta \\mathbf { h } _ { t } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", adding "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\Delta \\mathbf { h } _ { t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "as a residual to the U-Net bottleneck features "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbf { h } _ { t } ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "while preserving "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbf { D } _ { t } ."
+                    },
+                    {
+                        "type": "text",
+                        "content": "This enables semantic manipulation in latent space without compromising reconstruction fidelity. Consequently, the h-space exhibits stable and transferable semantics across time steps, supporting consistent, and multi-attribute guidance for latent difusion models."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                733,
+                787,
+                840
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "6"
+                    }
+                ]
+            },
+            "bbox": [
+                217,
+                116,
+                228,
+                126
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "J. Lee et al."
+                    }
+                ]
+            },
+            "bbox": [
+                271,
+                114,
+                351,
+                127
+            ]
+        }
+    ],
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.2 Global Style Transfer"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                146,
+                441,
+                161
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We introduce Global Style Transfer, a new paradigm that extends the conventional one-to-one style transfer setting to a many-to-one formulation, as illustrated in Fig. 2. Unlike traditional methods that rely on a single style instance to guide the appearance of a content image, our approach aggregates multiple artworks from a single artist to learn a unified and consistent representation of that artist’s global style."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                171,
+                787,
+                262
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Given a content image "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "I _ { c }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and a set of style exemplars "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "I _ { s } = \\{ i _ { s } ^ { 1 } , i _ { s } ^ { 2 } , \\cdots , i _ { s } ^ { K } \\}"
+                    },
+                    {
+                        "type": "text",
+                        "content": "drawn from an artist’s "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "K"
+                    },
+                    {
+                        "type": "text",
+                        "content": "artworks, Global Style Guidance (GSG) guides the difusion model that encapsulates artist-specific semantic and style cues across various artworks. To preserve the semantic integrity of the content, we further introduce Content Alignment Guidance (CAG), which maintains the abstract structure and semantics of "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "I _ { c }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "while allowing flexible, style-based deformation. Through CAG, the content image is re-rendered with the distinctive visual characteristics of the target artworks without compromising its original composition."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                261,
+                787,
+                383
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Global Style Transfer ofers two key advantages over text-conditioned artistic synthesis. (1) Text-independent Guidance: Rather than relying on textual prompts "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( \\mathrm { e . g . , \\ell \\sim }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "in the style of Van Gogh’), Global Style Transfer extracts visual semantics directly from the aggregated style artworks. (2) Artistic bias mitigation in difusion-based artistic image synthesis: Vanilla Text-to-Image difusion models conditioned on artist names tend to exhibit stylistic bias, over-representing textures and compositions from a few iconic works. By guiding a global style prior from multiple style exemplars, our framework regularizes the difusion process, mitigating such artistic mode bias and yielding diverse yet faithful images that better reflect the full stylistic spectrum of the artist."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                382,
+                787,
+                535
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.3 Global Style Guidance in h-Space"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                555,
+                540,
+                571
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Finding Artist’s Global Style. To guide the difusion model toward the global style of a specific artist, we define the residual global style ofset "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\varDelta \\mathbf { h } _ { t } ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "which modulates the U–Net bottleneck representation "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "h _ { t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "at each timestep t:"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                579,
+                785,
+                627
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "h _ { t } = h _ { t } + w \\cdot \\varDelta \\mathbf { h } _ { t } ,\\tag{5}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/996cb4d282cb5befd05976de94d14dd8da76d19a603a696d54b904b64458fa8a.jpg"
+                }
+            },
+            "bbox": [
+                431,
+                637,
+                568,
+                654
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where w controls the strength of stylistic modulation. The residual global style ofset "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\Delta \\mathbf { h } _ { t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "captures the global stylistic semantics of the artist, enhancing the U-Net’s intermediate representations with consistent style attributes. To estimate "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\Delta \\mathbf { h } _ { t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", we define a Style Extraction Function (SEF) "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "f _ { t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "that transforms the given "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "h _ { t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "into global style–conditioned feature:"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                665,
+                787,
+                741
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\Delta \\mathbf { h } _ { t } = f _ { t } ( h _ { t } ; \\theta ) .\\tag{6}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/792fbb02427a6e5c236191ddd9fbc1fc6274a00fd8b1cc11c43d2bbc36c4dbb0.jpg"
+                }
+            },
+            "bbox": [
+                441,
+                752,
+                560,
+                768
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "equation_inline",
+                        "content": "f _ { t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is a lightweight multilayer perceptron (MLP) with one hidden layer parameterized by θ and conditioned on timestep t. Specifically, we apply the zeroinitialization strategy, which initializes the weights of "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "f _ { t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "to zero [34] to avoid stochastic bias from random initialization. Zero-initialization ensures training process begins from an unbiased state and learns purely data-driven global style semantics. Then, we train the "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "f _ { t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "with multiple artworks using the noise reconstruction loss same as Eq. (3):"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                779,
+                787,
+                840
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Global Style Transfer"
+                    }
+                ]
+            },
+            "bbox": [
+                586,
+                114,
+                732,
+                128
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "7"
+                    }
+                ]
+            },
+            "bbox": [
+                774,
+                116,
+                785,
+                127
+            ]
+        }
+    ],
+    [
+        {
+            "type": "algorithm",
+            "content": {
+                "algorithm_caption": [],
+                "algorithm_content": [
+                    {
+                        "type": "text",
+                        "content": "Algorithm 1 Global Style Guidance Algorithm Require: Style exemplars (=artworks) "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "I _ { s } ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "Style Extraction Function (SEF) "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "f _ { t } ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "Model(Latent difusion model) "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\epsilon _ { \\theta } ( \\cdot , t )"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", text encoder "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\tau _ { \\phi } ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "image decoder "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathcal { D } ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "Prompt y Output: SEF "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "f _ { t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "1: "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "y = \\mathsf { \\tilde { A } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "painting’ {All artworks are paired with this prompt} 2: for epoch "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": ", = 0"
+                    },
+                    {
+                        "type": "text",
+                        "content": "to E do for "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "k = 1"
+                    },
+                    {
+                        "type": "text",
+                        "content": "to K do 4: /*Difusion Forward Proces "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "^ * /"
+                    },
+                    {
+                        "type": "text",
+                        "content": "5: for "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "t = 0"
+                    },
+                    {
+                        "type": "text",
+                        "content": "to "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "T - 1"
+                    },
+                    {
+                        "type": "text",
+                        "content": "do 6: "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "z _ { 0 } ^ { k } = \\mathcal { E } ( I _ { s } ^ { k } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "{instance style image sampling "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "i _ { s } ^ { k } \\in I _ { s } \\}"
+                    },
+                    {
+                        "type": "text",
+                        "content": "7: "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\epsilon _ { t } \\sim \\mathcal { N } ( 0 , I )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "8: "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "z _ { t } = \\sqrt { \\bar { \\alpha } _ { t } } z _ { 0 } + \\sqrt { 1 - \\bar { \\alpha } _ { t } } \\epsilon"
+                    },
+                    {
+                        "type": "text",
+                        "content": "9: end for 10: /*Difusion Denoising Process*/ 11: for "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "t = T - 1"
+                    },
+                    {
+                        "type": "text",
+                        "content": "to 0 do 12: L<sub>SEF</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathrm { : } = \\mathbb { E } _ { z \\sim \\mathcal { E } ( x ) , \\epsilon _ { t } , t } \\left[ | | \\epsilon _ { \\theta } ( z _ { t } , t , \\tau _ { \\phi } ( y ) | \\varDelta \\mathbf { h } _ { t } ) - \\epsilon _ { t } | | _ { 2 } ^ { 2 } \\right]"
+                    },
+                    {
+                        "type": "text",
+                        "content": "13: "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "/ / \\Delta \\mathbf { h } _ { t } = f _ { t } ( h _ { t } ; \\theta )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "from Eq. (6) 14: "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "f _ { t } ( h _ { t } ; \\theta ) \\gets f _ { t } ( h _ { t } ; \\theta ) - \\eta \\nabla _ { f _ { t } } \\mathcal { L } _ { \\mathrm { S E F } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "15: "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbf { z } _ { t - 1 } = \\sqrt { \\bar { \\alpha } _ { t - 1 } } \\mathbf { P } _ { t } ( \\epsilon _ { \\theta } ^ { t } ( z _ { t } | \\varDelta \\mathbf { h } _ { t } ) ) + \\mathbf { D } _ { t } ( \\epsilon _ { \\theta } ^ { t } ( z _ { t } ) ) + \\sigma _ { t } \\epsilon _ { t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "16: end for 17: end for 18: end for 19: Return "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "f _ { t } ( h _ { t } ; \\theta )"
+                    }
+                ],
+                "algorithm_footnote": []
+            },
+            "bbox": [
+                215,
+                143,
+                784,
+                474
+            ]
+        },
+        {
+            "type": "algorithm",
+            "content": {
+                "algorithm_caption": [],
+                "algorithm_content": [
+                    {
+                        "type": "text",
+                        "content": "Algorithm 2 Global Style Transfer Algorithm Require: Content Image "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "{ \\cal I } _ { c } ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "Model(Latent difusion model) "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\epsilon _ { \\theta } ( \\cdot , t )"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", text encoder "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\tau _ { \\phi } ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "image decoder "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathcal { D } ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "prompt y, CLIP image encoder "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathcal { E } _ { \\mathrm { C L I P } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "Output: Artistic image x<sub>0</sub> 1: "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbf { z } _ { T } \\gets"
+                    },
+                    {
+                        "type": "text",
+                        "content": "DDIM Inversion with respect to the "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "I _ { c }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "2: for "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "t = T - 1"
+                    },
+                    {
+                        "type": "text",
+                        "content": "to 1 do 3: "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\epsilon _ { t } \\sim \\mathcal { N } ( 0 , I )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "4: //obtain ∆h from Algorithm 1 5: "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbf { z } _ { t - 1 } = \\sqrt { \\bar { \\alpha } _ { t - 1 } } \\mathbf { P } _ { t } \\big ( \\epsilon _ { \\theta } ^ { t } \\big ( z _ { t } \\big | \\Delta \\mathbf { h } _ { t } \\big ) \\big ) + \\mathbf { D } _ { t } \\big ( \\epsilon _ { \\theta } ^ { t } \\big ( z _ { t } \\big ) \\big ) + \\sigma _ { t } \\epsilon _ { t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "6: //Approximate z˜ from Tweedie formula [4] and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\tilde { x } _ { 0 } \\approx \\mathcal { D } ( \\tilde { z } _ { 0 } | z _ { t } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "7: "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\ell ( z _ { t } ) = \\| \\mathcal { E } _ { \\mathrm { C L I P } } ^ { l } ( \\tilde { x } _ { 0 } ) - \\mathcal { E } _ { \\mathrm { C L I P } } ^ { l } ( x _ { t } ) \\| _ { 2 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "8: Content Alignment Guidance 9: "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\tilde { z } _ { t } \\gets z _ { t } - s \\nabla _ { z _ { t } } \\ell ( z _ { t } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "10: //Classifier Free Guidance 11: "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\tilde { \\epsilon } _ { t } \\gets \\epsilon _ { \\theta } ( \\tilde { z } _ { t } , t , \\mathcal { D } ) + g ( \\epsilon _ { \\theta } ( \\tilde { z } _ { t } , t , \\tau _ { \\phi } ( y ) ) - \\epsilon _ { \\theta } ( \\tilde { z } _ { t } , t , \\mathcal { D } ) )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "12: end for 13: Return "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "x _ { 0 } = \\mathcal { D } ( \\tilde { \\mathbf { z } } _ { 0 } )"
+                    }
+                ],
+                "algorithm_footnote": []
+            },
+            "bbox": [
+                215,
+                488,
+                784,
+                737
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                214,
+                766,
+                785,
+                813
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathcal { L } _ { \\mathrm { S E F } } : = \\mathbb { E } _ { z \\sim \\mathcal { E } ( x ) , \\epsilon _ { t } , t } \\left[ \\Vert \\epsilon _ { \\theta } \\bigl ( z _ { t } , t , \\tau _ { \\phi } ( y ) | \\Delta \\mathbf { h } _ { t } \\bigr ) - \\epsilon _ { t } \\Vert _ { 2 } ^ { 2 } \\right] .\\tag{7}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/46d7170b160765f42e6561323255106ba7e7192459c269d6565d51c96555a528.jpg"
+                }
+            },
+            "bbox": [
+                321,
+                824,
+                678,
+                842
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "8"
+                    }
+                ]
+            },
+            "bbox": [
+                217,
+                116,
+                228,
+                127
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "J. Lee et al."
+                    }
+                ]
+            },
+            "bbox": [
+                269,
+                114,
+                352,
+                128
+            ]
+        }
+    ],
+    [
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/daf6305fe0a7f8de45a2b1a49ca5eee0e74462e465376a96c01b72cdb5e05074.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 1: Comparison of implicit function learning between Asyrp and our framework."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Difference</td><td>Asyrp</td><td>Global Style Transfer (Ours)</td></tr><tr><td>Goal</td><td>Instance-conditional attribute manipulation (Image Editing)</td><td>Distribution-level global style training</td></tr><tr><td colspan=\"3\">Supervision signal Text-driven attribute change</td></tr><tr><td>on training ft</td><td>Text conditioning Explicit source-target prompts (high variance), e.g., &#x27;A girl&#x27; (ysource) → &#x27;A smiling girl&#x27;(yref)</td><td>Fixed prompt (zero variance) e.g., &#x27;A painting&#x27;</td></tr><tr><td>Training data</td><td>Single (or few) source images</td><td>Hundreds of artworks from a single artist</td></tr><tr><td>Loss function for learning ft</td><td>CLIP directional editing loss + reconstruction loss:  $\\lambda _ { \\mathrm { C L I P } } L _ { \\mathrm { d i r e c t i o n } } ( P _ { t } ^ { \\mathrm { e d i t } } , y _ { \\mathrm { r e f } } , P _ { t } ^ { \\mathrm { s o u r c e } } , y _ { \\mathrm { s o u r c e } } ) + \\lambda _ { \\mathrm { r e c o n } } \\| x _ { t } ^ { \\mathrm { e d i t } } - x _ { t } ^ { \\mathrm { s o u r c e } } \\| _ { 2 } \\overset { \\star \\lor { n o u } \\star \\land { \\mathrm { o u r c e } } } { \\sim } , t [ \\| \\epsilon _ { \\theta } ( z _ { t } , t , \\tau _ { \\phi } ( y ) \\| \\varDelta h _ { t } ) - \\epsilon _ { \\phi } ( z _ { t } , t , \\tau _ { \\phi } ( z _ { t } ) ) \\| _ { 2 } ]$ </td><td>Noise reconstruction loss over artist distribution: - t||2]</td></tr></table>",
+                "table_type": "complex_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                218,
+                171,
+                782,
+                265
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Specifically, to ensure that training focuses purely on visual statistics rather than text conditioning, all artworks images "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "I _ { s }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "are paired with the fixed simple prompt y, ‘A painting’. By enforcing a unified prompt across all artworks, the variance of text conditioning efectively approaches zero, allowing "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "f _ { t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "to rely purely on visual cues for capturing global style semantics. Consequently, our SEF learns global stylistic representations directly from the visual semantics of the artworks rather than from linguistic information, resulting in visually grounded and unbiased Global Style Guidance. After training, the difusion process proceeds toward a unified global style distribution, enabling the generation of images that reflect the coherent stylistic identity of the target artist without additional textual conditioning. The overall algorithms of GSG is described in Algorithm 1."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                301,
+                787,
+                468
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Time-Step Robustness of Global Style Guidance. To motivate our design choice of performing Global Style Guidance (GSG) in the intermediate "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "h -"
+                    },
+                    {
+                        "type": "text",
+                        "content": "space, we analyze whether h-space provides a stable representation of global style across difusion timesteps. As shown in Fig. 4, 500 artworks per artist form well-separated clusters in h-space even under Gaussian noise across diferent timesteps. This demonstrates that "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "h _ { t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "remains robust to noise and timestep variation while preserving artist-level semantic global style, allowing GSG to maintain coherent stylization throughout the difusion generative process."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                502,
+                787,
+                625
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Diference between Asyrp and our Global Style Transfer. Although our framework shares the same implicit function architecture as Asyrp [13], the two methods difer fundamentally in objective and supervision, as summarized in Tab. 1. Asyrp uses "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "f _ { t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "as an instance-level editing operator for single-image manipulation, optimized with a CLIP directional loss between source–reference text prompts "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( ^ { \\cdot } \\tt A \\ g i r 1 ^ { \\cdot } \\to { ^ \\cdot } \\tt A"
+                    },
+                    {
+                        "type": "text",
+                        "content": "smiling "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathtt { g i r 1 } ^ { \\prime } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". Consequently, the optimization is inherently text-dependent, aligning "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "f _ { t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "with semantic attribute directions under highly varying prompt conditions. In contrast, we optimize "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "f _ { t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "to model the global stylistic distribution of an artist from hundreds of artworks using only visual supervision. By fixing the text condition "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "y"
+                    },
+                    {
+                        "type": "text",
+                        "content": "to a constant prompt (e.g., ‘A painting’), we eliminate text-induced variance, allowing "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "f _ { t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "to be learned purely from artwork visual statistics via noise reconstruction."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                659,
+                789,
+                840
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Global Style Transfer"
+                    }
+                ]
+            },
+            "bbox": [
+                586,
+                114,
+                732,
+                128
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "9"
+                    }
+                ]
+            },
+            "bbox": [
+                774,
+                116,
+                785,
+                127
+            ]
+        }
+    ],
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.4 Content Alignment Guidance"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                146,
+                504,
+                161
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Motivated by how artists reinterpret real-world objects, preserving abstract structure while expressing unique artistic style, we propose the training-free Content Alignment Guidance (CAG). In Neural Style Transfer (NST) [24, 36], style-based deformation of content can be desirable, as artistic styles often involve intentional geometric or structural alterations beyond color and texture changes. Inspired by NST, our CAG aims to preserve the recognizable structure of the original content while allowing controlled, style-driven deformations that reflect the artist’s expressive intent."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                171,
+                787,
+                291
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We first perform DDIM inversion [26] to map the input content image into its noisy latent vector. Then, we measure perceptual similarity using the CLIP image encoder "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathcal { E } _ { \\mathrm { C L I P } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "within a Stable Difusion [22] between the generated image "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "x _ { t } ~ = ~ \\mathcal { D } ( z _ { t } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "at every timestep t and approximated image "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\tilde { x } _ { 0 } \\approx \\mathcal { D } ( \\tilde { z } _ { 0 } | z _ { t } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "via Tweedie’s formula [4]:"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                291,
+                787,
+                368
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\ell ( z _ { t } ) = \\| \\mathcal { E } _ { \\mathrm { C L I P } } ^ { l } ( \\tilde { x } _ { 0 } ) - \\mathcal { E } _ { \\mathrm { C L I P } } ^ { l } ( x _ { t } ) \\| _ { 2 } ,\\tag{8}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/97bdbf667df1eb97d5fe4767b8d087d43964621e764efdaad20543ebd3bdf169.jpg"
+                }
+            },
+            "bbox": [
+                377,
+                377,
+                624,
+                396
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathcal { E } _ { \\mathrm { C L I P } } ^ { l }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "extracts high-level semantic features from layer l of CLIP. Since the approximated image x˜<sub>0</sub> preserves the abstract structure of the content image, aligning its feature representation with that of the generated image "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "x _ { t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "encourages structural consistency while allowing style-driven deformation. Following the SDE formulation [27], we incorporate this perceptual loss as the guidance by replacing the unconditional score "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\nabla z _ { t } \\log p ( z _ { t } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "with the conditional score "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\nabla _ { z _ { t } } \\log { p ( z _ { t } | \\boldsymbol { \\ell } ) }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", decomposed as:"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                405,
+                787,
+                513
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\nabla _ { z _ { t } } \\log p ( z _ { t } | \\ell ) = \\nabla _ { z _ { t } } \\log p ( z _ { t } ) + s \\nabla _ { z _ { t } } \\log p ( \\ell | z _ { t } ) ,\\tag{9}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/e47b1787950ab4dd89176e2c64b84c43c022e9f4ed25651e0ab96d789721316b.jpg"
+                }
+            },
+            "bbox": [
+                328,
+                523,
+                673,
+                540
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where s is a parameter controlling the guidance strength. The second term is interpreted as the gradient of the perceptual loss with respect to the image latent "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\nabla _ { z _ { t } } \\ell ( z _ { t } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". Formally, the guided image latent is expressed as:"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                550,
+                787,
+                597
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\tilde { z } _ { t } = z _ { t } - s \\nabla _ { z _ { t } } \\ell ( z _ { t } ) ,\\tag{10}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/7b31d3801eb77c32a5d6c3e055ea2893b913777d65c3c6171149a5cc9d99a1a8.jpg"
+                }
+            },
+            "bbox": [
+                428,
+                607,
+                573,
+                623
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where s controls the guidance strength. Consequently, CAG refines the latent trajectory in a training-free manner at each timestep to preserve content structure while enabling artist-specific compositional and geometric transformations. The overall algorithm and framework are illustrated in Algorithm 2 and Fig. 3."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                633,
+                787,
+                696
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4 Experiments"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                718,
+                375,
+                734
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Datasets. We define the style reference images in the WikiArt dataset [28], which includes over 80,000 artworks created by more than 1,000 artists across 27 art movements. For content images, we utilize the VanGogh2Photo dataset [37] , which contains real-world photographic scenes paired with artistic counterparts, enabling consistent evaluation of content preservation in artistic synthesis. This dataset combination serves as a standard benchmark for the style transfer."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                748,
+                787,
+                840
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "10"
+                    }
+                ]
+            },
+            "bbox": [
+                217,
+                114,
+                236,
+                127
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "J. Lee et al."
+                    }
+                ]
+            },
+            "bbox": [
+                271,
+                114,
+                352,
+                127
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/4eb06406175eaec1d8cdd57e77e87422dca55b1828baeda5264456171b58ac7c.jpg"
+                },
+                "image_caption": [],
+                "image_footnote": []
+            },
+            "bbox": [
+                220,
+                148,
+                498,
+                339
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/d0f9d6186787517b4a08d56aeeb18869a321d4aa43f6481b9ce0dc7ab49fe324.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 5: Comparison of Global Style Transfer (GST) with representative style transfer baselines. We compare GST with instance-level style transfer and style personalization methods, using artworks from the same artist as style exemplars: (a) Van Gogh and (b) Pierre-Auguste Renoir. Since baseline methods utilize only a single style image "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "I _ { s } ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "we perform stylization separately using multiple artworks from the same artist and average the resulting outputs to approximate artist-level style. Baselines preserve only low-level appearance cues and produce inconsistent global styles, whereas GST learns the artist-level style and enables coherent global stylization."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                506,
+                148,
+                782,
+                340
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Evaluation Metrics. We evaluate using five metrics: FID [10] and ArtFID [30] for global style fidelity, CFSD [2] for content preservation, and CLIP-Div [1] and 1-Precision [14,18] for stylistic diversity and memorization, respectively. Detailed definitions are provided in the Appendix."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                489,
+                785,
+                551
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.1 Main Results"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                570,
+                374,
+                585
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Sample Visualization. Fig. 12 shows the artistic images produced by the Global Style Transfer. This is achieved as the difusion model performs Global Style Guidance (GSG) within the intermediate feature space (h-space), ensuring semantic stability across time steps and producing consistent style transformation throughout the generative process."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                592,
+                787,
+                670
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Comparison with Style Transfer Methods. Our method introduces a new paradigm, Global Style Transfer (GST), which fundamentally difers from conventional style transfer. Traditional style-transfer methods operate in a one-toone setting, where a single content image "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "I _ { c }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is transferred to an artistic image with only single style image "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "I _ { s }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "through feature injection or attention modulation. While efective for instance-level stylization, such approaches cannot capture an artist-level style distribution spanning hundreds or thousands of artworks. To verify this limitation, we compare our method with representative Style Transfer baselines, including StyleInjection [2], StyTR<sup>2</sup> [3], CAST [36], S2WAT [33], StyleSSP [32], as well as the shared-attention personalization method StyleAligned [9], grouped separately in Fig. 5. Since these baselines take a single style image, we run each on the artist’s artworks individually and average the resulting outputs to approximate an artist-level style. As shown in Fig. 5, this strategy fails to recover coherent artist-level style. Existing methods primarily capture lowlevel appearance cues such as dominant colors or coarse brush textures from each exemplar, but fail to preserve consistent stylistic characteristics shared across the artist’s full corpus. Even averaging multiple stylized outputs does not meaningfully represent the global style distribution, often producing blurred or inconsistent results. In contrast, our method directly learns the artist-level style manifold from multiple artworks, enabling coherent global stylization while avoiding overfitting to specific exemplars."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                689,
+                787,
+                842
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Global Style Transfer"
+                    }
+                ]
+            },
+            "bbox": [
+                588,
+                114,
+                732,
+                127
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "11"
+                    }
+                ]
+            },
+            "bbox": [
+                767,
+                116,
+                784,
+                127
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/028e0b17651e6007f01858280add451dafbb14795c5475e5064f1af1e355f925.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 2: Quantitative comparison across artists. ArtFID measures style and content fidelity, CFSD measures content preservation, CLIP-Div and 1-Prec. assess stylistic diversity and memorization-avoidance. CLIP-Div is reported as Ours/Real for direct comparison with the real artwork corpus. Bold: best; underline: second best."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                514,
+                164,
+                781,
+                257
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/bbb5f4c54e8d6f3c8860732f8a49be2c5164e61140d1a1971514e4d75386d11a.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 6: Visual comparison of previous style personalization methods and vanilla Stable Difusion. Qualitative results corresponding to Tab. 2 are shown, demonstrating the comparative performance of each method in terms of style alignment and visual coherence."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Artist</td><td>Method</td><td colspan=\"5\">FID (↓) ArtFID (↓) CFSD (↓) CLIP-Div (↑) 1–Prec (↑)</td></tr><tr><td rowspan=\"5\"></td><td>S.D</td><td>11.97</td><td>23.78</td><td>0.7428</td><td>0.178</td><td>0.257</td></tr><tr><td>Textual Inversion</td><td>7.67</td><td>13.68</td><td>0.1674</td><td>0.220</td><td>0.550</td></tr><tr><td>Van Gogh Custom Diffusion</td><td>9.49</td><td>14.71</td><td>0.1208</td><td>0.289</td><td>0.933</td></tr><tr><td>LoRA based Fine-tuning</td><td>11.01</td><td>21.38</td><td>0.1886</td><td>0.261</td><td>0.913</td></tr><tr><td>Ours</td><td>9.46</td><td>19.25</td><td>0.2896</td><td>0.297/0.335</td><td>0.988</td></tr><tr><td rowspan=\"5\">Chagall</td><td>S.D</td><td>16.26</td><td>32.44</td><td>0.3117</td><td>0.224</td><td>0.844</td></tr><tr><td>Textual Inversion</td><td>11.72</td><td>21.15</td><td>0.1683</td><td>0.238</td><td>0.877</td></tr><tr><td>Custom Diffusion</td><td>18.06</td><td>26.70</td><td>0.1108</td><td>0.289</td><td>0.962</td></tr><tr><td>LoRA based Fine-tuning 17.30</td><td></td><td>32.59</td><td>0.1674</td><td>0.266</td><td>0.928</td></tr><tr><td>Ours</td><td>13.25</td><td>26.39</td><td>0.2626</td><td>0.311/0.293</td><td>0.977</td></tr><tr><td rowspan=\"5\">Renoir</td><td>S.D</td><td>16.72</td><td>33.70</td><td>0.1584</td><td>0.225</td><td>0.987</td></tr><tr><td>Textual Inversion</td><td>12.14</td><td>21.99</td><td>0.1100</td><td>0.238</td><td>0.895</td></tr><tr><td>Custom Diffusion</td><td>15.15</td><td>22.77</td><td>0.1160</td><td>0.294</td><td>0.987</td></tr><tr><td>LoRA based Fine-tuning 15.36</td><td></td><td>29.23</td><td>0.1749</td><td>0.279</td><td>0.988</td></tr><tr><td>Ours</td><td>12.27</td><td>24.70</td><td>0.1566</td><td>0.318/0.313</td><td>0.999</td></tr></table>",
+                "table_type": "complex_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                217,
+                268,
+                503,
+                383
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                214,
+                411,
+                787,
+                580
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Comparison with Style Personalization Methods. We compare GST with representative personalization methods, including Textual Inversion (TI) [5], which optimizes a token embedding over the full artwork collection, Dream-Booth [23] with LoRA-based fine-tuning, and Custom Difusion [12], which finetunes only the cross-attention layers. We also provide a qualitative comparison with StyleAligned [9] in Fig. 5. For a fair comparison in the GST setting, we train each baseline on the full artwork collection of each artist rather than using the few-shot setting adopted in their original formulations."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                598,
+                787,
+                719
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "As shown in Tab. 2, GST achieves consistently strong performance across all three artists, demonstrating efective modeling of artist-level global style. GST achieves competitive ArtFID, indicating strong overall style and content fidelity without overfitting to content structure. It also achieves the highest CLIP-Diversity across all artists, showing that GST captures a broader stylistic distribution rather than collapsing to a narrow set of visual patterns. Notably, the CLIP-Diversity values of GST are highly consistent with those computed from the real artwork collections (reported as Ours / Real), suggesting that GST"
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                719,
+                789,
+                842
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "12"
+                    }
+                ]
+            },
+            "bbox": [
+                217,
+                114,
+                236,
+                127
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "J. Lee et al."
+                    }
+                ]
+            },
+            "bbox": [
+                271,
+                114,
+                352,
+                127
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Van gogh’s artworks"
+                    }
+                ]
+            },
+            "bbox": [
+                612,
+                154,
+                714,
+                164
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/c6f82d7ee5a34591d28aa8e88dc2a21b9e70d55db779aa509b3f112c9dbd340d.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 7: Visual comparison with T2I models (Nano Banana 2, ChatGPT 5.2) prompted with ‘Van Gogh style’ for a given content image "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "I _ { c } ."
+                    },
+                    {
+                        "type": "text",
+                        "content": "The rightmost columns display the top three Van Gogh artworks with the lowest CLIP distance to our generated result."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                228,
+                160,
+                776,
+                397
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "successfully reproduces the diversity of the true artist-level style distribution. The 1-Precision results further show that GST best avoids memorization while preserving stylistic consistency. In contrast, prior personalization methods often rely on memorized exemplar patterns or overfit to dominant visual motifs, as also observed in Fig. 6. For example, Textual Inversion is limited by its fixeddimensional token embedding, while fine-tuning methods often collapse toward iconic compositions. Consequently, our method scales efectively with increasing artwork diversity and better captures the full artist-level style distribution."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                479,
+                787,
+                602
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.2 Analysis of Global Style Transfer"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                621,
+                537,
+                636
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Analysis of Text-Independence in Global Style Transfer. We analyze whether the learned style representation depends on text prompts."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                643,
+                787,
+                674
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Since the Style Extraction Function (SEF) is trained using a large collection of artworks, we use a fixed prompt, ‘A painting’, during training to minimize textual influence and encourage the model to learn style primarily from visual cues. To evaluate prompt sensitivity, we replace the prompt with alternative generic prompts during training SEF and compute the corresponding style ofset ∆h."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                674,
+                493,
+                842
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/721bf0c497e37f6329a999a5cf1d2a1b9ed95527e6c7f93850760fb30a93abb9.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 8: The sensitivity of prompt for training the Style Extraction Function "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "f _ { t }"
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                503,
+                703,
+                784,
+                765
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Global Style Transfer"
+                    }
+                ]
+            },
+            "bbox": [
+                588,
+                114,
+                732,
+                127
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "13"
+                    }
+                ]
+            },
+            "bbox": [
+                767,
+                116,
+                785,
+                127
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/3b029cffe0fa9fc86b01c74ab80f3c9c3885226633278b57f41c7146c33872b1.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 3: Ablation study on Content Alignment Guidance (CAG). Removing CAG leads to a consistent increase in both FID and ArtFID, demonstrating its crucial role in preserving content fidelity under global style modulation"
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                537,
+                143,
+                753,
+                258
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/93981d6fbcb7f10e2b975154850a7fbadfe922cbc1d243ee58e58c0ec354aa0c.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 9: Qualitative ablation on CAG. Without CAG, the images exhibit content degradation despite strong stylization."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Method FID ArtFID</td></tr><tr><td>Ours  $\\mathrm { w / o }$  CAG 11.05</td><td>22.45</td></tr><tr><td>Ours</td><td>9.46 19.25</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                228,
+                244,
+                480,
+                308
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "As shown in Fig. 8, the generated images remain nearly identical across prompts, indicating that the learned representation is largely text-independent and primarily captures artist-level visual style."
+                    }
+                ]
+            },
+            "bbox": [
+                215,
+                340,
+                787,
+                387
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Analysis of Stylistic Bias in T2I Models. We compare our framework with large-scale text-to-image baselines, Nano Banana 2 [7] and ChatGPT 5.2 [19], using the prompt ‘Van Gogh style’. As shown in Fig. 13, these baselines exhibit strong stylistic bias, repeatedly generating images dominated by iconic Van Gogh features such as swirling patterns and thick brushstrokes, often resembling Starry Night. In contrast, our Global Style Transfer learns a unified artist-level representation, mitigating such bias and producing diverse outputs that better reflect the true global style distribution."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                406,
+                787,
+                529
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Efect of the Content Alignment Guidance. To verify the efectiveness of CAG, we compare the full methods with a variant without CAG. As shown in Fig. 9 and Tab. 3, removing CAG leads to noticeable content degradation, reflected by a significant increase in ArtFID, which measures both style and content fidelity. These results demonstrate that CAG plays a crucial role in preserving content under strong global style modulation. Additional ablations on the embedding layer selection and training epochs are provided in Figs. 11 and 14."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                546,
+                787,
+                669
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Efect of Layer Level for Content Alignment Guidance. We examine how applying Content Alignment Guidance (CAG) at diferent layers of the CLIP image encoder afects the preservation of content structure during global style transfer. As shown in Fig. 14, applying CAG at lower or mid-level layers (1–9) produces unintended artifacts, such as house-like structures absent from the content image "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "I _ { c } ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "indicating poor preservation of global composition. This occurs because lower layers mainly encode low-level features such as edges, color and textures. In contrast, applying CAG at Layer 11 preserves the original scene structure and yields semantically consistent results, showing that higher-level semantic features provide more reliable content alignment."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                689,
+                789,
+                842
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "14"
+                    }
+                ]
+            },
+            "bbox": [
+                217,
+                114,
+                236,
+                127
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "J. Lee et al."
+                    }
+                ]
+            },
+            "bbox": [
+                269,
+                114,
+                352,
+                128
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/a035f1d76544f965da1ff64648946dad19a19ef8b63c84d11ffb97d59dec5aca.jpg"
+                },
+                "image_caption": [],
+                "image_footnote": []
+            },
+            "bbox": [
+                220,
+                143,
+                473,
+                261
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/2ac6a62fe3bdf0ccc08d82e50541ab218eee70e448abf90f0b0139238c34cd96.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 10: Efect of layer level of CLIP encoder in Content Alignment Guidance for content preservation."
+                    },
+                    {
+                        "type": "text",
+                        "content": "Fig. 11: Efect of training epochs on Style Extraction Function: higher epochs yield stronger artist-specific characteristics."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                522,
+                145,
+                771,
+                256
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Efect of Training Epochs on Style Extraction Function. We investigate the efect of training epochs on the Style Extraction Function (SEF) f to evaluate how training duration influences global style learning. We train SEF with five epoch settings (10, 20, 50, 100, 200) using artworks from three representative artists: Van Gogh, Monet, and Renoir. As shown in Fig. 11, models trained for only 10 or 20 epochs fail to capture distinctive stylistic characteristics, producing visually similar results across artists. As training progresses, the model gradually learns artist-specific brushwork, composition, and color distributions. At 200 epochs, the generated images exhibit clear stylistic separation, indicating that suficient training is essential for learning a stable global style representation."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                342,
+                787,
+                496
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "5 Conclusion"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                517,
+                359,
+                534
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We propose Global Style Transfer, a novel artistic image synthesis paradigm that represents the global artistic style of a target artist from multiple artworks. Through Global Style Guidance and Content Alignment Guidance, our method captures artist-level stylistic semantics while preserving the content structure and allowing style-driven geometric deformation. By moving beyond instancelevel style transfer and text-dependent artistic synthesis, GST provides a more faithful and unbiased way to model an artist’s coherent visual identity."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                549,
+                787,
+                656
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Acknowledgment"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                678,
+                383,
+                695
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "This work was partly supported by Institute of Information & Communications Technology Planning & Evaluation (IITP) grant funded by the Korea government (RS-2026-25516375), the Korea Institute of Science and Technology (KIST) Institutional Program (No. 26E0212). This work was supported by the IITP(Institute of Information & Communications Technology Planning & Evaluation)-ITRC(Information Technology Research Center) grant funded by the Korea government(Ministry of Science and ICT)(IITP-2026-RS-2023- 00258649,33%)."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                710,
+                787,
+                832
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Global Style Transfer"
+                    }
+                ]
+            },
+            "bbox": [
+                588,
+                114,
+                732,
+                128
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "15"
+                    }
+                ]
+            },
+            "bbox": [
+                767,
+                116,
+                785,
+                127
+            ]
+        }
+    ],
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "References"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                145,
+                325,
+                161
+            ]
+        },
+        {
+            "type": "list",
+            "content": {
+                "list_type": "reference_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "1. Alanov, A., Titov, V., Nakhodnov, M., Vetrov, D.: Styledomain: Eficient and lightweight parameterizations of stylegan for one-shot and few-shot domain adaptation. In: Proceedings of the IEEE/CVF International Conference on Computer Vision. pp. 2184–2194 (2023)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "2. Chung, J., Hyun, S., Heo, J.P.: Style injection in difusion: A training-free approach for adapting large-scale difusion models for style transfer. In: Proceedings of the IEEE/CVF conference on computer vision and pattern recognition. pp. 8795–8805 (2024)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "3. Deng, Y., Tang, F., Dong, W., Ma, C., Pan, X., Wang, L., Xu, C.: Stytr2: Image style transfer with transformers. In: Proceedings of the IEEE/CVF conference on computer vision and pattern recognition. pp. 11326–11336 (2022)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "4. Efron, B.: Tweedie’s formula and selection bias. Journal of the American Statistical Association 106(496), 1602–1614 (2011)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "5. Gal, R., Alaluf, Y., Atzmon, Y., Patashnik, O., Bermano, A.H., Chechik, G., Cohen-Or, D.: An image is worth one word: Personalizing text-to-image generation using textual inversion. arXiv preprint arXiv:2208.01618 (2022)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "6. Gatys, L.A., Ecker, A.S., Bethge, M.: Image style transfer using convolutional neural networks. In: Proceedings of the IEEE conference on computer vision and pattern recognition. pp. 2414–2423 (2016)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "7. Google: Gemini image generation: Create images with gemini. https://gemini. google/overview/image-generation/ (2026), accessed: 2026-01-22"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "8. Gu, S., Chen, C., Liao, J., Yuan, L.: Arbitrary style transfer with deep feature reshufle. In: Proceedings of the IEEE conference on computer vision and pattern recognition. pp. 8222–8231 (2018)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "9. Hertz, A., Voynov, A., Fruchter, S., Cohen-Or, D.: Style aligned image generation via shared attention. In: Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition. pp. 4775–4785 (2024)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "10. Heusel, M., Ramsauer, H., Unterthiner, T., Nessler, B., Hochreiter, S.: Gans trained by a two time-scale update rule converge to a local nash equilibrium. Advances in neural information processing systems 30 (2017)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "11. Huang, X., Belongie, S.: Arbitrary style transfer in real-time with adaptive instance normalization. In: Proceedings of the IEEE international conference on computer vision. pp. 1501–1510 (2017)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "12. Kumari, N., Zhang, B., Zhang, R., Shechtman, E., Zhu, J.Y.: Multi-concept customization of text-to-image difusion. In: Proceedings of the IEEE/CVF conference on computer vision and pattern recognition. pp. 1931–1941 (2023)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "13. Kwon, M., Jeong, J., Uh, Y.: Difusion models already have a semantic latent space. arXiv preprint arXiv:2210.10960 (2022)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "14. Kynkäänniemi, T., Karras, T., Laine, S., Lehtinen, J., Aila, T.: Improved precision and recall metric for assessing generative models. Advances in neural information processing systems 32 (2019)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "15. Li, Y., Wang, N., Liu, J., Hou, X.: Demystifying neural style transfer. arXiv preprint arXiv:1701.01036 (2017)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "16. Li, Y., Fang, C., Yang, J., Wang, Z., Lu, X., Yang, M.H.: Universal style transfer via feature transforms. Advances in neural information processing systems 30 (2017)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "17. Liu, S., Lin, T., He, D., Li, F., Wang, M., Li, X., Sun, Z., Li, Q., Ding, E.: Adaattn: Revisit attention mechanism in arbitrary neural style transfer. In: Proceedings of the IEEE/CVF international conference on computer vision. pp. 6649–6658 (2021)"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                223,
+                176,
+                787,
+                231
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "16"
+                    }
+                ]
+            },
+            "bbox": [
+                217,
+                114,
+                236,
+                127
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "J. Lee et al."
+                    }
+                ]
+            },
+            "bbox": [
+                269,
+                114,
+                352,
+                127
+            ]
+        }
+    ],
+    [
+        {
+            "type": "list",
+            "content": {
+                "list_type": "reference_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "18. Naeem, M.F., Oh, S.J., Uh, Y., Choi, Y., Yoo, J.: Reliable fidelity and diversity metrics for generative models. In: International conference on machine learning. pp. 7176–7185. PMLR (2020)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "19. OpenAI: Chatgpt: Get answers. find inspiration. be productive. https://openai. com/ko-KR/index/chatgpt/ (2026), accessed: 2026-01-22"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "20. Park, D.Y., Lee, K.H.: Arbitrary style transfer with style-attentional networks. In: proceedings of the IEEE/CVF conference on computer vision and pattern recognition. pp. 5880–5888 (2019)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "21. Radford, A., Kim, J.W., Hallacy, C., Ramesh, A., Goh, G., Agarwal, S., Sastry, G., Askell, A., Mishkin, P., Clark, J., et al.: Learning transferable visual models from natural language supervision. In: International conference on machine learning. pp. 8748–8763. PmLR (2021)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "22. Rombach, R., Blattmann, A., Lorenz, D., Esser, P., Ommer, B.: High-resolution image synthesis with latent difusion models. In: Proceedings of the IEEE/CVF conference on computer vision and pattern recognition. pp. 10684–10695 (2022)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "23. Ruiz, N., Li, Y., Jampani, V., Pritch, Y., Rubinstein, M., Aberman, K.: Dreambooth: Fine tuning text-to-image difusion models for subject-driven generation. In: Proceedings of the IEEE/CVF conference on computer vision and pattern recognition. pp. 22500–22510 (2023)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "24. Ruta, D., Tarrés, G.C., Gilbert, A., Shechtman, E., Kolkin, N., Collomosse, J.: Dif-nst: Difusion interleaving for deformable neural style transfer. In: European Conference on Computer Vision. pp. 50–66. Springer (2024)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "25. Sohn, K., Ruiz, N., Lee, K., Chin, D.C., Blok, I., Chang, H., Barber, J., Jiang, L., Entis, G., Li, Y., et al.: Styledrop: Text-to-image generation in any style. arXiv preprint arXiv:2306.00983 (2023)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "26. Song, J., Meng, C., Ermon, S.: Denoising difusion implicit models. arXiv preprint arXiv:2010.02502 (2020)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "27. Song, Y., Sohl-Dickstein, J., Kingma, D.P., Kumar, A., Ermon, S., Poole, B.: Scorebased generative modeling through stochastic diferential equations. arXiv preprint arXiv:2011.13456 (2020)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "28. Tan, W.R., Chan, C.S., Aguirre, H.E., Tanaka, K.: Improved artgan for conditional synthesis of natural image and artwork. IEEE Transactions on Image Processing 28(1), 394–409 (2018)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "29. Ulyanov, D., Vedaldi, A., Lempitsky, V.: Instance normalization: The missing ingredient for fast stylization. arXiv preprint arXiv:1607.08022 (2016)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "30. Wright, M., Ommer, B.: Artfid: Quantitative evaluation of neural style transfer. In: DAGM German Conference on Pattern Recognition. pp. 560–576. Springer (2022)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "31. Xing, P., Wang, H., Sun, Y., Wang, Q., Bai, X., Ai, H., Huang, R., Li, Z.: Csgo: Content-style composition in text-to-image generation. arXiv preprint arXiv:2408.16766 (2024)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "32. Xu, R., Xi, W., Wang, X., Mao, Y., Cheng, Z.: Stylessp: Sampling startpoint enhancement for training-free difusion-based method for style transfer. In: Proceedings of the Computer Vision and Pattern Recognition Conference. pp. 18260–18269 (2025)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "33. Zhang, C., Xu, X., Wang, L., Dai, Z., Yang, J.: S2wat: Image style transfer via hierarchical vision transformer using strips window attention. In: Proceedings of the AAAI conference on artificial intelligence. vol. 38, pp. 7024–7032 (2024)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "34. Zhang, L., Rao, A., Agrawala, M.: Adding conditional control to text-to-image difusion models. In: Proceedings of the IEEE/CVF international conference on computer vision. pp. 3836–3847 (2023)"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                215,
+                147,
+                785,
+                189
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Global Style Transfer"
+                    }
+                ]
+            },
+            "bbox": [
+                586,
+                114,
+                732,
+                128
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "17"
+                    }
+                ]
+            },
+            "bbox": [
+                766,
+                116,
+                785,
+                127
+            ]
+        }
+    ],
+    [
+        {
+            "type": "list",
+            "content": {
+                "list_type": "reference_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "35. Zhang, Y., Huang, N., Tang, F., Huang, H., Ma, C., Dong, W., Xu, C.: Inversionbased style transfer with difusion models. In: Proceedings of the IEEE/CVF conference on computer vision and pattern recognition. pp. 10146–10156 (2023)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "36. Zhang, Y., Tang, F., Dong, W., Huang, H., Ma, C., Lee, T.Y., Xu, C.: Domain enhanced arbitrary image style transfer via contrastive learning. In: ACM SIG-GRAPH 2022 conference proceedings. pp. 1–8 (2022)"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "37. Zhu, J.Y., Park, T., Isola, P., Efros, A.A.: Unpaired image-to-image translation using cycle-consistent adversarial networks. In: Proceedings of the IEEE international conference on computer vision. pp. 2223–2232 (2017)"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                217,
+                147,
+                784,
+                188
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "18"
+                    }
+                ]
+            },
+            "bbox": [
+                217,
+                116,
+                236,
+                126
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "J. Lee et al."
+                    }
+                ]
+            },
+            "bbox": [
+                271,
+                114,
+                352,
+                127
+            ]
+        }
+    ],
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "A Experiment Settings"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                145,
+                457,
+                162
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Model. We use Stable Difusion v1.4 [22] as the default base generator for our Global Style Transfer experiments unless otherwise specified. To implement our proposed Content Alignment Guidance (CAG), we use CLIP [21] as the image encoder, specifically the ViT-L/14 model, to extract high-fidelity content features."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                174,
+                787,
+                251
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Hyper Parameter Settings. To produce our proposed Global Style Guidance (GSG) on Text-to-Image latent difusion model, we train the Style Extraction Function (SEF) "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "f _ { t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "on the WikiArt dataset [28], using between 500 and 1800 artworks per artist. Our proposed Style Extraction Function is implemented as an MLP with a single hidden layer (1280×1280). Training is conducted with a batch size of 8 during 200 training epochs. We use a learning rate of 0.1 with an Adam optimizer with "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( \\beta _ { 1 } , \\beta _ { 2 } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "=(0.9, 0.999), weight decay is 0, and Adam epsilon is 1e-8. The impact of training epochs is presented in Fig. 7 of the main paper. Furthermore, we control the magnitude of the global style ofset ∆h<sub>t</sub> using a scaling factor w in Eq. (5), for which we utilize values {1.0, 1.25, 1.5}, and we set the CAG guidance scale to "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "s = 5 0 . 0"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". Fig. 14 illustrates the qualitative efect of jointly varying both scales over a broader range (w from 0.1 to 2.0 and s from 1 to 80); within this range, our main experiments use "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "w \\in \\{ 1 . 0 , 1 . 2 5 , 1 . 5 \\}"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "s = 5 0"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". We recommend that selecting an appropriate scale is essential, as it reflects the trade-of between the proposed Global Style Guidance and Content Alignment Guidance."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                270,
+                789,
+                513
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Computation Overhead. On a single NVIDIA RTX 3090 GPU, training the Style Extraction Function for one epoch takes approximately 216 seconds. The total training time scales with the number of artworks used per artist. After training, generating a 512×512 image on the same GPU takes roughly 20 seconds."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                532,
+                787,
+                594
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Evaluation Metrics. To comprehensively evaluate the quality of our synthesized images, we employ five complementary metrics: FID, ArtFID, CFSD, CLIP-Div, and 1-Precision, each capturing a diferent aspect of style and content fidelity."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                613,
+                787,
+                672
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "First, we measure Frechet Inception Distance (FID) [10] between the generated images and the full set of artworks for each artist. This allows us to assess stylistic bias by quantifying how closely the synthesized samples align with the overall style distribution of the original artworks. Second, we report ArtFID [30], a metric designed to evaluate style-transfer performance by jointly considering content and style preservation. ArtFID reflects both resemblance to the artwork distribution and consistency with the content-image distribution, and is known to strongly correlate with human perceptual judgment. Following prior work, ArtFID is computed as "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "A r t F I D = ( 1 + L P I P S )"
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( 1 + F I D )"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". Third, to isolate content fidelity from stylistic influence, we compute the Content Feature Structural Distance (CFSD) [2]. CFSD measures structural similarity by capturing only the spatial correlations between local image patches, independent of stylistic appearance. Fourth, we measure CLIP-Diversity (CLIP-Div) to assess the stylistic spread of the generated images. Following [1], it is computed as the mean pairwise cosine distance between the CLIP image embeddings (ViT-L/14) of a generated set; higher values indicate greater stylistic diversity. In Tab. 2 of the main paper, we report it as (Ours/Real) to enable direct comparison with the real artwork corpus. Finally, we report 1-Precision to quantify memorization avoidance. Precision is the improved precision metric [14], measuring the fraction of generated samples that fall within the real-artwork manifold, computed with the prdc implementation (k=5) [18]. A higher 1-Precision indicates less memorization of the training corpus."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                674,
+                787,
+                842
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Global Style Transfer"
+                    }
+                ]
+            },
+            "bbox": [
+                586,
+                114,
+                732,
+                128
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "19"
+                    }
+                ]
+            },
+            "bbox": [
+                767,
+                116,
+                785,
+                127
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/62ebfcb48050126cb1ec548db43450b2f1a9f43e6cec4d07846284a75359df05.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 12: Global Style Transfer results across multiple artists for the same content image. Given the same content images "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "{ \\cal I } _ { c } ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "our framework transfers the images into the global styles of eight diferent painters. All images are generated using a textindependent prompt (“A painting”) to eliminate stylistic bias in the difusion model. For each content image I<sub>c</sub> (left column), our framework applies Global Style Guidance (GSG) to capture artist-specific global semantics and Content Alignment Guidance (CAG) to preserve flexible, style-based deformation of content. The results show that a single content image is rendered into distinctly diferent artistic styles across various artists, demonstrating our framework’s ability to synthesize artist-faithful images."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                220,
+                152,
+                782,
+                412
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                214,
+                585,
+                787,
+                753
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "B Further Analysis"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                776,
+                419,
+                792
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Global Style Transfer Results of Multiple Artists for the Same Content Image. We extend Fig. 1 of the main paper by visualizing stylization results across multiple artists for the same content image. Fig. 12 illustrates the results of applying our Global Style Transfer framework to the same content image "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathit { I } _ { c } ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "where the image is stylized using the global styles of eight diferent painters. For each artist, we generate 1,500 artistic images by applying the corresponding global style to the same set of content images. Fig. 12 shows representative examples from these results, where a randomly selected content image is stylized according to each artist’s global style. Despite sharing the same content image, the generated artistic images clearly reflect the distinctive global stylistic characteristics of each artist."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                809,
+                787,
+                840
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "20"
+                    }
+                ]
+            },
+            "bbox": [
+                217,
+                114,
+                236,
+                126
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "J. Lee et al."
+                    }
+                ]
+            },
+            "bbox": [
+                271,
+                114,
+                351,
+                127
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/ad3ddb0e01345925b0dec067b86c813ace98d55b2ea934b15b7a35a45b004c52.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 13: Comparison of stylistic bias between vanilla Stable Difusion (SD) and our Global Style Transfer. Given the same content images, vanilla SD conditioned on the prompt ‘A painting of van gogh style’ tends to bias toward a few iconic patterns (e.g., ‘Starry Night’-like swirls), often distorting the original structure and semantic content. In contrast, our method generates diverse stylizations while preserving the underlying content structure by learning a global stylistic representation from the full corpus of Van Gogh’s artworks. The bottom panel shows the real Van Gogh artwork distribution."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                222,
+                147,
+                777,
+                445
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                214,
+                602,
+                787,
+                739
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Further Analysis of Stylistic Bias on Stable Difusion. Extending the experimental results of Fig. 7 of the main paper, we further examine whether stylistic bias also appears in vanilla Stable Difusion [22]. Since our Global Style Transfer framework is built upon Stable Difusion, we further compare our method with vanilla Stable Difusion to investigate whether artistic stylistic bias also emerges in the original difusion model. To conduct this analysis, we generate artistic images using both vanilla Stable Difusion and our proposed Global Style Transfer framework. We use 1,500 photographs from the Vangogh2photo dataset [37] as content images "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "I _ { c }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and obtain their latent representations via DDIM inversion. Our method produces stylized outputs from these latents using the prompt ‘A painting’, whereas vanilla Stable Difusion generates images conditioned on the prompt ‘A painting of {artist} style’."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                763,
+                787,
+                842
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Global Style Transfer"
+                    }
+                ]
+            },
+            "bbox": [
+                588,
+                114,
+                732,
+                128
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "21"
+                    }
+                ]
+            },
+            "bbox": [
+                766,
+                116,
+                784,
+                127
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/caf2c92a8bd0ff037c5ccb8eda7e94d07d257ebb1120528d3f42c2df2cc5bb4a.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 14: Efect of guidance strength on the style–content balance, illustrating how Global Style and Content Alignment Guidance jointly control stylistic expressiveness and content preservation."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                333,
+                145,
+                669,
+                377
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                214,
+                492,
+                787,
+                599
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Our analysis reveals that vanilla Stable Difusion frequently collapses toward a small subset of iconic artworks. Furthermore, in many cases, the generated images lose the original content structure and semantic information, while being transformed into compositions that resemble specific well-known paintings by the artist. This phenomenon indicates that the model overemphasizes a few dominant stylistic patterns rather than capturing the broader stylistic distribution of the artist. To quantitatively evaluate this efect, we compute ArtFID between the generated images and the full artwork corpus for each artist, as reported in Tab. 2 in the main paper. Our method consistently achieves lower ArtFID for most artists, demonstrating improved alignment with the global artistic distribution. To further illustrate this phenomenon, Fig. 13 visualizes representative samples from the Van Gogh experiments, where the stylistic bias of vanilla Stable Difusion becomes particularly evident. These results confirm that our method efectively mitigates stylistic bias and better preserves stylistic diversity across the artist’s corpus."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                613,
+                789,
+                842
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "22"
+                    }
+                ]
+            },
+            "bbox": [
+                217,
+                114,
+                236,
+                127
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "J. Lee et al."
+                    }
+                ]
+            },
+            "bbox": [
+                269,
+                114,
+                352,
+                128
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/0a370b0e91fe370fc7b78f36fc3dc5139aaa40a669d784578e44180ff34c3615.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 15: Backbone generalization. Global Style Transfer applied on diferent T2I difusion backbones (SD-1.4, SD-2.1, SDXL) for the same content image, showing that our framework transfers consistently across backbones."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                364,
+                142,
+                640,
+                220
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Efect of Guidance Scales on Style-Content Trade Of. We qualitatively analyze the interplay between the Global Style Guidance (GSG) and the Content Alignment Guidance (CAG) in our framework. As shown in Fig. 14, increasing the Global Style Guidance enhances stylistic expressiveness, yielding richer color saturation and brushstroke abstraction, while excessive strength may distort the geometric structure of the content. Conversely, stronger Content Alignment Guidance preserves the semantic integrity and spatial layout of the content but limits stylistic diversity. A balanced configuration of both guidance scales produces the most harmonious results, maintaining recognizable content structure while expressing vivid stylistic characteristics. This trade-of highlights that proper coordination between style and content guidance is essential for generating perceptually coherent and semantically consistent images."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                299,
+                787,
+                482
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Sample Visualization with Diferent T2I Difusion Backbones. To verify that Global Style Transfer is not tied to a specific base generator, we apply our framework on three diferent text-to-image difusion backbones: Stable Difusion v1.4, Stable Difusion v2.1, and SDXL. Since the U-Net bottleneck (h-space) dimensionality difers across these backbones, we train a separate Style Extraction Function on the corresponding h-space for each backbone. As shown in Fig. 15, given the same content image, GST produces coherent artist-level stylization across all three backbones, indicating that our framework is applicable across diferent difusion architectures rather than being tied to a specific one."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                500,
+                787,
+                637
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "C Limitation"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                655,
+                361,
+                672
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Our method relies on the visual diversity of an artist’s training data. When an artist’s works mostly depict limited subjects, such as natural scenes, the model struggles to generalize to unseen content like humans or vehicles, as shown in Fig. 16. Thus, the efectiveness of style transfer depends on whether the artist’s dataset includes the target content type."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                684,
+                787,
+                762
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "D Broader Impact"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                781,
+                413,
+                797
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Our Global Style Transfer framework enables artist-level style synthesis from large artwork collections, ofering new possibilities for artistic creation, digital heritage preservation, and accessible content generation. It can support cultural institutions, educators, and creators by providing faithful stylistic reinterpretations without extensive generative AI model training. However, reproducing artistic styles at scale also raises concerns regarding authorship, cultural integrity, and responsible use of copyrighted material. We encourage the deployment of this technology in ways that respect artistic ownership and contribute positively to creative and cultural domains."
+                    }
+                ]
+            },
+            "bbox": [
+                214,
+                809,
+                787,
+                842
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Global Style Transfer"
+                    }
+                ]
+            },
+            "bbox": [
+                586,
+                114,
+                732,
+                128
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "23"
+                    }
+                ]
+            },
+            "bbox": [
+                766,
+                114,
+                785,
+                127
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/c2338be72f30ffcf6e4b7a5d676e6ff1a15bb3c30eff0e2f5692be6ce4b0cb69.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 16: Failure case of Global Style Transfer when the artist’s dataset contains highly biased content. As shown in Nicholas Roerich, whose works predominantly depict mountains, our framework fails to generalize to non-mountain content. When a treefield landscape is provided as input, the model still reconstructs mountain-like shapes, reflecting the strong content bias encoded in the artist’s dataset."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                222,
+                150,
+                779,
+                232
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                214,
+                347,
+                787,
+                454
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "24"
+                    }
+                ]
+            },
+            "bbox": [
+                217,
+                114,
+                236,
+                127
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "J. Lee et al."
+                    }
+                ]
+            },
+            "bbox": [
+                271,
+                114,
+                352,
+                127
+            ]
+        }
+    ]
+]

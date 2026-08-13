@@ -1,0 +1,2100 @@
+[
+    {
+        "type": "text",
+        "text": "EGM-Det: Entropy-Guided Multimodal Adaptive Fusion for UAV RGB–IR Object Detection",
+        "text_level": 1,
+        "bbox": [
+            89,
+            64,
+            907,
+            114
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Cunzheng Fan<sup>1,†</sup>, Dawei Yan<sup>1,†</sup>, Guanlin Wang<sup>1</sup>, Xingshuo Yang<sup>1</sup>, Yupeng Jia<sup>1</sup>, Jing Yang<sup>2,∗</sup>, and Haokui Zhang<sup>1,∗</sup>",
+        "bbox": [
+            82,
+            121,
+            914,
+            155
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "<sup>1</sup>School of Cybersecurity, Northwestern Polytechnical University, Xi’an 710072, China",
+        "bbox": [
+            203,
+            161,
+            794,
+            174
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "<sup>2</sup>School of Automation and Software Engineering, Shanxi University, Taiyuan 030006, China",
+        "bbox": [
+            181,
+            174,
+            816,
+            187
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "<sup>†</sup>These authors contributed equally to this work.",
+        "bbox": [
+            344,
+            190,
+            655,
+            203
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "<sup>∗</sup>Corresponding authors: yangjing199002@sxu.edu.cn; hkzhang@nwpu.edu.cn",
+        "bbox": [
+            257,
+            203,
+            742,
+            215
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Abstract",
+        "text_level": 2,
+        "bbox": [
+            462,
+            227,
+            536,
+            239
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Joint utilization of RGB and infrared (IR) information for object detection represents an important research direction in UAV-view object detection. Multimodal complementarity alleviates indistinct UAV-view target features and greatly improves detection accuracy. However, most existing methods simply fuse multimodal features via static or fixed spatial weights, ignoring the varying contributions of each modality across diverse scenarios and failing to fully exploit multimodal complementarity. In this paper, we propose EGM-Det, an entropy-guided multimodal adaptive fusion framework for RGB-IR object detection. Guided by information entropy, the proposed EGM-Det designs scenario-adaptive fusion strategies to fully exploit multimodal complementarity and boost detection performance. Specifically, EGM-Det adopts a dual-stream architecture to preserve modality-specific representations and introduces an Entropy Ofset Gate Fusion module for adaptive multi-scale fusion. This module constructs shallow entropy priors from input intensity, local entropy, and cross-modal discrepancy, and uses them to guide local ofset alignment and spatial-channel gated fusion. In this way, EGM-Det selectively aggregates reliable RGB and infrared cues rather than uniformly combining heterogeneous features. Furthermore, cross-modal distillation is proposed to regularize learned fusion gates for avoiding fusion degradation. Distinct from prior distillation methods, our mechanism lets each student branch extract complementary knowledge from its cross-modality teacher branch matched to the main branch, further amplifying the advantages of multimodal fusion. We conduct experiments on three representative benchmarks: DroneVehicle, LLVIP and VEDAI. Experimental results demonstrate that our proposed EGM-Det achieves state-of-the-art performance across all three datasets. In particular, our method surpasses prior approaches by over 10 percentage points on the VEDAI benchmark.",
+        "bbox": [
+            114,
+            243,
+            884,
+            481
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Keywords: UAV remote sensing; RGB-IR object detection; cross-modal feature fusion; modality-preference distillation; entropy-adaptive supervision.",
+        "bbox": [
+            80,
+            487,
+            914,
+            516
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "1 Introduction",
+        "text_level": 2,
+        "bbox": [
+            84,
+            524,
+            277,
+            541
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "UAV-view object detection has become an important perception task for trafic monitoring, urban surveil lance, and emergency response (Zhu et al., 2018; Sun et al., 2022; Cheng and Han, 2016). Compared with ground-view images, aerial images usually contain small, densely distributed, and arbitrarily oriented objects under complex backgrounds and variable illumination (Xia et al., 2018; Ding et al., 2021, 2018; Yang et al., 2021). These factors make robust vehicle detection dificult, especially when object appearance changes with viewpoint, altitude, illumination, and imaging quality. RGB-infrared (RGB-IR) multimodal imaging provides a promising solution by combining the texture and structural details of visible images with the illumination robustness and thermal responses of infrared images (Sun et al., 2022; Jia et al., 2021). Recent UAVoriented infrared-visible fusion studies further show that cross-modal fusion is critical for robust perception under low illumination, backlighting, haze, smoke, scale variation, and onboard resource constraints (Li et al., 2025). However, efectively exploiting such complementary information remains non-trivial because the reliability of RGB and IR cues can vary substantially across spatial locations and imaging conditions.",
+        "bbox": [
+            80,
+            556,
+            489,
+            898
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "The central challenge of RGB-IR detection lies in the spatially varying reliability of diferent modalities. This challenge arises from two coupled factors. First,",
+        "bbox": [
+            80,
+            900,
+            487,
+            942
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "RGB and IR images are generated by diferent imaging mechanisms, leading to heterogeneous texture, contrast, and thermal responses (Sun et al., 2022; Fang and Wang, 2022). Second, modality reliability is inherently contentdependent: a region that is discriminative in RGB may be ambiguous in IR, whereas another region may benefit more from thermal cues (Li et al., 2019; Fang and Wang, 2022). A reliable detector should learn not only how to combine cross-modal features, but also when and where each modality should be trusted.",
+        "bbox": [
+            509,
+            526,
+            917,
+            669
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Existing RGB-IR and visible-thermal detectors have explored attention-based feature fusion (Fang and Wang, 2022; Shen et al., 2024; Wu et al., 2026), Transformerbased cross-modal interaction (Fang et al., 2021; Yuan and Wei, 2024), end-to-end synchronous fusion and detection (Zhang et al., 2024), and conflict-aware mul timodal learning (He et al., 2023). Although these methods improve multimodal representation learning, the modality-selection process is generally optimized only through the final detection objective. Such implicit supervision does not directly indicate which modality is more reliable at a specific spatial location or feature level. Consequently, unreliable or redundant modality responses may still be propagated when RGB and IR reliability varies across locations and imaging conditions. This motivates explicit modeling and supervision of modality preference for robust RGB-IR object detection.",
+        "bbox": [
+            509,
+            670,
+            917,
+            927
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Knowledge distillation provides a possible way to guide multimodal student learning with teacher models (Hinton et al., 2015). Conventional detection distillation usually transfers feature-level or prediction-level knowledge from teacher detectors to a student detector (Dai et al., 2021; Yang et al., 2022; Wang et al., 2024). However, RGB-IR multimodal detection requires more than mimicking final predictions or fused features. The student must preserve modality-specific representations, exploit cross-modal complementarity, and learn adaptive modality preference simultaneously. In this setting, the key question is not only how to distill detection knowledge, but also how to distill reliable modality selection behavior. This motivates a selective distillation strategy that focuses supervision on the components most relevant to multimodal fusion.",
+        "bbox": [
+            527,
+            927,
+            915,
+            942
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "aside_text",
+        "text": "arXiv:2608.11685v1 [cs.CV] 12 Aug 2026",
+        "bbox": [
+            30,
+            361,
+            65,
+            782
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "page_number",
+        "text": "1",
+        "bbox": [
+            494,
+            965,
+            504,
+            976
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            80,
+            58,
+            489,
+            273
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "To address these problems, we propose EGM-Det, an entropy-guided multimodal adaptive fusion framework for RGB-infrared object detection. Centered on information entropy, EGM-Det leverages scenario-adaptive fusion to exploit multimodal complementary information. It adopts a dual-stream architecture and introduces an Entropy Ofset Gate Fusion (EOGF) module for adaptive multi-scale fusion. This module builds shallow entropy priors from intensity values, local entropy and cross-modal discrepancies to guide local ofset alignment and spatial-channel gated aggregation, selectively integrating reliable RGB and infrared features instead of static uniform fusion. To mitigate fusion degradation, we further propose a cross-modal distillation strategy to regularize fusion gates. Unlike existing distillation schemes, each student branch extracts complementary knowledge from its matched cross-modal teacher branch, which further strengthens the benefits of multimodal fusion.",
+        "bbox": [
+            80,
+            275,
+            489,
+            546
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "The main contributions of this paper are summarized as follows:",
+        "bbox": [
+            80,
+            548,
+            485,
+            577
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "(1) We propose EGM-Det, where RGB-IR information is integrated by an entropy-guided alignment-aware gated fusion module. It achieves more flexible multimodal fusion, dynamically perceiving scene properties to determine the dominant modality and further exploit the complementary strengths across modalities.",
+        "bbox": [
+            82,
+            596,
+            487,
+            697
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "(2) We introduce a dual-teacher modality-preference distillation strategy. Relative dense confidence responses from RGB and IR teachers are converted into soft modality-preference targets, and student gate entropy is further used to adaptively strengthen gate supervision in ambiguous regions.",
+        "bbox": [
+            82,
+            719,
+            487,
+            807
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "(3) We refine the DroneVehicle annotations by correcting cross-modal inconsistencies and categorylevel errors, establish a refined paired RGB-IR evaluation protocol, and validate EGM-Det on the refined DroneVehicle and other two representive datasets LLVIP and VEDAI. Our proposed EGM-Det achieve the best performance on all three datasets.",
+        "bbox": [
+            82,
+            827,
+            487,
+            942
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "2 Related Work",
+        "text_level": 2,
+        "bbox": [
+            510,
+            54,
+            724,
+            72
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "2.1 UAV-View RGB-IR and Visible-Thermal Object Detection",
+        "text_level": 2,
+        "bbox": [
+            510,
+            86,
+            917,
+            120
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "UAV-view object detection has been widely studied for trafic monitoring, urban surveillance, and emergency perception. Compared with ground-view detection, UAV-view detection is more challenging because objects are often small, densely distributed, arbitrarily oriented, and captured under complex backgrounds (Yang et al., 2021; Ding et al., 2018). To improve robustness under illumination variation and degraded visible appearance, RGB-infrared and RGB-thermal detection have attracted increasing attention. Visible images provide texture, color, and structural details, while infrared or thermal images are less sensitive to illumination changes and can highlight objects with thermal responses.",
+        "bbox": [
+            509,
+            129,
+            917,
+            329
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "Several datasets have supported this research direction (Hwang et al., 2015). DroneVehicle is a representative drone-based RGB-infrared vehicle detection benchmark, which provides paired RGB-IR images and oriented vehicle annotations for cross-modality detection (Sun et al., 2022). VEDAI focuses on vehicle detection in aerial imagery and is commonly used for evaluating small vehicle detection under unconstrained aerial conditions (Razakarivony and Jurie, 2016). LLVIP provides aligned visible-infrared image pairs for low-light vision, and has been used in visible-infrared fusion and detection studies (Jia et al., 2021). Large-scale aerial detection benchmarks such as DOTA, VisDrone and DIOR further highlight the challenges of small objects, dense layouts, and arbitrary object orientations in aerial imagery (Xia et al., 2018; Ding et al., 2021; Zhu et al., 2018; Li et al., 2020). These datasets show that multimodal and aerial object detection are valuable under challenging imaging conditions, but they also reveal two practical issues: cross-modal observations may contain redundant or conflicting responses, and paired annotation consistency is critical for reliable multimodal training and evaluation.",
+        "bbox": [
+            509,
+            329,
+            919,
+            657
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "Existing RGB-IR and RGB-T detectors mainly focus on improving multimodal feature fusion. Recent methods have explored attention-based feature fusion (Fang and Wang, 2022; Shen et al., 2024; Wu et al., 2026), Transformer-based cross-modal interaction (Fang et al., 2021; Yuan and Wei, 2024), end-toend synchronous fusion and detection (Zhang et al., 2024), and conflict-aware multimodal learning (He et al., 2023). Other studies investigate mono-modality feature learning (Zhao et al., 2025) and alignment-oriented or ofset-guided feature modeling (Yuan et al., 2022; Liu et al., 2026, 2025) to alleviate modality gaps and local feature inconsistency. For example, UA-CMDet mod els uncertainty in DroneVehicle-based cross-modality vehicle detection (Sun et al., 2022), and TSFADet addresses weak cross-modal misalignment in aerial RGB-IR vehicle detection through translation-, scale-, and rotation-aware alignment (Yuan et al., 2022). Recent benchmark-oriented studies also investigate visiblethermal misalignment and provide dedicated baselines for drone-based visible-thermal object detection (Song et al., 2024). More recent UAV-oriented methods further explore ofset-guided fusion and dynamic alignment for weakly aligned multimodal detection (Liu et al., 2026, 2025). These studies show that RGB-IR detection requires more than direct feature fusion, especially when the two modalities are weakly aligned, locally inconsistent, or unevenly reliable.",
+        "bbox": [
+            509,
+            657,
+            919,
+            944
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "page_number",
+        "text": "2",
+        "bbox": [
+            492,
+            964,
+            505,
+            976
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            80,
+            58,
+            487,
+            172
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "However, most existing methods still learn modality fusion mainly through detection supervision. Although such supervision improves final detection accuracy, it does not explicitly indicate which modality is more reliable at a specific spatial location or feature level. As a result, the fusion module may still propagate unreliable modality responses when RGB and IR cues are locally inconsistent. This limitation is particularly important for UAV-view RGB-IR detection, where modality reliability can change sharply with illumination, background clutter, target scale, and local imaging quality. In contrast, EGM-Det treats modality selection as an explicit distillation target. It derives modality-preference distributions from dual-teacher confidence maps and further uses student gate entropy to strengthen supervision for uncertain regions.",
+        "bbox": [
+            80,
+            172,
+            487,
+            401
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "2.2 Knowledge Distillation for Object Detection",
+        "text_level": 2,
+        "bbox": [
+            82,
+            418,
+            485,
+            450
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Knowledge distillation transfers knowledge from a high capacity teacher model to a compact or task-specific student model (Hinton et al., 2015). In object detection, KD is more complex than in image classification because a detector must jointly handle classification, localization, multi-scale representation, and foreground-background imbalance. Existing detection KD methods have there fore explored diferent forms of knowledge, including channel-wise dense prediction distillation, feature imitation, instance-level distillation, relation distillation, and prediction mimicking (Shu et al., 2021; Guo et al., 2021; Dai et al., 2021; Yang et al., 2022; Wang et al., 2024; Zagoruyko and Komodakis, 2016; Chen et al., 2017).",
+        "bbox": [
+            80,
+            457,
+            489,
+            644
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Representative methods show that detection distillation should be selective and task-aware. GID selects discriminative instances and combines feature-, relation-, and response-based knowledge for detector distillation (Dai et al., 2021). FGD observes that teacher-student feature diferences vary across foreground/background regions and proposes focal and global distillation to emphasize important pixels, channels, and global relations (Yang et al., 2022). CrossKD revisits prediction mimicking by passing student head features through the teacher head, reducing contradictory supervision between annotations and teacher predictions (Wang et al., 2024). These methods demonstrate that efective detection KD depends on where and what to distill, rather than applying uniform imitation to all features or predictions (Wang et al., 2019).",
+        "bbox": [
+            80,
+            644,
+            489,
+            871
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Although these methods are efective for general object detection, they are mainly designed for singlemodality detectors. In RGB-IR multimodal detection, the student must learn modality-specific representations, cross-modal complementarity, and adaptive modality preference. Directly distilling fused features or detection heads may be suboptimal, because the multimodal student should not simply mimic a teacher’s final re sponse. Instead, it should learn how to select reliable cues from diferent modalities. EGM-Det follows this principle by adopting a selective distillation objective that preserves branch-level, cross-modal, and gate-level supervision while excluding inefective pseudo-fusion and detection-head distillation branches. The proposed student-gate-entropy weighting further makes this process uncertainty-aware, allowing stronger supervision to be assigned to ambiguous modality decisions.",
+        "bbox": [
+            80,
+            871,
+            487,
+            944
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            509,
+            58,
+            917,
+            230
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "3 Method",
+        "text_level": 2,
+        "bbox": [
+            510,
+            250,
+            652,
+            268
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "3.1 Overview of EGM-Det",
+        "text_level": 2,
+        "bbox": [
+            510,
+            281,
+            793,
+            297
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "EGM-Det models spatially varying modality reliability rather than assuming uniformly reliable RGB and infrared features. As illustrated in Figure 1, paired RGB–IR images are processed by two modality-specific branches to extract multi-scale representations. At selected feature levels, the proposed EntropyOfsetGate-Fusion (EOGF) module uses shallow priors derived from image intensity, local entropy, and cross-modal discrep ancy to guide local feature alignment and spatial and channel gating. During training, selective multimodal distillation provides auxiliary supervision for the spatial modality gates, whereas only the dual-stream detector is retained for inference.",
+        "bbox": [
+            509,
+            305,
+            917,
+            492
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "3.2 Entropy-Guided Dual-Stream Architecture",
+        "text_level": 2,
+        "bbox": [
+            510,
+            507,
+            917,
+            539
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "RGB and infrared images provide complementary appearance and thermal cues, but their relative reliability varies across spatial locations. Direct early fusion may mix unreliable responses before modality-specific representations are suficiently formed. As illustrated in Figure 2, EGM-Det therefore adopts two symmetric modality-specific branches to extract multi-scale RGB and infrared features, denoted by $F _ { l } ^ { r g b }$ and $F _ { l } ^ { i r }$ , respectively. Cross-modal interaction is introduced only at selected feature levels through the proposed EntropyOfsetGateFusion (EOGF) module. This design preserves modality-specific representations while allowing complementary information to be exchanged at multiple scales.",
+        "bbox": [
+            509,
+            548,
+            917,
+            746
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "EOGF first constructs an input-level entropy prior to provide scene-dependent guidance for feature fusion. Let $I ^ { r g b }$ and $I ^ { i r }$ denote the normalized intensity maps, and let $H ^ { r g b }$ and $H ^ { i r }$ denote their local entropy maps. The entropy prior is defined as",
+        "bbox": [
+            509,
+            746,
+            917,
+            819
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "equation",
+        "img_path": "images/6600489988772fa4f0eb4357f9797107ba81b628d6289780b6614f25e48c4d99.jpg",
+        "text": "$$\nP = \\Phi _ { \\mathrm { p r i o r } } \\left( I ^ { r g b } , I ^ { i r } , H ^ { r g b } , H ^ { i r } , \\left| I ^ { r g b } - I ^ { i r } \\right| \\right) ,\\tag{1}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            546,
+            827,
+            875,
+            846
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "where $\\Phi _ { \\mathrm { p r i o r } } ( \\cdot )$ is a lightweight prior estimator. The resulting prior encodes local structural complexity, modality saliency, and cross-modal discrepancy. It is resized to each fusion level as $P _ { l }$ and used only to condition subsequent alignment and gating, rather than serving as a predefined modality-selection mask.",
+        "bbox": [
+            509,
+            857,
+            917,
+            942
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "page_number",
+        "text": "3",
+        "bbox": [
+            492,
+            965,
+            505,
+            976
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "image",
+        "img_path": "images/a4e9e18fed9232361bf02758ebcd5651a85f48676c806cc1257d4bed995554e2.jpg",
+        "image_caption": [
+            "Figure 1: Overview of EGM-Det. The dual-stream detector extracts modality-specific RGB and infrared features and applies multi-scale EOGF modules for entropy-guided alignment and gated fusion. During training, two frozen unimodal teachers provide dense confidence maps, from which modality-preference targets and reliability weights are constructed to supervise the spatial gates and feature branches. Only the dual-stream detector is retained during inference."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            173,
+            57,
+            816,
+            317
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "At feature level l, $F _ { l } ^ { r g b }$ and $F _ { l } ^ { i r }$ are projected into a shared embedding space as $Z _ { l } ^ { r g b }$ and $Z _ { l } ^ { i r }$ . To compensate for local spatial inconsistencies between the two modalities, EOGF predicts an ofset field $\\Delta _ { l }$ together with an alignment confidence $C _ { l }$ :",
+        "bbox": [
+            80,
+            423,
+            487,
+            498
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "equation",
+        "img_path": "images/f309307064b7eedf62ee75c7eec2b64858052f2b96b530fd6799ad78b9fb270e.jpg",
+        "text": "$$\n\\begin{array} { r l } & { ( \\Delta _ { l } , C _ { l } ) = \\Phi _ { \\mathrm { a l i g n } } \\left( Z _ { l } ^ { r g b } , Z _ { l } ^ { i r } , \\left| Z _ { l } ^ { r g b } - Z _ { l } ^ { i r } \\right| , P _ { l } \\right) , } \\\\ & { \\quad \\widetilde { Z } _ { l } ^ { r g b } = \\mathcal { W } ( Z _ { l } ^ { r g b } , \\Delta _ { l } ) , \\qquad \\widetilde { F } _ { l } ^ { r g b } = \\mathcal { W } ( F _ { l } ^ { r g b } , \\Delta _ { l } ) , } \\end{array}\\tag{2}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            90,
+            501,
+            455,
+            545
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "where $\\mathcal { W } ( \\cdot , \\cdot )$ denotes diferentiable warping (Jaderberg et al., 2015; Dai et al., 2017). Unlike global image registration, this operation performs local correction in the feature space. The alignment confidence is subsequently provided to the gate estimator so that modality selection can account for the reliability of the estimated correspondence.",
+        "bbox": [
+            80,
+            550,
+            487,
+            649
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "After alignment, EOGF predicts a two-way spatial modality gate:",
+        "bbox": [
+            82,
+            650,
+            485,
+            678
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "equation",
+        "img_path": "images/9913189a25bc31af5778042e4e3e9c646700061b48ea758e763004e81a1aac6c.jpg",
+        "text": "$$\n\\begin{array} { r l } & { G _ { l } = [ g _ { l } ^ { r g b } , g _ { l } ^ { i r } ] , } \\\\ & { G _ { l } = \\mathrm { S o f t m a x } \\Big [ \\Phi _ { \\mathrm { g a t e } } \\Big ( \\widetilde { Z } _ { l } ^ { r g b } , Z _ { l } ^ { i r } , H _ { l } ^ { r g b } , H _ { l } ^ { i r } , P _ { l } , C _ { l } \\Big ) \\Big ] } \\end{array}\\tag{3}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            92,
+            683,
+            468,
+            728
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "where $g _ { l } ^ { r g b } + g _ { l } ^ { i r } = 1$ at each spatial location. In parallel, channel gates $c _ { l } ^ { r g b }$ and $c _ { l } ^ { i r }$ estimate the importance of individual feature channels (Hu et al., 2018; Woo et al., 2018). The fused feature is obtained as",
+        "bbox": [
+            80,
+            739,
+            487,
+            800
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "equation",
+        "img_path": "images/7fdf84d7ce809addea4498ec50ca36512b0e321b2738163ec25818524b13b8dd.jpg",
+        "text": "$$\nF _ { l } ^ { f u s } = g _ { l } ^ { r g b } \\odot c _ { l } ^ { r g b } \\odot \\widetilde { F } _ { l } ^ { r g b } + g _ { l } ^ { i r } \\odot c _ { l } ^ { i r } \\odot F _ { l } ^ { i r } ,\\tag{4}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            121,
+            804,
+            447,
+            825
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "where $\\odot$ denotes element-wise multiplication. EOGF thus combines entropy-guided reliability cues, local feature alignment, and spatial-channel selection within a unified fusion module. The resulting multi-scale fused features are forwarded to the subsequent detection network, while $G _ { l }$ provides an explicit modality-preference distribution that is further regularized by the selective distillation strategy described in Section 3.3.",
+        "bbox": [
+            80,
+            827,
+            487,
+            942
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "3.3 Selective Multimodal Distillation",
+        "text_level": 2,
+        "bbox": [
+            510,
+            422,
+            895,
+            438
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "During distillation, the entropy-guided dual-stream detector described in Section 3.2 serves as the student, while two independently trained and frozen unimodal de tectors serve as the RGB and infrared teachers. Rather than transferring all teacher predictions, EGM-Det uses their relative dense confidence responses to supervise the student’s spatial modality gates. As illustrated in Figure 3, the supervision is applied selectively: lowconfidence teacher evidence is down-weighted, whereas uncertain student decisions receive stronger guidance.",
+        "bbox": [
+            509,
+            447,
+            917,
+            590
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "Let $\\mathcal { M } = \\{ r g b , i r \\}$ denote the two modalities. At each feature level corresponding to a spatial gate, a dense confidence map is computed from the classification output of teacher m ∈ M:",
+        "bbox": [
+            509,
+            590,
+            917,
+            648
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "equation",
+        "img_path": "images/7ab3bcbd978eb562e0a8b21d862a24b8e059916a46d2873b814741edb382e31f.jpg",
+        "text": "$$\nM _ { l } ^ { m } ( x , y ) = \\operatorname* { m a x } _ { c \\in \\mathcal { C } } \\sigma \\left( s _ { l , c } ^ { m } ( x , y ) \\right) ,\\tag{5}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            598,
+            659,
+            828,
+            682
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "where $s _ { l , c } ^ { m } ( x , y )$ denotes the class logit for category c. Because the adopted detection head has no separate objectness branch, the maximum class confidence is used as the dense teacher response. The confidence map is resized to the corresponding gate resolution and denoted by $\\bar { M } _ { l } ^ { m }$",
+        "bbox": [
+            509,
+            695,
+            915,
+            781
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "The relative teacher responses are then normalized into a soft modality- preference distribution:",
+        "bbox": [
+            510,
+            781,
+            915,
+            810
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "equation",
+        "img_path": "images/427ed5233f69735dc04efb6e19f690cfe6792bf2dd120a4f5b7cd5beb345ec71.jpg",
+        "text": "$$\nq _ { l } ^ { m } ( x , y ) = \\frac { \\displaystyle \\operatorname* { m a x } \\left( \\bar { M } _ { l } ^ { m } ( x , y ) , \\epsilon \\right) } { \\displaystyle \\sum _ { n \\in \\mathcal { M } } \\operatorname* { m a x } \\left( \\bar { M } _ { l } ^ { n } ( x , y ) , \\epsilon \\right) } , \\qquad m \\in \\mathcal { M } ,\\tag{6}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            524,
+            821,
+            882,
+            870
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "where $Q _ { l } = [ q _ { l } ^ { r g b } , q _ { l } ^ { i r } ]$ is the teacher-derived modalitypreference target. It represents the relative reliability of RGB and infrared cues at each spatial location. The modality-preference target $Q _ { l }$ is constructed directly from the dense classification responses of the two teachers, avoiding additional processing of predicted bounding boxes. It supervises only the spatial gate $G _ { l }$ , while the channel gates remain optimized by the detection and feature-distillation objectives.",
+        "bbox": [
+            509,
+            884,
+            917,
+            944
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "page_number",
+        "text": "4",
+        "bbox": [
+            492,
+            965,
+            505,
+            975
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "image",
+        "img_path": "images/a89a3553bf24f8966c6ec59aa79fae7c64addfbb48c80516c99b1471e5bf8e9e.jpg",
+        "image_caption": [
+            "Figure 2: Detailed structure of EntropyOfsetGateFusion at feature level l. The module first constructs levelspecific entropy cues $P _ { l } , H _ { l } ^ { r g b }$ , and $H _ { l } ^ { i r }$ from input intensity, local entropy, and cross-modal discrepancy. Guided by $P _ { l }$ , the projected features are used to estimate an ofset field $\\Delta _ { l }$ and alignment confidence $C _ { l } .$ after which the RGB feature is aligned to the IR reference. The gate estimator then predicts the spatial gate $G _ { l }$ and channel gates $c _ { l } ^ { r g b }$ and $c _ { l } ^ { i r }$ to produce the fused feature $F _ { l } ^ { f u s }$ . The dashed purple arrow denotes training-only supervision of $G _ { l }$ by $Q _ { l }$"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            114,
+            57,
+            878,
+            338
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            80,
+            487,
+            487,
+            558
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "A fixed gate-distillation weight cannot distinguish an unreliable teacher target from a genuinely ambiguous student decision. We therefore quantify these two factors separately. Given the student gate $G _ { l } = [ g _ { l } ^ { r g b } , g _ { l } ^ { i r } ]$ its modality-selection uncertainty is measured by the normalized entropy",
+        "bbox": [
+            80,
+            558,
+            487,
+            644
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/541bc3092b771d7d1cab02daf03d668c7363a8d3217c19dc9c420f9551a40611.jpg",
+        "text": "$$\nH _ { l } ( x , y ) = - \\frac { 1 } { \\log 2 } \\sum _ { m \\in \\cal { M } } g _ { l } ^ { m } ( x , y ) \\log \\left( g _ { l } ^ { m } ( x , y ) + \\epsilon \\right) .\\tag{7}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            97,
+            650,
+            467,
+            684
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "A high value of $H _ { l }$ indicates that the student has not formed a clear preference between the two modalities.",
+        "bbox": [
+            80,
+            696,
+            485,
+            725
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "The reliability of the teacher target is measured as",
+        "bbox": [
+            99,
+            725,
+            478,
+            739
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/f5477d71128d9c76e97f09edbccea267f0db3b466752b40428cb9d608b98f501.jpg",
+        "text": "$$\nR _ { l } ( x , y ) = \\operatorname* { m a x } \\left( \\bar { M } _ { l } ^ { r g b } ( x , y ) , \\bar { M } _ { l } ^ { i r } ( x , y ) \\right) .\\tag{8}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            132,
+            746,
+            433,
+            769
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Thus, locations at which both teachers produce weak responses contribute less to gate distillation.",
+        "bbox": [
+            80,
+            776,
+            485,
+            804
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "The student uncertainty is further converted into a pixel-wise adaptive weight:",
+        "bbox": [
+            80,
+            804,
+            485,
+            834
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/f13b832d471c1a5a0e037601daf254d3dbc55e0563dfb89ba3bd547286527972.jpg",
+        "text": "$$\n\\begin{array} { r } { \\omega _ { l } ( x , y ) = \\mathrm { c l i p } \\left( 1 + \\beta _ { \\mathrm { p o s } } \\left[ \\mathrm { s g } ( H _ { l } ( x , y ) ) - \\tau \\right] _ { + } \\right. } \\\\ { \\left. - \\beta _ { \\mathrm { n e g } } \\left[ \\tau - \\mathrm { s g } ( H _ { l } ( x , y ) ) \\right] _ { + } , \\omega _ { \\mathrm { m i n } } , \\omega _ { \\mathrm { m a x } } \\right) , } \\end{array}\\tag{9}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            87,
+            840,
+            477,
+            890
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "where $[ z ] _ { + } = \\operatorname* { m a x } ( z , 0 )$ , and $\\operatorname { s g } ( \\cdot )$ denotes stop-gradient. The weight increases when the modality decision is ambiguous and decreases after the gate becomes confident.",
+        "bbox": [
+            80,
+            898,
+            489,
+            942
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Stop-gradient prevents the student from changing its entropy merely to manipulate the loss weight.",
+        "bbox": [
+            509,
+            487,
+            915,
+            516
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Combining teacher reliability with student uncertainty, the adaptive gate distillation loss is defined as",
+        "bbox": [
+            509,
+            516,
+            917,
+            545
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/4627ed324b8931c2c6030b31cf7caeb2810904012cff68cb6c1a3b74614d13ea.jpg",
+        "text": "$$\n\\mathcal { L } _ { g a t e } ^ { a d a p t } = \\sum _ { l } \\frac { \\displaystyle \\sum _ { x , y } R _ { l } ( x , y ) \\omega _ { l } ( x , y ) \\operatorname { K L } \\left( Q _ { l } ( x , y ) \\parallel G _ { l } ( x , y ) \\right) } { \\displaystyle \\sum _ { x , y } R _ { l } ( x , y ) \\omega _ { l } ( x , y ) + \\epsilon } .\\tag{10}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            517,
+            552,
+            904,
+            612
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Consequently, teacher-reliable locations with ambiguous student decisions make the largest contribution to gate supervision.",
+        "bbox": [
+            509,
+            624,
+            915,
+            667
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "In addition to gate-level supervision, we retain samemodality branch distillation and opposite-modality fea ture distillation. Let $B = \\{ 1 , 2 , 3 , 4 \\}$ denote the four matched backbone stages. Before feature matching, a $1 \\times 1$ convolution followed by batch normalization aligns each student feature with the channel dimension of the corresponding teacher feature. The two feature-distillation losses are defined compactly as",
+        "bbox": [
+            509,
+            667,
+            917,
+            782
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "equation",
+        "img_path": "images/6b9293cb5b99f51124219dc7c3ba1453b2dae8d2f26f6e6e02b2383b8f4fcfad.jpg",
+        "text": "$$\n\\begin{array} { r } { \\mathcal { L } _ { b r a n c h } = \\displaystyle \\sum _ { l \\in B } \\left[ \\mathcal { D } _ { \\mathrm { c w d } } \\left( \\widehat { F } _ { l } ^ { r g b } , \\widehat { T } _ { l } ^ { r g b } \\right) + \\mathcal { D } _ { \\mathrm { c w d } } \\left( \\widehat { F } _ { l } ^ { i r } , \\widehat { T } _ { l } ^ { i r } \\right) \\right] , } \\\\ { \\mathcal { L } _ { c r o s s } = \\displaystyle \\sum _ { l \\in B } \\left[ \\mathcal { D } _ { \\mathrm { c o r r } } \\left( \\widehat { F } _ { l } ^ { r g b } , \\widehat { T } _ { l } ^ { i r } \\right) + \\mathcal { D } _ { \\mathrm { c o r r } } \\left( \\widehat { F } _ { l } ^ { i r } , \\widehat { T } _ { l } ^ { r g b } \\right) \\right] , } \\end{array}\\tag{11}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            510,
+            788,
+            914,
+            857
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "where $\\widehat { F } _ { l } ^ { m }$ and $\\widehat { T } _ { l } ^ { m }$ denote the aligned student and teacher features, respectively. $\\mathcal { D } _ { \\mathrm { c w d } }$ is the channel-wise spatial KL-divergence loss (Shu et al., 2021), and $\\mathcal { D } _ { \\mathrm { c o r r } }$ is one minus the mean channel-wise Pearson correlation after teacher-attention weighting. Accordingly, $\\mathcal { L } _ { b r a n c h }$ preserves modality-specific representations, whereas $\\mathcal { L } _ { c r o s s }$ transfers complementary information from the opposite modality. These losses are applied to the four backbone stages, while $\\mathcal { L } _ { q a t e } ^ { a d a p t }$ supervises the spatial gates at the three EOGF levels $P _ { 3 } , P _ { 4 }$ , and $P _ { 5 }$",
+        "bbox": [
+            509,
+            868,
+            915,
+            942
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "page_number",
+        "text": "5",
+        "bbox": [
+            492,
+            964,
+            505,
+            976
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "image",
+        "img_path": "images/972881c5720c6712921951c7f7a8c752d39e4c9ccf73f36058eb7c2c3e0c4564.jpg",
+        "image_caption": [
+            "Figure 3: Dual-teacher modality-preference construction and entropy-adaptive spatial-gate distillation. The RGB and IR teacher confidence maps are converted into a soft modality-preference target $Q _ { l } .$ , while their maximum response defines the reliability weight $R _ { l }$ . The entropy $H _ { l }$ of the student spatial gate $G _ { l }$ is further converted into the pixel-wise adaptive weight $\\omega _ { l } .$ . The preference-matching loss $\\mathrm { K L } ( Q _ { l } \\parallel G _ { l } )$ is weighted by $R _ { l } \\omega _ { l }$ to obtain $\\mathcal { L } _ { g a t e } ^ { a d a p t }$ This supervision is applied only to the spatial gate during training, while the channel gates remain optimized by the detection and feature-distillation objectives."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            124,
+            95,
+            877,
+            303
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            80,
+            487,
+            487,
+            558
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "The complete training objective is",
+        "bbox": [
+            99,
+            558,
+            357,
+            574
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "equation",
+        "img_path": "images/2830117931c07e4ea8fcf4b75b7b83121c02b128b6722fd1618872fdae4a1d92.jpg",
+        "text": "$$\n\\mathcal { L } _ { t o t a l } = \\mathcal { L } _ { d e t } + \\alpha \\lambda ( e ) \\left( \\mathcal { L } _ { b r a n c h } + \\mathcal { L } _ { c r o s s } + \\mathcal { L } _ { g a t e } ^ { a d a p t } \\right) ,\\tag{12}\n$$",
+        "text_format": "latex",
+        "bbox": [
+            95,
+            585,
+            467,
+            608
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "where $\\mathcal { L } _ { d e t }$ denotes the standard detection loss, α is the global distillation weight, and $\\lambda ( e )$ controls the contribution of distillation over the training epochs. Detection-head and pseudo-fusion distillation are not included in the final objective.",
+        "bbox": [
+            80,
+            620,
+            487,
+            693
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "4 Experiments",
+        "text_level": 2,
+        "bbox": [
+            82,
+            715,
+            278,
+            733
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "4.1 Experimental Setup",
+        "text_level": 2,
+        "bbox": [
+            82,
+            746,
+            337,
+            763
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "We evaluated EGM-Det on three RGB–IR object detection benchmarks with diferent detection protocols: DroneVehicle (Sun et al., 2022), LLVIP (Jia et al., 2021), and VEDAI (Razakarivony and Jurie, 2016). DroneVehicle was used as the primary benchmark and contains UAV-view image pairs with oriented annotations for five vehicle categories. VEDAI provided an additional aerial benchmark under the oriented bounding box (OBB) protocol, whereas LLVIP was evaluated under the horizontal bounding box (HBB) protocol.",
+        "bbox": [
+            80,
+            771,
+            489,
+            913
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "The OBB configuration of EGM-Det was used on DroneVehicle and VEDAI, while the HBB configuration was used on LLVIP. The corresponding RGB and IR teachers adopted the same detector configuration and were trained independently using unimodal inputs. On DroneVehicle and LLVIP, EGM-Det was trained for 132 epochs with an input size of 640 and a batch size of 32. On VEDAI, we followed 10-fold cross-validation and trained each fold for 300 epochs at an input resolution of 1024. The batch size was set to 24, and both unimodal teachers were trained for 300 epochs under the same resolution.",
+        "bbox": [
+            80,
+            913,
+            487,
+            942
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            509,
+            486,
+            917,
+            630
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "AdamW was used on VEDAI with an initial learning rate of $5 \\times 1 0 ^ { - 4 }$ and a weight decay of $5 \\times 1 0 ^ { - 4 } .$ DroneVehicle and LLVIP followed the default optimizer configuration with an initial learning rate of $1 \\times 1 0 ^ { - 3 }$ and the same weight decay. A three-epoch warm-up was used for all datasets. Data augmentation included HSV adjustment, random translation, random scaling, horizontal flipping, and mosaic augmentation. Mosaic augmentation was disabled during the final training stage. All experiments used seed 0 with deterministic initialization, and mixed-precision training was disabled.",
+        "bbox": [
+            509,
+            636,
+            917,
+            808
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "We report Precision, Recall, $\\mathrm { m A P _ { 5 0 } }$ , and $\\mathrm { m A P _ { 5 0 - 9 5 } }$ according to the protocol of each dataset. Categorywise $\\mathrm { A P _ { 5 0 } }$ is additionally reported on DroneVehicle. All main comparisons and ablation studies on DroneVehicle used the refined annotations. For a fair comparison, all methods in Table 4 used the same data split, category definitions, preprocessing, and OBB evaluation script. Existing methods were retrained using available oficial implementations or our reproduced implementations under this common protocol. Results obtained with the original annotations were used only to evaluate annotation-protocol sensitivity and were not mixed with the main comparison.",
+        "bbox": [
+            509,
+            813,
+            917,
+            944
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "page_number",
+        "text": "6",
+        "bbox": [
+            492,
+            965,
+            505,
+            976
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "table",
+        "img_path": "images/4bb34e61ce6c59f5bca86e459dcb0ebb51d17464afeffb186986c541014f6dc5.jpg",
+        "table_caption": [
+            "Table 1: Split-wise image and annotation statistics before and after DroneVehicle refinement."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Split</td><td>Modality</td><td>Orig. Images</td><td>Ref. Images</td><td>Removed</td><td>Orig. Ann.</td><td>Ref. Ann.</td><td>Delta</td></tr><tr><td>Train</td><td>RGB</td><td>17,990</td><td>17,472</td><td>518</td><td>286,793</td><td>286,444</td><td>-349</td></tr><tr><td>Train</td><td>IR</td><td>17,990</td><td>17,950</td><td>40</td><td>316,411</td><td>316,089</td><td>-322</td></tr><tr><td>Val</td><td>RGB</td><td>1,469</td><td>1,442</td><td>27</td><td>22,462</td><td>22,429</td><td>-33</td></tr><tr><td>Val</td><td>IR</td><td>1,469</td><td>1,467</td><td>2</td><td>24,490</td><td>24,478</td><td>-12</td></tr><tr><td>Test</td><td>RGB</td><td>8,980</td><td>8,731</td><td>249</td><td>143,315</td><td>143,170</td><td>-145</td></tr><tr><td>Test</td><td>IR</td><td>8,980</td><td>8,958</td><td>22</td><td>159,616</td><td>159,493</td><td>-123</td></tr><tr><td>Total</td><td>RGB</td><td>28,439</td><td>27,645</td><td>794</td><td>452,570</td><td>452,043</td><td>-527</td></tr><tr><td>Total</td><td>IR</td><td>28,439</td><td>28,375</td><td>64</td><td>500,517</td><td>500,060</td><td>-457</td></tr></table>",
+        "bbox": [
+            193,
+            82,
+            806,
+            230
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "table",
+        "img_path": "images/02e4ae998dc489363e180b690acb6b1b54d51e8b25e71008b709d1509258b428.jpg",
+        "table_caption": [
+            "Table 2: Category-wise annotation distribution before and after DroneVehicle refinement."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Category</td><td>RGB  ${ \\mathrm { O r i g . } }$ </td><td>RGB Ref.</td><td>RGB Delta</td><td>IR Orig.</td><td>IR Ref.</td><td>IR Delta</td></tr><tr><td>car</td><td>389,779</td><td>379,875</td><td>-9,904</td><td>428,086</td><td>417,709</td><td>-10,377</td></tr><tr><td>freight car</td><td>13,400</td><td>11,697</td><td>-1,703</td><td>17,173</td><td>14,582</td><td>-2,591</td></tr><tr><td>truck</td><td>22,123</td><td>25,020</td><td>+2,897</td><td>25,960</td><td>29,807</td><td>+3,847</td></tr><tr><td>bus</td><td>15,333</td><td>15,341</td><td>+8</td><td>16,590</td><td>16,610</td><td>+20</td></tr><tr><td>van</td><td>11,935</td><td>20,110</td><td>+8,175</td><td>12,708</td><td>21,352</td><td>+8,644</td></tr></table>",
+        "bbox": [
+            228,
+            271,
+            769,
+            368
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            80,
+            394,
+            487,
+            453
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "4.2 DroneVehicle Annotation Refinement",
+        "text_level": 2,
+        "bbox": [
+            80,
+            472,
+            487,
+            504
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "The original DroneVehicle annotations contain two major forms of noise. Cross-modal inconsistency includes unmatched instances, inconsistent box locations or orientations, and objects annotated in only one modality. Category-level inconsistency mainly occurs among visually similar subclasses, including car, freight car, truck, and van. These errors afect both standard detection supervision and the teacher confidence maps used to construct modality-preference targets.",
+        "bbox": [
+            80,
+            513,
+            489,
+            642
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "We refined the annotations by jointly inspecting each RGB image, IR image, and their original labels. Missing or inconsistent instances were corrected only when the paired observations provided reliable evidence. Category labels were changed only when both modalities supported an unambiguous correction. Image entries or object annotations were removed when their modality correspondence or category could not be reliably verified. The task definition, category set, and original train/validation/test split remained unchanged.",
+        "bbox": [
+            80,
+            642,
+            489,
+            784
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "The refined samples underwent an additional multireviewer quality-control procedure. Reviewers examined cross-modal correspondence, category correctness, and OBB validity using the paired images and the original and refined annotations. Flagged samples were re-examined, unverifiable cases were removed, and all corrected samples were checked again after revision.",
+        "bbox": [
+            80,
+            784,
+            489,
+            884
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "Table 1 summarizes the split-wise changes. The refinement removed 794 RGB entries and 64 IR entries, while the corresponding annotation counts decreased by only 527 and 457. Thus, most annotations were retained while unreliable image entries and labels were corrected or removed. Paired training and evaluation used only valid RGB–IR correspondences with unified labels.",
+        "bbox": [
+            80,
+            885,
+            489,
+            942
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            509,
+            394,
+            915,
+            451
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "Table 2 reports the category-wise changes. The largest redistributions occurred among car, freight car, truck, and van, whereas the number of bus annotations remained nearly unchanged. These statistics identify category confusion, rather than uniform annotation loss, as a major source of label inconsistency.",
+        "bbox": [
+            509,
+            451,
+            917,
+            537
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "Representative corrections are shown in Figure 4. The displayed cases illustrate improved cross-modal consistency and corrected category assignments. For reproducibility, the released records contain the split, image identifier, modality, original and refined labels, OBB coordinates, and correction type.",
+        "bbox": [
+            509,
+            537,
+            917,
+            624
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "4.2.1 Sensitivity to the Annotation Protocol",
+        "text_level": 2,
+        "bbox": [
+            510,
+            638,
+            904,
+            652
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "We trained and evaluated the complete EGM-Det model under both annotation protocols using the same configuration and training schedule. As shown in Table 3, the refined protocol increased $\\mathrm { \\ m A P _ { 5 0 } }$ from 80.4% to 85.6% and $\\mathrm { m A P _ { 5 0 - 9 5 } }$ from 67.0% to 71.4%. Freight car and van obtained the largest $\\mathrm { A P _ { 5 0 } }$ increases, at 9.7 and 11.8 percentage points, respectively. These categories also underwent substantial label correction in Table 2. Because the protocol changes both training labels and evaluation targets, these diferences represent annotation sensitivity rather than an architectural improvement. The refined protocol was therefore used for all subsequent DroneVehicle comparisons and ablations.",
+        "bbox": [
+            509,
+            659,
+            917,
+            846
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "4.3 Main Results on DroneVehicle",
+        "text_level": 2,
+        "bbox": [
+            510,
+            862,
+            872,
+            877
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "DroneVehicle is the primary benchmark in this work; therefore, we provide a detailed category-wise comparison on this dataset. We compare EGM-Det with two unimodal YOLOv8m baselines (Jocher et al., 2023) and representative RGB-IR or multispectral detectors, including CALNet (He et al., 2023), $\\mathrm { C ^ { 2 } } ]$ Former (Yuan and Wei, 2024), E2E-MFD (Zhang et al., 2024), ICA-Fusion (Shen et al., 2024), COMO (Liu et al., 2026), and LCAFNet (Wu et al., 2026). The compared methods are arranged chronologically by publication year in Table 4. The Year/Venue column indicates the original publication year and venue of each method, whereas all performance values are obtained by retraining and evaluating the methods under the same refined DroneVehicle protocol.",
+        "bbox": [
+            509,
+            884,
+            917,
+            942
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "page_number",
+        "text": "7",
+        "bbox": [
+            492,
+            964,
+            505,
+            976
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "image",
+        "img_path": "images/1b8684fecf320711732dbbbd0a47e59d8f0802af9783bfa61133bbd556d88852.jpg",
+        "image_caption": [
+            "Figure 4: Qualitative examples of DroneVehicle annotation refinement. Each case compares original and refined annotations on paired RGB and infrared images, highlighting improved cross-modal consistency and category correction."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            109,
+            80,
+            887,
+            311
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "table",
+        "img_path": "images/0886d796b57c7e21037de095af444f7d30422b452222a68fbd46ce1f9eb2c9c5.jpg",
+        "table_caption": [
+            "Table 3: Sensitivity of EGM-Det to the DroneVehicle annotation protocol. Per-class values are reported in $\\mathrm { A P _ { 5 0 } }$ The original protocol denotes training and evaluation with the original DroneVehicle annotations, while the refined protocol denotes training and evaluation with the refined annotations under the same model configuration and training schedule. This comparison is used to analyze annotation-protocol sensitivity rather than architectural improvement."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Protocol</td><td>Car</td><td>Freight Car</td><td>Truck</td><td>Bus</td><td>Van</td><td> $\\mathrm { m A P _ { 5 0 } }$ </td><td> $\\mathrm { m A P _ { 5 0 - 9 5 } }$ </td></tr><tr><td>Original annotations</td><td>97.1</td><td>61.6</td><td>80.8</td><td>95.2</td><td>66.1</td><td>80.4</td><td>67.0</td></tr><tr><td>Refined annotations</td><td>98.0</td><td>71.3</td><td>85.4</td><td>95.5</td><td>77.9</td><td>85.6</td><td>71.4</td></tr><tr><td> $\\Delta$ </td><td>+0.9</td><td>+9.7</td><td>+4.6</td><td>+0.3</td><td>+11.8</td><td>+5.2</td><td>+4.4</td></tr></table>",
+        "bbox": [
+            211,
+            463,
+            784,
+            531
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            80,
+            558,
+            489,
+            715
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "In addition to the overall m $\\mathrm { A P _ { 5 0 } }$ and mAP<sub>50-95</sub>, we report $\\mathrm { A P _ { 5 0 } }$ for each vehicle category, including car, freight car, truck, bus, and van. This fine-grained evaluation allows us to analyze not only overall detection performance, but also the behavior of diferent methods on visually similar and scale-varying vehicle categories.",
+        "bbox": [
+            80,
+            719,
+            487,
+            806
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "As shown in Table 4, under the unified refined DroneVehicle protocol, EGM-Det achieves the best $\\mathrm { m A P _ { 5 0 - 9 5 } }$ of 71.4%, outperforming the strongest competing method, COMO, by 5.9 percentage points. This improvement indicates that EGM-Det provides stronger localization robustness under stricter IoU thresholds, rather than only improving loose-threshold detections.",
+        "bbox": [
+            80,
+            809,
+            487,
+            909
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "At the $\\mathrm { m A P _ { 5 0 } }$ level, EGM-Det obtains 85.6%, which is competitive with ICAFusion (86.2%), COMO (85.9%), and LCAFNet (85.7%). In terms of category-wise $\\mathrm { A P _ { 5 0 } }$ EGM-Det achieves the best performance on car, freight car, and truck. For bus and van, CALNet and LCAFNet achieve the highest $\\mathrm { A P _ { 5 0 } }$ , respectively. These results indicate that EGM-Det provides a clear advantage under stricter localization criteria, while further improvement is still possible for category-level discrimination on certain vehicle subclasses.",
+        "bbox": [
+            80,
+            913,
+            487,
+            942
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            509,
+            558,
+            917,
+            673
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "The comparison with unimodal YOLOv8m baselines further confirms the necessity of RGB-IR fusion. The IR-only model outperforms the RGB-only model in overall performance, especially on freight car and truck, but both unimodal detectors are clearly inferior to strong multimodal approaches. Compared with existing multimodal detectors, EGM-Det explicitly supervises modality preference during feature fusion through dual-teacher guidance and student-gate-entropy adaptive weighting. The results support our central motivation: reliable RGB-IR detection requires not only combining multimodal features, but also learning where and how each modality should contribute.",
+        "bbox": [
+            509,
+            757,
+            917,
+            944
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "header",
+        "text": "Case 1: train/08010",
+        "bbox": [
+            268,
+            64,
+            383,
+            74
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "page_number",
+        "text": "8",
+        "bbox": [
+            492,
+            965,
+            505,
+            976
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "table",
+        "img_path": "images/784590e392d5638963069b07081fcac6df6935eaecd1bf4c83575e11a19674c0.jpg",
+        "table_caption": [
+            "Table 4: Main results on the refined DroneVehicle benchmark, arranged chronologically by publication year. Per-class results are reported in $\\mathrm { A P _ { 5 0 } }$ . The Year/Venue column indicates the original publication source of each method, while all methods are retrained and evaluated under the same refined DroneVehicle protocol."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Method</td><td>Year/Venue</td><td>Car</td><td>Freight Car</td><td>Truck</td><td>Bus</td><td>Van</td><td> $\\mathrm { m A P _ { 5 0 } }$ </td><td> $\\mathrm { m A P _ { 5 0 - 9 5 } }$ </td></tr><tr><td>YOLOv8m (RGB)</td><td>2023/Ultralytics</td><td>93.3</td><td>45.2</td><td>63.3</td><td>88.0</td><td>70.3</td><td>72.0</td><td>54.1</td></tr><tr><td>YOLOv8m (IR)</td><td>2023/Ultralytics</td><td>96.7</td><td>54.6</td><td>72.2</td><td>90.4</td><td>66.5</td><td>76.1</td><td>60.8</td></tr><tr><td>CALNet</td><td>2023/ACM MM</td><td>97.2</td><td>70.5</td><td>76.8</td><td>96.7</td><td>69.0</td><td>82.0</td><td>57.4</td></tr><tr><td>C²Former</td><td>2024/TGRS</td><td>89.6</td><td>61.5</td><td>70.9</td><td>88.1</td><td>74.6</td><td>76.9</td><td>45.1</td></tr><tr><td>E2E-MFD</td><td>2024/NeurIPS</td><td>88.6</td><td>48.2</td><td>60.1</td><td>77.6</td><td>65.1</td><td>67.9</td><td>41.8</td></tr><tr><td>ICAFusion</td><td>2024/PR</td><td>97.9</td><td>70.6</td><td>84.0</td><td>96.6</td><td>82.3</td><td>86.2</td><td>62.4</td></tr><tr><td>LCAFNet</td><td>2026/PR</td><td>97.5</td><td>70.2</td><td>83.2</td><td>95.2</td><td>82.5</td><td>85.7</td><td>59.9</td></tr><tr><td>COMO</td><td>2026/INFORM FUSION</td><td>97.4</td><td>70.5</td><td>84.2</td><td>95.8</td><td>81.7</td><td>85.9</td><td>65.5</td></tr><tr><td>EGM-Det</td><td>Ours</td><td>98.0</td><td>71.3</td><td>85.4</td><td>95.5</td><td>77.9</td><td>85.6</td><td>71.4</td></tr></table>",
+        "bbox": [
+            136,
+            110,
+            858,
+            267
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "4.4 Additional Results on LLVIP and VEDAI",
+        "text_level": 2,
+        "bbox": [
+            80,
+            291,
+            485,
+            323
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "To further evaluate the applicability of EGM-Det across diferent RGB-IR detection protocols, we conduct additional evaluations on LLVIP and VEDAI. Unlike DroneVehicle, which serves as the primary benchmark and is evaluated with detailed category-wise results, these two datasets are used as complementary benchmarks. LLVIP follows the horizontal bounding box (HBB) setting, while VEDAI adopts the aerial oriented bounding box (OBB) setting. Table 5 summarizes representative results using m $\\mathrm { A P _ { 5 0 - 9 5 } }$ and model parameters.",
+        "bbox": [
+            80,
+            336,
+            489,
+            479
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "For LLVIP and VEDAI, we compare EGM-Det with representative unimodal detectors, including YOLOv5m (Jocher, 2020), YOLOv8m (Jocher et al., 2023), and DINO (Zhang et al., 2023a). The multimodal comparisons include CFT (Fang et al., 2021), SuperY-OLO (Zhang et al., 2023b), ICAFusion (Shen et al., 2024), CMADet (Song et al., 2024), EFAF (Peng et al., 2025), FQDNet-s (Meng et al., 2025), LMDENet (Weng and Niu, 2026), ISDG-Net (Gao et al., 2026), and MCF-YOLO (Yang et al., 2026).",
+        "bbox": [
+            80,
+            480,
+            489,
+            624
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "As shown in Table 5, EGM-Det achieves 64.2% $\\mathrm { m A P _ { 5 0 - 9 5 } }$ on LLVIP, yielding the highest result among the compared methods. Although the margin over the strongest recent competitor is relatively small, EGM-Det consistently performs favorably against both recent RGB-IR detectors and representative multimodal baselines. This result demonstrates the efectiveness of the proposed adaptive fusion and modality-preference supervision under the LLVIP HBB setting.",
+        "bbox": [
+            80,
+            624,
+            489,
+            753
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "On VEDAI, EGM-Det obtains 60.3% mAP<sub>50-95</sub>, achieving the best performance among the methods with available results under the adopted OBB evaluation protocol. It exceeds the second-highest reported result by 12.0 percentage points and maintains a clear advantage over both representative baselines and recently published RGB-IR detectors.",
+        "bbox": [
+            80,
+            755,
+            489,
+            856
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "Overall, the LLVIP and VEDAI results complement the primary DroneVehicle evaluation. EGM-Det achieves competitive performance under the LLVIP HBB setting and obtains the best result among the methods with available VEDAI results. These evaluations demonstrate that the proposed modalitypreference supervision and student-gate-entropy adaptive weighting can be applied across diferent RGB-IR detection settings.",
+        "bbox": [
+            80,
+            856,
+            489,
+            944
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "table",
+        "img_path": "images/9344a4b60724fd7079ab401f248fc5ec58df988a4d0a24c68e4defc7f918d857.jpg",
+        "table_caption": [
+            "Table 5: Additional results on LLVIP and VEDAI, arranged chronologically by publication year. A dash indicates an unavailable result under the corresponding evaluation setting. The best and second-best results in each dataset column are highlighted in bold and underlined, respectively."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Method</td><td>Modality</td><td>LLVIP</td><td>VEDAI</td></tr><tr><td>DINO</td><td>RGB</td><td>53.8</td><td>44.9</td></tr><tr><td>YOLOv8m</td><td>RGB</td><td>49.2</td><td>37.8</td></tr><tr><td>DINO</td><td>IR</td><td>62.9</td><td>41.7</td></tr><tr><td>YOLOv8m</td><td>IR</td><td>62.8</td><td>35.3</td></tr><tr><td>SuperYOLO</td><td>RGB+IR</td><td>58.1</td><td>48.3</td></tr><tr><td>ICAFusion</td><td>RGB+IR</td><td>47.9</td><td>45.2</td></tr><tr><td>CMADet</td><td>RGB+IR</td><td>62.9</td><td>一</td></tr><tr><td>EFAF</td><td>RGB+IR</td><td>63.4</td><td>47.7</td></tr><tr><td>FQDNet-s</td><td>RGB+IR</td><td>64.1</td><td>47.7</td></tr><tr><td>LMDENet</td><td>RGB+IR</td><td>59.2</td><td>一</td></tr><tr><td>ISDG-Net</td><td>RGB+IR</td><td>63.6</td><td></td></tr><tr><td>MCF-YOLO</td><td>RGB+IR</td><td></td><td>45.0</td></tr><tr><td>Ours (EGM-Det)</td><td>RGB+IR</td><td>64.2</td><td>60.3</td></tr></table>",
+        "bbox": [
+            547,
+            388,
+            877,
+            605
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            509,
+            631,
+            917,
+            674
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "4.5 Ablation Studies",
+        "text_level": 2,
+        "bbox": [
+            510,
+            690,
+            734,
+            707
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "To further analyze the contribution of each component in EGM-Det, we conduct ablation studies on the refined DroneVehicle test set. The ablation variants are designed to examine the efects of the proposed fusion architecture, dual-teacher distillation, and studententropy-based gate reweighting. Specifically, we evaluate three variants: (1) removing the entropy-guided fusion architecture and distillation, where the student is reduced to a naive feature-summation multimodal baseline; (2) retaining the entropy-guided fusion student but removing dual-teacher distillation; and (3) keeping dual-teacher distillation while disabling studententropy-based gate reweighting. This setting allows us to examine the contribution of the fusion architecture, teacher-derived modality-preference supervision, and entropy-adaptive gate weighting.",
+        "bbox": [
+            509,
+            714,
+            919,
+            944
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "page_number",
+        "text": "9",
+        "bbox": [
+            492,
+            964,
+            505,
+            976
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "image",
+        "img_path": "images/a7faa1cf309894d0c63b47b0499fc5d436060207140b116a1cd2aac26f9edc32.jpg",
+        "image_caption": [
+            "Figure 5: Qualitative detection comparison on representative DroneVehicle test samples. From left to right: RGB image, infrared image, ground truth, C2Former, E2E-MFD, and EGM-Det. For clarity, only oriented bounding boxes are shown without per-box text. EGM-Det yields more complete detections in low-light and dense scenes while reducing missed objects and category confusion. Colors denote categories: car, freight car, truck, bus, and van."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            84,
+            57,
+            914,
+            385
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "table",
+        "img_path": "images/7d2d2bfe4b000d1171875e97e43ec8199038fd089b86c67333c078b843167b67.jpg",
+        "table_caption": [
+            "Table 6: Ablation study of EGM-Det on the refined DroneVehicle test set. Per-class values are reported in $\\mathrm { A P _ { 5 0 } }$"
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Method</td><td>Car Freight Car</td><td></td><td>Truck</td><td>Bus</td><td>Van</td><td> $\\mathrm { m A P _ { 5 0 } }$ </td><td> $\\mathrm { m A P _ { 5 0 - 9 5 } }$ </td></tr><tr><td>Ours (EGM-Det)</td><td>98.0</td><td>71.3</td><td>85.4</td><td>95.5</td><td>77.9</td><td>85.6</td><td>71.4</td></tr><tr><td>Ours  $\\mathrm { w / o }$  student entropy weighting</td><td>97.9</td><td>70.6</td><td>84.3</td><td>95.2</td><td>75.4</td><td>84.7</td><td>70.6</td></tr><tr><td>Ours  $\\mathrm { w / o }$  dual-teacher distillation</td><td>97.6</td><td>70.3</td><td>83.9</td><td>95.1</td><td>75.1</td><td>84.4</td><td>70.4</td></tr><tr><td>Ours  $\\mathrm { w / o }$  entropy-guided fusion and distillation</td><td>97.4</td><td>67.9</td><td>81.3</td><td>94.8</td><td>74.3</td><td>83.1</td><td>68.4</td></tr></table>",
+        "bbox": [
+            126,
+            518,
+            867,
+            601
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "As shown in Table 6, the most reduced baseline, which removes entropy-guided fusion and distillation, sufers the largest degradation, reducing m $\\mathrm { A P _ { 5 0 - 9 5 } }$ from 71.4% to 68.4% and $\\mathrm { m A P _ { 5 0 } }$ from 85.6% to 83.1%. This confirms that naive RGB-IR feature summation is insuficient for robust UAV-view multimodal detection. In particular, this baseline shows clear degradation on visually ambiguous vehicle categories such as freight car, truck, and van, suggesting that local cross-modal discrepancy, alignment confidence, and spatial modality preference should be explicitly modeled rather than treated as uniform feature fusion.",
+        "bbox": [
+            80,
+            627,
+            487,
+            799
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "Removing dual-teacher distillation while retaining the entropy-guided student decreases $\\mathrm { m A P _ { 5 0 - 9 5 } }$ from 71.4% to 70.4% and m $\\mathrm { A P _ { 5 0 } }$ from 85.6% to 84.4%. This result indicates that the proposed student architecture is already strong under standard detection supervision, while teacher-derived modality preference still provides complementary guidance. The gain from dual-teacher distillation is moderate rather than dominant, which is consistent with the selective design of EGM-Det: the teachers are not used to force the student to mimic all predictions, but to regularize modality-specific representations, cross-modal complementarity, and gate-level selection behavior.",
+        "bbox": [
+            80,
+            800,
+            487,
+            942
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            509,
+            627,
+            917,
+            670
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "Finally, disabling student-entropy-based weighting reduces ${ \\mathrm { n A P } } _ { 5 0 - 9 5 }$ from 71.4% to 70.6% and m ${ \\mathrm { A P } } _ { 5 0 }$ from 85.6% to 84.7%. Although the overall gain is moderate, entropy weighting improves several categorylevel results. For example, van $\\mathrm { A P _ { 5 0 } }$ increases from 75.4% to 77.9%, and truck $\\mathrm { A P _ { 5 0 } }$ increases from 84.3% to 85.4% when entropy weighting is enabled. This suggests that student entropy weighting acts as a fine-grained stabilizer for gate distillation. Instead of uniformly enforcing teacher-derived gate objects over all spatial locations, EGM-Det adaptively strengthens supervision in uncertain regions and relaxes it when the student has already formed confident modality decisions.",
+        "bbox": [
+            509,
+            671,
+            917,
+            857
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "Overall, the ablation results support the efectiveness of the proposed design. The entropy-guided fusion architecture provides the main performance gain, dual teacher distillation further improves the student by supervising modality preference, and student-entropy weighting refines gate supervision in an uncertaintyaware manner. These findings support the central motivation of EGM-Det: efective RGB-IR detection requires not only cross-modal feature fusion, but also explicit and selective learning of where and how each modality should contribute.",
+        "bbox": [
+            509,
+            857,
+            917,
+            944
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "page_number",
+        "text": "10",
+        "bbox": [
+            489,
+            964,
+            510,
+            976
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "image",
+        "img_path": "images/65e335868f35c47707377995fc38f040be659317c2e6ce843e16c714ca2a4dfd.jpg",
+        "image_caption": [
+            "Figure 6: Visualization of modality preference in EGM-Det. Blue/red indicate RGB-/IR-preferred regions; student and teacher maps show spatially adaptive modality reliability across representative DroneVehicle scenes."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            84,
+            57,
+            485,
+            322
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            80,
+            425,
+            487,
+            498
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "4.6 Qualitative Analysis",
+        "text_level": 2,
+        "bbox": [
+            82,
+            518,
+            341,
+            535
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "To further examine the behavior of EGM-Det beyond quantitative metrics, we provide qualitative results on representative DroneVehicle test samples, covering lowlight scenes, dense parking areas, mixed vehicle categories, and modality-degraded conditions. As shown in Figure 5, the compared methods exhibit diferent failure patterns under these challenging scenarios. C2Former and E2E-MFD can localize many salient vehicles, but they still sufer from missed detections in low-contrast regions and occasional category confusion among visually similar classes, such as trucks, vans, and freight cars. In contrast, EGM-Det produces more complete oriented detections across both sparse and dense regions, especially in scenes where RGB appearance is weak but infrared responses remain informative. This suggests that EGM-Det does not simply increase the number of predictions, but improves the reliability of cross-modal evidence aggregation for small and densely distributed oriented objects.",
+        "bbox": [
+            80,
+            543,
+            487,
+            814
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "We further visualize the learned modality preference of EGM-Det in Figure 6. Blue regions indicate stronger RGB preference, whereas red regions indicate stronger infrared preference. The learned student gate shows clear spatial adaptivity: regions with reliable thermal contrast tend to receive stronger infrared emphasis, while regions where visible texture remains informative preserve RGB contributions. This behavior is particularly important for nighttime DroneVehicle imagery, where RGB images may contain rich structural cues in illuminated regions but become unreliable in shadows or low-exposure areas. The teacher preference maps provide an additional reference for cross-modal supervision. The consistency between teacher preference and student gate responses indicates that EGM-Det success fully transfers modality-specific reliability from the dual teachers to the compact student model.",
+        "bbox": [
+            80,
+            814,
+            489,
+            944
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "image",
+        "img_path": "images/dd0a7f1f2044785566dc7fe7cee12961888f5d9377b77b8902e189319a3eb4cb.jpg",
+        "image_caption": [
+            "Figure 7: Visualization of student gate entropy and entropy-induced weighting. High-entropy regions indicate uncertain modality selection, and the corresponding weight map highlights locations where cross-modal reasoning is most needed."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            512,
+            55,
+            915,
+            256
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            509,
+            407,
+            917,
+            524
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "Figure 7 visualizes the student gate entropy and the corresponding entropy weight. High-entropy regions mainly appear near object boundaries, dense vehicle clusters, low-contrast areas, and regions where RGB and infrared cues are inconsistent. These are precisely the locations where modality selection is more ambigu ous and where naive fusion is more likely to introduce noisy or biased representations. The entropy weight map amplifies such uncertain regions, encouraging the student to pay more attention to dificult cross-modal fusion cases during distillation. This provides an intuitive explanation for the efectiveness of the student entropy weighting strategy: rather than treating all spatial locations equally, EGM-Det emphasizes regions where modality reliability is harder to determine.",
+        "bbox": [
+            509,
+            539,
+            917,
+            756
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "Overall, these qualitative observations are consistent with the quantitative comparisons and ablation studies. The detection visualizations show that EGM-Det im proves the completeness and stability of oriented vehicle detection, while the gate preference and entropy maps reveal why the improvement occurs: EGM-Det learns spatially adaptive modality selection and further regularizes uncertain fusion regions through entropy-aware distillation. These results support the central design of EGM-Det, namely combining entropy-guided fusion with dual-teacher distillation to obtain a more robust multispectral detector.",
+        "bbox": [
+            509,
+            771,
+            917,
+            944
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "page_number",
+        "text": "11",
+        "bbox": [
+            489,
+            964,
+            507,
+            976
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "5 Discussion",
+        "text_level": 2,
+        "bbox": [
+            84,
+            55,
+            253,
+            72
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "The results indicate that EGM-Det benefits primarily from reliability-aware modality selection rather than indiscriminate feature aggregation. On the refined DroneVehicle protocol, EGM-Det achieves the highest mAP<sub>50-95</sub> among the compared methods while maintaining competitive mAP<sub>50</sub>. This result suggests that the proposed framework is particularly efective under stricter localization criteria, which are important for small, dense, and arbitrarily oriented objects in UAVview scenes.",
+        "bbox": [
+            80,
+            85,
+            487,
+            228
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "The ablation results further reveal the complementary roles of EntropyOfsetGateFusion (EOGF) and selective multimodal distillation. Compared with naive feature summation, EOGF accounts for most of the improvement by introducing entropy-guided alignment and spatially adaptive fusion. Dual-teacher supervision provides an additional gain by converting relative teacher confidence into explicit modality-preference targets. Student-gate-entropy weighting further directs this supervision toward locations with uncertain modality decisions. The visualization results support this interpretation: infrared information is emphasized in thermally salient or poorly illuminated regions, whereas RGB information remains dominant where visible structures are more reliable.",
+        "bbox": [
+            80,
+            228,
+            489,
+            442
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "The comparison between the original and refined DroneVehicle protocols should be interpreted as annotation sensitivity rather than an architectural improvement. The larger performance changes for freight car and van correspond to categories receiving substan tial annotation correction. This observation indicates that cross-modal inconsistency and category-level label noise can afect both detection supervision and teacher-derived modality-preference targets. Separately reporting results under the refined protocol is therefore necessary for reproducible and fair comparison.",
+        "bbox": [
+            80,
+            442,
+            489,
+            600
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Several limitations should be considered when interpreting the current results and their broader applicability. First, teacher confidence is only a proxy for modality reliability and may become biased when the teachers are poorly calibrated or applied to out-of-distribution scenes (Guo et al., 2017). Second, the dual-teacher design increases training cost, although only the dualstream detector is retained during inference. Finally, gate entropy represents uncertainty in modality selection but does not fully describe uncertainty caused by sensor noise, domain shift, or annotation ambiguity (Kendall and Gal, 2017). Future work will investigate calibrated or teacher-free preference learning and extend the framework to temporal and cross-domain RGB–IR detection.",
+        "bbox": [
+            80,
+            600,
+            489,
+            815
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "6 Conclusions",
+        "text_level": 2,
+        "bbox": [
+            82,
+            840,
+            270,
+            858
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "This paper presented EGM-Det, an entropy-guided adaptive fusion framework for UAV-view RGB–IR object detection. Its EOGF module combines inputderived entropy priors, local feature alignment, and spatial-channel gating to aggregate complementary multimodal information. During training, two unimodal teachers convert their relative confidence into modalitypreference targets, while student-gate entropy adaptively adjusts the strength of gate supervision. EGM-Det achieves 85.6% mAP<sub>50</sub> and 71.4% mAP<sub>50-95</sub> on the refined DroneVehicle protocol. Evaluations on LLVIP and VEDAI further demonstrate its applicability to both horizontal and oriented object detection. The ablation results confirm that entropy-guided fusion provides the primary improvement, while selective gate supervision further refines local modality selection. These findings show that explicitly modeling spatially varying modality reliability is beneficial for UAV-view RGB–IR detection. Nevertheless, the framework may remain sensitive to teacher calibration and paired-data quality, while dual teachers introduce additional training cost. Future work will explore more eficient prefer ence learning and broader temporal and cross-domain evaluation.",
+        "bbox": [
+            78,
+            870,
+            489,
+            944
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            507,
+            58,
+            919,
+            330
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "CRediT authorship contribution statement",
+        "text_level": 2,
+        "bbox": [
+            509,
+            350,
+            915,
+            391
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Conceptualization, C.F., D.Y. and H.Z.; methodology, C.F., D.Y., G.W. and H.Z.; software, C.F. and D.Y.; validation, C.F., D.Y., G.W., X.Y. and Y.J.; data curation, C.F., D.Y. and G.W.; writing – original draft, C.F. and D.Y.; writing – review and editing, all authors; visualization, C.F., D.Y. and G.W.; supervision, J.Y. and H.Z.; funding acquisition, H.Z. All authors have read and agreed to the published version of the manuscript.",
+        "bbox": [
+            509,
+            403,
+            919,
+            519
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Funding",
+        "text_level": 2,
+        "bbox": [
+            510,
+            539,
+            615,
+            558
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "This work was supported by the National Natural Science Foundation of China [grant number 62401471] and the 2024 Gusu Innovation and Entrepreneurship Leading Talents Program (Young Innovative Leading Talents) [grant number ZXL2024333].",
+        "bbox": [
+            507,
+            569,
+            917,
+            643
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Data availability",
+        "text_level": 2,
+        "bbox": [
+            509,
+            663,
+            712,
+            682
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "The DroneVehicle, VEDAI, and LLVIP datasets are available from their original providers. The EGM-Det code and refined DroneVehicle annotations are available in the public project repository.",
+        "bbox": [
+            509,
+            693,
+            917,
+            752
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Declaration of competing interest",
+        "text_level": 2,
+        "bbox": [
+            509,
+            774,
+            915,
+            793
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "The authors declare no conflicts of interest.",
+        "bbox": [
+            509,
+            803,
+            835,
+            819
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Declaration of generative AI and AI-assisted technologies in the writing process",
+        "text_level": 2,
+        "bbox": [
+            507,
+            840,
+            915,
+            904
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "The authors used ChatGPT (OpenAI) only to polish the language during manuscript preparation. The au-",
+        "bbox": [
+            509,
+            913,
+            919,
+            944
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "page_number",
+        "text": "12",
+        "bbox": [
+            489,
+            964,
+            510,
+            976
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "thors reviewed and edited the manuscript and take full responsibility for its content.",
+        "bbox": [
+            80,
+            58,
+            485,
+            87
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "References",
+        "text_level": 2,
+        "bbox": [
+            82,
+            108,
+            216,
+            126
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "Chen, G., Choi, W., Yu, X., Han, T.X., Chandraker, M., 2017. Learning eficient object detection models with knowledge distillation, in: Advances in Neural Information Processing Systems, pp. 742–751.",
+            "Cheng, G., Han, J., 2016. A survey on object detection in optical remote sensing images. ISPRS Journal of Photogrammetry and Remote Sensing 117, 11–28.",
+            "Dai, J., Qi, H., Xiong, Y., Li, Y., Zhang, G., Hu, H., Wei, Y., 2017. Deformable convolutional networks, in: IEEE International Conference on Computer Vision, pp. 764–773.",
+            "Dai, X., Jiang, Z., Wu, Z., Bao, Y., Wang, Z., Liu, S., Zhou, E., 2021. General instance distillation for object detection, in: IEEE/CVF Conference on Computer Vision and Pattern Recognition, pp. 7842–7851.",
+            "Ding, J., Xue, N., Long, Y., Xia, G.S., Lu, Q., 2018. Learning roi transformer for detecting oriented objects in aerial images. arXiv preprint arXiv:1812.00155 .",
+            "Ding, J., Xue, N., Xia, G.S., Bai, X., Yang, W., Yang, M.Y., Belongie, S., Luo, J., Datcu, M., Pelillo, M., Zhang, L., 2021. Object detection in aerial images: A large-scale benchmark and challenges. IEEE Transactions on Pattern Analysis and Machine Intelligence 44, 7778–7796.",
+            "Fang, Q., Han, D., Wang, Z., 2021. Cross-modality fusion transformer for multispectral object detection. arXiv preprint arXiv:2111.00273 .",
+            "Fang, Q., Wang, Z., 2022. Cross-modality attentive feature fusion for object detection in multispectral remote sensing imagery. Pattern Recognition 130, 108786. doi:10.1016/j.patcog.2022.108786.",
+            "Gao, Y., Cheng, X., Li, Y., Xu, D., Sun, D., Hu, Y., 2026. Isdg-net: Eficient rgb–infrared object detection for remote sensing imagery. Remote Sensing 18, 1570. doi:10.3390/rs18101570.",
+            "Guo, C., Pleiss, G., Sun, Y., Weinberger, K.Q., 2017. On calibration of modern neural networks, in: 34th International Conference on Machine Learning, PMLR. pp. 1321–1330.",
+            "Guo, J., Han, K., Wang, Y., Wu, H., Chen, X., Xu, C., Xu, C., 2021. Distilling object detectors via decoupled features, in: IEEE/CVF Conference on Computer Vision and Pattern Recognition, pp. 2154–2164.",
+            "He, X., Tang, C., Zou, X., Zhang, W., 2023. Multispectral object detection via cross-modal conflict-aware learning, in: 31st ACM International Conference on Multimedia, pp. 1465–1474.",
+            "Hinton, G., Vinyals, O., Dean, J., 2015. Distilling the knowledge in a neural network. arXiv preprint arXiv:1503.02531 .",
+            "Hu, J., Shen, L., Sun, G., 2018. Squeeze-and-excitation networks, in: IEEE Conference on Computer Vision and Pattern Recognition, pp. 7132–7141.",
+            "Hwang, S., Park, J., Kim, N., Choi, Y., Kweon, I.S., 2015. Multispectral pedestrian detection: Benchmark dataset and baseline, in: IEEE Conference on Com puter Vision and Pattern Recognition, pp. 1037–1045.",
+            "Jaderberg, M., Simonyan, K., Zisserman, A., Kavukcuoglu, K., 2015. Spatial transformer networks. Advances in neural information processing systems 28.",
+            "Jia, X., Zhu, C., Li, M., Tang, W., Zhou, W., 2021. LLVIP: A visible-infrared paired dataset for low-light vision, in: IEEE/CVF International Conference on Computer Vision Workshops, pp. 3496–3504.",
+            "Jocher, G., 2020. Ultralytics YOLOv5. Zenodo. URL: https://doi.org/10.5281/zenodo.3983579, doi:10.5281/zenodo.3983579. software release.",
+            "Jocher, G., Chaurasia, A., Qiu, J., 2023. Ultralytics YOLOv8. https://github.com/ultralytics/ultralytics. Version 8.0.0; AGPL-3.0 license.",
+            "Kendall, A., Gal, Y., 2017. What uncertainties do we need in bayesian deep learning for computer vision?, in: Advances in Neural Information Processing Systems.",
+            "Li, C., Song, D., Tong, R., Tang, M., 2019. Illumination aware faster R-CNN for robust multispectral pedestrian detection. Pattern Recognition 85, 161–171.",
+            "Li, J., Fan, C., Ou, C., Zhang, H., 2025. Infrared and visible image fusion techniques for uavs: A comprehensive review. Drones 9, 811. doi:10.3390/ drones9120811.",
+            "Li, K., Wan, G., Cheng, G., Meng, L., Han, J., 2020. Object detection in optical remote sensing images: A survey and a new benchmark. ISPRS Journal of Photogrammetry and Remote Sensing 159, 296–307.",
+            "Liu, C., Ma, X., Yang, X., Zhang, Y., Dong, Y., 2026. COMO: Cross-mamba interaction and ofset-guided fusion for multimodal object detection. Information Fusion 125, 103414. doi:10.1016/j.inffus.2025. 103414.",
+            "Liu, Z., Luo, H., Wang, Z., Wei, Y., Zuo, H., Zhang, J., 2025. Cross-modal ofset-guided dynamic alignment and fusion for weakly aligned uav object detection. arXiv preprint arXiv:2506.16737 .",
+            "Meng, F., Hong, A., Tang, H., Tong, G., 2025. FQD-Net: A fusion-enhanced quad-head network for RGBinfrared object detection. Remote Sensing 17, 1095. doi:10.3390/rs17061095."
+        ],
+        "bbox": [
+            84,
+            137,
+            485,
+            196
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "page_number",
+        "text": "13",
+        "bbox": [
+            489,
+            964,
+            510,
+            976
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "Peng, S., Xue, R., Tong, Y., Wang, Z., Yang, H., 2025. Multispectral object detection via edge-enhanced and frequency-aware fusion network. IEEE Journal of Selected Topics in Applied Earth Observations and Remote Sensing doi:10.1109/JSTARS.2025.3648007. early Access.",
+            "Razakarivony, S., Jurie, F., 2016. Vehicle detection in aerial imagery: A small target detection benchmark. Journal of Visual Communication and Image Representation 34, 187–203.",
+            "Shen, J., Chen, Y., Liu, Y., Zuo, X., Fan, H., Yang, W., 2024. ICAFusion: Iterative cross-attention guided feature fusion for multispectral object detection. Pattern Recognition 145, 109913. doi:10.1016/j.patcog. 2023.109913.",
+            "Shu, C., Liu, Y., Gao, J., Yan, Z., Shen, C., 2021. Channel-wise knowledge distillation for dense prediction, in: IEEE/CVF International Conference on Computer Vision, pp. 5311–5320.",
+            "Song, K., Xue, X., Wen, H., Ji, Y., Yan, Y., Meng, Q., 2024. Misaligned visible-thermal object detection: A drone-based benchmark and baseline. IEEE Transactions on Intelligent Vehicles 9, 7449–7460. doi:10.1109/TIV.2024.3398429.",
+            "Sun, Y., Cao, B., Zhu, P., Hu, Q., 2022. Drone-based RGB-Infrared cross-modality vehicle detection via uncertainty-aware learning. IEEE Transactions on Circuits and Systems for Video Technology 32, 6700– 6713. doi:10.1109/TCSVT.2022.3168279.",
+            "Wang, J., Chen, Y., Zheng, Z., Li, X., Cheng, M.M., Hou, Q., 2024. CrossKD: Cross-head knowledge distillation for object detection, in: IEEE/CVF Conference on Computer Vision and Pattern Recognition, pp. 16520–16530.",
+            "Wang, T., Yuan, L., Zhang, X., Feng, J., 2019. Distilling object detectors with fine-grained feature imitation, in: IEEE/CVF Conference on Computer Vision and Pattern Recognition, pp. 4933–4942.",
+            "Weng, T., Niu, X., 2026. Lmdenet: A lightweight rgb-ir object detection network for low-light remote sensing images. Sensors 26, 1130. doi:10.3390/s26041130.",
+            "Woo, S., Park, J., Lee, J.Y., Kweon, I.S., 2018. CBAM: Convolutional block attention module, in: European Conference on Computer Vision, pp. 3–19.",
+            "Wu, W., Zhang, H., Zhang, X., Yin, H., Zhang, Y., 2026. Lightweight modal-guided cross-attention fusion network for visible-infrared object detection. Pattern Recognition 177, 113350. doi:10.1016/j.patcog. 2026.113350.",
+            "Xia, G.S., Bai, X., Ding, J., Zhu, Z., Belongie, S., Luo, J., Datcu, M., Pelillo, M., Zhang, L., 2018. Dota: A large-scale dataset for object detection in aerial",
+            "images, in: IEEE Conference on Computer Vision and Pattern Recognition, pp. 3974–3983.",
+            "Yang, X., Yan, J., Feng, Z., He, T., 2021. R3Det: Refined single-stage detector with feature refinement for rotating object, in: AAAI Conference on Artificial Intelligence, pp. 3163–3171.",
+            "Yang, X., Yang, M., Xie, X., 2026. MCF-YOLO: Consistency-guided cross-modal attention for smallobject RGB-IR detection. Sensors 26, 3938. doi:10. 3390/s26123938.",
+            "Yang, Z., Li, Z., Jiang, X., Gong, Y., Yuan, Z., Zhao, D., Yuan, C., 2022. Focal and global knowledge distillation for detectors, in: IEEE/CVF Conference on Computer Vision and Pattern Recognition, pp. 4643–4652.",
+            "Yuan, M., Wang, Y., Wei, X., 2022. Translation, scale and rotation: Cross-modal alignment meets RGB-Infrared vehicle detection, in: Computer Vision – ECCV 2022, Springer. pp. 509–525. doi:10.1007/ 978-3-031-20077-9\\_30.",
+            "Yuan, M., Wei, X., 2024. C<sup>2</sup>former: Calibrated and complementary transformer for rgb-infrared object detection. IEEE Transactions on Geoscience and Remote Sensing 62, 1–12.",
+            "Zagoruyko, S., Komodakis, N., 2016. Paying more attention to attention: Improving the performance of convolutional neural networks via attention transfer. arXiv preprint arXiv:1612.03928 .",
+            "Zhang, H., Li, F., Liu, S., Zhang, L., Su, H., Zhu, J., Ni, L.M., Shum, H.Y., 2023a. DINO: DETR with improved denoising anchor boxes for end-to-end object detection, in: International Conference on Learning Representations, OpenReview.net. URL: https://openreview.net/forum?id=3mRwyG5one.",
+            "Zhang, J., Cao, M., Xie, W., Lei, J., Li, D., Huang, W., Li, Y., Yang, X., 2024. E2e-mfd: Towards end-to-end synchronous multimodal fusion detection. Advances in Neural Information Processing Systems 37, 52296– 52322.",
+            "Zhang, J., Lei, J., Xie, W., Fang, Z., Li, Y., Du, Q., 2023b. SuperYOLO: Super resolution assisted object detection in multimodal remote sensing imagery. IEEE Transactions on Geoscience and Remote Sensing 61, 1–15. doi:10.1109/TGRS.2023.3258666. art. no. 5605415.",
+            "Zhao, T., Liu, B., Gao, Y., Sun, Y., Yuan, M., Wei, X., 2025. Rethinking multi-modal object detection from the perspective of mono-modality feature learning. arXiv preprint arXiv:2503.11780 .",
+            "Zhu, P., Wen, L., Bian, X., Ling, H., Hu, Q., 2018. Vision meets drones: A challenge. arXiv preprint arXiv:1804.07437 ."
+        ],
+        "bbox": [
+            84,
+            58,
+            487,
+            145
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "page_number",
+        "text": "14",
+        "bbox": [
+            489,
+            964,
+            509,
+            976
+        ],
+        "page_idx": 13
+    }
+]
