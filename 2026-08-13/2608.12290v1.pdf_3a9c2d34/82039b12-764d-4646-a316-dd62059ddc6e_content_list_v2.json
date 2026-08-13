@@ -1,0 +1,2931 @@
+[
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Beyond Trial-and-Error: Agentic Optimization for Image-to-Video Adherence"
+                    }
+                ],
+                "level": 1
+            },
+            "bbox": [
+                56,
+                64,
+                933,
+                134
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Aman Tyagi<sup>1</sup> amanty@google.com"
+                    }
+                ]
+            },
+            "bbox": [
+                56,
+                157,
+                276,
+                197
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Hemanth Boinpally<sup>1</sup> brhemanth@google.com"
+                    }
+                ]
+            },
+            "bbox": [
+                56,
+                200,
+                306,
+                241
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Jonathan Chen<sup>1</sup> jonchen@google.com"
+                    }
+                ]
+            },
+            "bbox": [
+                56,
+                244,
+                279,
+                285
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Douglas Gebert<sup>1</sup> dgebert@google.com"
+                    }
+                ]
+            },
+            "bbox": [
+                51,
+                288,
+                276,
+                329
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "<sup>2</sup>Steven Hickson<sup>2</sup> shickson@google.com"
+                    }
+                ]
+            },
+            "bbox": [
+                49,
+                330,
+                286,
+                377
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "<sup>1</sup> Google Cloud <sup>2</sup> Google DeepMind"
+                    }
+                ]
+            },
+            "bbox": [
+                522,
+                155,
+                742,
+                204
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Abstract"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                463,
+                437,
+                556,
+                455
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Modern black-box Image-to-Video (I2V) models offer powerful capabilities in automated content creation, yet their lack of fine-grained control and reliability presents significant challenges in professional workflows. Their inherent stochasticity causes minor variations in textual prompts or hyperparameters to yield drastically different outputs often necessitating inefficient, brute-force trial-and-error processes. To address these limitations, we introduce the “Agentic Self-Improvement\" framework, which reframes video synthesis into a closed-loop, goal-directed optimization. Our framework systematically navigates the generation parameter space using a novel two-stage approach. In the first stage, an iterative prompt optimization loop uses a multimodal Large Language Model (mLLM) to refine the input prompt. This refinement implements two automated evaluations: Davidsonian Scene Graph (DSG) queries ensure semantic adherence, and Common Mistake Questions (CMQ) for artifact detection. At the second stage, we use Bayesian optimization to efficiently co-optimize stochastic seeds and CFG scales. This search is guided by a suite of quality metrics, including the novel Video-Text Adherence (VTA) score derived from the DSG and CMQ evaluations. Our framework significantly outperforms unguided search methods: in human preference studies, videos generated via our agentic approach were strongly preferred over baseline outputs, achieving win rates up to 69%. This work provides a practical and extensible methodology for enhancing the predictability and control of state-of-the-art video generation models, moving the field beyond speculative curiosities toward reliable, production-ready tools."
+                    }
+                ]
+            },
+            "bbox": [
+                115,
+                463,
+                904,
+                823
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Introduction"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                110,
+                854,
+                308,
+                876
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The advent of large-scale, black-box text and image-to-video (I2V) models has unlocked powerful capabilities in automated content creation, promising a new frontier for digital media and storytelling [1, 2]. However, a significant gap remains between the generative potential of these systems and the practical demands of production-quality video synthesis [3, 4]. For professional applications, the foremost requirement is precise adherence to creative briefs, where the generated video must faithfully reflect both a textual prompt and a given input image [5, 6, 7, 8]. The core challenge lies in the inherent stochasticity and sensitivity of current models; minor variations in hyperparameters, such as random seeds or classifier-free guidance (CFG) scales, can lead to dramatically different and often unpredictable outputs [9, 10]. This forces practitioners into a brute-force, trial-and-error workflow, generating a multitude of video variations in the hope that one serendipitously aligns with their intent—a process that is inefficient and computationally expensive. Bridging this gap requires moving beyond speculative generation towards a systematic framework for intelligently navigating the complex parameter space of these models."
+                    }
+                ]
+            },
+            "bbox": [
+                53,
+                894,
+                963,
+                935
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": ": AMAN TYAGI, HEMANTH BOINPALLY ET. AL."
+                    }
+                ]
+            },
+            "bbox": [
+                58,
+                16,
+                536,
+                32
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "1"
+                    }
+                ]
+            },
+            "bbox": [
+                943,
+                16,
+                960,
+                30
+            ]
+        },
+        {
+            "type": "page_aside_text",
+            "content": {
+                "page_aside_text_content": [
+                    {
+                        "type": "text",
+                        "content": "arXiv:2608.12290v1 [cs.CV] 12 Aug 2026"
+                    }
+                ]
+            },
+            "bbox": [
+                46,
+                385,
+                100,
+                884
+            ]
+        },
+        {
+            "type": "page_footer",
+            "content": {
+                "page_footer_content": [
+                    {
+                        "type": "text",
+                        "content": "© 2026. The copyright of this document resides with its authors. It may be distributed unchanged freely in print or electronic forms."
+                    }
+                ]
+            },
+            "bbox": [
+                53,
+                944,
+                585,
+                977
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                31,
+                48,
+                943,
+                280
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "To address these limitations, this paper introduces “Agentic Self-Improvement\", a framework that re-architects the generation pipeline for I2V models from an open-loop, speculative process to a closed-loop, goal-directed optimization. Our framework employs a two-stage strategy that systematically targets the primary sources of variance: the textual prompt and the model’s hyperparameters. First, a prompt optimization stage uses a multimodal Large Language Model (mLLM) to iteratively refine the user’s initial prompt. To guide this refinement, the mLLM generates and scores against a structured set of evaluations: Davidsonian Scene Graph (DSG) queries [11] that probe semantic content, and Common Mistake Questions (CMQ) designed to detect typical generation artifacts. Second, a hyperparameter optimization stage uses Bayesian optimization to systematically search optimal random seeds and CFG scales. The entire process is guided by a suite of quality metrics and the novel Video-Text Adherence (VTA) score derived directly from the DSG and CMQ evaluations providing a quantitative measure of the output’s quality and alignment. The result is video content that is not only of high quality but is also aligned with the user’s specified intent."
+                    }
+                ]
+            },
+            "bbox": [
+                31,
+                280,
+                943,
+                552
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Our work makes the following primary contributions:"
+                    }
+                ]
+            },
+            "bbox": [
+                71,
+                552,
+                605,
+                572
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• An “Agentic Self-Improvement\" framework for systematic, goal-directed control of black-box I2V generation models."
+                    }
+                ]
+            },
+            "bbox": [
+                73,
+                580,
+                943,
+                619
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• A prompt optimization method that uses an mLLM with automatically generated DSG and CMQ evaluations for iterative refinement."
+                    }
+                ]
+            },
+            "bbox": [
+                73,
+                630,
+                941,
+                669
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• A Bayesian optimization to efficiently co-optimize stochastic seeds and CFG scales."
+                    }
+                ]
+            },
+            "bbox": [
+                73,
+                680,
+                926,
+                700
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• A novel Video-Text Adherence (VTA) metric derived from structured DSG and CMQ evaluations to guide the optimization process and score final content."
+                    }
+                ]
+            },
+            "bbox": [
+                73,
+                711,
+                943,
+                750
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "2 Related Work"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                34,
+                777,
+                306,
+                803
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "2.1 Advances in Text/Image-to-Video Generation"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                34,
+                820,
+                676,
+                842
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The field of video generation has seen a paradigm shift from Generative Adversarial Networks (GANs) [12] and Variational Autoencoders (VAEs) [13] to diffusion-based models [14]. Early methods often struggled with temporal coherence and were limited to lowresolution outputs [15]. The advent of diffusion models, particularly with the introduction of large-scale models such as Veo <sup>1</sup>, has marked a significant leap in generating high-fidelity, temporally consistent video sequences from textual prompts [16]. These models leverage vast datasets and sophisticated architectures, such as the Diffusion Transformer (DiT), to achieve unprecedented levels of realism and semantic accuracy [17]."
+                    }
+                ]
+            },
+            "bbox": [
+                31,
+                854,
+                943,
+                952
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "2"
+                    }
+                ]
+            },
+            "bbox": [
+                36,
+                16,
+                53,
+                30
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": ": AMAN TYAGI, HEMANTH BOINPALLY ET. AL."
+                    }
+                ]
+            },
+            "bbox": [
+                455,
+                16,
+                931,
+                32
+            ]
+        },
+        {
+            "type": "page_footnote",
+            "content": {
+                "page_footnote_content": [
+                    {
+                        "type": "text",
+                        "content": "<sup>1</sup>https://deepmind.google/models/veo/"
+                    }
+                ]
+            },
+            "bbox": [
+                61,
+                959,
+                370,
+                977
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                53,
+                48,
+                963,
+                105
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "More recently, the field has seen a rapid convergence towards unified autoregressive models and multimodal foundation models capable of natively processing interleaved text, image, and video tokens [18]. However, despite these improvements in raw fidelity, their black-box nature and reliance on massive, often uncurated, datasets present significant challenges in terms of controllability and reproducibility [19, 20]."
+                    }
+                ]
+            },
+            "bbox": [
+                53,
+                106,
+                963,
+                204
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "2.2 Controllability in Video Synthesis"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                56,
+                228,
+                553,
+                249
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "While text-to-video models have become increasingly powerful, relying solely on a textual prompt for control is often insufficient for professional applications that demand precise outputs [16]. This has spurred research into more fine-grained control mechanisms. One line of work focuses on incorporating additional conditioning inputs, such as a reference image for appearance control, to guide the generation process [21]. Other approaches leverage spatial controls like depth maps, edge maps, or human pose information to dictate the scene’s geometry and character motion [19]. A significant challenge in this domain is the disentanglement of content from motion, and achieving precise, multi-faceted control over the generated video’s content, style, and dynamics remains a key area of research [19, 22]."
+                    }
+                ]
+            },
+            "bbox": [
+                51,
+                260,
+                965,
+                437
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "2.3 Automated Prompt Engineering"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                56,
+                460,
+                534,
+                484
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Prompt engineering or prompt optimization for diffusion models, has moved beyond manual tuning towards automated and systematic approaches. A significant body of work has explored gradient-based methods, which treat prompt embeddings as continuous vectors that can be optimized to maximize a differentiable reward function, a technique that has been shown to effectively discover “hard\", interpretable prompts [23]. Another prominent direction involves the use of reinforcement learning (RL), where a policy network is trained to refine prompts based on feedback from a reward model, which can be designed to reflect human preferences or other desirable image characteristics [24]. Furthermore, researchers have leveraged large language models (LLMs) as optimizers themselves, employing them in black-box settings to iteratively rewrite and improve prompts based on the generated image outcomes, demonstrating strong performance without requiring direct access to the diffusion model’s gradients [11, 25, 26]. Building upon these efforts to improve textual alignment, our work advances the structured prompting methodology of [11] by adapting it for I2V/T2V synthesis, employing DSG to enforce a higher degree of text adherence and compositional consistency in the generated video."
+                    }
+                ]
+            },
+            "bbox": [
+                51,
+                492,
+                965,
+                786
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "2.4 Hyperparameter Optimization and Agentic AI"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                56,
+                810,
+                715,
+                833
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The performance of generative models is also critically dependent on a set of hyperparameters, such as the classifier-free guidance (CFG) scale and the initial random seed [27]. The conventional method for tuning these parameters is a brute-force grid search, which can be computationally expensive and often suboptimal. To address this, more systematic optimization techniques have to be explored. By building a probabilistic model of the objective function, Bayesian optimization can intelligently explore the parameter space to find optimal configurations with fewer evaluations [28]. Our work extends this approach by co-optimizing both deterministic hyperparameters and the stochastic random seed within a unified framework."
+                    }
+                ]
+            },
+            "bbox": [
+                51,
+                842,
+                963,
+                980
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": ": AMAN TYAGI, HEMANTH BOINPALLY ET. AL."
+                    }
+                ]
+            },
+            "bbox": [
+                58,
+                16,
+                536,
+                32
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "3"
+                    }
+                ]
+            },
+            "bbox": [
+                943,
+                16,
+                960,
+                30
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/3b933f4e8cdf3fb9864ae3d161c2ac4d5fe4a4aa660b000503e63675059cea03.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 1: The two-stage architecture of our Agentic Self-Improvement framework. Top: Prompt Optimization. A prompt is iteratively improved by generating a video and scoring its alignment against a set of auto-generated DSG and CMQ questions. Bottom: Hyperparameter Optimization. Using the best prompt, a Bayesian search then finds optimal hyperparameters (CFGs, seeds) by maximizing a multi-objective function composed of quality metrics (UVQ, RAHF) and a Video-Text Adherence (VTA) score repurposed from the questions above."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                80,
+                45,
+                877,
+                267
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                34,
+                458,
+                941,
+                497
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The concept of “Agentic AI\" represents a shift from passive, single-turn generative models to active, goal-directed systems that can autonomously plan, reason, and act to achieve a specified objective. In the context of content creation, agentic frameworks are being developed to automate complex, multi-step generative tasks [29]. These systems often employ a large language model as a central \"agent\" that can decompose a high-level goal into a sequence of smaller steps, execute those steps using various tools (such as generative models), and then evaluate the results to refine its plan [29, 30]. Our “Agentic Self-Improvement\" framework is inspired by this paradigm. The term ’Agentic’ distinguishes our approach from standard generate-evaluate pipelines by aligning with formal definitions of autonomous LLM agents (dynamic perception, reasoning, action [31, 32]). Instead of a static metric, our agent autonomously constructs a prompt-specific perception rubric (DSG/CMQ), reasons over structural failures, and executes goal-directed actions across linguistic (prompt rewriting) and mathematical (Bayesian search) parameter spaces, conceptualizing the video generation process as a closed-loop optimization problem."
+                    }
+                ]
+            },
+            "bbox": [
+                31,
+                500,
+                943,
+                774
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3 Methodology"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                34,
+                815,
+                291,
+                841
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The Agentic Self-Improvement framework operates as a closed-loop, goal-directed system that systematically optimizes the two primary inputs to a black-box I2V model: the textual prompt and its core hyperparameters. As depicted in Figure 1, the framework achieves this through two main subsystems—a Prompt Optimizer module and a Hyperparameter Optimizer module—which work in concert to reliably align the final video output with the user’s fiprecise creative intent."
+                    }
+                ]
+            },
+            "bbox": [
+                31,
+                862,
+                943,
+                978
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "4"
+                    }
+                ]
+            },
+            "bbox": [
+                36,
+                17,
+                53,
+                30
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": ": AMANTYAGI, HEMANTHBOINPALLYET. AL."
+                    }
+                ]
+            },
+            "bbox": [
+                455,
+                16,
+                933,
+                32
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/865362f9373305b5e07e1edb1dc34fe12739e7f47aa2d67587c203b95a480df2.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 2: Example of our automated question generation process for a given input image and prompt “a group of women sitting on the steps of a building\". Top (DSG Questions): Davidsonian Scene Graph [11] are generated to deconstruct the visual scene into semantic queries. Bottom (Common Mistakes): Common Mistake Questions are designed to target and preempt known failure modes of video generation models."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                191,
+                58,
+                821,
+                275
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.1 Prompt Optimization via Structured Evaluation"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                56,
+                419,
+                732,
+                442
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "A primary challenge in video generation is the semantic gap between a user’s prompt and the data distributions on which foundation models are trained. To bridge this gap, our framework employs an iterative prompt optimization strategy that refines the initial text prompt into an unambiguous and effective directive for the I2V model."
+                    }
+                ]
+            },
+            "bbox": [
+                53,
+                453,
+                963,
+                533
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.1.1 Question Generation for Semantic Grounding:"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                56,
+                557,
+                625,
+                576
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The process begins by translating the input prompt and initial image frame(s) brief into a fiset of concrete, machine-verifiable questions. We use a multimodal Large Language Model (mLLM), such as Gemini, to generate two categories of evaluative queries:"
+                    }
+                ]
+            },
+            "bbox": [
+                53,
+                588,
+                963,
+                648
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Davidsonian Scene Graph (DSG) Questions: Leveraging the Davidsonian Scene Graph methodology [11] for fine-grained visual evaluation, these questions probe the fundamental semantic components of the desired scene. They deconstruct the prompt into verifiable queries about the presence of agents, their actions and states, object possession, and location in a graphical format. For instance, in Figure 2 (Top) for the prompt “A group of women sitting on the steps of a building\" is broken down into verifiable questions such as,“Is the group of women present”, “Are the women sitting down?”, and “Are the women sitting on steps?”. This structured decomposition allows our framework to systematically check for the presence and correctness of each core semantic element."
+                    }
+                ]
+            },
+            "bbox": [
+                53,
+                648,
+                963,
+                823
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Common Mistake Questions (CMQ): While DSG effectively covers semantic content, it may not capture common failure modes of video generation models. CMQs are designed to target these specific weaknesses, focusing on criteria such as object permanence, natural movement, and temporal consistency while also checking for visual glitches or artifacts. Continuing with the same example as above in Figure 2 (Bottom), a CMQ could be, “Are the anatomical features of the characters depicted correctly and consistently?” or“Are the facial features of the women stable and free from distortion or flickering?” These questions fiforce the evaluation to assess the dynamic and temporal qualities crucial for plausible video"
+                    }
+                ]
+            },
+            "bbox": [
+                53,
+                823,
+                965,
+                978
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": ": AMAN TYAGI, HEMANTH BOINPALLY ET. AL."
+                    }
+                ]
+            },
+            "bbox": [
+                58,
+                16,
+                536,
+                32
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "5"
+                    }
+                ]
+            },
+            "bbox": [
+                943,
+                16,
+                960,
+                30
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "synthesis."
+                    }
+                ]
+            },
+            "bbox": [
+                34,
+                48,
+                139,
+                66
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.1.2 Iterative Prompt Refinement Loop:"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                34,
+                95,
+                487,
+                116
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "With the structured question graphs in place, the framework initiates a self-correction loop to find the optimal prompt:"
+                    }
+                ]
+            },
+            "bbox": [
+                34,
+                128,
+                941,
+                168
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• The I2V model generates an initial video using the current prompt."
+                    }
+                ]
+            },
+            "bbox": [
+                73,
+                183,
+                757,
+                202
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• The generated video is then evaluated by the mLLM Visual Question Answering (VQA) system<sup>2</sup>, which provides ‘Yes/No’ answers to the full set of DSG and CMQ questions. The percentage of affirmative answers serves as a quantitative alignment score."
+                    }
+                ]
+            },
+            "bbox": [
+                73,
+                218,
+                943,
+                294
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• Based on the score and, more specifically, the questions that were answered ‘no,’ the mLLM is prompted to revise the prompt to explicitly address the identified shortcomings."
+                    }
+                ]
+            },
+            "bbox": [
+                73,
+                312,
+                941,
+                371
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• This process is repeated for a fixed number of iterations, with each step aiming to maximize the alignment score."
+                    }
+                ]
+            },
+            "bbox": [
+                73,
+                387,
+                941,
+                426
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• The prompt that yields the highest alignment score is passed to the next stage for hyperparameter optimization."
+                    }
+                ]
+            },
+            "bbox": [
+                73,
+                442,
+                941,
+                482
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.1.3 mLLM VQA Reliability"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                34,
+                510,
+                367,
+                529
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Because this prompt refinement loop relies entirely on the mLLM functioning as an automated evaluator, we must first validate its reliability against human judgment. To validate this critical component, we conducted a study to measure the agreement between the answers provided by our selected VQA model, Gemini 2.5 Pro, and a human-annotated ground truth."
+                    }
+                ]
+            },
+            "bbox": [
+                34,
+                542,
+                941,
+                620
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "For this validation, we randomly sampled 100 video-question pairs from our experiments. This sample included 50 Davidsonian Scene Graph (DSG) and 50 Common Mistake Questions (CMQ). Two human annotators were tasked with watching each video and providing a “Yes/No\" answer to the corresponding question. These human-provided labels served as our ground truth. We then posed the same questions to the Gemini 2.5 Pro model and compared its answers to the human ground truth. The results of this analysis are presented in Table 1."
+                    }
+                ]
+            },
+            "bbox": [
+                31,
+                620,
+                943,
+                756
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/ca19a0e678f1257a6e909ffc1226f7540de5e9ee2bd7b12b0d2eaadec7ed9187.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 1: Accuracy of Gemini 2.5 Pro on the VQA task compared to human-annotated ground truth. The high level of agreement validates its use as an automated evaluator within our framework."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Question Type</td><td>Accuracy (%)</td></tr><tr><td>DSG Questions</td><td>92%</td></tr><tr><td>CMQ Questions</td><td>82%</td></tr><tr><td>Overall</td><td>87%</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                316,
+                826,
+                656,
+                927
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "6"
+                    }
+                ]
+            },
+            "bbox": [
+                36,
+                17,
+                53,
+                30
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": ": AMANTYAGI, HEMANTHBOINPALLYET. AL."
+                    }
+                ]
+            },
+            "bbox": [
+                453,
+                16,
+                933,
+                32
+            ]
+        },
+        {
+            "type": "page_footnote",
+            "content": {
+                "page_footnote_content": [
+                    {
+                        "type": "text",
+                        "content": "<sup>2</sup>We use Gemini-2.5-pro as a VQA model, which has demonstrated state-of-the-art performance on video understanding benchmarks [33]."
+                    }
+                ]
+            },
+            "bbox": [
+                34,
+                944,
+                938,
+                977
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The model was exceptionally accurate on DSG questions (92%), which typically probe for more objective factual content (e.g., object presence). The accuracy on CMQ questions (82%) was lower, which is expected as these questions can sometimes involve more subjective assessments of motion or temporal consistency. The 18% CMQ error rate primarily stems from the mLLM occasionally confusing fast, natural motion with unnatural transitions, and being insensitive to certain criteria. This strong correlation with human judgment confirms that Gemini 2.5 Pro is a reliable and effective proxy for human evaluation for our specific, structured VQA task, thereby validating its use as the automated scoring engine within our agentic framework."
+                    }
+                ]
+            },
+            "bbox": [
+                53,
+                47,
+                963,
+                223
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.2 Hyperparameter Optimization via Bayesian Search"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                56,
+                254,
+                774,
+                277
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "With an optimal prompt identified, the framework’s second stage automates hyperparameter tuning. We employ Bayesian optimization to efficiently search for the ideal configuration of the Classifier-Free Guidance (CFG) scales, which are explored within a range of [1 to 15], and the stochastic seed, replacing inefficient manual tuning. Because random seeds are non-smooth identifiers, where numerical proximity does not imply similar outputs, Vizier BO addresses this by explicitly representing the seed as an unordered categorical variable, handling this mixed space via its Gaussian Process Bandit algorithm. This co-optimization outperforms blind random sampling by: (1) learning the continuous marginal effects of CFG, evaluating new seeds only within high-yield CFG ranges; and (2) treating seed selection as a multi-armed bandit problem, where the default Upper Confidence Bound (UCB) acquisition function (with an exploration constant of "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\sqrt { \\beta } = 1 . 8"
+                    },
+                    {
+                        "type": "text",
+                        "content": "[31, 34]) quickly discards ’bad’ seeds and reallocates budget to fine-tune the CFG of promising seeds, avoiding wasted trials. The search is guided by a multi-objective reward function executed by Vizier, a platform for black-box optimization. This search pushes the generative model towards higher quality outputs that exhibit superior prompt adherence with minimal visual artifacts yielding optimal results far more efficiently than a brute-force search would allow."
+                    }
+                ]
+            },
+            "bbox": [
+                53,
+                290,
+                965,
+                601
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.2.1 Automated Evaluation Suite"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                56,
+                632,
+                433,
+                651
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The efficacy of our agentic framework hinges upon a robust suite of automated metrics that collectively form the multi-objective reward function. This suite provides a holistic assessment of each generated video across three dimensions: perceptual quality, temporal coherence, and semantic alignment."
+                    }
+                ]
+            },
+            "bbox": [
+                53,
+                666,
+                963,
+                742
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Perceptual Quality: We employ two models to assess visual quality. First, we use the RAHF (Rich Automated Human Feedback) model [35], a multimodal Transformer designed to simulate nuanced human quality judgments for images. For each video, our evaluation process involves sampling 10 frames at equidistant intervals. These frames are individually passed through the RAHF model to generate the overall quality score for each. To determine a single representative score for the entire video, we then select the minimum score from this set of 10 frame-level scores. Second, we use UVQ (Universal Video Quality) [36], a CNN-based architecture for general quality prediction. For this, we use the Mean Opinion Score (MOS) derived from the average of its content, distortion, and compression networks, as described in the original work."
+                    }
+                ]
+            },
+            "bbox": [
+                53,
+                743,
+                963,
+                938
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Temporal Coherence: We implement two metrics to evaluate temporal and motion consistency. Shotcut Detection & Flow Continuity analyzes optical flow between frames to quantify motion and penalize abrupt, unintended scene changes. Concurrently, loop detection identifies and penalizes undesirable content repetition, defined as a two-second loop or two-second static freeze frame."
+                    }
+                ]
+            },
+            "bbox": [
+                53,
+                940,
+                963,
+                978
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": ": AMAN TYAGI, HEMANTH BOINPALLY ET. AL."
+                    }
+                ]
+            },
+            "bbox": [
+                58,
+                16,
+                536,
+                32
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "7"
+                    }
+                ]
+            },
+            "bbox": [
+                943,
+                16,
+                960,
+                30
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                34,
+                47,
+                941,
+                105
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Semantic Alignment: Finally, to ensure adherence to the prompt we employ our novel Video-Text Adherence (VTA) metric. This metric repurposes the DSG and CMQ graphs generated during prompt optimization to directly score the video’s content against the detailed scene expectations and text. We formalize VTA to explicitly detail hierarchy handling, weighting, and aggregation. VTA evaluates a video by aggregating the mLLM’s binary responses (1=Yes, 0=No) across generated DSG and CMQ trees. To handle hierarchy (e.g., zeroing “Is the dog running?” if the parent node “Is there a dog "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "? ^ { \\ast }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is False), a child’s score is strictly masked by its parent "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "p ( i )"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". We define recursive node score "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "S _ { i } = \\mathbb { I } ( \\mathrm { m L L M } ( Q _ { i } , V ) ="
+                    },
+                    {
+                        "type": "text",
+                        "content": "Yes) "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "S _ { p ( i ) }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", with roots defaulting to "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "S _ { p ( \\mathrm { r o o t } ) } = 1"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". VTA is the weighted average over all questions Q: "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\begin{array} { r } { \\mathrm { V T A } ( V ) = ( \\sum w _ { i } ) ^ { - 1 } \\sum w _ { i } S _ { i } } \\end{array}"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". Using uniform weights "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( w _ { i } = 1 )"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", this recursive design ensures foundational concepts (root nodes) naturally exert a mathematically higher penalty upon failure due to cascading zeroing effects on descendant nodes."
+                    }
+                ]
+            },
+            "bbox": [
+                31,
+                108,
+                941,
+                345
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "While this specific suite provides a comprehensive assessment, the framework is inherently modular. Any component can be augmented or replaced with other black-box evalua tors tailored to different quality dimensions."
+                    }
+                ]
+            },
+            "bbox": [
+                31,
+                346,
+                941,
+                405
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4 Experiments"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                34,
+                450,
+                289,
+                476
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/7e45b667eaa34c1ea819464f46dc1b877df5225b6b85b0ec02e34fb17ef1eacc.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 2: Human preference evaluation comparing the top-ranked video selected by different automated metrics against a baseline. The candidate videos were generated from 10 and 100 trials of Bayesian optimization, respectively. For each metric, the single best video was chosen for the head-to-head comparison. The ‘Avg’ metric is a simple average of normalized RAHF, VTA and UVQ. We additionally evaluate the 100-run budget against a stronger ‘Bestof-Random’ baseline to isolate the efficacy of the Bayesian search from the final metric selection."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td rowspan=\"2\">Top-1 Selection Metric</td><td colspan=\"3\">10 Runs (vs. Random)</td><td colspan=\"3\">100 Runs (vs. Random)</td><td colspan=\"3\">100 Runs (vs. Best-of-Random)</td></tr><tr><td>Baseline Win (%)</td><td>Ours Win (%)</td><td>Tie (%)</td><td>Baseline Win (%)</td><td>Ours Win (%)</td><td>Tie (%)</td><td>Baseline Win (%)</td><td>Ours Win (%)</td><td>Tie (%)</td></tr><tr><td>RAHF</td><td>14</td><td>47</td><td>39</td><td>9</td><td>69</td><td>22</td><td>8</td><td>42</td><td>50</td></tr><tr><td>VTA</td><td>8</td><td>45</td><td>47</td><td>8</td><td>63</td><td>29</td><td>13</td><td>39</td><td>48</td></tr><tr><td>UVQ</td><td>11</td><td>42</td><td>47</td><td>10</td><td>60</td><td>30</td><td>13</td><td>38</td><td>49</td></tr><tr><td>Avg.</td><td>6</td><td>45</td><td>49</td><td>9</td><td>66</td><td>25</td><td>15</td><td>28</td><td>57</td></tr></table>",
+                "table_type": "complex_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                39,
+                648,
+                933,
+                815
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We validate our Agentic Self-Improvement framework through two primary experiments. First, a controlled ablation study isolates and evaluates the Prompt Optimizer module against the original V-Bench prompts[37]. Second, an end-to-end evaluation implements a Bayesian Search framework across the hyperparameters (seed, CFG scales, etc.), which approximates a typical un-guided workflow. For all experiments, we ground our analysis in the imageand-prompt-to-video tasks from V-Bench. Crucially, our agentic framework operates as a model-agnostic wrapper that fundamentally applies to any latent diffusion video model. We utilize Veo "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "2 . 0 ^ { 3 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "as the experimental vehicle for this study, explicitly positioning it as a robust, representative baseline."
+                    }
+                ]
+            },
+            "bbox": [
+                31,
+                842,
+                943,
+                980
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "8"
+                    }
+                ]
+            },
+            "bbox": [
+                36,
+                16,
+                53,
+                30
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": ": AMAN TYAGI, HEMANTH BOINPALLY ET. AL."
+                    }
+                ]
+            },
+            "bbox": [
+                455,
+                16,
+                931,
+                32
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                53,
+                47,
+                960,
+                85
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Our primary evaluation modality is a head-to-head human preference study. We prioritize this qualitative analysis because, as we detail in the Appendix (see section 7.1), standard automated metrics often lack the sensitivity to capture the nuanced improvements our framework provides. For the preference study, two expert annotators each evaluated 50 disjoint prompts (100 total) to maximize coverage, strictly calibrated on shared guidelines. They were presented with text-image pairs alongside the corresponding videos generated by our framework and the baseline, and instructed to select the video with superior realism and overall video quality or to declare a tie. We performed two-tailed binomial sign tests (excluding ties) and calculated 95% Wilson score CIs. Our win-rates are statistically significant: for N = 100, CIs range from [50.2%, 69.1%] (UVQ) to [59.4%, 77.2%] (RAHF), "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "p < 1 0 ^ { - 6 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "; for N = 10, CIs range from [32.8%, 51.8%] to [37.5%, 56.7%], "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "p < 0 . 0 0 0 0 3"
+                    }
+                ]
+            },
+            "bbox": [
+                53,
+                87,
+                963,
+                303
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.1 Prompt Optimization"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                53,
+                329,
+                399,
+                351
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "To validate the impact of our prompt optimizer module, we conducted a controlled experiment using 100 image-prompt pairs randomly sampled from V-Bench’s image-to-video tasks. For each pair, we generated two videos while keeping all hyperparameters constant: one using the original V-Bench prompt and a second prompt generated by our optimization module after 10 iterations. These video pairs were then evaluated in a blind, head-to-head human preference study. In the comparison, videos generated from our optimized prompts were preferred by human evaluators 27% of the time, compared to 5% for the baseline, with the remaining resulting in a tie (68%). This indicates that our method provides a significant perceptual improvement in over a quarter of the cases."
+                    }
+                ]
+            },
+            "bbox": [
+                51,
+                361,
+                963,
+                539
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.2 Bayesian Search"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                56,
+                564,
+                335,
+                586
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Next, we evaluate the efficacy of our complete agentic framework, against a random search baseline. The goal is to measure whether our intelligent search finds superior videos within the same computational budget. For the same 100 image-prompt pairs from V-Bench, we conduct experiments with two distinct budgets: a 10-generation search and a more exhaustive 100-generation search. The primary baseline method involves randomly selecting one video from the 10 (or 100) videos generated with an unguided random search of hyperparameters. To rigorously isolate the contribution of the Bayesian search algorithm from the efficacy of our final metric-based candidate selection, we additionally evaluate the 100-generation budget against a stronger ’Best-of-Random’ baseline. This competitive baseline generates 100 candidates via standard random search, applies our artifact filters, and intelligently selects the Top-1 candidate using our proposed automated ranking metrics. Our method uses the Bayesian optimizer for the same number of iterations and then selects the best candidate."
+                    }
+                ]
+            },
+            "bbox": [
+                53,
+                598,
+                965,
+                831
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "To determine the single best output from our pipeline, we first apply a hard filter to discard videos with loops or shotcuts. From the remaining pool of candidates, we test four distinct automated ranking strategies to select the ‘top 1’ video. The selection is based on choosing the video with the highest score according to: (i) the UVQ quality model, (ii) our VTA text-adherence metric, (iii) the RAHF human-preference model, and (iv) a simple average of all three normalized scores. The human preference win rates for each of these four ranking strategies against the random baseline are presented for both the 10- and 100- generation in Table 2."
+                    }
+                ]
+            },
+            "bbox": [
+                53,
+                831,
+                963,
+                870
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": ": AMANTYAGI, HEMANTHBOINPALLYET. AL."
+                    }
+                ]
+            },
+            "bbox": [
+                58,
+                16,
+                536,
+                32
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "9"
+                    }
+                ]
+            },
+            "bbox": [
+                943,
+                16,
+                960,
+                30
+            ]
+        },
+        {
+            "type": "page_footnote",
+            "content": {
+                "page_footnote_content": [
+                    {
+                        "type": "text",
+                        "content": "<sup>3</sup>We use veo-2.0-generate-001 https://developers.googleblog.com/en/ veo-2-video-generation-now-generally-available/ and generate 96 frames (4 seconds) for all the videos. Although we focus our analysis on the image-and-prompt-to-video generation tasks, however our framework is readily adaptable to purely text-to-video workflows. While newer model families such as Veo 3.1 have been released as of early 2026, we utilize the stable, generally available Veo 2.0 API to establish a controlled baseline and ensure direct comparability across our evaluation suite."
+                    }
+                ]
+            },
+            "bbox": [
+                53,
+                883,
+                963,
+                978
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                31,
+                48,
+                941,
+                163
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The results in Table 2 demonstrate that our agentic framework consistently produces videos that are preferred by human evaluators over the random search baseline. With a limited budget of 10 runs, our method achieves win rates of 42-47% vs. 14% for the baseline. The performance gap widens dramatically with 100-generation budget, where our framework’s win rate climbs to 60-69%. This trend, coupled with a significant reduction in ties, demonstrates that our search becomes more effective at identifying perceptibly superior videos as the computational budget grows. Notably, sorting by the RAHF score yields the highest human preference (69% win rate), suggesting it is the metric most aligned with human perception in this context."
+                    }
+                ]
+            },
+            "bbox": [
+                31,
+                165,
+                943,
+                338
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Evaluating against the significantly stronger ’Best-of-Random’ baseline naturally narrows the performance gap compared to an unguided, randomly selected candidate. Because this new baseline intelligently filters and selects the best of 100 random videos, tie rates predictably increase (e.g., from 22% to 50% for RAHF) and our absolute win rate shifts from 69% to 42%. Crucially, however, our Bayesian Optimizer still decisively outperforms this highly competitive baseline across all metrics (e.g., 42% vs. 8% for RAHF). This confirms that our framework does not merely rely on post-hoc sorting; rather, the Bayesian search actively and effectively guides the generation process into higher-quality parameter regions."
+                    }
+                ]
+            },
+            "bbox": [
+                31,
+                340,
+                943,
+                497
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "5 Discussion"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                34,
+                528,
+                254,
+                551
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Our experimental results validate the hypothesis of this work: a systematic, closed-loop optimization process yields perceptibly superior results compared to a standard baseline. Our experiments on prompt optimization confirm that treating the prompt as a refinable target, rather than a fixed input, is a critical step for improving semantic alignment. Such a technique also helps the prompt to be model agnostic as different models are sensitive to different prompting techniques [38]. The subsequent end-to-end evaluation via Bayesian search demonstrates that an intelligent search of the hyperparameter space is substantially more effective at discovering human-preferred videos than an unguided, random search. Collectively, these findings show that by methodically addressing the two primary sources of variance—the prompt and the hyperparameters—our framework successfully transforms video generation from a speculative, trial-and-error method into a more predictable and controllable process."
+                    }
+                ]
+            },
+            "bbox": [
+                31,
+                570,
+                943,
+                802
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The success of the prompt optimization highlights a powerful paradigm: using the advanced multimodal understanding of mLLMs as a direct feedback signal to steer the creative output of generative models. The core principle is a “generator-critic\" loop where the I2V model acts as the generator and the mLLM functions as a sophisticated visual critic. By generating structured DSG and CMQ questions, we provide the mLLM with a detailed rubric for its critique, forcing it to verify the fine-grained semantic and temporal properties of the generated video. This moves beyond simplistic CLIP-score similarity and instead leverages the mLLM’s rich, compositional understanding of scenes, actions, and objects to guide the generation process. This approach is highly extensible, pointing toward future systems where mLLMs could provide free-form textual feedback or critique videos on more abstract qualities like narrative coherence or emotional tone, creating a powerful, self-correcting cycle for more controllable and aligned video synthesis. However, this mLLM-guided approach is naturally constrained by the current capabilities of video understanding. While state-of-the-art mLLMs excel at identifying objects and describing general scenes, their ability to comprehend nuanced motion and complex temporal dynamics is still an active area of research [39]. We anticipate that this capability will advance significantly with the increasing convergence of multimodal AI and the field of robotics [40]. The demand for embodied agents that can interpret and predict complex physical interactions from video will inevitably push the development of models with a more profound grasp of motion and causality. As these more sophisticated video-understanding mLLMs become available, they can be seamlessly integrated into our framework as more powerful ‘critics,’ enabling the optimization of not just semantic content, but also physically plausible dynamics and complex character actions."
+                    }
+                ]
+            },
+            "bbox": [
+                31,
+                803,
+                943,
+                980
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "10"
+                    }
+                ]
+            },
+            "bbox": [
+                39,
+                16,
+                66,
+                30
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": ": AMANTYAGI, HEMANTHBOINPALLYET. AL."
+                    }
+                ]
+            },
+            "bbox": [
+                455,
+                16,
+                931,
+                32
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                53,
+                48,
+                963,
+                299
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Despite its effectiveness, we acknowledge several limitations that open avenues for future research. Our agentic framework, while more efficient than unguided manual iteration, stil carries a significant computational cost. Future work could explore more sample-efficient optimization algorithms or the distillation of the large mLLM critic into a smaller, specialized reward model to reduce inference overhead. Furthermore, our framework currently operates as a two-stage process, first optimizing the prompt and then the hyperparameters. A more advanced approach would be to explore the joint optimization of both prompts and parameters simultaneously which could uncover non-obvious interactions between prompt phrasing and hyperparameter sensitivity."
+                    }
+                ]
+            },
+            "bbox": [
+                53,
+                301,
+                963,
+                476
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "6 Conclusion"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                56,
+                510,
+                284,
+                533
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "This work addressed the critical challenge of controlling black-box I2V models to achieve reliable, quality outputs that adhere to user intent. We introduced the Agentic Self-Improvement framework, a novel two-stage methodology that systematically reduces generative variance. Our approach first uses an mLLM-driven evaluation loop to optimize the textual prompt for semantic clarity and then employs Bayesian optimization to discover superior hyperparameters. Through human preference studies, we demonstrate that this structured, closed-loop process significantly outperforms standard, unguided search methods. By reframing video synthesis as a goal-directed optimization problem, this work provides a practical and extensible methodology for instilling predictability into state-of-the-art generative models. This shift moves I2V systems beyond speculative tools and toward robust, controllable engines required for demanding, real-world applications."
+                    }
+                ]
+            },
+            "bbox": [
+                53,
+                554,
+                965,
+                769
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "References"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                56,
+                802,
+                227,
+                826
+            ]
+        },
+        {
+            "type": "list",
+            "content": {
+                "list_type": "reference_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[1] Joseph Cho, Fachrina Dewi Puspitasari, Sheng Zheng, Jingyao Zheng, Lik-Hang Lee, Tae-Ho Kim, Choong Seon Hong, and Chaoning Zhang. Sora as an agi world model? a complete survey on text-to-video generation. arXiv preprint arXiv:2403.05131, 2024."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[2] Rui Sun, Yumin Zhang, Tejal Shah, Jiahao Sun, Shuoying Zhang, Wenqi Li, Haoran Duan, Bo Wei, and Rajiv Ranjan. From sora what we can see: A survey of text-to-video generation. arXiv preprint arXiv:2405.10674, 2024."
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                71,
+                844,
+                960,
+                902
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": ": AMAN TYAGI, HEMANTH BOINPALLY ET. AL."
+                    }
+                ]
+            },
+            "bbox": [
+                58,
+                16,
+                536,
+                32
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "11"
+                    }
+                ]
+            },
+            "bbox": [
+                933,
+                16,
+                960,
+                30
+            ]
+        }
+    ],
+    [
+        {
+            "type": "list",
+            "content": {
+                "list_type": "reference_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[3] Ting-Chun Wang, Ming-Yu Liu, Jun-Yan Zhu, Guilin Liu, Andrew Tao, Jan Kautz, and Bryan Catanzaro. Video-to-video synthesis. arXiv preprint arXiv:1808.06601, 2018."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[4] Haoxin Chen, Yong Zhang, Xiaodong Cun, Menghan Xia, Xintao Wang, Chao Weng, and Ying Shan. Videocrafter2: Overcoming data limitations for high-quality video diffusion models. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages 7310–7320, 2024."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[5] Jiale Cheng, Ruiliang Lyu, Xiaotao Gu, Xiao Liu, Jiazheng Xu, Yida Lu, Jiayan Teng, Zhuoyi Yang, Yuxiao Dong, Jie Tang, et al. Vpo: Aligning text-to-video generation models with prompt optimization. In Proceedings ofthe IEEE/CVF International Conference on Computer Vision, pages 15636–15645, 2025."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[6] Xiangyu Peng, Zangwei Zheng, Chenhui Shen, Tom Young, Xinying Guo, Binluo Wang, Hang Xu, Hongxin Liu, Mingyan Jiang, Wenjun Li, Yuhui Wang, Anbang Ye, Gang Ren, Qianran Ma, Wanying Liang, Xiang Lian, Xiwen Wu, Yuting Zhong, Zhuangyan Li, Chaoyu Gong, Guojun Lei, Leijun Cheng, Limin Zhang, Minghao Li, Ruijie Zhang, Silan Hu, Shijie Huang, Xiaokang Wang, Yuanheng Zhao, Yuqi Wang, Ziang Wei, and Yang You. Open-sora 2.0: Training a commercial-level video generation model in $200k. arXiv preprint arXiv:2503.09642, 2025."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[7] Yaosi Hu, Chong Luo, and Zhenzhong Chen. Make it move: controllable image-tovideo generation with text descriptions. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages 18219–18228, 2022."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[8] Yatai Ji, Jiacheng Zhang, Jie Wu, Shilong Zhang, Shoufa Chen, Chongjian Ge, Peize Sun, Weifeng Chen, Wenqi Shao, Xuefeng Xiao, et al. Prompt-a-video: Prompt your video diffusion model via preference-aligned llm. In Proceedings of the IEEE/CVF International Conference on Computer Vision, pages 18725–18735, 2025."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[9] Steven Bethard. We need to talk about random seeds. arXiv preprint arXiv:2210.13393, 2022."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[10] Dazhong Shen, Guanglu Song, Zeyue Xue, Fu-Yun Wang, and Yu Liu. Rethinking the spatial inconsistency in classifier-free diffusion guidance. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages 9370– 9379, 2024."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[11] Jaemin Cho, Yushi Hu, Jason Baldridge, Roopal Garg, Peter Anderson, Ranjay Krishna, Mohit Bansal, Jordi Pont-Tuset, and Su Wang. Davidsonian scene graph: Improving reliability in fine-grained evaluation for text-to-image generation. In International conference on learning representations, volume 2024, pages 15625–15645, 2024."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[12] Ian J Goodfellow, Jean Pouget-Abadie, Mehdi Mirza, Bing Xu, David Warde-Farley, Sherjil Ozair, Aaron Courville, and Yoshua Bengio. Generative adversarial nets. Advances in neural information processing systems, 27, 2014."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[13] Diederik P Kingma, Max Welling, et al. An introduction to variational autoencoders. Foundations and Trends® in Machine Learning, 12(4):307–392, 2019."
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                49,
+                47,
+                941,
+                87
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "12"
+                    }
+                ]
+            },
+            "bbox": [
+                36,
+                16,
+                66,
+                30
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": ": AMAN TYAGI, HEMANTH BOINPALLY ET. AL."
+                    }
+                ]
+            },
+            "bbox": [
+                453,
+                16,
+                933,
+                32
+            ]
+        }
+    ],
+    [
+        {
+            "type": "list",
+            "content": {
+                "list_type": "reference_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[14] Jonathan Ho, Ajay Jain, and Pieter Abbeel. Denoising diffusion probabilistic models. Advances in neural information processing systems, 33:6840–6851, 2020."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[15] Carl Vondrick, Hamed Pirsiavash, and Antonio Torralba. Generating videos with scene dynamics. Advances in neural information processing systems, 29, 2016."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[16] Tim Brooks, Bill Peebles, Connor Holmes, Will DePue, Yufei Guo, Li Jing, David Schnurr, Joe Taylor, Troy Luhman, Eric Luhman, et al. Video generation models as world simulators. OpenAI Blog, 1:8, 2024."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[17] William Peebles and Saining Xie. Scalable diffusion models with transformers. In Proceedings of the IEEE/CVF international conference on computer vision, pages 4195– 4205, 2023."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[18] Hu Yu, Biao Gong, Hangjie Yuan, DanDan Zheng, Weilong Chai, Jingdong Chen, Kecheng Zheng, and Feng Zhao. Videomar: Autoregressive video generation with continuous tokens. Advances in neural information processing systems, 38:56928– 56958, 2026."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[19] Lvmin Zhang, Anyi Rao, and Maneesh Agrawala. Adding conditional control to textto-image diffusion models. In Proceedings of the IEEE/CVF international conference on computer vision, pages 3836–3847, 2023."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[20] Amir Hertz, Ron Mokady, Jay Tenenbaum, Kfir Aberman, Yael Pritch, and Daniel Cohen-Or. Prompt-to-prompt image editing with cross attention control. arXiv preprint arXiv:2208.01626, 2022."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[21] Weifeng Chen, Yatai Ji, Jie Wu, Hefeng Wu, Pan Xie, Jiashi Li, Xin Xia, Xuefeng Xiao, and Liang Lin. Control-a-video: Controllable text-to-video diffusion models with motion prior and reward feedback learning. arXiv preprint arXiv:2305.13840, 2023."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[22] Andreas Blattmann, Robin Rombach, Huan Ling, Tim Dockhorn, Seung Wook Kim, Sanja Fidler, and Karsten Kreis. Align your latents: High-resolution video synthesis with latent diffusion models. In Proceedings ofthe IEEE/CVF conference on computer vision and pattern recognition, pages 22563–22575, 2023."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[23] Yuxin Wen, Neel Jain, John Kirchenbauer, Micah Goldblum, Jonas Geiping, and Tom Goldstein. Hard prompts made easy: Gradient-based discrete optimization for prompt tuning and discovery. Advances in Neural Information Processing Systems, 36:51008– 51025, 2023."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[24] Kevin Black, Michael Janner, Yilun Du, Ilya Kostrikov, and Sergey Levine. Training diffusion models with reinforcement learning. In International Conference on Learning Representations, volume 2024, pages 4965–4987, 2024."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[25] Yutong He, Alexander Robey, Naoki Murata, Yiding Jiang, Joshua Williams, George J Pappas, Hamed Hassani, Yuki Mitsufuji, Ruslan Salakhutdinov, and J Zico Kolter. Automated black-box prompt engineering for personalized text-to-image generation. arXiv preprint arXiv:2403.19103, 2(5), 2024."
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                58,
+                47,
+                960,
+                87
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": ": AMANTYAGI, HEMANTHBOINPALLYET. AL."
+                    }
+                ]
+            },
+            "bbox": [
+                56,
+                16,
+                536,
+                32
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "13"
+                    }
+                ]
+            },
+            "bbox": [
+                933,
+                16,
+                960,
+                30
+            ]
+        }
+    ],
+    [
+        {
+            "type": "list",
+            "content": {
+                "list_type": "reference_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[26] Yaru Hao, Zewen Chi, Li Dong, and Furu Wei. Optimizing prompts for text-to-image generation. Advances in Neural Information Processing Systems, 36:66923–66939, 2023."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[27] Jonathan Ho and Tim Salimans. Classifier-free diffusion guidance. arXiv preprint arXiv:2207.12598, 2022."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[28] Jasper Snoek, Hugo Larochelle, and Ryan P Adams. Practical bayesian optimization of machine learning algorithms. Advances in neural information processing systems, 25, 2012."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[29] Zhengyuan Yang, Linjie Li, Jianfeng Wang, Kevin Lin, Ehsan Azarnasab, Faisal Ahmed, Zicheng Liu, Ce Liu, Michael Zeng, and Lijuan Wang. Mm-react: Prompting chatgpt for multimodal reasoning and action. arXiv preprint arXiv:2303.11381, 2023."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[30] Minbin Huang, Yanxin Long, Xinchi Deng, Ruihang Chu, Jiangfeng Xiong, Xiaodan Liang, Hong Cheng, Qinglin Lu, and Wei Liu. Dialoggen: Multi-modal interactive dialogue system for multi-turn text-to-image generation. arXiv preprint arXiv:2403.08857, 2024."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[31] Z Xi, W Chen, X Guo, W He, Y Ding, B Hong, and T Gui. The rise and potential of large language model based agents: A survey: arxiv preprint. arXiv preprint arXiv:2309.07864, 2023."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[32] Lei Wang, Chen Ma, Xueyang Feng, Zeyu Zhang, Hao Yang, Jingsen Zhang, Zhiyuan Chen, Jiakai Tang, Xu Chen, Yankai Lin, et al. A survey on large language model based autonomous agents. Frontiers ofComputer Science, 18(6):186345, 2024."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[33] Google. Gemini 2.5 pro (gemini-2.5-pro-preview-06-05): Our most advanced intelligent ai model, 2025. URL https://developers.googleblog.com/en/ gemini-2-5-video-understanding/. Accessed on July 7th, 2025."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[34] Xingyou Song, Qiuyi Zhang, Chansoo Lee, Emily Fertig, Tzu-Kuo Huang, Lior Belenki, Greg Kochanski, Setareh Ariafar, Srinivas Vasudevan, Sagi Perel, et al. The vizier gaussian process bandit algorithm. arXiv preprint arXiv:2408.11527, 2024."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[35] Youwei Liang, Junfeng He, Gang Li, Peizhao Li, Arseniy Klimovskiy, Nicholas Carolan, Jiao Sun, Jordi Pont-Tuset, Sarah Young, Feng Yang, et al. Rich human feedback for text-to-image generation. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages 19401–19411, 2024."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[36] Yilin Wang, Junjie Ke, Hossein Talebi, Joong Gon Yim, Neil Birkbeck, Balu Adsumilli, Peyman Milanfar, and Feng Yang. Rich features for perceptual quality assessment of ugc videos. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition, pages 13435–13444, 2021."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[37] Ziqi Huang, Fan Zhang, Xiaojie Xu, Yinan He, Jiashuo Yu, Ziyue Dong, Qianli Ma, Nattapol Chanpaisit, Chenyang Si, Yuming Jiang, Yaohui Wang, Xinyuan Chen, Ying-Cong Chen, Limin Wang, Dahua Lin, Yu Qiao, and Ziwei Liu. Vbench++: Comprehensive and versatile benchmark suite for video generative models. arXiv preprint arXiv:2411.13503, 2024."
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                36,
+                47,
+                941,
+                105
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "14"
+                    }
+                ]
+            },
+            "bbox": [
+                36,
+                16,
+                66,
+                30
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": ": AMAN TYAGI, HEMANTH BOINPALLY ET. AL."
+                    }
+                ]
+            },
+            "bbox": [
+                453,
+                16,
+                933,
+                32
+            ]
+        }
+    ],
+    [
+        {
+            "type": "list",
+            "content": {
+                "list_type": "reference_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[38] Bingjie Gao, Xinyu Gao, Xiaoxue Wu, Yujie Zhou, Yu Qiao, Li Niu, Xinyuan Chen, and Yaohui Wang. The devil is in the prompts: Retrieval-augmented prompt optimization for text-to-video generation. In Proceedings of the Computer Vision and Pattern Recognition Conference, pages 3173–3183, 2025."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[39] Zicheng Zhang, Ziheng Jia, Haoning Wu, Chunyi Li, Zijian Chen, Yingjie Zhou, Wei Sun, Xiaohong Liu, Xiongkuo Min, Weisi Lin, et al. Q-bench-video: Benchmark the video quality understanding of lmms. In Proceedings of the Computer Vision and Pattern Recognition Conference, pages 3229–3239, 2025."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[40] Gemini Robotics Team, Saminda Abeyruwan, Joshua Ainslie, Jean-Baptiste Alayrac, Montserrat Gonzalez Arenas, Travis Armstrong, Ashwin Balakrishna, Robert Baruch, Maria Bauza, Michiel Blokzijl, et al. Gemini robotics: Bringing ai into the physical world. arXiv preprint arXiv:2503.20020, 2025."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[41] Ziqi Huang, Yinan He, Jiashuo Yu, Fan Zhang, Nattapol Chanpaisit, Xiaojie Xu, Qianli Ma, Ziyue Dong, Dian Zheng, Hongbo Liu, and Kai Zo. Vbench leaderboard. https://huggingface.co/spaces/Vchitect/VBench_ Leaderboard, 2023. Accessed: 2025-08-05."
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                58,
+                47,
+                963,
+                126
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "7 Appendix"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                56,
+                455,
+                264,
+                481
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "7.1 Automated Metric Results"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                56,
+                499,
+                460,
+                520
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "To provide a quantitative counterpart to our human preference studies, we evaluated our generated videos using the comprehensive suite of automated metrics from the V-Bench++ benchmark [37]. The detailed results for each quality dimension, broken down by run configuration and Top-1 selection metric, are presented in Table 3. These automated scores show minimal variation across the different conditions, which we posit is due to a lack of metric sensitivity to the subtle qualitative differences that drive human preference."
+                    }
+                ]
+            },
+            "bbox": [
+                53,
+                533,
+                963,
+                649
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "8 Prompts for Question Generation"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                56,
+                682,
+                620,
+                708
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Below are the detailed prompts provided to the mLLM for generating the structured DSG and CMQ question graphs used in our framework."
+                    }
+                ]
+            },
+            "bbox": [
+                53,
+                724,
+                963,
+                764
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "8.1 Prompt for Davidsonian Scene Graph (DSG) Questions"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                53,
+                790,
+                821,
+                813
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Analyze the provided text prompt and optional start/end frame images . Based on this information, generate a hierarchical (tree-like) set of questions following the principles of Davidsonian Scene Graphs (DSG). Identify key scene components (e.g., agents, actions, patients, locations, attributes, manners). For each component, formulate a specific yes/no question where a \"yes\" answer indicates correct depiction."
+                    }
+                ]
+            },
+            "bbox": [
+                56,
+                836,
+                960,
+                959
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": ": AMANTYAGI, HEMANTHBOINPALLYET. AL."
+                    }
+                ]
+            },
+            "bbox": [
+                58,
+                16,
+                536,
+                32
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "15"
+                    }
+                ]
+            },
+            "bbox": [
+                933,
+                16,
+                960,
+                30
+            ]
+        }
+    ],
+    [
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/dbc55fc6a5f14d82625f35ae33276a15677beaf69839927ec5e4146ca2af725f.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 3: Automated video quality metrics calculated using V-Bench++ [37] with standard deviation. The scores show minimal variation across different Top-1 selection methods and optimization run counts (10 vs. 100). This suggests a potential lack of sensitivity in current automated metrics to the subtle qualitative differences that drive human preference. This observation is further corroborated by the official V-Bench++ leaderboard, where many topperforming models exhibit closely clustered scores [41]."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Run Configuration</td><td>Aesthetic Quality</td><td>Background Consistency</td><td>Dynamic Degree</td><td>Imaging Quality</td><td>Motion Smoothness</td><td>Subject Consistency</td></tr><tr><td colspan=\"7\">From 100 Optimization Runs</td></tr><tr><td>100 Runs - Artifact</td><td> $0 . 6 1 6 \\pm 0 . 0 8 0$ </td><td> $0 . 9 6 1 \\pm 0 . 0 2 8$ </td><td>42.9% True</td><td> $6 9 . 3 5 1 \\pm 8 . 4 6 0$ </td><td> $0 . 9 9 1 \\pm 0 . 0 1 1$ </td><td> $0 . 9 4 8 \\pm 0 . 0 6 4$ </td></tr><tr><td>100 Runs - Avg Score</td><td> $0 . 6 1 8 { \\pm } 0 . 0 7 8$ </td><td> $0 . 9 6 5 \\pm 0 . 0 2 2$ </td><td>25.5% True</td><td> $7 0 . 6 9 8 \\pm 6 . 9 3 9$ </td><td> $0 . 9 9 2 { \\scriptstyle \\pm 0 . 0 0 9 }$ </td><td> $0 . 9 6 3 \\pm 0 . 0 3 9$ </td></tr><tr><td>100 Runs - UVQ</td><td> $0 . 6 1 3 { \\scriptstyle \\pm 0 . 0 8 0 }$ </td><td> $0 . 9 6 5 \\pm 0 . 0 2 3$ </td><td>25.5% True</td><td> $7 0 . 4 6 3 \\pm 7 . 3 2 3$ </td><td> $0 . 9 9 2 { \\scriptstyle \\pm 0 . 0 0 9 }$ </td><td> $0 . 9 6 1 \\pm 0 . 0 4 3$ </td></tr><tr><td>100 Runs - VTA</td><td> $0 . 6 1 6 \\pm 0 . 0 7 9$ </td><td> $0 . 9 6 1 \\pm 0 . 0 2 2$ </td><td>44.9% True</td><td> $7 0 . 1 3 5 \\pm 7 . 9 4 3$ </td><td> $0 . 9 9 1 \\pm 0 . 0 0 8$ </td><td> $0 . 9 5 7 { \\scriptstyle \\pm 0 . 0 4 0 }$ </td></tr><tr><td colspan=\"7\">From 10 Optimization Runs</td></tr><tr><td>10 Runs - Artifact</td><td> $0 . 6 1 6 \\pm 0 . 0 8 0$ </td><td> $0 . 9 6 6 \\pm 0 . 0 2 4$ </td><td>34.3% True</td><td> $6 9 . 3 3 4 \\pm 8 . 0 1 5$ </td><td> $0 . 9 9 2 { \\scriptstyle \\pm 0 . 0 0 8 }$ </td><td> $0 . 9 6 1 \\pm 0 . 0 4 1$ </td></tr><tr><td>10 Runs - Avg Score</td><td> $0 . 6 1 8 { \\pm } 0 . 0 7 9$ </td><td> $0 . 9 6 5 \\pm 0 . 0 2 1$ </td><td>32.3% True</td><td> $7 0 . 3 5 0 \\pm 7 . 6 0 7$ </td><td> $0 . 9 9 2 { \\scriptstyle \\pm 0 . 0 1 1 }$ </td><td> $0 . 9 6 4 \\pm 0 . 0 3 9$ </td></tr><tr><td>10 Runs - UVQ</td><td> $0 . 6 1 7 { \\scriptstyle \\pm 0 . 0 7 9 }$ </td><td> $0 . 9 6 6 \\pm 0 . 0 2 1$ </td><td>30.3% True</td><td> $7 0 . 2 0 2 \\pm 7 . 6 1 8$ </td><td> $0 . 9 9 1 \\pm 0 . 0 1 1$ </td><td> $0 . 9 6 3 \\pm 0 . 0 3 9$ </td></tr><tr><td>10 Runs - VTA</td><td> $0 . 6 1 5 { \\pm } 0 . 0 8 0$ </td><td> $0 . 9 6 4 \\pm 0 . 0 2 1$ </td><td>35.4% True</td><td> $7 0 . 2 9 6 \\pm 7 . 4 0 3$ </td><td> $0 . 9 9 1 \\pm 0 . 0 0 7$ </td><td> $0 . 9 6 0 { \\scriptstyle \\pm 0 . 0 3 9 }$ </td></tr><tr><td colspan=\"7\">Baseline Runs</td></tr><tr><td>Initial Generation</td><td> $0 . 6 1 5 { \\pm } 0 . 0 8 1$ </td><td> $0 . 9 6 8 \\pm 0 . 0 2 5$ </td><td>23.0% True</td><td> $6 8 . 9 0 2 \\pm 8 . 8 7 6$ </td><td> $0 . 9 9 4 \\pm 0 . 0 0 4$ </td><td> $0 . 9 6 7 \\pm 0 . 0 4 2$ </td></tr><tr><td>Prompt Opt. Only</td><td> $0 . 6 1 5 { \\pm } 0 . 0 8 0$ </td><td> $0 . 9 6 8 \\pm 0 . 0 2 3$ </td><td>27.0% True</td><td> $6 8 . 8 9 5 \\pm 8 . 9 2 5$ </td><td> $0 . 9 9 4 \\pm 0 . 0 0 5$ </td><td> $0 . 9 6 7 \\pm 0 . 0 4 0$ </td></tr></table>",
+                "table_type": "complex_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                36,
+                158,
+                941,
+                397
+            ]
+        },
+        {
+            "type": "algorithm",
+            "content": {
+                "algorithm_caption": [],
+                "algorithm_content": [
+                    {
+                        "type": "text",
+                        "content": "Organize these components and their questions into a JSON object. The JSON structure should have a main key as \"scene_graph\", which is a list of root elements. Each element should have at least \"id\" (a unique identifier for the question node), \" element_type\" (e.g., \"agent\", \"action\", \"object\", \"location\", \" attribute\"), \"description\" (a brief description of the element), \"question\" (the yes/no question), and \"children\" (a list of sub -elements, which can be empty). Example of an element structure: { \"id\": \"agent_red_bird_1\", \"element_type\": \"agent\", \"description\": \"A red bird\", \"question\": \"Is there a red bird present?\", \"children\": [ { \"id\": \"action_bird_flying_1\", \"element_type\": \"action\", \"description\": \"The red bird is flying\", \"question\": \"Is the red bird flying?\", \"children\": [] } ] } Ensure the entire output is a single valid JSON object. Ensure that there are no more than 20 total questions. Initial Prompt: \"[User's Initial Prompt]\""
+                    }
+                ],
+                "algorithm_footnote": []
+            },
+            "bbox": [
+                31,
+                427,
+                936,
+                980
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "16"
+                    }
+                ]
+            },
+            "bbox": [
+                36,
+                16,
+                66,
+                30
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": ": AMAN TYAGI, HEMANTH BOINPALLY ET. AL."
+                    }
+                ]
+            },
+            "bbox": [
+                453,
+                16,
+                931,
+                32
+            ]
+        }
+    ],
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "8.2 Prompt for Common Mistake Questions (CMQ)"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                56,
+                45,
+                730,
+                68
+            ]
+        },
+        {
+            "type": "algorithm",
+            "content": {
+                "algorithm_caption": [],
+                "algorithm_content": [
+                    {
+                        "type": "text",
+                        "content": "Analyze the provided text prompt and optional start/end frame images . Based on this information, generate a hierarchical (tree-like) set of questions targeting potential common video generation mistakes that might occur when trying to generate a video for this prompt. Consider only the issues such as: - Unnatural Transitions - Anatomical Inconsistencies (missing/extra limbs/digits, distorted parts) - Environmental Inconsistencies (objects appearing/disappearing) - Illogical Changes within shots - Static Elements that should move - Extra characters and objects - Human characters speaking (they should never speak unless specified explicitly) - Inconsistent Detail/Texture Organize these components and their questions into a JSON object. The JSON structure should have a main key as \" common_mistakes_graph\", which is a list of root elements. Each element should have at least \"id\" (a unique identifier for the question node), \"element_type\" (e.g., \"mistake_category\", \" specific_mistake\"), \"description\" (a brief description of the mistake/category), \"question\" (the yes/no question where \"yes\" indicates no mistake), and \"children\" (a list of sub-elements, which can be empty). Example of an element structure: { \"id\": \"mistake_cat_transitions_1\", \"element_type\": \"mistake_category\", \"description\": \"Unnatural Transitions\", \"question\": \"Are all transitions between shots smooth and logical?\", \"children\": [ { \"id\": \"specific_mistake_jump_cut_1\", \"element_type\": \"specific_mistake\", \"description\": \"Potential jump cut between scene A and B \", \"question\": \"Is the transition from scene A to B free of jarring jump cuts?\", \"children\": [] } ] } Ensure the entire output is a single, complete, and valid JSON object. Make sure all brackets and braces are correctly matched"
+                    }
+                ],
+                "algorithm_footnote": []
+            },
+            "bbox": [
+                56,
+                90,
+                963,
+                983
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": ": AMANTYAGI, HEMANTHBOINPALLYET. AL."
+                    }
+                ]
+            },
+            "bbox": [
+                58,
+                16,
+                536,
+                32
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "17"
+                    }
+                ]
+            },
+            "bbox": [
+                933,
+                16,
+                960,
+                32
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "and closed. Ensure that there are no more than 20 questions in the entire tree. All questions should be framed as a yes or no question such that \"yes\" is the correct answer (i.e., the mistake is avoided) and a \"no\" answer indicates a common mistake might be present."
+                    }
+                ]
+            },
+            "bbox": [
+                80,
+                48,
+                936,
+                139
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Initial Prompt: \"[User's Initial Prompt]\""
+                    }
+                ]
+            },
+            "bbox": [
+                36,
+                155,
+                583,
+                175
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "18"
+                    }
+                ]
+            },
+            "bbox": [
+                39,
+                16,
+                66,
+                30
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": ": AMANTYAGI, HEMANTHBOINPALLYET. AL."
+                    }
+                ]
+            },
+            "bbox": [
+                453,
+                16,
+                933,
+                32
+            ]
+        }
+    ]
+]
