@@ -1,0 +1,572 @@
+# HandEdit: A Unified Benchmark for Egocentric Human-to-Robot Dexterous Hand Image Editing
+
+Zhenjie Yang<sup>2,3\*</sup> Xingyu Jiao<sup>1\*</sup> Guopeng Zhong<sup>3</sup> Shuzhe Yang<sup>3</sup> Shi Che<sup>3</sup> Chao Wu<sup>1</sup> Chenyu Jiang<sup>1</sup> Dongjie Zhang<sup>1</sup> Yideng Zhang<sup>3</sup> Zheng Zhang<sup>3</sup> Muyun Jiang<sup>5</sup> Haisheng Su<sup>3</sup> Shuang Jin<sup>2</sup> Donghang Zhang<sup>2</sup> Chao Yang<sup>6</sup> Li Chen<sup>4</sup> Hongyang Li<sup>4</sup> Zuxuan Wu<sup>1</sup> Yu-Gang Jiang<sup>1</sup> Xiaosong Jia<sup>1†</sup> Junchi Yan<sup>3†</sup>
+
+<sup>1</sup> Fudan University <sup>2</sup> Inspire Robots <sup>3</sup> Shanghai Jiao Tong University <sup>4</sup> The University of Hong Kong <sup>5</sup> Nanyang Technological University <sup>6</sup> Shanghai AI Laboratory Equal contribution <sup>†</sup> Corresponding authors Contact: yangzhenjie@sjtu.edu.cn, jiaxiaosong@fudan.edu.cn
+
+[ Project Page ] [ Full Code ] [ Dataset ]
+
+![](images/f903c6610b19bfa7c39a5d7a0ec6b27e82e0d36c932b07ebfbad1e8d190dfd64.jpg)  
+Figure 1. HandEdit is an embodiment-aware image-editing dataset and benchmark for editing egocentric images of human hand and arm manipulation into diverse dexterous robotic embodiments.
+
+## Abstract
+
+Robotic manipulation with dexterous hands is a cornerstone of Embodied AI, yet its progress is stifled by the high cost of collecting embodiment-aware teleoperation data. While abundant egocentric videos of human hands ofer a scalable alternative, the profound discrepancies in appearance, articulation, and camera viewpoints between human and robotic data raise significant challenges for co-training. Though existing general image-editing models demonstrate strong capabilities, they lack necessary embodiment-specific priors to fully bridge this gap. In this work, we present HandEdit, a unified large-scale embodiment-aware image-editing dataset and benchmark specifically designed to transform human hands and arms into various dexterous robotic embodiments within egocentric frames. HandEdit comprises over 200M editing instances derived from five diverse source datasets, covering 26 distinct URDFs, including 13 hand-only and 13 hand-arm configurations. Alongside the dataset, we establish a unified benchmark protocol with two tracks: Hand-only and Hand-Arm,
+
+supporting URDF-conditioned evaluation. We conduct extensive evaluations of 11 representative image-editing baselines using a multi-dimensional metric suite, including generic similarity metrics, VLM-based judgment, and embodiment-aware metrics. HandEdit serves as a critical resource at the intersection of image editing and robotics: it advances embodiment-aware editing models while enabling scalable dexterous robotic learning from abundant human video data, paving the way for more generalizable Embodied AI.
+
+## 1 Introduction
+
+Dexterous manipulation is a crucial capability in Embodied AI (EAI). Recent progress achieved in EAI has been driven by scaling up data from diverse sources, including large-scale robotic teleoperation datasets [1, 2, 3, 4, 5, 6, 7], UMI-style demonstrations [8, 9, 10, 11, 12, 13], and egocentric human videos [14, 15, 16, 17, 18, 19, 20, 21]. Among these, robotic teleoperation data ofer direct robot-executable demonstrations, but is expensive for large-scale collection and typically constrained by specific hardware platforms, lab environments, and task setups. UMI-style data collection improves scalability by using portable human-operated devices, yet it still requires dedicated equipment and embodiment-specific demonstrations. In contrast, egocentric human videos are naturally abundant, diverse, and scalable, capturing rich hand-object interactions across daily activities, objects, environments, and long-horizon tasks. As a result, they provide a promising route toward scaling visual experience for dexterous manipulation.
+
+However, directly leveraging egocentric human video for robotic policy learning remains an open challenge [22, 23, 24, 25], owing to the fundamental embodiment gap between human hands and dexterous robotic hands. Human hands and robotic dexterous hands difer substantially in appearance, geometry, articulation, kinematic constraints, and interaction patterns. This gap becomes even larger for hand-arm systems, where the visible wrist and arm must also be consistent with the target robotic morphology and camera viewpoint.
+
+Consequently, human egocentric images cannot be converted into robot data by simple style transfer or generic appearance editing. For embodied learning, the edited image must preserve the scene, object state, task semantics, and hand-object contact. At the same time, the replaced hand or arm should form a physically plausible robotic embodiment that respects the geometry and articulation specified by the target Unified Robot Description Format (URDF), while remaining coherent with the original manipulation context.
+
+Existing approaches [13, 26, 27, 28, 29, 30, 31, 32, 33] have explored “robotizing” human videos by inserting rendered robot embodiments into human scenes. While they demonstrate the value of bridging the human-robot visual embodiment gap for robotic learning, they are largely tied to parallel grippers, fixed robot platforms, or embodiment-specific pipelines. More fundamentally, human-to-robot dexterous hand editing has not been systematically studied as an image editing problem: there is still no dedicated large-scale dataset, unified evaluation protocol, or comprehensive benchmark for assessing URDF-conditioned editing quality across diverse dexterous hand and hand-arm embodiments.
+
+To fill this gap, we introduce HandEdit, a dataset and benchmark for egocentric human-to-robot dexterous hand image editing. HandEdit is built from five public hand-object datasets: EgoDex [15], ARCTIC [34], OakInk2 [35], HOI4D [16], and HO-Cap [36]. HandEdit currently contains over 200M image-level editing instances derived from 300K clips, covering more than 600 scenes and 1.1K objects. It spans 26 target URDF embodiments, including 13 hand-only and 13 hand-arm configurations, as detailed in Appendix C.4. HandEdit further establishes a unified benchmark with two tracks, Hand-only and Hand-Arm, enabling URDF-conditioned editing quality evaluation under diferent settings. To support URDF-conditioned evaluation, we propose a comprehensive metric suite spanning generic similarity, VLM-based judgment, and embodiment-aware metrics, which is used to comprehensively benchmark 11 representative commercial and open-source image editors.
+
+In sum, our main contributions are as follows:
+
+• We introduce HandEdit, the first large-scale embodiment-aware image-editing dataset tailored for egocentric human-to-robot dexterous manipulation transfer. Built upon five public egocentric manipulation datasets,
+
+Table 1. Comparison with Representative Editing Benchmarks and Datasets. HandEdit is the only benchmark that supports embodiment-conditional image-editing. “Dexterous Hand“ indicates whether the benchmark explicitly involves hand-centric or hand-object editing. “#Embod.” denotes the number of supported URDF-specified robotic embodiments for editing.
+<table><tr><td>Benchmark</td><td>Venue</td><td>Ego-centric</td><td>Dexterous Hand</td><td>URDF-cond</td><td>#Embod.</td><td>Scale</td><td>Metrics</td></tr><tr><td>EditBench [37]</td><td>CVPR&#x27;23</td><td>x</td><td>x</td><td>x</td><td></td><td>240</td><td>CLIP / Human</td></tr><tr><td>InstructPix2Pix [38]</td><td>CVPR&#x27;23</td><td>x</td><td>x</td><td>x</td><td></td><td>450K</td><td>CLIP / Human</td></tr><tr><td>MagicBrush [39]</td><td>NeurIPS&#x27;23</td><td>x</td><td>x</td><td>x</td><td></td><td>10K</td><td>L1/L2 / CLIP / DINO / Human</td></tr><tr><td>OmniEdit [40]</td><td>ICLR&#x27;24</td><td>x</td><td>x</td><td>x</td><td></td><td>1.2M</td><td>VIEScore</td></tr><tr><td>Emu Edit [41]</td><td>CVPR&#x27;24</td><td>x</td><td>x</td><td>x</td><td></td><td>3.1K</td><td>CLIP / L1 / DINO / Human</td></tr><tr><td>UltraEdit [42]</td><td>NeurIPS&#x27;24</td><td>x</td><td>x</td><td>x</td><td></td><td>4M</td><td>L1 / CLIP / DINO</td></tr><tr><td>SEED-Data-Edit [43]</td><td>arXiv&#x27;24</td><td>x</td><td>x</td><td>x</td><td></td><td>3.7M</td><td>MLLM / Qual.</td></tr><tr><td>HQ-Edit [44]</td><td>ICLR’25</td><td>x</td><td>x</td><td>x</td><td></td><td>200K</td><td>Align. / Coherence</td></tr><tr><td>AnyEdit [45]</td><td>CVPR&#x27;25</td><td>x</td><td>x</td><td>x</td><td></td><td>2.5M</td><td>CLIP / DINO / VLM</td></tr><tr><td>VE-Bench [46]</td><td>AAAI&#x27;25</td><td>x</td><td>x</td><td>x</td><td></td><td>1.17K</td><td>MOS / QA</td></tr><tr><td>MotionEdit [47]</td><td>CVPR&#x27;26</td><td>x</td><td>x</td><td>x</td><td></td><td>10K</td><td>MLLM / MAS / Win Rate</td></tr><tr><td>EgoEdit [48]</td><td>CVPR&#x27;26</td><td>√</td><td>X*</td><td>x</td><td></td><td>99.7K</td><td>VLM / PS / TA / TC</td></tr><tr><td>HandEdit</td><td></td><td>√</td><td>√</td><td>√</td><td>26</td><td>200M</td><td>Sim. / VLM / Embodiment</td></tr></table>
+
+Note. <sup>∗</sup> EgoEdit targets general egocentric video editing with hand preservation, rather than URDF-conditioned human-to-robot hand/arm mapping for embodiments
+
+HandEdit covers 26 target URDF embodiments, including 13 hand-only and 13 hand-arm configurations, and yields over 200M image-level editing instances.
+
+• For the first time, we establish the unified benchmark for embodiment-aware dexterous hand editing, with two tracks: Hand-only and Hand-Arm. The benchmark supports URDF-conditioned evaluation and enables systematic comparison across diverse robotic embodiments.
+
+• We design a comprehensive evaluation suite that combines generic visual similarity metrics, VLM-based judgment, and embodiment-aware metrics, providing a more faithful assessment of both visual quality and robotic embodiment consistency.
+
+• We benchmark 11 representative commercial and open-source image editors under their original conditioning interfaces, together with human evaluation for metric validation, revealing the limitations of existing general purpose editors and highlighting HandEdit as a foundational dataset and benchmark for developing future embodiment-aware editing models.
+
+## 2 Related Work
+
+Large-Scale Data for Embodied Manipulation. Large-scale data has become a key driver of embodied manipulation. Robot teleoperation datasets provide direct robot-executable demonstrations across diverse tasks and embodiments [1, 2, 3, 4, 5, 6, 7], but their collection remains costly and often tied to specific robot platforms, sensors, and environments. UMI-style systems improve scalability by enabling portable, in-the-wild demonstration collection and policy deployment across platforms [8, 9, 10, 11, 12, 13]. However, these large-scale robot data primarily consist of gripper data; they still require dedicated interfaces or hardware adaptations, especially for dexterous hands.
+
+Egocentric Human-Object Interaction Datasets. Egocentric human videos ofer a more scalable source of manipulation experience, capturing rich hand-object interactions in natural environments [14, 15, 16, 17, 18, 19, 20, 21, 34, 35, 36, 49]. Despite their scale and diversity, such human-centric data cannot be used directly as robot-centric visual data due to the visual, kinematic, and embodiment gaps between humans and robots.
+
+Learning Robotic Manipulation from Human Videos. Human videos provide scalable behavioral priors for robot manipulation [25, 50, 51, 52]. Existing methods use such data for dexterous grasping, motion retargeting, policy learning, and robot-centric video generation. DexVIP [53] learns dexterous grasping from human-object interaction videos with human hand-pose priors, while DexArt [54], DexH2R [55], and related works transfer human hand motions to dexterous robots through retargeting, simulation, or residual policy learning. Recent systems such as UniDex [56] and MiVLA [57] further scale human-video-based robot learning through foundation policies and human-robot mutual imitation. In parallel, H2R [26], Phantom [28], Masquerade [29], H2R-Grounder [31], MimicDreamer [33], Mitty [32], Human2Robot [58], and DWM [59] convert human videos into robot-centric observations via rendering, inpainting, compositing, or video translation. While these works validate human videos as useful supervision for robot learning, they mainly target motion transfer, policy learning, video generation, or embodiment-specific pipelines. In contrast, HandEdit provides a dedicated benchmark for URDF-conditioned egocentric image editing across diverse dexterous hand and hand-arm embodiments.
+
+![](images/bcf8c35345178a77b17c5025920b205fa3567bfc14cd275b2aac16669aa5555e.jpg)  
+Figure 2. Data Curation Pipeline. For the egocentric hand-object clips, HandEdit removes the human hand, recovers the occluded background, retargets the source interaction to a target URDF, and composites the rendered robot embodiment back into the scene. The composite is then harmonized to produce the final pseudo-GT target.
+
+Image and Video Editing Methods and Benchmarks. Image and video editing benchmarks have progressed from general instruction-following to increasingly specialized evaluation settings. Early editing methods such as SDEdit [60], Prompt-to-Prompt [61], DifEdit [62], and ControlNet [63] laid the foundation for modern instruction- and condition-guided editing. As shown in Table 1, subsequent benchmarks, including InstructPix2Pix [38], MagicBrush [39], Emu Edit [41], UltraEdit [42], OmniEdit [40], HQ-Edit [44], and AnyEdit [45], provide paired data and evaluation protocols for generic image editing, typically focusing on instruction following, visual fidelity, semantic alignment, and perceptual similarity. More recent benchmarks move toward specialized domains: MotionEdit [47] evaluates motion-centric image editing, while EgoEdit [48] targets egocentric video editing under hand occlusions, hand-object interactions, and large egomotion.
+
+As summarized in Tab. 1, no prior benchmark jointly supports egocentric input, dexterous robotic hands, URDF-conditioned editing, and multi-embodiment evaluation. HandEdit fills this gap by introducing a dedicated benchmark for URDF-conditioned human-to-robot hand/arm mapping, with metrics that assess not only generic image quality but also embodiment fidelity and manipulation-context preservation.
+
+## 3 HandEdit
+
+HandEdit consists of five components: the data curation pipeline for generating kinematically grounded pseudo-GT targets, a multi-source dataset for egocentric human-to-robot dexterous hand image editing, a benchmark protocol with two tracks (Hand-only and Hand-Arm), comprehensive evaluation metrics, and harmonization post-processing for the final composites. We describe these components in the following section.
+
+## 3.1 Data Curation Pipeline
+
+Starting from selected egocentric hand-object clips, we construct pseudo-GT targets through a staged preprocessing pipeline. First, we segment the human hand or hand-arm region using of-the-shelf segmentation models, with SAM3 [64] serving as our default implementation, and remove the segmented foreground. We then restore the occluded background using video inpainting models, for which we use ProPainter [65] by default due to its strong appearance and temporal consistency on egocentric clips compared with single-image inpainting methods.
+
+For dexterous hands, we convert the MANO [66] or 3D hand pose into robot joint states via embodimentspecific retargeting. Following classical optimization- and geometry-based retargeting [67], which supports both position- and vector-based modes, we first obtain a coarse alignment with a hybrid mode, accounting for embodiment diferences in kinematic trees, link lengths, joint limits, and contact geometry. We then refine the target hand configuration through position-based retargeting under embodiment-specific kinematic constraints to improve local structural consistency. This preserves the local interaction layout around the manipulated object while allowing each robot hand to realize the pose according to its own kinematics.
+
+For hand-arm embodiments, we extend the retargeted hand pose to the supporting arm. Because the physical robot base is not observable in egocentric human videos, we define a camera-relative virtual base for each source sequence and target embodiment and keep it fixed throughout the sequence. The local search is initialized from the shoulder midpoint, shoulder direction, and estimated shoulder width when shoulder keypoints are available; otherwise, it uses the wrist-trajectory center and the nominal reach of the target arm. We then perform an embodiment-adaptive local search over horizontal translation and yaw, where translational ofsets are normalized by the nominal reach of the target arm. Base height, roll, and pitch are fixed according to the assumed upright mounting configuration. The human wrist trajectory is mapped to the target wrist/TCP through a fixed, embodiment-specific SE(3) transform. Candidate bases are evaluated over the sequence using IK feasibility, joint limits, collision checks, and trajectory quality. A human operator selects one of the top-three valid sequence-level solutions, and the sequence is excluded if none is plausible. Appendix B provides the search range, ranking criteria, and acceptance procedure.
+
+Following kinematic alignment, we render the target URDF under the matched egocentric camera view and composite the rendered foreground into the recovered scene. This initial composite is then passed through the harmonization post-processing described in Section 3.5. The resulting harmonized composite constitutes the final pseudo-GT reference.
+
+Automatic checks and human screening are applied to intermediate outputs from segmentation, background restoration, retargeting, IK and virtual-base placement, rendering/compositing, and harmonization. Samples that fail the stage-specific criteria are excluded, and the retained harmonized outputs constitute the pseudo-GT reference set used for similarity-based evaluation. Appendix B provides the detailed checks and rejection criteria.
+
+## 3.2 HandEdit Dataset
+
+HandEdit dataset is built from the egocentric portions of five public hand-object datasets: EgoDex [15], ARCTIC [34], OakInk2 [35], HOI4D [16], and HO-Cap [36]. As shown in Table 2 and Appendix A.2, by combining these sources with cross-embodiment retargeting, rendering, and manual quality control, the current release contains over 200M image-level editing instances derived from 300K+ clips. It spans 600+ scenes, 400+ tasks, and 1,100+ objects.
+
+Beyond benchmark evaluation, HandEdit provides paired human-source and robot-embodied images for training human-to-robot editing models. These models can directly convert human-hand manipulation frames into robot-centric observations, providing scalable data for policy pre-training and reducing the need for costly real-robot or teleoperated data collection. Prior work has shown that robot-centric data generated from human videos can support policy pre-training and co-training for real-robot manipulation [13, 26, 27, 28, 29, 31, 32].
+
+Table 2. Overview of the Source Datasets in HandEdit.
+<table><tr><td rowspan="2">Dataset</td><td colspan="3">Data Statistics</td><td colspan="3">Content Diversity</td></tr><tr><td>Frames</td><td>Clips</td><td>Resolution</td><td>Scenes</td><td>Objects</td><td>Tasks</td></tr><tr><td>EgoDex [15]</td><td>90M</td><td>338K</td><td>1080p</td><td>Tabletop</td><td>500 Household Objects</td><td>194 Tasks</td></tr><tr><td>ARCTIC [34]</td><td>2.1M</td><td>339</td><td>2800 × 2000</td><td>MoCap Studio</td><td>11 Articulated Objects</td><td>Tool-use / Grasp</td></tr><tr><td>OakInk2 [35]</td><td>4.01M</td><td>627</td><td>848× 480</td><td>Tabletop</td><td>75 Objects</td><td>150 Tasks</td></tr><tr><td>HOI4D [16]</td><td>2.4M</td><td>4K</td><td>1280 ×800</td><td>Rooms</td><td>800 Inst. / 16 Cats.</td><td>54 Tasks</td></tr><tr><td>HO-Cap [36]</td><td>656K</td><td>64</td><td>multi-res.</td><td>Tabletop</td><td>64 Daily Objects</td><td>Pick-place / Handover / Tool-use</td></tr><tr><td>HandEdit</td><td>200M</td><td>300K+</td><td>multi-res.</td><td>600+ Scenes</td><td>1.1K+ Objects</td><td>400+ Tasks</td></tr></table>
+
+## 3.3 HandEdit Benchmark
+
+HandEdit defines two human-to-robot dexterous hand editing tracks: Hand-only and Hand-Arm. The Hand-only track edits the local hand region, replacing the human hand with a dexterous robotic hand while preserving the hand-object interaction. The Hand-Arm track additionally edits the forearm or full arm, making the task more challenging because it requires larger-region background preservation, plausible arm kinematics, and consistent hand-object-scene composition.
+
+To instantiate these two tracks, we construct a diverse URDF collection with 13 standalone dexteroushand URDFs and 13 hand-arm URDFs, covering representative hand families such as Ability, Allegro, DexHand(021), Inspire(RH56DFX and RH5DG2), Leap, OrcaHand, Revo2, Schunk SVH, Shadow Hand, Sharpa, Wuji, and RoHand, together with arm platforms including Jaka, KUKA, Panda, RM(65, 75), UR5, and xArm. Since many publicly available URDFs lack consistent material and color specifications, we standardize their visual assets by adding unified materials and colors, ensuring visually consistent rendering across diferent embodiments. The full URDF list is provided in Appendix A.1. This diversity enables evaluation across substantially diferent hand morphologies, wrist structures, and arm geometries within a unified image-editing setting.
+
+## 3.4 Evaluation Metrics
+
+To evaluate both visual fidelity and embodied identity correctness, HandEdit introduces a multi-dimensional metric suite, including Generic Similarity Metrics, VLM-based Judgment, and Embodiment-Aware Metrics. As illustrated in Figure 3, URDF-conditioned hand editing may sufer from diverse failure modes, such as residual human-hand artifacts, embodiment mismatch, incorrect viewpoint, interaction failure, and background inconsistency. Generic Similarity Metrics measure low-level and perceptual similarity between the edited image and the pseudo-GT target across the full image, edited ROI, and background, capturing overall visual fidelity and scene preservation quality. VLM-based Judgment and Embodiment-Aware Metrics further assess embodiment-specific correctness, including whether the human hand is properly removed, whether the generated robot hand matches the target robot, and whether the original interaction is consistently preserved. While VLM-based Judgment evaluates these aspects at the semantic level, Embodiment-Aware Metrics assess them at the geometric level by focusing on structural alignment, viewpoint consistency, and hand-object interaction preservation.
+
+Generic Similarity Metrics. Following prior image editing benchmarks [45, 47, 48], we compute generic similarity metrics over three regions: the full image, the edited ROI, and the background.
+
+$$
+M _ { \mathrm { r e g i o n } } = \{ \mathrm { P S N R , S S I M , L P I P S , F I D } \} .\tag{1}
+$$
+
+PSNR [68] measures pixel-level reconstruction fidelity, SSIM [69] evaluates structural similarity, LPIPS [70] measures perceptual similarity using deep features, and FID [71] compares the distributional realism of generated images against reference images. When computed outside the edited ROI �, these metrics also quantify background consistency, i.e., how well the unchanged scene content is preserved. However, these metrics mainly capture low-level fidelity, perceptual similarity, or distributional realism, and do not directly determine whether the edited result matches the target robot embodiment correctly or whether the original interaction has been preserved. Therefore, we introduce VLM-based judgment and embodiment-aware metrics to support comprehensive evaluation.
+
+![](images/6dc2c51ee53e69a4dc9adbf68bfb0b23e8262b37f28650f7716f0236eddf1ce9.jpg)  
+Figure 3. Common Failures of Existing Models in URDF-conditioned Hand. Existing image editing models struggle to faithfully replace human hands with the target URDF-specified robot hand while preserving the original scene and interaction. Failures include residual human-hand artifacts, embodiment mismatch, interaction failure, incorrect viewpoint, and background inconsistency.
+
+VLM-based Judgment. We adopt a GPT-4o [72] judgment protocol following recent MLLM-based evaluation frameworks [73, 74] for image synthesis and editing. In particular, as shown in Figure 4, we decompose semantic-level evaluation into Semantic Consistency (SC) and Perceptual Quality (PQ). SC measures whether the edited result satisfies the requested robot embodiment and preserves the intended task conditions, whereas PQ evaluates whether the edited image appears visually natural and locally coherent. The final VLM score is defined as
+
+$$
+S _ { \mathrm { v l m } } = { \sqrt { S C \cdot P Q } } .\tag{2}
+$$
+
+Here both �� and �� are normalized to [0, 1]. This score serves as a semantic-level complement to generic similarity metrics and embodied metrics. The standardized judgment prompts are provided in Appendix C.
+
+Embodiment-Aware Metrics. We introduce embodiment-aware metrics, assessing three aspects: Humanhand Removal, Target-robot Fidelity, and Interaction consistency. We denote the source image as �, the pseudo-GT target as �, and the edited output as �ˆ, and define the ROI mask $M = M _ { h } \cup M _ { r }$ , where $M _ { h }$ is the source human hand or hand-arm ROI and $M _ { r }$ is the edited robot ROI.
+
+• Human-hand Removal. We penalize residual human-hand artifacts within the edited region, such as exposed skin or incomplete finger removal. For this metric, we use the ROI mask �. Let $N _ { \mathrm { s k i n } } ( \hat { y } ; M )$ denote the number of skin-like pixels detected within �, and let �(�) be the number of pixels in �:
+
+$$
+S _ { \mathrm { r e m } } = 1 - \frac { N _ { \mathrm { s k i n } } ( \hat { y } ; M ) } { N ( M ) } .\tag{3}
+$$
+
+• Target-robot Fidelity. We evaluate the consistency between the edited robot hand and the target embodiment. Target-robot Fidelity is decomposed into two complementary components: structural fidelity, which measures geometric consistency, and ID fidelity, which assesses whether the generated robot hand matches the target robot embodiment.
+
+For structural fidelity, we compare the edited ROI with the pseudo-GT target using a frozen DINOv2 encoder [75]. Let $\phi _ { \mathrm { s t r } } ( \cdot )$ be the DINOv2 image encoder. The structural score is defined as
+
+$$
+S _ { \mathrm { s t r u c t } } = { \frac { 1 } { 2 } } \left( 1 + \cos { ( \phi _ { \mathrm { s t r } } ( \hat { y } \odot M ) , \phi _ { \mathrm { s t r } } ( y \odot M ) ) } \right) .\tag{4}
+$$
+
+![](images/2cd01ca28c62f1157cfc984afc96f278a2321177edf28fd80e7c2643f3eae4b9.jpg)  
+Figure 4. VLM-based Judgment. Given source image, target URDF render, text instruction, and edited result, the VLM evaluates the edit from two complementary perspectives: Semantic Consistency (SC), measuring embodiment correctness, human-hand removal, interaction preservation, and scene consistency; and Perceptual Quality (PQ), which assesses identity naturalness, artifact absence, and local coherence. The final VLM score is computed by the normalized SC and PQ scores.
+
+For identity fidelity, we compare the edited robot region with the URDF render bank of the requested embodiment, provided in Appendix C.4. Denote $\{ ( I _ { \nu } ^ { \mathrm { r e f } } , M _ { \nu } ^ { \mathrm { r e f } } ) \} _ { \nu = 1 } ^ { V }$ as the rendered reference views of the requested embodiment, where $I _ { \nu } ^ { \mathrm { r e f } }$ is the �-th rendered image and $M _ { \nu } ^ { \mathrm { r e f } }$ is its robot-hand mask. We encode the edited robot ROI and the reference views with a frozen CLIP encoder [76], and define the URDF-reference consistency score by the maximum similarity over all rendered views:
+
+$$
+S _ { \mathrm { r e f } } = \operatorname* { m a x } _ { \nu } \frac { 1 } { 2 } \left( 1 + \cos \left( \phi _ { \mathrm { c l i p } } ( \hat { y } \odot M _ { r } ) , \phi _ { \mathrm { c l i p } } ( I _ { \nu } ^ { \mathrm { r e f } } \odot M _ { \nu } ^ { \mathrm { r e f } } ) \right) \right) .\tag{5}
+$$
+
+Unlike the structural term, $S _ { \mathrm { r e f } }$ is not computed against the pseudo-GT image. It measures whether the edited region is closest to the requested robot embodiment. CLIP captures the overall robot identity but is less sensitive to local color assignments, such as dark fingertips, white shells, or colored joints. We therefore compare the edited robot ROI with the pseudo-GT target in CIELAB color space. Let Δ� be the average pixel-wise CIELAB distance over the overlapping foreground mask region $M _ { r }$ .We define
+
+$$
+S _ { \mathrm { L a b } } = \exp ( - \Delta E / \tau _ { \mathrm { L a b } } ) ,\tag{6}
+$$
+
+$$
+S _ { \mathrm { I D } } = \lambda S _ { \mathrm { r e f } } + ( 1 - \lambda ) S _ { \mathrm { L a b } } .\tag{7}
+$$
+
+We use � = 0.5 to balance URDF-reference consistency and local color consistency, and set $\tau _ { \mathrm { L a b } } = 2 5$ in all experiments.
+
+• Interaction consistency. Since the hand region is intentionally replaced by a robot embodiment, we do not measure interaction consistency inside the edited hand itself. Instead, we evaluate whether the manipulated object and its nearby contact neighborhood are preserved. We compute LPIPS on the object-contact region
+
+$M _ { O }$ , defined by dilating the object mask around the contact area:
+
+$$
+{ \cal S } _ { \mathrm { i n t } } = 1 - \mathrm { L P I P S } ( x \odot M _ { O } , \hat { y } \odot M _ { O } ) .\tag{8}
+$$
+
+A higher score indicates better preservation of object appearance and local interaction context.
+
+## 3.5 Harmonization Post-processing
+
+The rendering-and-compositing stage produces an initial pseudo-GT image by placing the rendered robot foreground into the restored scene. Because the foreground and background are processed separately, the initial composite may contain mismatches in color, illumination, contrast, texture, or boundary appearance, making the inserted robot look visually detached from its surroundings. We therefore append a lightweight image-harmonization module to the end of the data curation pipeline.
+
+We adopt Harmonizer [77] (∼20 MB) and train it on 10,000 natural egocentric hand images using a self-supervised procedure. Following the standard image-harmonization paradigm, we apply appearance augmentations to the masked hand or hand-arm region to synthesize an inharmonious input and use the original image as the reconstruction target. The augmentations cover lighting, color, contrast, and boundary appearance. At inference time, the rendered robot mask localizes refinement to the robot foreground and its boundary. The module adjusts the appearance of the composite without changing the robot joint configuration, wrist pose, object state, or interaction geometry. The harmonized outputs are used as the pseudo-GT references for all subsequent experiments.
+
+## 4 Experiments
+
+## 4.1 Experimental Setup
+
+We construct the oficial HandEdit test set with two evaluation tracks: Hand-only and Hand-Arm. Each track contains 1K images paired with 13 corresponding target embodiments. The harmonized outputs of the complete data curation pipeline serve as the pseudo-GT references for all reported evaluations. All results are reported at the image level using the evaluation metrics introduced in Section 3.4.
+
+We benchmark 11 representative commercial and open-source image editors. The model details refer to Appendix D. To ensure comparability, prompt templates are fixed within each benchmark track, and individual models are evaluated under conditioning interfaces they natively support. Commercial API-based models are evaluated within the same evaluation period using each platform’s default inference configuration to reduce the efect of API-side model updates. Open-source models are evaluated using oficial checkpoints and standardized inference settings. The standardized instruction templates used for benchmark evaluation are provided in Appendix E.
+
+## 4.2 Benchmark Results and In-depth Analysis
+
+Tables 3 and 4 report results on the Hand-only track, while Tables 5 and 6 report results on the Hand-Arm track. We also conduct a blinded human evaluation on the test set, with details provided in Appendix F. We summarize the key observations below.
+
+GPT-Image-2 provides the strongest overall baseline. GPT-Image-2 achieves consistently strong performance across both generic similarity metrics and embodiment-aware metrics. In particular, it obtains the best LPIPS(ROI) and FID(ROI) scores, suggesting better local editing quality in the manipulated region. It also achieves the highest structural fidelity and interaction scores, indicating stronger capability in matching the target robot embodiment and preserving hand-object interactions.
+
+VLM-based judgment is useful but not suficient. Although GPT-Image-1.5 obtains the highest VLM score, it does not achieve the best performance on structural fidelity or interaction preservation. Conversely, GPT-Image-2 performs better on these embodiment-aware metrics. This discrepancy suggests that VLM-based judgment mainly captures high-level semantic consistency and perceptual quality, while fine-grained robot morphology and contact-level interaction are better reflected by embodiment-aware metrics.
+
+Table 3. Hand-only Generic Similarity. PSNR/SSIM/LPIPS are reported on full images, background regions, and ROI crops. FID is reported on full images and ROI crops. Best and second-best model scores are bolded and underlined, respectively.
+<table><tr><td rowspan="2">Model</td><td colspan="3">PSNR↑</td><td colspan="3">SSIM↑</td><td colspan="3">LPIPS↓</td><td colspan="2">FID↓</td></tr><tr><td>Full</td><td>BG</td><td>ROI</td><td>Full</td><td>BG</td><td>ROI</td><td>Full</td><td>BG</td><td>ROI</td><td>Full</td><td>ROI</td></tr><tr><td>GPT-Image-2 [78]</td><td>19.85</td><td>22.82</td><td>12.00</td><td>0.781</td><td>0.828</td><td>0.584</td><td>0.224</td><td>0.150</td><td>0.482</td><td>58.83</td><td>99.71</td></tr><tr><td>Nano-Banana-2 [79]</td><td>18.92</td><td>21.92</td><td>11.12</td><td>0.814</td><td>0.865</td><td>0.594</td><td>0.228</td><td>0.152</td><td>0.501</td><td>74.77</td><td>103.83</td></tr><tr><td>GPT-Image-1.5 [80]</td><td>15.68</td><td>16.26</td><td>12.13</td><td>0.678</td><td>0.722</td><td>0.542</td><td>0.466</td><td>0.393</td><td>0.611</td><td>89.60</td><td>123.14</td></tr><tr><td>Seedream-4.5 [81]</td><td>18.31</td><td>20.98</td><td>11.67</td><td>0.792</td><td>0.839</td><td>0.595</td><td>0.296</td><td>0.222</td><td>0.537</td><td>79.15</td><td>117.90</td></tr><tr><td>Flux-2-Pro [82]</td><td>13.13</td><td>13.37</td><td>11.41</td><td>0.606</td><td>0.655</td><td>0.480</td><td>0.590</td><td>0.519</td><td>0.683</td><td>99.90</td><td>108.36</td></tr><tr><td>Hunyuan-Image-3.0 [83]</td><td>13.37</td><td>13.90</td><td>10.81</td><td>0.631</td><td>0.678</td><td>0.513</td><td>0.565</td><td>0.490</td><td>0.667</td><td>102.19</td><td>113.40</td></tr><tr><td>Nano-Banana [84]</td><td>13.17</td><td>13.38</td><td>11.79</td><td>0.627</td><td>0.670</td><td>0.527</td><td>0.624</td><td>0.548</td><td>0.713</td><td>99.57</td><td>117.97</td></tr><tr><td>Qwen-Image-Edit-2511 [85]</td><td>12.14</td><td>12.25</td><td>11.43</td><td>0.593</td><td>0.638</td><td>0.468</td><td>0.659</td><td>0.588</td><td>0.737</td><td>129.99</td><td>142.18</td></tr><tr><td>Flux-Kontext-Max [86]</td><td>12.08</td><td>12.23</td><td>11.28</td><td>0.594</td><td>0.639</td><td>0.488</td><td>0.639</td><td>0.565</td><td>0.720</td><td>127.89</td><td>136.10</td></tr><tr><td>Omnigen2 [87]</td><td>12.60</td><td>12.75</td><td>11.70</td><td>0.622</td><td>0.665</td><td>0.512</td><td>0.632</td><td>0.555</td><td>0.752</td><td>98.90</td><td>127.39</td></tr><tr><td>FireRed-Image-Edit-1.1 [88]</td><td>12.43</td><td>12.54</td><td>11.84</td><td>0.605</td><td>0.647</td><td>0.505</td><td>0.650</td><td>0.576</td><td>0.728</td><td>149.12</td><td>144.16</td></tr></table>
+
+Table 4. Hand-only Embodiment-Aware Metrics and VLM Judgment. Best and second-best model scores are bolded and underlined, respectively.
+<table><tr><td rowspan="2">Model</td><td colspan="4">Embodied Task Metrics↑</td><td colspan="4">VLM Judge↑</td></tr><tr><td>Removal</td><td>Struct Fidelity</td><td>ID Fidelity</td><td>Interaction</td><td>SC</td><td>PQ</td><td></td><td>VLM</td></tr><tr><td>Gpt-Image-2 [78]</td><td>0.953</td><td>0.780</td><td>0.852</td><td>0.703</td><td>0.785</td><td>0.590</td><td></td><td>0.663</td></tr><tr><td>Nano-Banana-2 [79]</td><td>0.925</td><td>0.746</td><td>0.792</td><td>0.617</td><td>0.762</td><td>0.669</td><td></td><td>0.692</td></tr><tr><td>Gpt-Image-1.5 [80]</td><td>0.955</td><td>0.730</td><td>0.915</td><td>0.435</td><td>0.862</td><td></td><td>0.698</td><td>0.765</td></tr><tr><td>Seedream-4.5 [81]</td><td>0.931</td><td>0.723</td><td>0.758</td><td>0.608</td><td></td><td>0.568</td><td>0.662</td><td>0.570</td></tr><tr><td>Flux-2-Pro [82]</td><td>0.939</td><td>0.723</td><td>0.759</td><td>0.375</td><td></td><td>0.729</td><td>0.654</td><td>0.672</td></tr><tr><td>Hunyuan-Image-3.0 [83]</td><td>0.933</td><td>0.716</td><td>0.851</td><td>0.389</td><td></td><td>0.762</td><td>0.602</td><td>0.662</td></tr><tr><td>Nano-Banana [84]</td><td>0.923</td><td>0.693</td><td>0.753</td><td>0.329</td><td></td><td>0.463</td><td>0.521</td><td>0.432</td></tr><tr><td>Qwen-Image-Edit [85]</td><td>0.954</td><td>0.670</td><td>0.619</td><td>0.306</td><td></td><td>0.435</td><td>0.694</td><td>0.472</td></tr><tr><td>Flux-Kontext-Max [86]</td><td>0.952</td><td>0.660</td><td>0.746</td><td>0.274</td><td></td><td>0.357</td><td>0.598</td><td>0.363</td></tr><tr><td>Omnigen2 [87]</td><td>0.904</td><td>0.678</td><td>0.529</td><td>0.266</td><td></td><td>0.538</td><td>0.512</td><td>0.471</td></tr><tr><td>FireRed-Image-Edit-1.1 [88]</td><td>0.952</td><td>0.630</td><td>0.890</td><td>0.293</td><td></td><td>0.228</td><td>0.754</td><td>0.292</td></tr><tr><td>Pseudo-GT</td><td>0.964</td><td>1.000</td><td>0.964</td><td>0.821</td><td></td><td>0.776</td><td>0.492</td><td>0.623</td></tr></table>
+
+Perceptual quality alone does not guarantee editing task success. FireRed-Image-Edit-1.1 achieves the highest PQ score, indicating that its outputs are often visually plausible. However, its low SC and embodiment-aware scores show that visually natural edits may still fail to satisfy the target embodiment or preserve the intended interaction. This highlights the limitation of evaluating embodied image editing solely through perceptual realism.
+
+The main challenge lies in embodiment-aware editing. Most models obtain relatively high human-hand removal scores, suggesting that removing the source human hand is comparatively easier. In contrast, structural fidelity, ID fidelity, and interaction preservation show larger performance gaps across models. This indicates that the benchmark primarily evaluates whether models can generate the correct robot embodiment and maintain physically plausible interaction with objects.
+
+Table 5. Hand-Arm Generic Similarity. PSNR/SSIM/LPIPS are reported on full images, background regions, and ROI crops. FID is reported on full images and ROI crops. Best and second-best model scores are bolded and underlined, respectively.
+<table><tr><td rowspan="2">Model</td><td colspan="3">PSNR↑</td><td colspan="3">SSIM↑</td><td colspan="3">LPIPS↓</td><td colspan="2">FID↓</td></tr><tr><td>Full</td><td>BG</td><td>ROI</td><td>Full</td><td>BG</td><td>ROI</td><td>Full</td><td>BG</td><td>ROI</td><td>Full</td><td>ROI</td></tr><tr><td>GPT-Image-2 [78]</td><td>15.07</td><td>18.70</td><td>9.59</td><td>0.748</td><td>0.843</td><td>0.592</td><td>0.301</td><td>0.164</td><td>0.514</td><td>108.90</td><td>146.07</td></tr><tr><td>GPT-Image-1.5 [80]</td><td>13.87</td><td>15.40</td><td>10.09</td><td>0.679</td><td>0.771</td><td>0.567</td><td>0.478</td><td>0.342</td><td>0.592</td><td>127.99</td><td>152.34</td></tr><tr><td>Nano-Banana-2 [79]</td><td>14.95</td><td>19.73</td><td>9.22</td><td>0.764</td><td>0.861</td><td>0.598</td><td>0.292</td><td>0.148</td><td>0.515</td><td>124.71</td><td>158.15</td></tr><tr><td>Flux-2-Pro [82]</td><td>14.60</td><td>17.65</td><td>9.47</td><td>0.752</td><td>0.848</td><td>0.586</td><td>0.341</td><td>0.199</td><td>0.555</td><td>128.23</td><td>157.08</td></tr><tr><td>HunyuanImage-3.0 [83]</td><td>12.41</td><td>13.37</td><td>9.73</td><td>0.632</td><td>0.726</td><td>0.529</td><td>0.564</td><td>0.421</td><td>0.669</td><td>136.74</td><td>161.39</td></tr><tr><td>Qwen-Image-Edit [85]</td><td>12.81</td><td>14.67</td><td>8.71</td><td>0.673</td><td>0.771</td><td>0.541</td><td>0.460</td><td>0.319</td><td>0.599</td><td>147.08</td><td>165.79</td></tr><tr><td>Seedream-4.5 [81]</td><td>13.04</td><td>14.46</td><td>9.51</td><td>0.668</td><td>0.759</td><td>0.561</td><td>0.508</td><td>0.365</td><td>0.624</td><td>146.33</td><td>167.19</td></tr><tr><td>Nano-Banana [84]</td><td>11.23</td><td>11.79</td><td>9.35</td><td>0.598</td><td>0.689</td><td>0.521</td><td>0.634</td><td>0.491</td><td>0.700</td><td>166.07</td><td>164.08</td></tr><tr><td>FireRed-Image-Edit-1.1 [88]</td><td>11.82</td><td>12.78</td><td>9.06</td><td>0.644</td><td>0.732</td><td>0.559</td><td>0.595</td><td>0.440</td><td>0.703</td><td>158.60</td><td>190.08</td></tr><tr><td>Omnigen2 [87]</td><td>11.97</td><td>12.63</td><td>9.80</td><td>0.630</td><td>0.716</td><td>0.539</td><td>0.635</td><td>0.484</td><td>0.741</td><td>142.16</td><td>178.56</td></tr><tr><td>Flux-Kontext-Max [86]</td><td>11.25</td><td>11.74</td><td>9.71</td><td>0.594</td><td>0.681</td><td>0.528</td><td>0.673</td><td>0.530</td><td>0.727</td><td>189.22</td><td>199.52</td></tr></table>
+
+Table 6. Hand-Arm Embodiment-Aware Metrics and VLM Judgment. Best and second-best model scores are bolded and underlined, respectively.
+<table><tr><td rowspan="2">Model</td><td colspan="4">Embodied task metrics↑</td><td colspan="4">VLM judge↑</td></tr><tr><td>Removal</td><td>Struct Fidelity</td><td>ID Fidelity</td><td>Interaction</td><td>SC</td><td>PQ</td><td></td><td>VLM</td></tr><tr><td>Gpt-Image-2 [78]</td><td>0.983</td><td>0.778</td><td>0.563</td><td>0.595</td><td>0.888</td><td>0.716</td><td></td><td>0.786</td></tr><tr><td>Gpt-Image-1.5 [80]</td><td>0.985</td><td>0.744</td><td>0.606</td><td>0.421</td><td>0.909</td><td></td><td>0.814</td><td>0.856</td></tr><tr><td>Nano-Banana-2 [79]</td><td>0.968</td><td>0.726</td><td>0.503</td><td>0.634</td><td>0.691</td><td></td><td>0.756</td><td>0.673</td></tr><tr><td>Flux-2-Pro [82]</td><td>0.960</td><td>0.743</td><td>0.516</td><td>0.541</td><td></td><td>0.726</td><td>0.741</td><td>0.704</td></tr><tr><td>Hunyuan-Image-3.0 [83]</td><td>0.977</td><td>0.744</td><td>0.519</td><td>0.336</td><td></td><td>0.863</td><td>0.778</td><td>0.812</td></tr><tr><td>Qwen-Image-Edit [85]</td><td>0.982</td><td>0.743</td><td>0.468</td><td>0.489</td><td></td><td>0.705</td><td>0.798</td><td>0.705</td></tr><tr><td>Seedream-4.5 [81]</td><td>0.965</td><td>0.702</td><td>0.502</td><td>0.424</td><td></td><td>0.484</td><td>0.734</td><td>0.530</td></tr><tr><td>Nano-Banana [84]</td><td>0.978</td><td>0.706</td><td>0.471</td><td>0.275</td><td></td><td>0.856</td><td>0.786</td><td>0.808</td></tr><tr><td>FireRed-Image-Edit-1.1 [88]</td><td>0.983</td><td>0.707</td><td>0.510</td><td>0.270</td><td></td><td>0.349</td><td>0.635</td><td>0.400</td></tr><tr><td>Omnigen2 [87]</td><td>0.912</td><td>0.707</td><td>0.417</td><td></td><td>0.236</td><td>0.467</td><td>0.463</td><td>0.380</td></tr><tr><td>Flux-Kontext-Max [86]</td><td>0.983</td><td>0.679</td><td>0.470</td><td>0.246</td><td></td><td>0.388</td><td>0.531</td><td>0.351</td></tr><tr><td>Pseudo-GT</td><td>0.963</td><td>1.000</td><td>0.962</td><td></td><td>0.788</td><td>0.782</td><td>0.482</td><td>0.644</td></tr></table>
+
+## 5 Conclusion
+
+In this work, we introduce HandEdit, the first dedicated dataset and benchmark for human-to-robot dexterous hand image editing. HandEdit provides a large-scale dataset comprising 200M editing samples across 26 embodiments, and introduces two evaluation tracks: Hand-only and Hand-Arm. The benchmark focuses on editing human hand-object images into robot-embodied hand-object images that are visually plausible and structurally useful for embodied learning. To address the limitations of existing image-editing evaluations, HandEdit further introduces a multi-dimensional evaluation suite that integrates generic similarity metrics, VLM-based judgment, and embodiment-aware metrics. Finally, we benchmark 11 representative commercial and open-source image editors, providing a comprehensive empirical analysis of current model capabilities and limitations in human-to-robot dexterous hand editing. Beyond evaluation, the paired data can also support human-to-robot editing models that generate robot-centric visual observations from human videos for downstream policy pre-training. We hope that HandEdit will serve as a useful resource for both the embodied AI and image editing communities, facilitating future research on robot-centric data generation, dexterous embodiment transfer, and controllable image editing.
+
+## References
+
+[1] Anthony Brohan, Noah Brown, Justice Carbajal, Yevgen Chebotar, Joseph Dabis, Chelsea Finn, Keerthana Gopalakrishnan, Karol Hausman, Alexander Herzog, Jasmine Hsu, Julian Ibarz, Brian Ichter, Alex Irpan, Tomas Jackson, Sally Jesmonth, Nikhil Joshi, Ryan Julian, Dmitry Kalashnikov, Yuheng Kuang, Isabel Leal, Kuang-Huei Lee, Sergey Levine, Yao Lu, Utsav Malla, Deeksha Manjunath, Igor Mordatch, Ofir Nachum, Carolina Parada, Jodilyn Peralta, Emily Perez, Karl Pertsch, Jornell Quiambao, Kanishka Rao, Michael S Ryoo, Grecia Salazar, Pannag R Sanketi, Kevin Sayed, Jaspiar Singh, Sumedh Sontakke, Austin Stone, Clayton Tan, Huong Tran, Vincent Vanhoucke, Steve Vega, Quan H Vuong, Fei Xia, Ted Xiao, Peng Xu, Sichun Xu, Tianhe Yu, and Brianna Zitkovich. RT-1: Robotics Transformer for Real-World Control at Scale. In Proceedings of Robotics: Science and Systems, Daegu, Republic of Korea, July 2023. doi: 10.15607/RSS.2023.XIX.025.
+
+[2] Abby O’Neill, Abdul Rehman, Abhinav Gupta, Abhiram Maddukuri, Abhishek Gupta, Abhishek Padalkar, Abraham Lee, Acorn Pooley, Agrim Gupta, Ajay Mandlekar, et al. Open X-Embodiment: Robotic Learning Datasets and RT-X Models. In Proceedings ofthe IEEE International Conference on Robotics and Automation (ICRA), pages 6892–6903, 2024. doi: 10.1109/ICRA57147.2024.10611477.
+
+[3] Alexander Khazatsky, Karl Pertsch, Suraj Nair, Ashwin Balakrishna, Sudeep Dasari, Siddharth Karamcheti, Soroush Nasiriany, Mohan Kumar Srirama, Lawrence Yunliang Chen, Kirsty Ellis, Peter David Fagan, Joey Hejna, Masha Itkina, Marion Lepert, Yecheng Jason Ma, Patrick Tree Miller, Jimmy Wu, Suneel Belkhale, Shivin Dass, Huy Ha, Arhan Jain, Abraham Lee, Youngwoon Lee, Marius Memmel, Sungjae Park, Ilija Radosavovic, Kaiyuan Wang, Albert Zhan, Kevin Black, Cheng Chi, Kyle Beltran Hatch, Shan Lin, Jingpei Lu, Jean Mercat, Abdul Rehman, Pannag R Sanketi, Archit Sharma, Cody Simpson, Quan Vuong, Homer Rich Walke, Blake Wulfe, Ted Xiao, Jonathan Heewon Yang, Arefeh Yavary, Tony Z. Zhao, Christopher Agia, Rohan Baijal, Mateo Guaman Castro, Daphne Chen, Qiuyu Chen, Trinity Chung, Jaimyn Drake, Ethan Paul Foster, Jensen Gao, David Antonio Herrera, Minho Heo, Kyle Hsu, Jiaheng Hu, Donovon Jackson, Charlotte Le, Yunshuang Li, Roy Lin, Zehan Ma, Abhiram Maddukuri, Suvir Mirchandani, Daniel Morton, Tony Nguyen, Abigail O’Neill, Rosario Scalise, Derick Seale, Victor Son, Stephen Tian, Emi Tran, Andrew E. Wang, Yilin Wu, Annie Xie, Jingyun Yang, Patrick Yin, Yunchu Zhang, Osbert Bastani, Glen Berseth, Jeannette Bohg, Ken Goldberg, Abhinav Gupta, Abhishek Gupta, Dinesh Jayaraman, Joseph J Lim, Jitendra Malik, Roberto Mart´ın-Mart´ın, Subramanian Ramamoorthy, Dorsa Sadigh, Shuran Song, Jiajun Wu, Michael C. Yip, Yuke Zhu, Thomas Kollar, Sergey Levine, and Chelsea Finn. DROID: A Large-Scale In-The-Wild Robot Manipulation Dataset. In Proceedings ofRobotics: Science and Systems, Delft, Netherlands, July 2024. doi: 10.15607/RSS.2024.XX.120.
+
+[4] Qingwen Bu, Jisong Cai, Li Chen, Xiuqi Cui, Yan Ding, Siyuan Feng, Shenyuan Gao, Xindong He, Xu Huang, Shu Jiang, et al. Agibot world colosseo: A large-scale manipulation platform for scalable and intelligent embodied systems. arXiv preprint arXiv:2503.06669, 2025. URL https: //arxiv.org/abs/2503.06669.
+
+[5] Homer Rich Walke, Kevin Black, Tony Z Zhao, Quan Vuong, Chongyi Zheng, Philippe Hansen-Estruch, Andre Wang He, Vivek Myers, Moo Jin Kim, Max Du, et al. Bridgedata v2: A dataset for robot learning at scale. In Conference on Robot Learning, pages 1723–1736. PMLR, 2023.
+
+[6] Kun Wu, Chengkai Hou, Jiaming Liu, Zhengping Che, Xiaozhu Ju, Zhuqin Yang, Meng Li, Yinuo Zhao, Zhiyuan Xu, Guang Yang, et al. Robomind: Benchmark on multi-embodiment intelligence normative data for robot manipulation. arXiv preprint arXiv:2412.13877, 2024. URL https://arxiv.org/abs 2412.13877.
+
+[7] Zipeng Fu, Tony Z. Zhao, and Chelsea Finn. Mobile ALOHA: Learning Bimanual Mobile Manipulation using Low-Cost Whole-Body Teleoperation. In Pulkit Agrawal, Oliver Kroemer, and Wolfram Burgard,
+
+editors, Proceedings ofThe 8th Conference on Robot Learning, volume 270 of Proceedings ofMachine Learning Research, pages 4066–4083. PMLR, 06–09 Nov 2025. URL https://proceedings.mlr. press/v270/fu25b.html.
+
+[8] Zhaxizhuoma, Kehui Liu, Chuyue Guan, Zhongjie Jia, Ziniu Wu, Xin Liu, Tianyu Wang, Shuai Liang, Pengan Chen, Pingrui Zhang, et al. Fastumi: A scalable and hardware-independent universal manipulation interface with dataset. In Conference on Robot Learning, pages 3069–3093. PMLR, 2025.
+
+[9] Kehui Liu, Zhongjie Jia, Yang Li, Pengan Chen, Song Liu, Xin Liu, Pingrui Zhang, Haoming Song, Xinyi Ye, Nieqing Cao, et al. FastUMI-100K: Advancing Data-driven Robotic Manipulation with a Large-scale UMI-style Dataset. arXiv preprint arXiv:2510.08022, 2025. URL https://arxiv.org/ abs/2510.08022.
+
+[10] Cheng Chi, Zhenjia Xu, Chuer Pan, Eric Cousineau, Benjamin Burchfiel, Siyuan Feng, Russ Tedrake, and Shuran Song. Universal manipulation interface: In-the-wild robot teaching without in-the-wild robots. arXiv preprint arXiv:2402.10329, 2024. URL https://arxiv.org/abs/2402.10329.
+
+[11] Yue Xu, Litao Wei, Pengyu An, Qingyu Zhang, and Yong-Lu Li. exumi: Extensible robot teaching system with action-aware task-agnostic tactile representation. arXiv preprint arXiv:2509.14688, 2025. URL https://arxiv.org/abs/2509.14688.
+
+[12] Huy Ha, Yihuai Gao, Zipeng Fu, Jie Tan, and Shuran Song. UMI on legs: Making manipulation policies mobile with manipulation-centric whole-body controllers. In Proceedings of the 2024 Conference on Robot Learning, 2024.
+
+[13] Mengda Xu, Han Zhang, Yifan Hou, Zhenjia Xu, Linxi Fan, Manuela Veloso, and Shuran Song. DexUMI: Using Human Hand as the Universal Manipulation Interface for Dexterous Manipulation. In Joseph Lim, Shuran Song, and Hae-Won Park, editors, Proceedings ofThe 9th Conference on Robot Learning, volume 305 of Proceedings ofMachine Learning Research, pages 437–459. PMLR, 27–30 Sep 2025. URL https://proceedings.mlr.press/v305/xu25b.html.
+
+[14] Kristen Grauman, Andrew Westbury, Eugene Byrne, Zachary Chavis, Antonino Furnari, Rohit Girdhar, Jackson Hamburger, Hao Jiang, Miao Liu, Xingyu Liu, et al. Ego4D: Around the world in 3,000 hours of egocentric video. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), pages 18995–19012, 2022.
+
+[15] Ryan Hoque, Peide Huang, David J. Yoon, Mouli Sivapurapu, and Jian Zhang. EgoDex: Learning dexterous manipulation from large-scale egocentric video. arXiv preprint arXiv:2505.11709, 2025.
+
+[16] Yunze Liu, Yun Liu, Che Jiang, Kangbo Lyu, Weikang Wan, Hao Shen, Boqiang Liang, Zhoujie Fu, He Wang, and Li Yi. HOI4D: A 4d egocentric dataset for category-level human-object interaction. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), pages 21013–21022, 2022.
+
+[17] Prithviraj Banerjee, Sindi Shkodrani, Pierre Moulon, Shreyas Hampali, Shangchen Han, Fan Zhang, Linguang Zhang, Jade Fountain, Edward Miller, Selen Basol, et al. HOT3D: Hand and object tracking in 3d from egocentric multi-view videos. In Proceedings ofthe IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2025.
+
+[18] Ahad Jawaid and Yu Xiang. Openego: A large-scale multimodal egocentric dataset for dexterous manipulation. arXiv preprint arXiv:2509.05513, 2025. URL https://arxiv.org/abs/2509.05513.
+
+[19] Ryan Punamiya, Simar Kareer, Zeyi Liu, Josh Citron, Ri-Zhao Qiu, Xiongyi Cai, Alexey Gavryushin, Jiaqi Chen, Davide Liconti, Lawrence Y Zhu, et al. EgoVerse: An Egocentric Human Dataset for Robot Learning from Around the World. arXiv preprint arXiv:2604.07607, 2026. URL https: //arxiv.org/abs/2604.07607.
+
+[20] Jingkang Yang, Shuai Liu, Hongming Guo, Yuhao Dong, Xiamengwei Zhang, Sicheng Zhang, Pengyun Wang, Zitang Zhou, Binzhu Xie, Ziyue Wang, et al. Egolife: Towards egocentric life assistant. In Proceedings of the Computer Vision and Pattern Recognition Conference, pages 28885–28900, 2025.
+
+[21] Yihang Li, Xuelong Wei, Jingzhou Luo, Yingjing Xiao, Yibo Bai, Guangyuan Zhou, Teng Zou, Chenguang Gui, Jiajun Wen, He Zhang, Kangliang Chen, Xing Pan, Shuaiyan Liu, Daming Wang, Tao An, Jiayi Li, Shibo Jin, Wanwan Zhang, Tianyu Wang, Boren Wei, Zhixuan Huang, Fangsheng Liu, Ruodai Li, Hui Zhang, Anson Li, Yicheng Gong, Peng Cao, Jiaming Liang, and Liang Lin. EgoLive: A Large-Scale Egocentric Dataset from Real-World Human Tasks. arXiv preprint arXiv:2604.23570, 2026. URL https://arxiv.org/abs/2604.23570.
+
+[22] Simar Kareer, Dhruv Patel, Ryan Punamiya, Pranay Mathur, Shuo Cheng, Chen Wang, Judy Hofman, and Danfei Xu. EgoMimic: Scaling imitation learning via egocentric video. arXiv preprint arXiv:2410.24221, 2024.
+
+[23] Vincent Liu, Ademi Adeniji, Haotian Zhan, Raunaq Bhirangi, Pieter Abbeel, and Lerrel Pinto. EgoZero: Robot learning from smart glasses. arXiv preprint arXiv:2505.20290, 2025.
+
+[24] Jinhan Li, Yifeng Zhu, Yuqi Xie, Zhenyu Jiang, Mingyo Seo, Georgios Pavlakos, and Yuke Zhu. OKAMI: Teaching humanoid robots manipulation skills through single video imitation. In Proceedings ofThe 8th Conference on Robot Learning, volume 270 of Proceedings ofMachine Learning Research. PMLR, 2025.
+
+[25] Ruijie Zheng, Dantong Niu, Yuqi Xie, Jing Wang, Mengda Xu, Yunfan Jiang, Fernando Castaneda,˜ Fengyuan Hu, You Liang Tan, Letian Fu, Trevor Darrell, Furong Huang, Yuke Zhu, Danfei Xu, and Linxi Fan. EgoScale: Scaling Dexterous Manipulation with Diverse Egocentric Human Data. arXiv preprint arXiv:2602.16710, 2026. URL https://arxiv.org/abs/2602.16710.
+
+[26] Guangrun Li, Yaoxu Lyu, Zhuoyang Liu, Chengkai Hou, Yinda Xu, Jieyu Zhang, and Shanghang Zhang. H2R: A human-to-robot data augmentation for robot pre-training from videos. arXiv preprint arXiv:2505.11920, 2025.
+
+[27] Liang Heng, Xiaoqi Li, Shangqing Mao, Jiaming Liu, Ruolin Liu, Jingli Wei, Yu-Kai Wang, Yueru Jia, Chenyang Gu, Rui Zhao, et al. Rwor: Generating robot demonstrations from human hand collection for policy learning without robot. In 2025 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS), pages 13544–13551. IEEE, 2025.
+
+[28] Marion Lepert, Jiaying Fang, and Jeannette Bohg. Phantom: Training Robots Without Robots Using Only Human Videos. In Proceedings of The 9th Conference on Robot Learning, volume 305 of Proceedings ofMachine Learning Research. PMLR, 2025.
+
+[29] Marion Lepert, Jiaying Fang, and Jeannette Bohg. Masquerade: Learning from In-the-Wild Human Videos Using Data-Editing. arXiv preprint arXiv:2508.09976, 2025.
+
+[30] Marion Lepert, Ria Doshi, and Jeannette Bohg. SHADOW: Leveraging segmentation masks for cross-embodiment policy transfer. In Proceedings ofThe 8th Conference on Robot Learning, volume 270 of Proceedings ofMachine Learning Research, pages 3536–3550. PMLR, 2025.
+
+[31] Hai Ci, Xiaokang Liu, Pei Yang, Yiren Song, and Mike Zheng Shou. H2R-grounder: A paired-data-free paradigm for translating human interaction videos into physically grounded robot videos. arXiv preprint arXiv:2512.09406, 2025.
+
+[32] Yiren Song, Cheng Liu, Weijia Mao, and Mike Zheng Shou. Mitty: Difusion-based Human-to-Robot Video Generation. arXiv preprint arXiv:2512.17253, 2025. URL https://arxiv.org/abs/2512. 17253.
+
+[33] Haoyun Li, Ivan Zhang, Runqi Ouyang, Xiaofeng Wang, Zheng Zhu, Zhiqin Yang, Zhentao Zhang, Boyuan Wang, Chaojun Ni, Wenkang Qin, Xinze Chen, Yun Ye, Guan Huang, Zhenbo Song, and Xingang Wang. MimicDreamer: Aligning Human and Robot Demonstrations for Scalable VLA Training. arXiv preprint arXiv:2509.22199, 2025. URL https://arxiv.org/abs/2509.22199.
+
+[34] Zicong Fan, Omid Taheri, Dimitrios Tzionas, Muhammed Kocabas, Manuel Kaufmann, Michael J. Black, and Otmar Hilliges. ARCTIC: A dataset for dexterous bimanual hand-object manipulation. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), pages 12943–12954, 2023.
+
+[35] Xinyu Zhan, Lixin Yang, Yifei Zhao, Kangrui Mao, Hanlin Xu, Zenan Lin, Kailin Li, and Cewu Lu. OAKINK2: A dataset of bimanual hands-object manipulation in complex task completion. In Proceedings ofthe IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2024.
+
+[36] Jikai Wang, Qifan Zhang, Yu-Wei Chao, Bowen Wen, Xiaohu Guo, and Yu Xiang. HO-Cap: A capture system and dataset for 3d reconstruction and pose tracking of hand-object interaction. In Advances in Neural Information Processing Systems, Datasets and Benchmarks Track, 2025.
+
+[37] Su Wang, Chitwan Saharia, Ceslee Montgomery, Jordi Pont-Tuset, Shai Noy, Stefano Pellegrini, Yasumasa Onoe, Sarah Laszlo, David J Fleet, Radu Soricut, et al. Imagen editor and editbench: Advancing and evaluating text-guided image inpainting. In Proceedings ofthe IEEE/CVF conference on computer vision and pattern recognition, pages 18359–18369, 2023.
+
+[38] Tim Brooks, Aleksander Holynski, and Alexei A. Efros. InstructPix2Pix: Learning to Follow Image Editing Instructions. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), pages 18392–18402, 2023.
+
+[39] Kai Zhang, Lingbo Mo, Wenhu Chen, Huan Sun, and Yu Su. MagicBrush: A manually annotated dataset for instruction-guided image editing. In Advances in Neural Information Processing Systems, Datasets and Benchmarks Track, 2023.
+
+[40] Cong Wei, Zheyang Xiong, Weiming Ren, Xeron Du, Ge Zhang, and Wenhu Chen. OmniEdit: Building Image Editing Generalist Models Through Specialist Supervision. In The Thirteenth International Conference on Learning Representations, 2025. URL https://proceedings.iclr.cc/paper\_files/ paper/2025/hash/0113ef4642264adc2e6924a3cbbdf532-Abstract-Conference.html.
+
+[41] Shelly Sheynin, Adam Polyak, Uriel Singer, Yuval Kirstain, Amit Zohar, Oron Ashual, Devi Parikh, and Yaniv Taigman. Emu edit: Precise image editing via recognition and generation tasks. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages 8871–8879, 2024.
+
+[42] Haozhe Zhao, Xiaojian Ma, Liang Chen, Shuzheng Si, Rujie Wu, Kaikai An, Peiyu Yu, Minjia Zhang, Qing Li, and Baobao Chang. UltraEdit: Instruction-based fine-grained image editing at scale. In Advances in Neural Information Processing Systems, Datasets and Benchmarks Track, 2024.
+
+[43] Yuying Ge, Sijie Zhao, Chen Li, Yixiao Ge, and Ying Shan. Seed-data-edit technical report: A hybrid dataset for instructional image editing. arXiv preprint arXiv:2405.04007, 2024. URL https: //arxiv.org/abs/2405.04007.
+
+[44] Mude Hui, Siwei Yang, Bingchen Zhao, Yichun Shi, Heng Wang, Peng Wang, Yuyin Zhou, and Cihang Xie. HQ-Edit: A High-Quality Dataset for Instruction-based Image Editing. arXiv preprint arXiv:2404.09990, 2024. URL https://arxiv.org/abs/2404.09990.
+
+[45] Qifan Yu, Wei Chow, Zhongqi Yue, Kaihang Pan, Yang Wu, Xiaoyang Wan, Juncheng Li, Siliang Tang, Hanwang Zhang, and Yueting Zhuang. AnyEdit: Mastering Unified High-Quality Image Editing for Any Idea. arXiv preprint arXiv:2411.15738, 2024. URL https://arxiv.org/abs/2411.15738.
+
+[46] Shangkun Sun, Xiaoyu Liang, Songlin Fan, Wenxu Gao, and Wei Gao. VE-Bench: Subjective-Aligned Benchmark Suite for Text-Driven Video Editing Quality Assessment. arXiv preprint arXiv:2408.11481, 2024. URL https://arxiv.org/abs/2408.11481.
+
+[47] Yixin Wan, Lei Ke, Wenhao Yu, Kai-Wei Chang, and Dong Yu. MotionEdit: Benchmarking and learning motion-centric image editing. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2026.
+
+[48] Runjia Li, Moayed Haji-Ali, Ashkan Mirzaei, Chaoyang Wang, Arpit Sahni, Ivan Skorokhodov, Aliaksandr Siarohin, Tomas Jakab, Junlin Han, Sergey Tulyakov, Philip Torr, and Willi Menapace. EgoEdit: Dataset, real-time streaming model, and benchmark for egocentric video editing. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2026.
+
+[49] Taein Kwon, Bugra Tekin, Jan Stuhmer, Federica Bogo, and Marc Pollefeys. H2O: Two hands manipulating objects for first person interaction recognition. In Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV), 2021.
+
+[50] Seonghyeon Ye, Yunhao Ge, Kaiyuan Zheng, Shenyuan Gao, Sihyun Yu, George Kurian, Suneel Indupuru, You Liang Tan, Chuning Zhu, Jiannan Xiang, Ayaan Malik, Kyungmin Lee, William Liang, Nadun Ranawaka, Jiasheng Gu, Yinzhen Xu, Guanzhi Wang, Fengyuan Hu, Avnish Narayan, Johan Bjorck, Jing Wang, Gwanghyun Kim, Dantong Niu, Ruijie Zheng, Yuqi Xie, Jimmy Wu, Qi Wang, Ryan Julian, Danfei Xu, Yilun Du, Yevgen Chebotar, Scott Reed, Jan Kautz, Yuke Zhu, Linxi Jim Fan, and Joel Jang. World Action Models are Zero-shot Policies. arXiv preprint arXiv:2602.15922, 2026. URL https://arxiv.org/abs/2602.15922.
+
+[51] Shenyuan Gao, William Liang, Kaiyuan Zheng, Ayaan Malik, Seonghyeon Ye, Sihyun Yu, Wei-Cheng Tseng, Yuzhu Dong, Kaichun Mo, Chen-Hsuan Lin, Qianli Ma, Seungjun Nah, Loic Magne, Jiannan Xiang, Yuqi Xie, Ruijie Zheng, Dantong Niu, You Liang Tan, K.R. Zentner, George Kurian, Suneel Indupuru, Pooya Jannaty, Jinwei Gu, Jun Zhang, Jitendra Malik, Pieter Abbeel, Ming-Yu Liu, Yuke Zhu, Joel Jang, and Linxi ”Jim” Fan. DreamDojo: A Generalist Robot World Model from Large-Scale Human Videos. arXiv preprint arXiv:2602.06949, 2026. URL https://arxiv.org/abs/2602.06949.
+
+[52] Modi Shi, Shijia Peng, Jin Chen, Haoran Jiang, Yinghui Li, Di Huang, Ping Luo, Hongyang Li, and Li Chen. EgoHumanoid: Unlocking In-the-Wild Loco-Manipulation with Robot-Free Egocentric Demonstration. arXiv preprint arXiv:2602.10106, 2026. URL https://arxiv.org/abs/2602. 10106.
+
+[53] Priyanka Mandikal and Kristen Grauman. DexVIP: Learning dexterous grasping with human hand pose priors from video. In Proceedings of The 5th Conference on Robot Learning, volume 164 of Proceedings of Machine Learning Research, pages 651–661. PMLR, 2022.
+
+[54] Chen Bao, Helin Xu, Yuzhe Qin, and Xiaolong Wang. DexArt: Benchmarking generalizable dexterous manipulation with articulated objects. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 2023.
+
+[55] Youzhuo Wang, Jiayi Ye, Chuyang Xiao, Yiming Zhong, Heng Tao, Hang Yu, Yumeng Liu, Jingyi Yu, and Yuexin Ma. DexH2R: A benchmark for dynamic dexterous grasping in human-to-robot handover. In Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV), 2025.
+
+[56] Gu Zhang, Qicheng Xu, Haozhe Zhang, Jianhan Ma, Long He, Yiming Bao, Zeyu Ping, Zhecheng Yuan, Chenhao Lu, Chengbo Yuan, et al. UniDex: A robot foundation suite for universal dexterous hand control from egocentric human videos. arXiv preprint arXiv:2603.22264, 2026.
+
+[57] Zhenhan Yin, Xuanhan Wang, Jiahao Jiang, Kaiyuan Deng, Pengqi Chen, Shuangle Li, Chong Liu, Xing Xu, Jingkuan Song, Lianli Gao, and Heng Tao Shen. MiVLA: Towards generalizable vision-languageaction model with human-robot mutual imitation pre-training. arXiv preprint arXiv:2512.15411, 2025.
+
+[58] Sicheng Xie, Haidong Cao, Zejia Weng, Zhen Xing, Shiwei Shen, Jiaqi Leng, Xipeng Qiu, Yanwei Fu, Zuxuan Wu, and Yu-Gang Jiang. Human2Robot: Learning robot actions from paired human-robot videos. arXiv preprint arXiv:2502.16587, 2025.
+
+[59] Byungjun Kim, Taeksoo Kim, Junyoung Lee, and Hanbyul Joo. Dexterous World Models. arXiv preprint arXiv:2512.17907, 2025.
+
+[60] Chenlin Meng, Yutong He, Yang Song, Jiaming Song, Jiajun Wu, Jun-Yan Zhu, and Stefano Ermon. SDEdit: Guided image synthesis and editing with stochastic diferential equations. In International Conference on Learning Representations (ICLR), 2022.
+
+[61] Amir Hertz, Ron Mokady, Jay Tenenbaum, Kfir Aberman, Yael Pritch, and Daniel Cohen-Or. Promptto-Prompt Image Editing with Cross-Attention Control. In International Conference on Learning Representations (ICLR), 2023.
+
+[62] Guillaume Couairon, Jakob Verbeek, Holger Schwenk, and Matthieu Cord. DifEdit: Difusion-based semantic image editing with mask guidance. In International Conference on Learning Representations (ICLR), 2023.
+
+[63] Lvmin Zhang, Anyi Rao, and Maneesh Agrawala. Adding Conditional Control to Text-to-Image Difusion Models. In Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV), pages 3836–3847, 2023.
+
+[64] Nicolas Carion, Laura Gustafson, Yuan-Ting Hu, Shoubhik Debnath, Ronghang Hu, Didac Suris, Chaitanya Ryali, Kalyan Vasudev Alwala, Haitham Khedr, Andrew Huang, et al. SAM 3: Segment anything with concepts. arXiv preprint arXiv:2511.16719, 2025.
+
+[65] Shangchen Zhou, Chongyi Li, Kelvin C. K. Chan, and Chen Change Loy. ProPainter: Improving propagation and transformer for video inpainting. In Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV), pages 10477–10486, 2023.
+
+[66] Javier Romero, Dimitrios Tzionas, and Michael J. Black. Embodied Hands: Modeling and Capturing Hands and Bodies Together. In ACM Transactions on Graphics, Proceedings of SIGGRAPH Asia, volume 36, 2017. doi: 10.1145/3130800.3130883.
+
+[67] Yuzhe Qin, Wei Yang, Binghao Huang, Karl Van Wyk, Hao Su, Xiaolong Wang, Yu-Wei Chao, and Dieter Fox. AnyTeleop: A general vision-based dexterous robot arm-hand teleoperation system. In Robotics: Science and Systems (RSS), 2023.
+
+[68] Alain Hore and Djemel Ziou. Image quality metrics: PSNR vs. SSIM. In 2010 20th international conference on pattern recognition, pages 2366–2369. IEEE, 2010.
+
+[69] Zhou Wang, Alan C Bovik, Hamid R Sheikh, and Eero P Simoncelli. Image quality assessment: from error visibility to structural similarity. IEEE transactions on image processing, 13(4):600–612, 2004.
+
+[70] Richard Zhang, Phillip Isola, Alexei A Efros, Eli Shechtman, and Oliver Wang. The unreasonable efectiveness of deep features as a perceptual metric. In Proceedings of the IEEE conference on computer vision and pattern recognition, pages 586–595, 2018.
+
+[71] Martin Heusel, Hubert Ramsauer, Thomas Unterthiner, Bernhard Nessler, and Sepp Hochreiter. Gans trained by a two time-scale update rule converge to a local nash equilibrium. Advances in neural information processing systems, 30, 2017.
+
+[72] OpenAI. GPT-4o System Card. https://openai.com/index/gpt-4o-system-card/, 2024. URL https://arxiv.org/abs/2410.21276. arXiv preprint arXiv:2410.21276.
+
+[73] Max Ku, Dongfu Jiang, Cong Wei, Xiang Yue, and Wenhu Chen. VIEScore: Towards explainable metrics for conditional image synthesis evaluation. In Proceedings ofthe 62nd Annual Meeting ofthe Association for Computational Linguistics (ACL), 2024.
+
+[74] Tony Lee, Michihiro Yasunaga, Chenlin Meng, Yifan Mai, Joon Sung Park, Agrim Gupta, Yunzhi Zhang, Deepak Narayanan, Hannah Teufel, Marco Bellagente, et al. Holistic evaluation of text-to-image models. Advances in Neural Information Processing Systems, 36:69981–70011, 2023.
+
+[75] Maxime Oquab, Timothee Darcet, Theo Moutakanni, Huy Vo, Marc Szafraniec, Vasil Khalidov, Pierre Fernandez, Daniel Haziza, Francisco Massa, Alaaeldin El-Nouby, et al. DINOv2: Learning robust visual features without supervision. Transactions on Machine Learning Research, 2024.
+
+[76] Alec Radford, Jong Wook Kim, Chris Hallacy, Aditya Ramesh, Gabriel Goh, Sandhini Agarwal, Girish Sastry, Amanda Askell, Pamela Mishkin, Jack Clark, et al. Learning transferable visual models from natural language supervision. In International conference on machine learning, pages 8748–8763. PmLR, 2021.
+
+[77] Zhanghan Ke, Chunyi Sun, Lei Zhu, Ke Xu, and Rynson W. H. Lau. Harmonizer: Learning to perform white-box image and video harmonization. In European Conference on Computer Vision, pages 690–706, 2022.
+
+[78] OpenAI. Introducing ChatGPT Images 2.0. https://openai.com/index/ introducing-chatgpt-images-2-0/, 2026. Accessed: 2026-05-06.
+
+[79] Google. Nano Banana 2 – gemini ai image generator & photo editor. https://gemini.google/ overview/image-generation/, 2026. Accessed: 2026-05-06.
+
+[80] OpenAI. The new ChatGPT Images is here. https://openai.com/index/ new-chatgpt-images-is-here/, 2026. Accessed: 2026-05-06.
+
+[81] Team Seedream, Yunpeng Chen, Yu Gao, Lixue Gong, Meng Guo, Qiushan Guo, Zhiyao Guo, Xiaoxia Hou, Weilin Huang, Yixuan Huang, et al. Seedream 4.0: Toward next-generation multimodal image generation, 2025. URL https://arxiv.org/abs/2509.20427.
+
+[82] Black Forest Labs. FLUX.2: Frontier Visual Intelligence. https://bfl.ai/blog/flux-2, 2025. Accessed: 2026-05-06.
+
+[83] Siyu Cao, Hangting Chen, Peng Chen, Yiji Cheng, Yutao Cui, Xinchi Deng, Ying Dong, Kipper Gong, Tianpeng Gu, Xiusen Gu, et al. HunyuanImage 3.0 Technical Report. arXiv preprint arXiv:2509.23951, 2025. URL https://arxiv.org/abs/2509.23951.
+
+[84] Nano Banana. Nano Banana: Free online ai image editor. https://nanobanana.io/, 2026. Accessed: 2026-05-06.
+
+[85] Chenfei Wu, Jiahao Li, Jingren Zhou, Junyang Lin, Kaiyuan Gao, Kun Yan, Sheng ming Yin, Shuai Bai, Xiao Xu, Yilei Chen, Yuxiang Chen, Zecheng Tang, Zekai Zhang, Zhengyi Wang, An Yang, Bowen Yu, Chen Cheng, Dayiheng Liu, Deqing Li, Hang Zhang, Hao Meng, Hu Wei, Jingyuan Ni, Kai Chen, Kuan Cao, Liang Peng, Lin Qu, Minggang Wu, Peng Wang, Shuting Yu, Tingkun Wen, Wensen
+
+Feng, Xiaoxiao Xu, Yi Wang, Yichang Zhang, Yongqiang Zhu, Yujia Wu, Yuxuan Cai, and Zenan Liu. Qwen-Image Technical Report, 2025. URL https://arxiv.org/abs/2508.02324. arXiv preprint arXiv:2508.02324.
+
+[86] Black Forest Labs, Stephen Batifol, Andreas Blattmann, Frederic Boesel, Saksham Consul, Cyril Diagne, Tim Dockhorn, Jack English, Zion English, Patrick Esser, et al. FLUX.1 Kontext: Flow Matching for In-Context Image Generation and Editing in Latent Space, 2025. URL https://arxiv.org/abs/ 2506.15742.
+
+[87] Chenyuan Wu, Pengfei Zheng, Ruiran Yan, Shitao Xiao, Xin Luo, Yueze Wang, Wanli Li, Xiyan Jiang, Yexin Liu, Junjie Zhou, Ze Liu, Ziyi Xia, Chaofan Li, Haoge Deng, Jiahao Wang, Kun Luo, Bo Zhang, Defu Lian, Xinlong Wang, Zhongyuan Wang, Tiejun Huang, and Zheng Liu. OmniGen2: Exploration to advanced multimodal generation, 2025. URL https://arxiv.org/abs/2506.18871.
+
+[88] Super Intelligence Team. FireRed-Image-Edit-1.0 Techinical Report, 2026. URL https://arxiv. org/abs/2602.13344. arXiv preprint arXiv:2602.13344.
+
+[89] Runyu Ding, Yuzhe Qin, Jiyue Zhu, Chengzhe Jia, Shiqi Yang, Ruihan Yang, Xiaojuan Qi, and Xiaolong Wang. Bunny-visionpro: Real-time bimanual dexterous teleoperation for imitation learning. 2024. URL https://arxiv.org/abs/2407.03162.
+
+## A Dataset Resources and Benchmark Assets
+
+## A.1 Full Target URDF Roster
+
+HandEdit covers 26 target embodiments, including 13 hand-only embodiments and 13 hand-arm embodiments. The roster is designed to span substantial variation in hand morphology, wrist structure, arm geometry, and embodiment scale. The hand-only track emphasizes localized dexterous-hand embodiment editing, whereas the hand-arm track introduces larger edited regions and stronger requirements on scene preservation, pose continuity, and arm-hand consistency.
+
+Note that we construct the target embodiment set from publicly available robot URDF assets. Part of the hand models are adapted from DexSuite’s [89] dex-urdf repository, which provides high-quality dexterous hand and object models in URDF format and is released under the MIT License. The remaining embodiments are collected from the corresponding oficial open-source robot releases. All URDF assets are used for non-commercial scientific research and benchmark evaluation only.
+
+Table S1. Full target URDF roster used in HandEdit.
+<table><tr><td>Category</td><td>URDFs</td></tr><tr><td>Hand-only</td><td>Allegro, Revo2, DexHand021, Leap, Orca, RH56DFX, RH5DG2, RoHand, Schunk Hand, Shadow Hand, Sharpa, Wuji</td></tr><tr><td>Hand-arm</td><td>Jaka Zu7 + DexHand021, KUKA + Sharpa, Panda + Allegro, Panda + Orca, RM65 + BrainCo, RM75 + RoHand, UR5 + RH56DFX, UR5 + RH5DG2, UR5 + Schunk Hand, UR5 + Shadow Hand, UR5 + Wuji, xArm + Ability, xArm + Leap</td></tr></table>
+
+## A.2 Source Datasets
+
+HandEdit Dataset is constructed from the egocentric portions of five public hand-object datasets: EgoDex, ARCTIC, OakInk2, HOI4D, and HO-Cap. These sources are complementary in scale, scene types, interaction patterns, and capture quality, and together provide broad coverage of dexterous hand-object interactions across both in-the-wild daily-life scenes and more controlled laboratory-style capture settings.
+
+![](images/cb619edcc50eba13100b304b64359d957e268e9dfcc73077d04ff0baec2499a0.jpg)  
+Figure S1. Data Composition of HandEdit.
+
+EgoDex. EgoDex provides the largest source pool in HandEdit. It contains approximately 90 million frames and 338K task-demonstration clips. The dataset focuses on tabletop environments and covers 194 daily household manipulation tasks with roughly 500 household objects, contributing large amounts of first-person interaction footage with varied grasp types, contact patterns, and dexterous behaviors. The dataset is available under CC-by-NC-ND terms.
+
+![](images/5aeb56e591429cb963e33618843696ade094487273b9d128e9fa896f23eeb337.jpg)  
+Figure S2. Word cloud visualization.
+
+ARCTIC. ARCTIC is designed for dexterous bimanual manipulation and dynamic contact. It contains about 2.1 million frames across 339 sequences, recorded from 10 subjects using eight third-person views and one egocentric view, and centers on interaction with 11 articulated objects. Its interactions are organized around use and grasp intents, making ARCTIC particularly valuable for evaluating whether edited robot hands preserve contact structure under articulated-object interaction. The data and software are released under a copyright license that permits use for non-commercial scientific research purposes only.
+
+OakInk2. OakInk2 targets complex interaction understanding from the perspective of object afordances. It provides about 4.01 million frames and 627 manipulation sequences, covering 75 objects, four manipulation scenarios, and 150 complex tasks. Compared with the other sources, OakInk2 places stronger emphasis on long-horizon, multi-stage, and often bimanual manipulation.
+
+HOI4D. HOI4D contributes dense egocentric RGB-D hand-object interaction data in diverse indoor environments. It contains roughly 2.4 million frames and around 4,000 sequences, spanning 610 indoor rooms, 800 object instances from 16 object categories, and 54 functionality-oriented interaction tasks. The dataset is available under the MIT license.
+
+HO-Cap. HO-Cap emphasizes accurate 3D hand-object pose capture and reconstruction using a low-cost multi-view RGB-D capture setup. It contains 656K frames over 64 sequences and covers 64 daily objects. Although smaller in scale, it provides pose-rich interaction data across both one-handed and two-handed manipulation scenarios, including pick-and-place, handover, and afordance-driven object use. The dataset is available under the GPL-3.0 license.
+
+## B Data Curation Details
+
+## B.1 Quality Control
+
+Each pipeline stage is checked before its output is passed to the next stage. Table S3 lists the automatic checks, manual checks, and rejection rules used during pseudo-GT generation.
+
+Table S3. Quality-control criteria for pseudo-GT generation. A dash indicates a manual-only check.
+<table><tr><td>Stage</td><td>Automatic checks</td><td>Manual checks</td><td>Reject if</td></tr><tr><td>Segmentation</td><td>Non-empty mask; SAM 3 confidence ≥ 0.75.</td><td>Mask completeness; boundary accuracy; Missing regions; object removal; severe object preservation.</td><td>under- or over-segmentation.</td></tr><tr><td>Background restoration / inpainting</td><td></td><td>tegrity.</td><td>Residue; ghosting; texture and object in- Visible residue; severe ghosting; struc- tural corruption.</td></tr><tr><td>Hand retargeting</td><td>Fingertip/wrist error; contact distance; Grasp/contact/release states; joint-limit and penetration checks.</td><td>object configuration.</td><td>finger– Fingertip/wrist error &gt; 50 mm; contact distance &gt; 20 mm; contact loss; incorrect interaction state; severe penetration.</td></tr><tr><td>IK and virtual-base placement</td><td>arm collisions.</td><td>Critical-frame IK feasibility; URDF joint Egocentric and third-person replay; colli- Critical-frame IK failure; joint-limit vio- limits; self-, support-plane-, and dual- sion; overextension; base plausibility.</td><td>lation; collision; trajectory discontinuity; all top-three candidates implausible.</td></tr><tr><td>Rendering, compositing, and harmonization</td><td></td><td>occlusion; scale; contact placement.</td><td>Robot identity and structure; boundary; Broken structure; incorrect occlusion; ob- ject corruption; contact misalignment.</td></tr></table>
+
+The final harmonized composites undergo structure, object-integrity, occlusion, and contact-placement checks before being retained as pseudo-GT references.
+
+## B.2 Failure Breakdown
+
+To quantify the sources of pseudo-GT rejection, we uniformly sampled 5,000 frames from the 734,864 ARCTIC frames marked as final non-kept examples. For each sampled frame, the annotator inspected the source image, human-mask overlay, restored background, pseudo-GT, and robot-mask overlay, and assigned one dominant primary failure cause. The processing log records an overall non-kept rate of approximately 33% for this ARCTIC run. Because the candidate unit used by the processing pipeline is not identical to a raw source frame, we report the per-cause proportions within the sampled non-kept pool and do not extrapolate them to all raw frames.
+
+Table S5. Primary causes among 5,000 uniformly sampled non-kept ARCTIC frames. Percentages are normalized within the sampled non-kept pool.
+<table><tr><td>Primary failure cause</td><td>Share of sampled non-kept frames</td></tr><tr><td>Hand retargeting</td><td>3,173 / 5,000 (63.46%)</td></tr><tr><td>Segmentation</td><td>927 / 5,000 (18.54%)</td></tr><tr><td>Background restoration / inpainting</td><td>586 / 5,000 (11.72%)</td></tr><tr><td>Rendering / compositing</td><td>314 / 5,000 (6.28%)</td></tr><tr><td>Total</td><td>5,000 / 5,000 (100%)</td></tr></table>
+
+Retargeting is the dominant primary cause of rejection, followed by segmentation, background restoration, and rendering/compositing. The four-way annotation taxonomy aggregates IK and virtual-base failures within the reported categories and does not provide a separate IK-specific rate. Table S5 describes rejected ARCTIC frames and does not measure residual errors among retained samples or failure distributions in the other source datasets.
+
+## B.3 Virtual-Base Search and IK
+
+The virtual-base procedure separates automatic candidate generation and feasibility filtering from a single sequence-level human choice. For each source-sequence/target-embodiment pair, the human wrist is mapped to the robot wrist/TCP through a fixed, embodiment-specific SE(3) transform, and a selected candidate base remains fixed across all frames.
+
+When the left and right shoulder keypoints are available, their midpoint, shoulder direction, and intershoulder distance are used to initialize the local base-search region. Otherwise, the wrist-trajectory center and the nominal reach of the target arm are used for initialization. Let $L _ { r }$ denote the nominal reach of the target arm obtained from its URDF kinematic chain. To account for diferences in arm scale and workspace across embodiments, the local grid varies lateral translation over $\{ - 0 . 1 0 L _ { r } , 0 , 0 . 1 0 L _ { r } \}$ , forward/backward translation over $\left\{ - 0 . 1 5 L _ { r } , 0 , 0 . 1 5 L _ { r } \right\}$ , and yaw over $\{ - 1 5 ^ { \circ } , 0 , 1 5 ^ { \circ } \}$ , yielding $3 \times 3 \times 3 = 2 7$ candidates. Base height, roll, and pitch are fixed under the upright mounting assumption. Each candidate base remains fixed while it is evaluated over the full sequence. Candidates with IK-infeasible critical frames, joint-limit violations, or self-, support-plane-, or dual-arm collisions are discarded. Survivors are ranked lexicographically by critical-frame success, reachability, end-efector error, joint margin, and continuity.
+
+For the top-three candidates, we render both egocentric and third-person replay videos. A human selects one feasible sequence-level candidate without modifying joint states, frame-level base poses, or search parameters. If all three candidates are implausible, the sequence is dropped. Candidate generation and feasibility checks are automatic, and human input is limited to the sequence-level selection.
+
+## C VLM-Based Judgment Protocol
+
+In the main paper, HandEdit adopts a GPT-4o-based judgment protocol as a semantic-level complement to generic similarity metrics and embodied task metrics. The judge produces two scores: Semantic Consistency (SC) and Perceptual Quality (PQ).
+
+## C.1 Score Definitions
+
+Semantic Consistency (SC). SC measures whether the edit satisfies the requested robot embodiment while preserving the task-relevant structure of the source interaction. We decompose it into four 1–5 sub-scores: robotness, target-embodiment match, interaction preservation, and scene preservation.
+
+Perceptual Quality (PQ). PQ measures whether the edited result is visually coherent as a single image. It focuses on local plausibility around the edited region, including boundary naturalness, absence of visible artifacts, consistent geometry, and coherent lighting and occlusion. We decompose it into three 1–5 sub-scores: naturalness, artifact absence, and local coherence.
+
+Let $\alpha _ { \mathrm { r o b } } , \alpha _ { \mathrm { i d } } , \alpha _ { \mathrm { i n t } }$ , and $\alpha _ { \mathrm { s c e n e } }$ denote the SC sub-scores for robotness, target-embodiment match, interaction preservation, and scene preservation. Let $\beta _ { \mathrm { n a t } } , \beta _ { \mathrm { a r t } }$ , and $\beta _ { \mathrm { c o h } }$ denote the PQ sub-scores for naturalness, artifact absence, and local coherence. Following the conservative aggregation principle used in instruction-guided VLM evaluation [73], we take the minimum sub-score within each aspect and then normalize the resulting scores to [0, 1]:
+
+$$
+s _ { \mathrm { S C } } = \operatorname* { m i n } ( \alpha _ { \mathrm { r o b } } , \alpha _ { \mathrm { i d } } , \alpha _ { \mathrm { i n t } } , \alpha _ { \mathrm { s c e n e } } )\tag{9}
+$$
+
+$$
+s _ { \mathrm { P Q } } = \operatorname* { m i n } ( \beta _ { \mathrm { n a t } } , \beta _ { \mathrm { a r t } } , \beta _ { \mathrm { c o h } } )\tag{10}
+$$
+
+$$
+\hat { s } _ { \mathrm { S C } } = \frac { s _ { \mathrm { S C } } - 1 } { 4 }\tag{11}
+$$
+
+$$
+\hat { s } _ { \mathrm { P Q } } = \frac { s _ { \mathrm { P Q } } - 1 } { 4 }\tag{12}
+$$
+
+$$
+s _ { \mathrm { v l m } } = \sqrt { \hat { s } _ { \mathrm { S C } } \ * \hat { s } _ { \mathrm { P Q } } }\tag{13}
+$$
+
+## C.2 Semantic-Consistency Prompt Template
+
+Table S6. Semantic-Consistency prompt template used for VLM-based judgment.
+
+<table><tr><td colspan="2">Semantic-Consistency Prompt Template You are evaluating an image editing result for a benchmark on egocentric hand-to-dexterous-robot image</td></tr><tr><td colspan="2">editing. You are given:</td></tr><tr><td colspan="2">(1) a source image showing a human hand or hand-arm interacting with an object; (2) an edited image;</td></tr><tr><td colspan="2">(3) a text instruction describing the target robot embodiment;</td></tr><tr><td colspan="2">(4) a URDF reference render of the target robot embodiment.</td></tr><tr><td colspan="2">Your task is to judge whether the edited image successfully transforms the human hand or hand-arm region into the requested dexterous robot embodiment while preserving the original object interaction and</td></tr><tr><td colspan="2">surrounding scene structure. Please assign four 1–5 sub-scores:</td></tr><tr><td colspan="2">Robotness Whether the edited region is clearly robotic rather than human-like. Target-embodiment match</td></tr><tr><td>Interaction preservation</td><td>Whether the robot matches the requested target embodiment, using the text instruction and URDF reference render as cues. Whether the original object state, contact relationship, and hand-object</td></tr><tr><td>Scene preservation</td><td>interaction remain recognizable. Whether the surrounding scene structure is preserved without unnecessary</td></tr><tr><td colspan="2">global changes. Use the following scale for each sub-score: 1 = failure, 2 = largely incorrect, 3 = partially correct, 4 = mostly</td></tr><tr><td colspan="2">Output a concise rationale and the following numeric fields:</td></tr><tr><td>robotness</td><td>integer score from 1 to 5</td></tr><tr><td>target_embodiment_match</td><td>integer score from 1 to 5</td></tr><tr><td>interaction_preservation</td><td>integer score from 1 to 5</td></tr><tr><td>scene_preservation</td><td>integer score from 1 to 5</td></tr><tr><td>reasoning</td><td></td></tr><tr><td></td><td>brief explanation</td></tr></table>
+
+Table S10. Perceptual-Quality prompt template used for VLM-based judgment.
+
+<table><tr><td colspan="2">Perceptual-Quality Prompt Template You are evaluating the perceptual quality of an edited image.</td></tr><tr><td colspan="2">You are given:</td></tr><tr><td colspan="2">(1) an edited image.</td></tr><tr><td colspan="2">Judge only the visual quality of the edited image. Do not evaluate whether the requested robot embodiment is</td></tr><tr><td colspan="2">correct, and do not evaluate whether the editing instruction has been fully satisfied. Focus on whether the image is visually coherent as a single image. Please assign three 1–5 sub-scores:</td></tr><tr><td colspan="2">Naturalness Whether the edited image looks visually plausible as a single image. Artifact absence Whether the image avoids visible artifacts such as duplicated fingers,</td></tr><tr><td colspan="2">broken geometry, halos, blur, or distorted robot parts. Local coherence Whether boundaries, texture, lighting, and occlusion near the edited region are consistent with the surrounding scene.</td></tr><tr><td colspan="2">Use the following scale for each sub-score: 1 = very poor, 2 = poor, 3 = acceptable, 4 = good, and 5 = high perceptual quality.</td></tr><tr><td colspan="2">Output a concise rationale and the following numeric fields:</td></tr><tr><td>naturalness</td><td></td></tr><tr><td>artifact_absence</td><td>integer score from 1 to 5 integer score from 1 to 5</td></tr><tr><td>local_coherence</td><td>integer score from 1 to 5 brief explanation</td></tr></table>
+
+## C.4 Embodiment Reference Bank
+
+HandEdit uses a fixed embodiment reference bank for the two evaluation tracks: the standalone-hand track and the hand-arm track. Each target embodiment is represented by both visual URDF renders and a short textual description. The visual bank contains canonical rendered views of the target robot and is used for URDF-reference consistency in the identity metric. The textual bank is generated once from the canonical reference render using a multimodal vision-language model (Gemini 3.1 Pro) and remains frozen throughout the benchmark. These descriptions summarize visually discriminative cues, including palm geometry, finger structure, fingertip appearance, material, color, and exposed mechanical components.
+
+## C.4.1 Standalone hand group
+
+Table S14. Frozen embodiment descriptions for the standalone-hand comparison group.
+<table><tr><td>Embodiment</td><td>Render</td><td>Frozen description</td></tr><tr><td>Ability</td><td><img src="images/a8aecd1bad483174d3b8d782d8f888a4b91b7ddc30e678db4b2ea9588f138272.jpg"/></td><td>A smooth white robotic hand with a rounded palm shell, dark rubber-like finger coverings, and a thick side-mounted thumb. The overall shape is compact and softly contoured, with minimal exposed</td></tr><tr><td></td><td><img src="images/0ea8d90725048f85b7e293cc5277680941d8ea285afaee4483bf04926c202309.jpg"/></td><td>mechanics and a clean cylindrical wrist base. A compact black robotic hand with a boxy palm, three straight front fingers made of rectangular joint modules, and a side thumb built from similar segmented black links. White rounded fingertip caps</td></tr><tr><td></td><td></td><td>give the hand a high-contrast black-and-white appearance. A metallic dexterous hand with dense exposed mechanisms, a ribbed silver palm surface, and articulated fingers composed of visible links</td></tr><tr><td></td><td></td><td>and cable-like structures. Bright green fingertip markers make the hand visually distinctive and strongly mechanical. A compact black robotic hand with a low-profile rectangular palm and fingers made of stacked box-like modules. The white fingertip</td></tr><tr><td></td><td></td><td>caps and short angular side thumb give the hand a simple modular appearance. A dark robotic hand with a narrow palm and five slender fingers spread in a fan-like configuration. Alternating dark segments and</td></tr><tr><td></td><td></td><td>bright fingertip caps create an open, lightweight, highly splayed silhouette. A smooth anthropomorphic robotic hand with a rounded human-like</td></tr><tr><td></td><td></td><td>design has limited exposed mechanics and a naturalistic silhouette. A white-and-gray robotic hand with a rounded palm shell, dark cylindrical finger coverings, and a thick side thumb aligned close to</td></tr><tr><td></td><td></td><td>the palm plane. It has an enclosed appearance with little exposed structure. A white-and-silver robotic hand with a sculpted palm shell, black finger pads, and a diagonal striped panel across the back of the palm.</td></tr><tr><td>RH56DFX</td><td></td><td>The large articulated side thumb and metallic details are visually distinctive. A white robotic hand with a smooth enclosed palm shell, dark metallic finger segments, and a side-mounted thumb. Elongated</td></tr><tr><td>RoHand</td><td></td><td>anthropomorphic fingers and a compact rounded wrist base give it a polished integrated appearance. A white dexterous hand with gray fingertip pads, robust finger links,</td></tr><tr><td>Schunk SVH</td><td><img src="images/bb2ec3de46f8f74729323aa17224b080fa569f2a3d6d0a7db8bc3b59ab91de0e.jpg"/></td><td>and a dark central palm pad. The circular wrist base and thick articulated thumb give the hand a sturdy industrial appearance. A black anthropomorphic robotic hand with slim multi-joint fingers,</td></tr><tr><td>Shadow Hand</td><td><img src="images/bc910a0e36d45d87d4ae1a976aad57741972b3eb3fa88281f040e3627d31cf9c.jpg"/></td><td>white joint markings, and a curved white support structure near the wrist. The long human-like proportions make it dexterous but lightweight.</td></tr><tr><td>Sharpa</td><td><img src="images/2da17a7dd36ae373c1b2edd75b02ebb410618c9326bd9f784fb839262df93269.jpg"/></td><td>A matte gray robotic hand with a clean anthropomorphic silhouette, smooth palm surfaces, and simple segmented fingers. The large articulated thumb contrasts with the otherwise minimal enclosed design.</td></tr><tr><td>Wuji</td><td><img src="images/4a9d1e06788f80c71711d32bcc02b6cc544aa6fa0e120a62ab643809fcdda0f2.jpg"/></td><td>A black-and-silver robotic hand with a glossy dark palm base, long light-gray articulated fingers made of segmented cylindrical links, and a widely extended side thumb.</td></tr></table>
+
+## C.4.2 Hand-arm group
+
+Table S15. Frozen embodiment descriptions for the hand-arm comparison group.
+<table><tr><td>Embodiment</td><td>Render</td><td>Frozen description</td></tr><tr><td>Jaka Zu7 + DexHand021</td><td><img src="images/8af6bc6ccbf3d32957ea27585bc58601da1664c68b4d4e5c773f7b4b598ba704.jpg"/></td><td>A metallic-gray collaborative arm with blue circular joint caps, paired with a silver dexterous hand with dense exposed mechanisms, a ribbed palm surface, and slender articulated fingers. The transparent wrist housing and mechanical finger structure make it distinctive. A white KUKA-style arm with bright orange accent panels,</td></tr><tr><td>KUKA + Sharpa</td><td><img src="images/01bf0237ac76c2d8242e70b172bc8206e22ebe5fdea383086105e3fc3ea42d6e.jpg"/></td><td>paired with a smooth anthropomorphic hand. The clean enclosed hand silhouette contrasts with the strong white-orange arm styling.</td></tr><tr><td>Panda + Allegro</td><td><img src="images/bc1f4575b0db9391de202d9f8dded065f6311956615808630a66d1c0367e71f1.jpg"/></td><td>A light Panda-style arm paired with a compact dark modular hand. The boxy palm, rectangular segmented fingers, and bright fingertip caps create a sharp contrast with the soft industrial arm.</td></tr><tr><td>Panda + Orca</td><td><img src="images/f45df9a1fa4b9dd0e7efa4df45c1cb13565d6daa0c921f59b0b3f1e5657912c0.jpg"/></td><td>A light Panda-style arm attached to a dark hand with a narrow palm and strongly spread fingers. Long separated digits with bright caps create an open fan-like silhouette.</td></tr><tr><td>RM65 + BrainCo</td><td><img src="images/4b2f9e3141ab78ff8bfa6dcd6dfe5bbf470e26e2cbd153ea0eb674f586c69150.jpg"/></td><td>A smooth white arm paired with a compact anthropomorphic hand with a rounded palm shell, slim fingers, and a clean enclosed structure. The embodiment appears polished and tightly integrated.</td></tr><tr><td>RM75 + RoHand</td><td><img src="images/7d3743e55b0ddea2c9be5cf710f7c890a783bede021fd23738040710984a951f.jpg"/></td><td>A smooth white RM75-style arm with curved segmented links and rounded joint housings, paired with a white enclosed RoHand with dark finger segments and a side-mounted thumb.</td></tr><tr><td>UR5 + RH56DFX</td><td><img src="images/d115559abaf32a4e58e76e68e16edcad168bc891961b3c4428fc721a65639230.jpg"/></td><td>A metallic-gray industrial arm with rounded cylindrical links and blue joint caps, ending in a white-and-silver dexterous hand with a sculpted palm shell, dark finger pads, and a large side thumb.</td></tr><tr><td>UR5 + RH5DG2</td><td><img src="images/9df2ed263a6c706744707c8f3c8bbf471c7fc5feb3b2a88f22107c599f52912d.jpg"/></td><td>A metallic-gray UR5-style arm with blue circular joint caps, attached to a white-and-gray hand with a rounded palm shell, dark cylindrical finger coverings, and a thick side thumb close to the palm plane.</td></tr><tr><td>UR5 + Schunk Hand</td><td><img src="images/c3d36622a6856a1eab7b471e9ab357644274851d7ce9e453895ac326fbcf623e.jpg"/></td><td>A metallic-gray arm with blue round joint covers, paired with a robust white industrial hand. A broad palm, thick segmented fingers, gray fingertip pads, and heavy thumb create a sturdy precision-oriented look.</td></tr><tr><td>UR5 + Shadow Hand</td><td><img src="images/b5a7e62adb764d8371b93dbdadd06ea546360cd7a255c183ed3cd69f77fe1712.jpg"/></td><td>A metallic-gray arm with blue circular joints, attached to a dark anthropomorphic hand with slim multi-joint fingers and bright fingertip caps. The hand is lightweight and human-like relative to the heavier arm.</td></tr><tr><td>UR5 + Wuji</td><td><img src="images/d195f33c1a65283c3fb94aa68192a5860810aae9d586e8063b53b81db976babd.jpg"/></td><td>A metallic-gray arm with blue circular joint caps, ending in a slim dexterous hand with long narrow fingers and a thin side thumb. The hand appears lighter and more elongated than other UR5-based embodiments.</td></tr><tr><td>xArm + Ability</td><td><img src="images/74fc9884d1b644d63ed84fb6d9692c91eddb2a66054447366737ea4ec08e8513.jpg"/></td><td>A white arm with smooth enclosed links, paired with a compact white hand with a rounded palm shell, dark finger coverings, and a thick side thumb. The embodiment is soft-contoured and highly enclosed.</td></tr><tr><td>xArm + Leap</td><td><img src="images/0faf6f681d541d8988f80ecebb8bc65e38497bb08004f96c2bad9a75ad108c5f.jpg"/></td><td>A white arm with smooth rounded links, attached to a compact low-profile robotic hand with a blocky palm and modular fingers. Stacked box-like segments and bright caps give it a clean geometric appearance.</td></tr></table>
+
+## D Benchmark Model Details
+
+As shown in Table S16 and Figure S3, we evaluate a diverse set of commercial API-based and open-source image editing models. For each baseline, we report its model category, access mode, oficial input interface, and either the API cost for commercial models or the model size for locally deployed models.
+
+![](images/0901af217d72dcaef91492772dca2530ddc7838624e87d7199f2d09915b4eff8.jpg)
+
+![](images/87c67e1f1f5e0b55321c9689f3ff2b70e48588a3cc2727d5ff2c780b80e73a92.jpg)  
+Figure S3. Radar chart comparison on the Hand-only and Hand-Arm tracks. We visualize normalized scores across generic similarity metrics, embodiment-aware metrics, and VLM-based judgment. Metrics marked with ∗ are originally lower-is-better metrics; their scores are inverted for visualization so that larger values consistently indicate better performance.
+
+Table S16. Evaluated baselines and their oficial input interfaces. All models are evaluated using the default inference configuration.
+<table><tr><td>Model</td><td>Family</td><td>Access</td><td>Input</td><td>Price/Model Size</td></tr><tr><td colspan="5">Commercial API-based Editors</td></tr><tr><td>GPT-Image-2 [78]</td><td>General Generative Model</td><td>API</td><td>Images + Text</td><td>$211.0 /1k Imgs</td></tr><tr><td>GPT-Image-1.5 [80]</td><td>General Generative Model</td><td>API</td><td>Images + Text</td><td>$133.0 /1k Imgs</td></tr><tr><td>Nano-Banana [84]</td><td>General Generative Model</td><td>API</td><td>Images + Text</td><td>$39.0 /1k Imgs</td></tr><tr><td>Nano-Banana 2 [79]</td><td>General Generative Model</td><td>API</td><td>Images + Text</td><td>$67.0 /1k Imgs</td></tr><tr><td>FLUX-Kontext-Max [86]</td><td>Editing Model</td><td>API</td><td>Images + Text</td><td>$80.0 /1k Imgs</td></tr><tr><td>FLUX-2-Pro [82]</td><td>General Generative Model</td><td>API</td><td>Images + Text</td><td>$45.0 /1k Imgs</td></tr><tr><td>Seedream-4.5 [81]</td><td>Editing Model</td><td>API</td><td>Images + Text</td><td>$40.0 /1k Imgs</td></tr><tr><td colspan="5">Open-source Editors</td></tr><tr><td>Qwen-Image-Edit-2511 [85]</td><td>Editing Model</td><td>Local</td><td>Images + Text</td><td>20B Dense</td></tr><tr><td>FireRed-Image-Edit-1.1 [88]</td><td>Editing Model</td><td>Local</td><td>Images + Text</td><td>20B Dense</td></tr><tr><td>OmniGen2 [87]</td><td>General Generative Model</td><td>Local</td><td>Images + Text</td><td>7B Dense</td></tr><tr><td>Hunyuan-Image-3.0 [83]</td><td>Editing Model</td><td>Local</td><td>Images + Text</td><td>13B Active / 80B MoE</td></tr></table>
+
+## E Benchmark Execution Details
+
+The appendix specifies the standardized instruction templates used for benchmark evaluation. In the URDFreference-conditioned protocol, each model receives the source image, a text instruction, and a URDF render of the target embodiment. The render is used as an identity cue, specifying the target robot’s morphology and appearance without providing an interaction pose. We also include a short visual description from Appendix C.4 so that the textual prompt remains explicit and consistent across target embodiments.
+
+Table S17. URDF-reference-conditioned instruction template.
+<table><tr><td>Field</td><td>Instruction content</td></tr><tr><td>Input</td><td>Source image, target-robot render, and text instruction.</td></tr><tr><td>Embodiment cue</td><td>Target render, robot name, and compact visual descriptor from Appendix C.4.</td></tr><tr><td>Template</td><td>Replace the human [hand / hand-arm] region with the robot shown in the reference render: [robot name], described as [compact visual descriptor]. Preserve the original hand-object</td></tr></table>
+
+## F Human Evaluation Details
+
+## F.1 Annotation Setup
+
+To evaluate whether the proposed embodiment-aware metrics agree with human judgment on robot-hand editing quality, we conduct a blinded human annotation study on the test set. The study follows the same URDF-reference-conditioned setting as the benchmark. For each item, annotators are shown the source image, the text instruction, the target URDF render, and one edited output. The target render specifies the requested robot embodiment, but does not provide the desired interaction pose. Model names, metric scores, and pseudo-GT targets are hidden from annotators, preventing the study from becoming a pixel-level comparison against our composited target.
+
+The study covers both the hand-only and hand-arm tracks and includes all 11 evaluated editors. We sample test images from the five source datasets and obtain 2,860 edited outputs in total. Each output is independently rated by five annotators on a five-point scale along three axes: target-robot correctness, scene-and-interaction preservation, and realism with physical plausibility. This gives 14,300 image-level annotations and 42,900 scalar ratings. The rating guide and the instruction shown to annotators are given in Tables S19 and S21.
+
+Table S19. Rating guide for human evaluation. All axes use a five-point scale; the table shows the anchors for scores 1, 3, and 5.
+<table><tr><td>Axis</td><td>Score 1</td><td>Score 3</td><td>Score 5</td></tr><tr><td>Target-robot correctness</td><td>clearly the wrong embodi- color details are wrong.</td><td>The requested robot is miss- Robot cues are visible, but The requested robot is clearly ing, mostly human-like, or key morphology, material, or recognizable, with correct</td><td>hand or hand-arm appearance.</td></tr><tr><td>preservation</td><td>ment.</td><td></td><td>Scene-and-interaction The object, contact, occlu- The main interaction is partly The original object state and sion, or scene layout is heavily preserved, but visible contact hand-object interaction are</td></tr><tr><td>plausibility</td><td>changed. scale/contact are present.</td><td>or object-state errors remain. well preserved. sistencies remain.</td><td>Realism with physical Severe artifacts, broken The image is understandable, The edit looks coherent, phys- geometry, or implausible but artifacts or physical incon- ically plausible, and visually natural.</td></tr></table>
+
+## Instruction Shown to Annotators
+
+You are evaluating an edited image for an egocentric human-to-robot hand editing benchmark.
+
+For each example, you will see a source image, a text instruction, a reference render of the target robot, and one edited image. The reference render shows which robot should appear in the edited image. It does not show the exact interaction pose.
+
+Please rate the edited image on three separate axes:
+
+• whether the requested target robot is correctly shown;
+
+• whether the original object, scene, and hand-object interaction are preserved;
+
+• whether the final image looks realistic and physically plausible.
+
+Judge the edited image directly. Do not compare it to a hidden ground-truth image. Focus on whether the requested edit is successful and whether the final image remains coherent.
+
+## F.2 Human Evaluation Results
+
+For each output and each axis, we average the five annotator ratings to obtain a mean opinion score (MOS). We report Krippendorf’s � to measure agreement on ordinal ratings. We also report ICC(2, �), which measures the reliability of the averaged MOS under a two-way random-efects agreement model; here � = 5 raters.
+
+To compare human judgments with automatic metrics, we form pairwise model choices within each track. For every pair of editors, human preference is determined by the higher MOS, while metric preference is determined by the corresponding automatic score. We use ID Fidelity for target-robot correctness, Interaction for scene-and-interaction preservation, and the VLM judge score for realism with physical plausibility. Pairwise comparisons from the hand-only and hand-arm tracks are pooled, and Fleiss’ � is reported in Table S22.
+
+Table S22. Human agreement and metric-human agreement.
+<table><tr><td>Evaluation</td><td>Target</td><td>Scene+Int.</td><td>Realism</td></tr><tr><td>Krippendorff&#x27;s α among annotators</td><td>0.624</td><td>0.603</td><td>0.627</td></tr><tr><td>ICC(2, k) among annotators</td><td>0.846</td><td>0.831</td><td>0.849</td></tr><tr><td>Metric-human agreement κ</td><td>0.586</td><td>0.572</td><td>0.554</td></tr></table>
+
+The annotator agreement is reliable across the three axes, with Krippendorf’s � above 0.60 and ICC(2, �) above 0.83. The metric-human agreement is also consistent, with Fleiss’ � ranging from 0.554 to 0.586. These results support our metric design, showing that the proposed automatic metrics are consistent with human judgments on target embodiment fidelity, interaction preservation, and visual plausibility.
+
+## G Limitations and Broader Impacts
+
+Limitations. Exact pixel-aligned human–robot image pairs cannot be obtained through physical capture because a human hand and a target robot embodiment cannot occupy identical configurations. HandEdit therefore uses edited pseudo-references as low-cost supervision. Such data retain a gap from real-robot observations in fine-grained appearance and contact dynamics. HandEdit is intended to provide scalable data for pre-training and mid-training and does not replace real-robot demonstrations; its use can reduce the amount of real-robot data required in subsequent stages. HandEdit also formulates embodiment editing as a well-defined image-editing task and supports the development of end-to-end editing models that reduce reliance on hand-crafted data-processing pipelines.
+
+Broader Impacts: HandEdit aims to provide a standardized testbed for evaluating human-to-robot dexterous hand image editing. We expect it to benefit both the embodied AI and image editing communities by supporting research on robot-centric data generation, dexterous embodiment transfer, and controllable image editing. By explicitly evaluating embodiment fidelity and hand-object interaction preservation, HandEdit can help identify failure modes that are not captured by generic image quality metrics alone.
+
+![](images/2c745b6ff0051be5725fdd062c838367126b849f9806ce9b5378f6683f1848d0.jpg)  
+Figure S4. Comparison of Diferent Editing Methods on HandEdit.
+
+## H Visualization of More Examples
+
+See Figure S4 for more data examples with various editing types in HandEdit.
