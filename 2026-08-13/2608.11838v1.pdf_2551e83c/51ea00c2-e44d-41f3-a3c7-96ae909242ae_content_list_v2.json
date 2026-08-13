@@ -1,0 +1,4517 @@
+[
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "GeoBridge: Decoupled Semantic Conditioning for Generative Image Geolocalization"
+                    }
+                ],
+                "level": 1
+            },
+            "bbox": [
+                155,
+                128,
+                843,
+                172
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Zhiyang Dou<sup>1,⋆</sup> Xumeng Han<sup>2,⋆</sup> Fengde Peng<sup>3</sup> Zipeng Wang<sup>1</sup> Moxuan Zhao<sup>2</sup> Zhipei Huang<sup>2</sup> Zhenjun Han<sup>2,†</sup>"
+                    }
+                ]
+            },
+            "bbox": [
+                225,
+                203,
+                769,
+                238
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "University of Chinese Academy of Sciences"
+                    }
+                ]
+            },
+            "bbox": [
+                349,
+                241,
+                648,
+                256
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "<sup>1</sup>School of Advanced Interdisciplinary Sciences, <sup>2</sup>School of Electronic, Electrical and Communication Engineering <sup>3</sup>Shenzhen Institutes of Advanced Technology"
+                    }
+                ]
+            },
+            "bbox": [
+                120,
+                257,
+                877,
+                291
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Abstract"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                248,
+                325,
+                326,
+                343
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Multimodal large language models (MLLMs) have advanced image geolocalization mainly by improving how they reason about geographic cues. How that reasoning is decoded into coordinates, however, has lagged behind. Predicting a place name for a geocoding API is discrete and lossy: it ignores image evidence and collapses multigranular semantics into a coarse lookup. We argue that the bottleneck has shifted from what a model reasons to how that reasoning is represented for a continuous, geometryaware decoder. We present GeoBridge, a role-decoupled conditioning mechanism that connects a frozen semantic MLLM to a frozen Riemannian flow-matching head that generates coordinates on the sphere. The central obstacle is a role conflict: supervising the condition with discrete semantic labels biases its representation toward classdiscriminative geometry, at odds with the smooth manifold the generative head requires. GeoBridge keeps the semantic supervision decoupled from the condition interface: a separate projection forms the continuous condition the frozen head expects, injecting geographic priors without disturbing the spherical decoder. On IM2GPS3K, GeoBridge reaches 38.67/52.89/70.37 at the 25/200/750 km thresholds, improving over a place-name-to-API pipeline and reasoning-augmented direct prediction at these precisionrelevant scales. GeoBridge is a decode-side algorithmic contribution, orthogonal and complementary to chain-ofthought reasoning. Code will be made publicly available."
+                    }
+                ]
+            },
+            "bbox": [
+                89,
+                358,
+                485,
+                768
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "1. Introduction"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                91,
+                808,
+                223,
+                825
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Worldwide image geolocalization asks a model to predict where a photograph was taken on the Earth [11, 33, 35, 38]. The evidence in a single image varies sharply: a visible street sign may pin down a city block, while a rural road or coastline supports only a broad regional hypothesis [1]. Recent multimodal large language model (MLLM) geolocation systems [7, 14, 18, 19, 36, 39] have advanced this task mainly by improving reasoning—reading text, architecture, road layout, and vegetation to infer a plausible place. Far less attention has gone to the step that turns those semantics into an actual coordinate."
+                    }
+                ]
+            },
+            "bbox": [
+                89,
+                833,
+                485,
+                880
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/455f8d02aaff0d8fe39d395c868fbc55106b7f24d29fc659809441815d835482.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 1. From discrete place names to continuous spherical decoding. Top: prior semantic geolocation pipelines stop too early. An MLLM reasons over visual cues, but its output is a discrete place name handed to a blind geocoding API. Bottom: GeoBridge instead decodes the MLLM’s multi-granular hidden semantics through a lightweight semantic connector into a frozen spherical flow-matching head, producing a fine-grained coordinate."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                517,
+                328,
+                901,
+                608
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                511,
+                762,
+                908,
+                883
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "This decode step is where current pipelines stop too early (Fig. 1). A common route predicts a place name and calls a geocoding API [3, 18, 19], reducing a fine-grained spatial decision to a discrete database lookup that discards the image evidence and any sub-region detail. Coordinates, however, live on a continuous sphere, where a geometry-aware generative decoder—such as a Riemannian flow-matching (RFM) head [8, 21]—can place predictions anywhere in continuous space. We argue that the bottleneck has shifted from what an MLLM reasons to how that reasoning is represented for such a decoder."
+                    }
+                ]
+            },
+            "bbox": [
+                532,
+                885,
+                906,
+                901
+            ]
+        },
+        {
+            "type": "page_aside_text",
+            "content": {
+                "page_aside_text_content": [
+                    {
+                        "type": "text",
+                        "content": "arXiv:2608.11838v1 [cs.CV] 12 Aug 2026"
+                    }
+                ]
+            },
+            "bbox": [
+                29,
+                352,
+                65,
+                799
+            ]
+        },
+        {
+            "type": "page_footnote",
+            "content": {
+                "page_footnote_content": [
+                    {
+                        "type": "text",
+                        "content": "⋆ Equal contribution. † Corresponding author (hanzhj@ucas.ac.cn)."
+                    }
+                ]
+            },
+            "bbox": [
+                114,
+                887,
+                473,
+                901
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                89,
+                92,
+                485,
+                242
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We therefore study the interface itself: a frozen MLLM that supplies multi-granular geographic semantics, and a frozen RFM head that generates coordinates on the sphere. The central difficulty is a role conflict. Discrete semantic labels are valuable priors, but supervising the condition representation directly with them pulls it toward classdiscriminative geometry, while the frozen flow head expects a smooth condition compatible with its coordinate manifold."
+                    }
+                ]
+            },
+            "bbox": [
+                89,
+                243,
+                485,
+                378
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "GeoBridge resolves this conflict through role-decoupled conditioning. We introduce five learned role tokens— country, region, city, latitude, and longitude—grouped into contextual and spatial sets, and apply lightweight semantic supervision to shape them. A separate projection pools the two groups and maps their concatenation to the single condition vector the frozen head expects, so the semantic supervision is decoupled from the final condition interface."
+                    }
+                ]
+            },
+            "bbox": [
+                89,
+                380,
+                485,
+                501
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "This makes GeoBridge a decode-side contribution that complements rather than competes with reasoning methods: better reasoning improves the semantic inputs, while Geo-Bridge improves how those semantics become a coordinate. Decoding through a frozen, geometry-aware head also clarifies where accuracy is won. Given an oracle semantic condition, the same frozen head localizes far more precisely, so the limiting factor is the condition supplied to the head, not the head itself. And because the decode is image-grounded and continuous rather than a discrete name lookup, an incorrect place name no longer forces a jump to the wrong city center: GeoBridge stays modestly closer to the truth than discrete geocoding even when the predicted semantics are imperfect. Our contributions are:"
+                    }
+                ]
+            },
+            "bbox": [
+                89,
+                502,
+                485,
+                713
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• We identify a role conflict in MLLM-conditioned generative geolocalization—discrete semantic supervision corrupts the continuous condition a frozen flow head needs—and propose role-decoupled conditioning to resolve it."
+                    }
+                ]
+            },
+            "bbox": [
+                94,
+                714,
+                483,
+                790
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• We instantiate it as GeoBridge: five role tokens with semantic supervision and contextual/spatial pooling, driving a frozen RFM spherical head through a trainable connector."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                792,
+                485,
+                853
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• On IM2GPS3K [35], GeoBridge improves over place-name geocoding (GLOBE [19]) and reasoningaugmented prediction (GRE [36]) at the 25/200/750 km thresholds, and remains competitive on an in-domain MP16 test."
+                    }
+                ]
+            },
+            "bbox": [
+                96,
+                854,
+                485,
+                901
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/9aa6c6b055c243f78c1bdb351c246b49c68054544498a1e7fb6a68e82ca7523a.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 2. Three modes of MLLM-based geolocation. (a) RAG: the MLLM is augmented with retrieved geotagged neighbors and predicts coordinates as text. (b) CoT: the MLLM reasons over visual cues and emits a chain of thought together with coordinates. (c) GeoBridge: instead of emitting coordinates as text, we read the MLLM’s hidden states as a condition for a frozen flow-matching head that generates coordinates, decoupling semantic reasoning from continuous coordinate decoding."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                516,
+                89,
+                903,
+                338
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                531,
+                489,
+                906,
+                520
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "2. Related Work"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                513,
+                535,
+                656,
+                553
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Worldwide image geolocalization. Classic worldwide geolocalization estimates a coordinate by retrieving visually similar geotagged images [34, 40, 41, 43, 44] or by partitioning the Earth into geographic cells [10, 25, 31, 38]. Retrieval can preserve coordinate-level outputs when the reference set contains a similar view, whereas classification scales well but inherits discretization and boundary artifacts. Subsequent methods strengthen the visual side of this formulation with stronger encoders, geographic hierarchies, semantic segmentation, and scene context [6, 26]. More recently, generative methods such as LocDiff [37] and PLONK [8] move beyond fixed grids and galleries by modeling geolocation as conditional coordinate generation. In parallel, MLLM-based methods use foundation models to infer location from explicit geographic cues, motivating a separate line of work discussed next."
+                    }
+                ]
+            },
+            "bbox": [
+                511,
+                561,
+                908,
+                805
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "MLLM-based geolocation. Multimodal LLMs exploit explicit semantic cues—text, landmarks, road infrastructure, and regional visual style—and have produced two dominant strategies (Fig. 2a,b). Retrieval-augmented methods condition the MLLM on geotagged neighbors:"
+                    }
+                ]
+            },
+            "bbox": [
+                511,
+                824,
+                908,
+                901
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Img2Loc [42] and G3 [12] reframe geolocation as trainingfree generation over CLIP-retrieved candidates, Geo-Ranker [13] introduces distance-aware ranking of retrieved candidates, and GeoToken [9] further combines geoaligned retrieval with autoregressive S2-token decoding. Reasoning-based methods instead strengthen intrinsic inference: GeoReasoner [18] fine-tunes on human geo-game reasoning traces, GaGA [7] introduces dynamic multiround interaction into the geolocation task, GLOBE [19] and GRE [36] optimize visual-cue chains of thought, and GeoAgent [14] aligns geolocation reasoning with geographic characteristics through expert-annotated CoT data and geo-aware reinforcement rewards. GeoBridge pursues a third mode (Fig. 2c): it reads the MLLM’s hidden states as a continuous condition for a frozen Riemannian flow head on "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbb { S } ^ { 2 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", separating semantic reasoning from coordinate decoding without retrieving candidates or predicting discrete location tokens."
+                    }
+                ]
+            },
+            "bbox": [
+                88,
+                90,
+                485,
+                363
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Learned interfaces between foundation models and decoders. Learnable query tokens and connector modules are widely used to bridge pretrained foundation-model representations and task-specific decoders. BLIP-2 [17] uses query tokens to connect frozen visual encoders with language models, while MetaQuery [24] studies transferable query-based interfaces across modalities. Similar interface designs have also been used to adapt foundationmodel hidden states to dense prediction tasks such as detection [4, 15, 20, 22] and segmentation [16, 28–30, 45]. GeoBridge follows this general connector paradigm, but the interface is especially delicate in our setting because the decoder is a continuous spherical flow head: the condition is not merely a class token or a natural-language prompt, but a latent that modulates a vector field on "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "S ^ { 2 }"
+                    }
+                ]
+            },
+            "bbox": [
+                88,
+                380,
+                485,
+                608
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3. Method"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                89,
+                618,
+                183,
+                635
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We present GeoBridge, a role-decoupled conditioning mechanism that connects a frozen semantic MLLM to a frozen spherical generative geolocation head (Fig. 3). Geo-Bridge is not a new coordinate generator: the RFM head is kept fixed. The contribution is the trainable interface that turns MLLM hidden states into the single continuous condition that head expects, and the way it injects semantic supervision without corrupting that condition."
+                    }
+                ]
+            },
+            "bbox": [
+                88,
+                643,
+                485,
+                766
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.1. Problem Formulation"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                89,
+                772,
+                295,
+                787
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Given an image x, the goal is to predict a coordinate "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\hat { \\mathbf { y } } \\in \\mathbb { S } ^ { 2 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "scored by geodesic distance "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "d _ { \\mathrm { g e o } } ( \\hat { \\mathbf { y } } , \\mathbf { y } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "to the ground truth. We view the system as a modular conditional generator:"
+                    }
+                ]
+            },
+            "bbox": [
+                89,
+                792,
+                482,
+                840
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\hat { \\mathbf { y } } \\sim g _ { \\phi } ( \\cdot \\mid \\mathbf { c } ) , \\qquad \\mathbf { c } = h _ { \\theta } \\big ( f _ { \\mathrm { M L L M } } ( \\mathbf { x } ) \\big ) ,\\tag{1}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/7a7e84d45938affd994069c76c80d4d786c1dee72ea51e47ad673ac8d05eaee6.jpg"
+                }
+            },
+            "bbox": [
+                148,
+                847,
+                421,
+                863
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "f _ { \\mathrm { M L L M } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is a frozen MLLM, "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "g _ { \\phi }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is a frozen RFM head pretrained to consume a single condition token, and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "h _ { \\theta }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is the only trainable bridge. The bridge must satisfy two requirements at once: expose semantically meaningful geographic information from the MLLM, and preserve the continuous condition geometry the frozen spherical decoder was trained on."
+                    }
+                ]
+            },
+            "bbox": [
+                89,
+                869,
+                483,
+                901
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                509,
+                90,
+                908,
+                167
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.2. Role-Decoupled Conditioning"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                511,
+                178,
+                779,
+                194
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Role conflict. Under naive supervision, these two requirements collide. Country and city labels are discrete and class-discriminative, encouraging decision boundaries between administrative categories; the RFM condition, by contrast, must vary smoothly with the coordinate posterior on "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbb { S } ^ { 2 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". If a single vector must be both a country/city classifier state and the final flow condition, cross-entropy gradients improve semantic separability while distorting the geometry "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "g _ { \\phi }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "consumes. GeoBridge avoids this by decoupling the two roles across three components: role-structured tokens, role-specific semantic heads, and a projection buffer that restores the single-token condition the frozen head expects."
+                    }
+                ]
+            },
+            "bbox": [
+                509,
+                199,
+                908,
+                398
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Role tokens. GeoBridge appends a total of five learned role tokens "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathcal { R } = \\mathcal { R } _ { \\mathrm { a d m } } \\cup \\mathcal { R } _ { \\mathrm { c o o r d } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "after the image and geographic prompt, where"
+                    }
+                ]
+            },
+            "bbox": [
+                509,
+                417,
+                906,
+                465
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathcal { R } _ { \\mathrm { a d m } } = \\{ r _ { \\mathrm { c t y } } , r _ { \\mathrm { r e g } } , r _ { \\mathrm { c i t y } } \\} , \\quad \\mathcal { R } _ { \\mathrm { c o o r d } } = \\{ r _ { \\mathrm { l a t } } , r _ { \\mathrm { l o n } } \\} ,\\tag{2}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/9df2cfe667306657e9cdcb0b3407ec2b51fc5e753b1383dc0a69d6e4d435afd2.jpg"
+                }
+            },
+            "bbox": [
+                524,
+                477,
+                872,
+                494
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "for country, region, city, latitude, and longitude, with lastlayer hidden states "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\dot { \\mathbf { H } } \\in \\mathbb { R } ^ { 5 \\times d _ { \\mathrm { m } } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "The first three are contextual roles (administrative/semantic prior); the last two are spatial roles, giving coordinate-oriented information a place to enter the condition without sharing a token with country/city supervision. This split is purely architectural and does not require the MLLM to emit coordinates through these tokens. The MLLM is frozen; only the role-token embeddings and connector-side modules are trained."
+                    }
+                ]
+            },
+            "bbox": [
+                509,
+                506,
+                908,
+                643
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Role-specific semantic heads. To inject multi-level geographic priors, the representations of the administrative roles "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathcal { R } _ { \\mathrm { a d m } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "are regularized via auxiliary semantic classification tasks. Formally, the semantic prediction "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\ell _ { r }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "for a targeted role "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "r \\in \\mathcal { R } _ { \\mathrm { a d m } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is computed as:"
+                    }
+                ]
+            },
+            "bbox": [
+                509,
+                664,
+                906,
+                741
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\ell _ { r } = A _ { r } \\mathrm { N o r m } _ { r } ( \\mathbf { h } _ { r } ) + b _ { r } ,\\tag{3}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/0dab53629a02cf03c262b44d34501eb6b0cc0683c9897b23f4a9cefba685896d.jpg"
+                }
+            },
+            "bbox": [
+                619,
+                753,
+                799,
+                768
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbf { h } _ { r }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "denotes the corresponding hidden state. These auxiliary heads are optimized via cross-entropy losses against the ground-truth administrative labels. The overall geographic semantic loss is formulated as a joint optimization across the administrative granularities:"
+                    }
+                ]
+            },
+            "bbox": [
+                511,
+                781,
+                906,
+                859
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathcal { L } _ { \\mathrm { s e m } } = \\sum _ { r \\in \\mathcal { R } _ { \\mathrm { a d m } } } \\lambda _ { r } \\mathcal { L } _ { r } ^ { \\mathrm { C E } } ,\\tag{4}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/1201e3c6662f27ff1b825a27a9bc6d0d2a962ea7c7843fbab470242315d1d52a.jpg"
+                }
+            },
+            "bbox": [
+                627,
+                871,
+                792,
+                904
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/3c74b7de825b28bc628cfb46e6c4f3b7707c7cc836617db24429865b15e9523a.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 3. GeoBridge architecture. (1) A frozen MLLM encodes the image and a geographic instruction. (2) Five learned role tokens— three contextual (country, region, city) and two spatial (latitude, longitude)—are read from the MLLM and passed through a lightweight connector. Their contextual and spatial groups are pooled separately and projected into a single condition c, preserving the frozen head’s single-token contract. (3) A frozen Riemannian flow-matching head consumes c and transports a random point to a coordinate on the sphere "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbb { S } ^ { 2 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". (4) The sampled point is the predicted GPS location."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                94,
+                89,
+                901,
+                261
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\lambda _ { r }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is the balancing coefficient for role r. Crucially, these auxiliary heads serve solely as regularizers to steer the hidden states toward interpretable geographic concepts, while the downstream projection buffer aggregates the refined representations for the final prediction."
+                    }
+                ]
+            },
+            "bbox": [
+                89,
+                371,
+                485,
+                448
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Projection buffer and the single-token contract. A lightweight bidirectional transformer encoder "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "E _ { \\theta } - \\mathbf { a }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "single Qwen2-style block—lets the role tokens exchange information, "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\bar { \\mathbf { H } } = { E _ { \\theta } } ( { W _ { \\mathrm { i n } } } \\mathbf { H } ) \\in { \\mathbb { R } } ^ { 5 \\times d _ { \\mathrm { h } } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". We then pool the contextual and spatial groups separately,"
+                    }
+                ]
+            },
+            "bbox": [
+                89,
+                464,
+                485,
+                541
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\begin{array} { r l } & { { \\bf c } _ { \\mathrm { c t x } } = \\frac { 1 } { 3 } \\big ( \\bar { \\bf H } _ { \\mathrm { c t y } } + \\bar { \\bf H } _ { \\mathrm { r e g } } + \\bar { \\bf H } _ { \\mathrm { c i t y } } \\big ) , } \\\\ & { { \\bf c } _ { \\mathrm { s p a } } = \\frac { 1 } { 2 } \\big ( \\bar { \\bf H } _ { \\mathrm { l a t } } + \\bar { \\bf H } _ { \\mathrm { l o n } } \\big ) , } \\end{array}\\tag{5}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/953d05ee20db3f4ae5eeeb4fc0702a8dbddfe213fcf907fe4d6f4da84b3cd02f.jpg"
+                }
+            },
+            "bbox": [
+                169,
+                547,
+                401,
+                587
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "and map their concatenation to a single condition token,"
+                    }
+                ]
+            },
+            "bbox": [
+                89,
+                593,
+                460,
+                609
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathbf { c } = \\mathrm { N o r m } ( \\mathrm { G E L U } ( W _ { \\mathrm { o u t } } [ \\mathbf { c } _ { \\mathrm { c t x } } ; \\mathbf { c } _ { \\mathrm { s p a } } ] ) ) \\in \\mathbb { R } ^ { 1 \\times 1 0 2 4 } .\\tag{6}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/f907754399cc67c1b33391940de7817c0c009605b5f673d939d1aae72fedeb40.jpg"
+                }
+            },
+            "bbox": [
+                107,
+                616,
+                442,
+                635
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The frozen head was pretrained under a single-token condition contract; feeding it a sequence of role tokens would change its input distribution and force the frozen decoder onto an interface it never saw. Eq. (6) keeps role structure upstream while preserving that contract exactly. Because c still derives from the supervised encodings, supervision and conditioning are decoupled at the head interface rather than made fully independent—a distinction we test directly in our ablations."
+                    }
+                ]
+            },
+            "bbox": [
+                89,
+                643,
+                485,
+                779
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.3. Training Objective"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                89,
+                786,
+                272,
+                803
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The frozen head defines a Riemannian flow-matching objective on the sphere [5]. For an intermediate state "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "z _ { t } \\in \\mathbb { S } ^ { 2 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "at flow time t with target tangent velocity "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "u _ { t } ."
+                    },
+                    {
+                        "type": "text",
+                        "content": ", the head predicts "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "v _ { \\phi } ( z _ { t } , t , \\mathbf { c } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and"
+                    }
+                ]
+            },
+            "bbox": [
+                88,
+                808,
+                483,
+                871
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathcal { L } _ { \\mathrm { R F M } } = \\mathbb { E } _ { t , z _ { t } } \\Big [ \\| v _ { \\phi } ( z _ { t } , t , \\mathbf { c } ) - u _ { t } \\| _ { T _ { z _ { t } } \\mathbb { S } ^ { 2 } } ^ { 2 } \\Big ] .\\tag{7}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/32b790f97f84271b828e0eb8ca7f2efda4e169caa27cb136c12c9b74dc0905ee.jpg"
+                }
+            },
+            "bbox": [
+                145,
+                878,
+                426,
+                904
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "With ϕ fixed, Eq. (7) backpropagates only into the connector through c. Since the MLLM forward dominates training cost while the frozen head is cheap, we estimate Eq. (7) with a 1-to-N expansion: for each image we reuse its single condition c across N=8 independent flow samples, reducing gradient variance at no extra MLLM cost (derivation in the appendix). The full objective is"
+                    }
+                ]
+            },
+            "bbox": [
+                511,
+                371,
+                906,
+                477
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\begin{array} { r } { \\mathcal { L } = \\widehat { \\mathcal { L } } _ { \\mathrm { R F M } } ^ { ( N ) } + \\mathcal { L } _ { \\mathrm { s e m } } , } \\end{array}\\tag{8}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/ad0a796933a1876ca09aa93d97f114fdd5c39a75a052beef974d7b56d3df6b8d.jpg"
+                }
+            },
+            "bbox": [
+                640,
+                487,
+                779,
+                508
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "which tunes only the role-token embeddings, connector encoder, projection buffer, and semantic heads. Keeping both the MLLM and the coordinate generator frozen is deliberate: any gain must come from the conditioning interface, not from retraining the backbone or enlarging the decoder."
+                    }
+                ]
+            },
+            "bbox": [
+                511,
+                518,
+                906,
+                595
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.4. Training and Evaluation Policy"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                513,
+                603,
+                790,
+                619
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The two passes differ only in how the semantic prefix is obtained (Fig. 4). At training, ground-truth semantic text is injected as a teacher-forced prefix before the role tokens are read out, giving the connector a clean condition-learning signal; the semantic heads are evaluated here. At evaluation, no ground truth is available: the frozen MLLM first generates the structured geographic text, then the role tokens are appended and reforwarded—reusing the prefix KV-cache— to produce the condition, with no semantic CE. All main results use this deployable generated-prefix path; the oracle (ground-truth-condition) setting is reported only as an upper bound in analysis."
+                    }
+                ]
+            },
+            "bbox": [
+                511,
+                625,
+                908,
+                808
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Coordinate sampling. Given the condition c, the frozen head produces a coordinate by integrating its learned flow on the sphere, following [8]. We draw a base sample "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "z _ { 0 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "from the prior on "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbb { S } ^ { 2 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "(uniform over the Earth’s surface) and solve the flow ODE "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\dot { z } _ { t } = v _ { \\phi } ( z _ { t } , t , \\mathbf { c } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "from "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\scriptstyle t = 0 \\mathrm { t o } t = 1"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". Each step remains on the manifold through the exponential map,"
+                    }
+                ]
+            },
+            "bbox": [
+                511,
+                824,
+                906,
+                901
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/cd9b7c5462544d93098dbe4de50a98418d0504db864f074c435b3d720d03a8d7.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 4. Training and evaluation policy. During training, ground-truth semantic fields are injected, whereas during evaluation they are unavailable."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                94,
+                89,
+                478,
+                244
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                89,
+                327,
+                480,
+                343
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "z _ { t + \\Delta t } = \\exp _ { z _ { t } } \\bigl ( \\Delta t v _ { \\phi } ( z _ { t } , t , \\mathbf { c } ) \\bigr ) , \\qquad \\Delta t = 1 / K ,\\tag{9}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/4dbaf0c91087ad5815f469a55947babb6081203d8ef84a965ab7414f2b5e91cc.jpg"
+                }
+            },
+            "bbox": [
+                111,
+                353,
+                441,
+                371
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "using K=32 Euler steps. We take a single trajectory, so the endpoint is the prediction, "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\hat { \\mathbf { y } } = z _ { 1 }"
+                    }
+                ]
+            },
+            "bbox": [
+                89,
+                381,
+                483,
+                412
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4. Experiments"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                89,
+                424,
+                225,
+                441
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.1. Experimental Setup"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                91,
+                449,
+                282,
+                465
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Benchmarks. We evaluate on two worldwide image geolocalization benchmarks of web-sourced photographs: IM2GPS3K [35] (2,997 images), the standard cross-domain test, and MP16-Reason-Test [19] (12,000 images), an indomain test drawn from the MP16-Pro distribution. Every method is scored against the same ground-truth split."
+                    }
+                ]
+            },
+            "bbox": [
+                89,
+                472,
+                485,
+                564
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Metrics. Distances are computed with the Haversine (great-circle) formula. We report the hit rate at 25, 200, 750, and 2500 km, where @k is the percentage of predictions within k km of the ground truth. The 25/200/750 km thresholds are precision-relevant for city-, region-, and countryscale localization; @2500 is coarse and often saturated among modern MLLM baselines."
+                    }
+                ]
+            },
+            "bbox": [
+                89,
+                580,
+                485,
+                688
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Baselines. We compare across geolocation paradigms; locally evaluated rows are starred, and per-method citations are given in the tables. Classification and retrieval methods predict a geographic cell or retrieve geotagged neighbors [23, 26, 27, 32, 38]; embedding-alignment methods match images to a continuous location space [34]; reasoning MLLMs infer a location through explicit visual-cue reasoning [3, 14, 18, 19, 36]; place-name pipelines predict a place name and convert it to coordinates through a geocoding API [3, 18, 19], for which we run the released models under the original conversion (Microsoft Azure Map for [19] and Nominatim for [3]); and generative methods sample coordinates from a flow head [8]. GeoBridge is a decode-side mechanism, not a specialized retrieval/geocell system, and we make no leaderboard claim. We exclude the concurrent system [14, 39], which strengthens upstream geographic reasoning rather than the decode and is therefore orthogonal to ours; a controlled comparison is also impractical (undisclosed training data, API-dependent geocoding)."
+                    }
+                ]
+            },
+            "bbox": [
+                88,
+                704,
+                485,
+                901
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                511,
+                92,
+                908,
+                184
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Implementation. We train GeoBridge for one epoch on a 1M-image subset of MP16-Pro [12] that is disjoint from the evaluation benchmarks, using learning rate 1 × 10<sup>−4</sup> and a cosine schedule. GeoBridge employs GLOBE [19] as the base MLLM, utilizing five role tokens. The states of these tokens are encoded by the connector, then pooled into contextual and spatial groups, concatenated, and finally projected to a single 1024-dimensional condition that is compatible with the frozen Riemannian-flow head [8]. The MLLM backbone and RFM head are frozen; trainable parameters are limited to the new role-token embeddings, the connector modules, and the semantic auxiliary heads. The RFM loss uses 1-to-N condition expansion with "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "N = 8 ;"
+                    },
+                    {
+                        "type": "text",
+                        "content": "we derive the estimator in Appendix B and sweep N in Appendix C. Further training details are provided in Appendix A."
+                    }
+                ]
+            },
+            "bbox": [
+                509,
+                202,
+                908,
+                445
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.2. Main Results"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                513,
+                454,
+                655,
+                469
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Table 1 compares GeoBridge with standard geolocation references and recent MLLM-based systems on the two benchmarks; locally evaluated rows are starred."
+                    }
+                ]
+            },
+            "bbox": [
+                511,
+                477,
+                906,
+                522
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "On IM2GPS3K (Table 1a), among the non-retrieval MLLM decoding baselines in Table 1, GeoBridge attains the strongest accuracy at 25, 200, and 750 km, and trails only GRE at the coarse, near-saturated 2500 km band. It improves over both place-name-to-API baselines (GeoReasoner, GLOBE, GAEA) and the reasoning-augmented GRE at fine scale. This supports an algorithmic point rather than a leaderboard one: place-name geocoding discards information by committing to a discrete name and direct-coordinate MLLMs emit a single point through the language head, whereas GeoBridge keeps a generative spherical decoder and forms its condition from MLLM semantics through a role-decoupled interface, improving fine-scale accuracy without modifying the frozen head."
+                    }
+                ]
+            },
+            "bbox": [
+                511,
+                522,
+                908,
+                734
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Cross-benchmark divergence. On MP16-Reason-Test (Table 1b) GeoBridge overtakes place-name geocoding (GLOBE) at 750 and 2500 km, and GLOBE leads only at the two finest thresholds, by a small margin. This finethreshold gap reflects how the benchmark defines ground truth, not a localization weakness. MP16-Reason-Test coordinates are city-center-aligned, so once the city is named correctly, geocoding to the city center lands almost exactly on the target: among GLOBE’s predictions, the subset with both country and city correct (n=5815) reaches 98.64/99.57/99.67/99.93 at @25/@200/@750/@2500."
+                    }
+                ]
+            },
+            "bbox": [
+                511,
+                734,
+                908,
+                902
+            ]
+        }
+    ],
+    [
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/a379cc4cfc84131517fc3a3a64322624a5c92d81c75c6dd3a3c9c552ad958003.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 1. Benchmark comparisons. Accuracy (%) at geodesic distance thresholds (km). ⋆ marks rows evaluated locally under our pipeline; for place-name methods we follow the original place-name-to-coordinate API conversion. Best in bold, second underlined."
+                    },
+                    {
+                        "type": "text",
+                        "content": "(a) IM2GPS3K."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Method</td><td>Source</td><td>@25</td><td>@200</td><td>@750</td><td>@2500</td></tr><tr><td>PlaNet [38]</td><td>ECCV&#x27;16</td><td>24.80</td><td>34.30</td><td>48.40</td><td>64.60</td></tr><tr><td>ISNs [23]</td><td>ECCV&#x27;18</td><td>28.00</td><td>36.60</td><td>49.70</td><td>66.00</td></tr><tr><td>Translocator [26]</td><td>ECCV’22</td><td>31.10</td><td>46.70</td><td>58.90</td><td>80.10</td></tr><tr><td>GeoDecoder [6]</td><td>CVPR&#x27;23</td><td>33.50</td><td>45.90</td><td>61.00</td><td>76.10</td></tr><tr><td>GeoCLIP [34]</td><td>NeurIPS&#x27;23</td><td>34.47</td><td>50.65</td><td>69.67</td><td>83.82</td></tr><tr><td>GRE [36]</td><td>NeurIPS&#x27;25</td><td>35.30</td><td>51.70</td><td>69.30</td><td>85.70</td></tr><tr><td>GeoReasoner [18] ICML&#x27;24</td><td></td><td>26.94</td><td>36.63</td><td>52.27</td><td>65.39</td></tr><tr><td>GLOBE* [19]</td><td>NeurIPS&#x27;25</td><td>36.95</td><td>51.99</td><td>69.88</td><td>83.99</td></tr><tr><td>GAEA* [3]</td><td>WACV&#x27;26</td><td>35.40</td><td>51.92</td><td>69.77</td><td>83.95</td></tr><tr><td>GeoBridge*</td><td>This work</td><td>38.67</td><td>52.89</td><td>70.37</td><td>84.42</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                120,
+                143,
+                462,
+                290
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "On the same subset, GeoBridge is precise within the city but spreads continuously around the true area rather than snapping to the city-center point the metric treats as ground truth. This is why GLOBE’s edge is confined to 25/200 km, where landing on the center is decisive, and reverses at 750/2500 km, where center-snapping no longer helps. The city-center bonus, however, only applies when the city is named correctly, and that coverage is domain-dependent: GLOBE—also GeoBridge’s semantic backbone—is bothcountry-and-city-correct on 5815/12000 (48%) of MP16- Reason-Test but only 736/2997 (25%) of cross-domain IM2GPS3K. With the discrete bonus covering far fewer images there, GeoBridge’s continuous estimate prevails on the larger remainder and leads at the precision thresholds. Which decode paradigm wins thus depends on how often the discrete city is correct, not on localization quality alone; we report both benchmarks to make this dependence explicit."
+                    }
+                ]
+            },
+            "bbox": [
+                88,
+                315,
+                485,
+                589
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.3. Analysis"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                89,
+                602,
+                194,
+                617
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "All analysis in this section is on IM2GPS3K."
+                    }
+                ]
+            },
+            "bbox": [
+                89,
+                626,
+                390,
+                641
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The condition, not the head, is the bottleneck. To locate the limiting factor, we replace the deployable condition with a teacher-forced oracle role condition built from ground-truth country/region/city text (Table 2). The oracle row is not a deployable accuracy claim; it isolates whether the frozen head and five-role connector can exploit a correct semantic–spatial condition. Given that condition, @25 rises from 38.67 to 71.67 and the median error falls from 145.77 to 11.67 km—the frozen RFM head is far from saturated. The deployable limit is therefore the quality of the condition supplied by the MLLM, not the capacity of the coordinate head. This validates the premise behind Geo-Bridge: rather than strengthen the coordinate head, we keep a strong frozen decoder and learn a better, image-grounded condition for it."
+                    }
+                ]
+            },
+            "bbox": [
+                89,
+                642,
+                485,
+                869
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "An image-grounded decoder degrades gracefully. The two decode paradigms fail very differently when the semantics are imperfect, and this is where GeoBridge’s design pays off. A place-name pipeline sees only the discrete predicted name at decode time, so a wrong city name geocodes to the wrong city center—an error as large as the naming mistake. GeoBridge instead conditions on the imagegrounded MLLM state and decodes continuously, so a semantic error is softened by the visual evidence rather than amplified. Grouping IM2GPS3K predictions by the correctness of the generated country/city condition (Table 3), Geo-Bridge attains lower mean error than place-name geocoding in every regime. When both labels are correct its continuous estimate localizes within the city rather than snapping to the center (42.9 vs. 57.3 km); and when the city or even the country is wrong, conditioning on the imagegrounded state keeps it at least as accurate as geocoding (441.5 vs. 463.5 km; 4263.5 vs. 4384.4 km) instead of being dragged to a wrong administrative center. GeoBridge thus never trades away accuracy for conditioning on the MLLM, and Fig. 5 shows representative cases. Only 736 of the 2,997 images fall in the both-correct bucket, so most residual error is upstream—GeoBridge improves and stabilizes the semantics-to-coordinate decode but does not repair the reasoning itself, making it complementary to stronger reasoning or CoT-conditioned backbones that would improve the condition it decodes."
+                    }
+                ]
+            },
+            "bbox": [
+                89,
+                869,
+                483,
+                901
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/e4e471f392c46494e502072ee3dadd5795b1a93e7c2d02af3d5e92d3257d681a.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "(b) MP16-Reason-Test."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Method</td><td>Source</td><td>@25</td><td>@200</td><td>@750</td><td>@2500</td></tr><tr><td>ISNs [23]</td><td>ECCV&#x27;18</td><td>47.38</td><td>55.88</td><td>68.48</td><td>80.92</td></tr><tr><td>GeoCLIP [34]</td><td>NeurIPS&#x27;23</td><td>52.52</td><td>66.85</td><td>84.07</td><td>93.33</td></tr><tr><td>Hybrid [1]</td><td>CVPR&#x27;24</td><td>16.53</td><td>28.72</td><td>50.31</td><td>71.47</td></tr><tr><td>RFM-YFCC [8]</td><td>CVPR&#x27;25</td><td>46.64</td><td>60.46</td><td>77.97</td><td>91.96</td></tr><tr><td>GRE [36]</td><td>NeurIPS&#x27;25</td><td></td><td></td><td></td><td></td></tr><tr><td>GeoReasoner [18]</td><td>ICML&#x27;24</td><td>40.44</td><td>50.91</td><td>68.01</td><td>79.68</td></tr><tr><td>GLOBE* [19]</td><td>NeurIPS’25</td><td>60.95</td><td>74.00</td><td>86.12</td><td>92.98</td></tr><tr><td>GAEA* [3]</td><td>WACV’26</td><td>26.13</td><td>41.48</td><td>65.60</td><td>82.84</td></tr><tr><td>GeoBridge*</td><td>This work</td><td>57.44</td><td>72.39</td><td>87.08</td><td>94.20</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                534,
+                145,
+                875,
+                277
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/116859f81032040ca28776f7ba70f7d0264eacbb6c3e54ae359ff1cf2c8f52bf.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 2. Condition ceiling for the frozen RFM head. The oracle row uses teacher-forced role conditions and is not a deployable result; it measures whether the frozen head and five-role connector can exploit a high-quality condition."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Condition</td><td>@25</td><td>@200</td><td>@750</td><td>@2500</td><td>Median</td></tr><tr><td>Deployable</td><td>38.67</td><td>52.89</td><td>70.37</td><td>84.42</td><td>145.77</td></tr><tr><td>Oracle</td><td>71.67</td><td>88.51</td><td>95.50</td><td>99.19</td><td>11.67</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                544,
+                381,
+                875,
+                438
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                509,
+                473,
+                908,
+                852
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Fig. 5 contrasts GeoBridge with place-name geocoding on two examples from each bucket. When the condition is correct both land near the ground truth; when only the country is correct, geocoding jumps to a wrong city center while GeoBridge stays within the right region; and when the condition is wrong, geocoding follows the wrong name across continents while GeoBridge’s image-grounded estimate remains comparatively close. It is the visual evidence, not the discrete label, that keeps GeoBridge anchored."
+                    }
+                ]
+            },
+            "bbox": [
+                511,
+                854,
+                908,
+                901
+            ]
+        }
+    ],
+    [
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/6ba5aab7f9fe11f8f6c3f127230d75ceebd71cc8193cebdbb06c5993f50d9343.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 3. Robustness across semantic regimes (IM2GPS3K). Mean Haversine error (km) per bucket, grouped by whether the generated condition names the correct country and city. Geo-Bridge attains lower mean error than place-name geocoding in every bucket, including when the discrete semantics are wrong."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Bucket</td><td>Count</td><td>GeoBridge</td><td>Geocoding</td></tr><tr><td>Country + city correct</td><td>736</td><td>42.92</td><td>57.25</td></tr><tr><td>Country correct, city wrong</td><td>1355</td><td>441.49</td><td>463.51</td></tr><tr><td>Country + city wrong</td><td>906</td><td>4263.54</td><td>4384.41</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                96,
+                171,
+                478,
+                239
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/57c7335f59a4f3df71d7809f0b2f2eab32514703c1d1d4736c8a851df277b4d1.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 4. Conditioning-interface ablation under the oracle condition. The condition path is built up one design element at a time and evaluated on IM2GPS3K with the teacher-forced groundtruth semantic condition, so each variant’s representational ceiling is measured in isolation from upstream semantic-prediction errors. We report Acc@k (%); best per column in bold. The last row is the Oracle entry of Table 2."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Conditioning variant</td><td>@25</td><td>@200</td><td>@750</td><td>@2500</td></tr><tr><td>Single-token, MLP</td><td>38.61</td><td>63.86</td><td>84.48</td><td>94.09</td></tr><tr><td>5 tokens, ungrouped, MLP</td><td>37.00</td><td>64.03</td><td>80.85</td><td>92.09</td></tr><tr><td>5 tokens, grouped, MLP</td><td>42.38</td><td>69.87</td><td>84.42</td><td>95.70</td></tr><tr><td>5 tokens, grouped, Q2Enc.</td><td>61.06</td><td>80.07</td><td>93.18</td><td>98.69</td></tr><tr><td>Full GeoBridge (+ role CE)</td><td>71.67</td><td>88.51</td><td>95.50</td><td>99.19</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                94,
+                366,
+                478,
+                462
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                88,
+                492,
+                485,
+                584
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "5. Ablations"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                89,
+                597,
+                199,
+                614
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Unless otherwise specified, all experiments in this section are conducted on IM2GPS3K."
+                    }
+                ]
+            },
+            "bbox": [
+                88,
+                623,
+                483,
+                655
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "5.1. Component Ablation"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                89,
+                665,
+                289,
+                681
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Table 4 builds GeoBridge’s conditioning interface one design element at a time. To measure each variant’s representational ceiling rather than its sensitivity to upstream errors, we evaluate under the oracle condition—the teacher-forced ground-truth semantic text of Sec. 4.3—so the final row coincides with the Oracle entry of Table 2. All variants share the same training data, schedule, frozen MLLM backbone, and frozen RFM head; what varies is the condition path: the role-token set, the grouping of those tokens, the connector module, and the auxiliary role cross-entropy."
+                    }
+                ]
+            },
+            "bbox": [
+                88,
+                688,
+                485,
+                840
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Structure matters more than token count. Replacing the single condition token with five ungrouped role tokens does not help: @25 even dips (38.6→37.0) and the coarser thresholds fall (84.5→80.9 at @750), so adding latent tokens alone does not improve the condition. Grouping those role tokens into contextual and spatial sets instead yields a clear gain at every threshold (37.0→42.4 at @25, 80.9→84.4 at @750), showing that structured semantic decomposition, not token budget, is the active ingredient."
+                    }
+                ]
+            },
+            "bbox": [
+                89,
+                840,
+                485,
+                901
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/a9ccb7e1113ccdb02f7949e51a9dfae7ec0298224dd15c8bd2081c3bb29adce0.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 5. Oracle-condition upper bounds with different coordinate samplers. Both rows use teacher-forced semantic conditions and are not deployable results."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Sampler/head</td><td>@25</td><td>@200</td><td>@750</td><td>@2500</td></tr><tr><td>Flow Matching</td><td>66.80</td><td>88.00</td><td>95.50</td><td>98.60</td></tr><tr><td>Riemannian Flow Matching</td><td>71.67</td><td>88.51</td><td>95.50</td><td>99.19</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                516,
+                142,
+                910,
+                198
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                511,
+                234,
+                906,
+                313
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Connector capacity and role supervision close the gap. Replacing the MLP connector with Q2Enc, a Qwen2- style transformer-block encoder, lifts the ceiling sharply (42.4→61.1 at @25). Adding the auxiliary role crossentropy—which, decoupled from the condition geometry by GeoBridge’s projection buffer, stabilizes role specialization rather than corrupting it—completes GeoBridge and reaches the oracle ceiling (71.67/88.51/95.50/99.19). Oracle ceilings need not translate into deployable gains, however: Appendix E repeats this ablation under the deployable generated-condition setting, where the connector accounts for most of the realized improvement and the role crossentropy is approximately neutral—consistent with deployable accuracy being gated by the generated semantic prefix."
+                    }
+                ]
+            },
+            "bbox": [
+                509,
+                315,
+                908,
+                530
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "5.2. Coordinate Sampler"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                513,
+                551,
+                707,
+                568
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The frozen head can be trained with Euclidean flow matching (FM) or Riemannian flow matching (RFM) on the sphere; the two differ only in the sampler construction and the flow loss, with all other settings fixed. We compare them at the oracle condition, which probes the head in isolation from generated-condition quality (Table 5). RFM is at least as strong as FM at every threshold, with the largest gain at @25 (71.67 vs. 66.80) and a tie at @750 (95.50 for both), supporting the geometry-aware decoder choice; we use RFM throughout."
+                    }
+                ]
+            },
+            "bbox": [
+                509,
+                578,
+                908,
+                731
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "5.3. Integration Steps at Inference"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                513,
+                752,
+                781,
+                770
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "GeoBridge samples a coordinate by integrating the frozen flow for K Euler steps (Sec. 3.4). Fig. 6 sweeps K at test time with all trained components fixed. Accuracy rises steeply up to roughly 16 steps and then plateaus across every threshold, so our default K=32 sits just past the plateau and can be reduced further for faster inference at negligible accuracy cost. The condition is computed once per image, so the only added cost is K lightweight head evaluations."
+                    }
+                ]
+            },
+            "bbox": [
+                511,
+                780,
+                908,
+                901
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/bdb3298ca8564a00c47a2e3c1ae69bf850d8f16dd06896624716f79acafdb643.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 5. Robustness to imperfect semantics (IM2GPS3K). Two examples per bucket; each map shows the ground truth (green star) GeoBridge (blue circle), and place-name geocoding (orange diamond)."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                91,
+                88,
+                905,
+                444
+            ]
+        },
+        {
+            "type": "chart",
+            "content": {
+                "image_source": {
+                    "path": "images/677c5624f3a76a19c9bbd9507c768654643754ce251f9a32818fedc54b817045.jpg"
+                },
+                "content": "",
+                "chart_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 6. Accuracy vs. number of inference steps. All thresholds saturate by roughly 16 Euler steps; our default of 32 is well past the plateau."
+                    }
+                ],
+                "chart_footnote": []
+            },
+            "bbox": [
+                111,
+                510,
+                462,
+                684
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "5.4. Backbone Transfer"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                89,
+                770,
+                276,
+                786
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "To probe how much the backbone shapes the condition, we swap the frozen MLLM under a deliberately minimal interface—a single condition token, RFM loss, and no semantic supervision—keeping everything else fixed (Table 6). These runs predate the five-role design and are therefore not comparable to full GeoBridge; they isolate the backbone’s effect on condition quality. We evaluate here under the deployable condition rather than the oracle one: the three backbones train almost identically and diverge chiefly in the semantic prefix they predict at inference, so only the deployable setting—where each backbone supplies its own generated condition—surfaces that difference, whereas teacher-forcing a shared ground-truth condition would mask it. This mirrors the connector ablation’s use of the oracle condition: each setting fixes the factor it is not testing. Stronger geographic backbones indeed yield better conditions: a supervised-fine-tuned Qwen2.5-VL and GLOBE both improve over the base model across most thresholds. This reinforces the upper-bound finding that deployable accuracy is governed by the semantic condition the backbone supplies, and shows the generative-decoder interface is not tied to a single MLLM."
+                    }
+                ]
+            },
+            "bbox": [
+                88,
+                795,
+                485,
+                901
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                509,
+                512,
+                908,
+                741
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "6. Conclusion"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                513,
+                753,
+                633,
+                770
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We presented GeoBridge, a role-decoupled conditioning scheme for MLLM-guided generative geolocalization. Supervised semantic role tokens and a separate context/spatial projection feed a frozen RFM head without altering its single-token condition contract, resolving the role conflict between discrete semantic supervision and continuous coordinate geometry. On IM2GPS3K, this decode-side mechanism improves fine-scale accuracy over the MLLM-based and place-name baselines we compare. Our analysis locates the remaining gap upstream—in the semantic condition the MLLM supplies, not the coordinate head—pointing to distribution-aligned condition learning and its composition with stronger reasoning as the natural next step."
+                    }
+                ]
+            },
+            "bbox": [
+                509,
+                780,
+                908,
+                901
+            ]
+        }
+    ],
+    [
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/b61037312f9a7e887e37142b49aebe61998417a5dd4c4ceabb5e8f7525d997f8.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 6. Single-token backbone diagnostics. These runs replace the frozen semantic backbone while keeping a one-token condition interface. They predate the five-role role-decoupled design, so they are diagnostic transfer evidence rather than matched Geo-Bridge ablations."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Frozen backbone</td><td>@25</td><td>@200</td><td>@750</td><td>@2500</td></tr><tr><td>Qwen2.5-VL [2]</td><td>21.7</td><td>42.6</td><td>65.3</td><td>82.5</td></tr><tr><td>Qwen2.5-VL SFT</td><td>23.3</td><td>48.7</td><td>67.8</td><td>84.3</td></tr><tr><td>GLOBE</td><td>21.6</td><td>48.9</td><td>67.9</td><td>84.8</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                122,
+                170,
+                452,
+                239
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                89,
+                268,
+                483,
+                345
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Acknowledgements"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                91,
+                359,
+                258,
+                377
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "This work was supported in part by the Key Deployment Program of the Chinese Academy of Sciences, China under Grant KGFZD-145-25-39, the National Natural Science Foundation of China under Grants 62272438, and Beijing Natural Science Foundation L25700."
+                    }
+                ]
+            },
+            "bbox": [
+                89,
+                386,
+                485,
+                462
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "References"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                91,
+                477,
+                187,
+                493
+            ]
+        },
+        {
+            "type": "list",
+            "content": {
+                "list_type": "reference_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[1] Guillaume Astruc, Nicolas Dufour, Ioannis Siglidis, Constantin Aronssohn, Nacim Bouia, Stephanie Fu, Romain Loiseau, Van Nguyen Nguyen, Charles Raude, Elliot Vincent, et al. Openstreetview-5m: The many roads to global visual geolocation. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages 21967–21977, 2024. 1, 6"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[2] Shuai Bai, Keqin Chen, Xuejing Liu, Jialin Wang, Wenbin Ge, Sibo Song, Kai Dang, Peng Wang, Shijie Wang, Jun Tang, Humen Zhong, Yuanzhi Zhu, Mingkun Yang, Zhaohai Li, Jianqiang Wan, Pengfei Wang, Wei Ding, Zheren Fu, Yiheng Xu, Jiabo Ye, Xi Zhang, Tianbao Xie, Zesen Cheng, Hang Zhang, Zhibo Yang, Haiyang Xu, and Junyang Lin. Qwen2.5-vl technical report. arXiv preprint arXiv:2502.13923, 2025. 9"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[3] Ron Campos, Ashmal Vayani, Parth Parag Kulkarni, Rohit Gupta, Aritra Dutta, and Mubarak Shah. Gaea: A geolocation aware conversational model, 2025. 2, 5, 6"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[4] Keqin Chen, Zhao Zhang, Weili Zeng, Richong Zhang, Feng Zhu, and Rui Zhao. Shikra: Unleashing multimodal llm’s referential dialogue magic, 2023. 3"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[5] Ricky TQ Chen and Yaron Lipman. Flow matching on general geometries. In International Conference on Learning Representations, pages 47922–47945, 2024. 4, 13"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[6] Brandon Clark, Alec Kerrigan, Parth P. Kulkarni, Vicente Vivanco Cepeda, and Mubarak Shah. Where we are and what we’re looking at: Query based worldwide image geolocalization using hierarchies and scenes. In Proceedings of"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "the IEEE/CVF Conference on Computer Vision and Pattern Recognition, 2023. 2, 6"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[7] Zhiyang Dou, Zipeng Wang, Xumeng Han, Guorong Li, Zhipei Huang, and Zhenjun Han. Gaga: Towards interactive global geolocation assistant, 2025. 1, 3"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[8] Nicolas Dufour, Vicky Kalogeiton, David Picard, and Loic Landrieu. Around the world in 80 timesteps: A generative approach to global visual geolocation. In Proceedings of the Computer Vision and Pattern Recognition Conference, pages 23016–23026, 2025. 2, 4, 5, 6"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[9] Narges Ghasemi, Amir Ziashahabi, Salman Avestimehr, and Cyrus Shahabi. Geotoken: Hierarchical geolocalization of images via next token prediction. In IEEE International Conference on Data Mining, 2025. 3"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[10] Lukas Haas, Michal Skreta, Silas Alberti, and Chelsea Finn. Pigeon: Predicting image geolocations. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages 12893–12902, 2024. 2"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[11] James Hays and Alexei A Efros. Im2gps: estimating geographic information from a single image. In CVPR, 2008. 1"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[12] Pengyue Jia, Yiding Liu, Xiaopeng Li, Xiangyu Zhao, Yuhao Wang, Yantong Du, Xiao Han, Xuetao Wei, Shuaiqiang Wang, and Dawei Yin. G3: an effective and adaptive framework for worldwide geolocalization using large multimodality models. Advances in Neural Information Process ing Systems, 37:53198–53221, 2024. 3, 5"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[13] Pengyue Jia, Seongheon Park, Song Gao, Xiangyu Zhao, and Yixuan Li. Georanker: Distance-aware ranking for worldwide image geolocalization. arXiv preprint arXiv:2505.13731, 2025. 3"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[14] Modi Jin, Yiming Zhang, Boyuan Sun, Dingwen Zhang, Ming-Ming Cheng, and Qibin Hou. Geoagent: Learning to geolocate everywhere with reinforced geographic characteristics. arXiv preprint arXiv:2602.12617, 2026. 1, 3, 5"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[15] Aishwarya Kamath, Mannat Singh, Yann LeCun, Gabriel Synnaeve, Ishan Misra, and Nicolas Carion. Mdetr – modulated detection for end-to-end multi-modal understanding, 2021. 3"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[16] Xin Lai, Zhuotao Tian, Yukang Chen, Yanwei Li, Yuhui Yuan, Shu Liu, and Jiaya Jia. Lisa: Reasoning segmentation via large language model, 2024. 3"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[17] Junnan Li, Dongxu Li, Silvio Savarese, and Steven Hoi. Blip-2: Bootstrapping language-image pre-training with frozen image encoders and large language models. In In ternational conference on machine learning, pages 19730– 19742. PMLR, 2023. 3"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[18] Ling Li, Yu Ye, Bingchuan Jiang, and Wei Zeng. Georeasoner: Geo-localization with reasoning in street views using a large vision-language model, 2024. 1, 2, 3, 5, 6"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[19] Ling Li, Yao Zhou, Yuxuan Liang, Fugee Tsung, and Jiaheng Wei. Recognition through reasoning: Reinforcing image geo-localization with large vision-language models. In Advances in Neural Information Processing Systems, 2025. 1, 2, 3, 5, 6"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[20] Liunian Harold Li, Pengchuan Zhang, Haotian Zhang, Jian wei Yang, Chunyuan Li, Yiwu Zhong, Lijuan Wang, Lu"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                99,
+                502,
+                482,
+                598
+            ]
+        }
+    ],
+    [
+        {
+            "type": "list",
+            "content": {
+                "list_type": "reference_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Yuan, Lei Zhang, Jenq-Neng Hwang, Kai-Wei Chang, and Jianfeng Gao. Grounded language-image pre-training, 2022. 3"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[21] Yaron Lipman, Ricky TQ Chen, Heli Ben-Hamu, Maximilian Nickel, and Matt Le. Flow matching for generative modeling. arXiv preprint arXiv:2210.02747, 2022. 2"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[22] Shilong Liu, Zhaoyang Zeng, Tianhe Ren, Feng Li, Hao Zhang, Jie Yang, Qing Jiang, Chunyuan Li, Jianwei Yang, Hang Su, Jun Zhu, and Lei Zhang. Grounding dino: Marrying dino with grounded pre-training for open-set object detection, 2024. 3"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[23] Eric Muller-Budack, Kader Pustu-Iren, and Ralph Ewerth. Geolocation estimation of photos using a hierarchical model and scene classification. In Proceedings of the European conference on computer vision (ECCV), pages 563–579, 2018. 5, 6"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[24] Xichen Pan, Satya Narayan Shukla, Aashu Singh, Zhuokai Zhao, Shlok Kumar Mishra, Jialiang Wang, Zhiyang Xu, Jiuhai Chen, Kunpeng Li, Felix Juefei-Xu, et al. Transfer between modalities with metaqueries. arXiv preprint arXiv:2504.06256, 2025. 3"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[25] Shraman Pramanick, Ewa M Nowara, Joshua Gleason, Carlos D Castillo, and Rama Chellappa. Where in the World is this Image? Transformer-based Geo-localization in the Wild. In Proceedings ofthe European Conference on Computer Vision, pages 196–215, 2022. 2"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[26] Shraman Pramanick, Ewa M. Nowara, Joshua Gleason, Carlos D. Castillo, and Rama Chellappa. Where in the world is this image? transformer-based geo-localization in the wild. In European Conference on Computer Vision, pages 196– 215, 2022. 2, 5, 6"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[27] Feng Qi, Mian Dai, Zixian Zheng, and Chao Wang. Geodecoder: Empowering multimodal map understanding. arXiv preprint arXiv:2401.15118, 2024. 5"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[28] Rui Qian, Chuanhang Deng, Qiang Huang, Jian Xiong, Mingxuan Li, Yingbo Zhou, Wei Zhai, Jintao Chen, and Dejing Dou. Anchorseg: Language grounded query banks for reasoning segmentation, 2026. 3"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[29] Hanoona Rasheed, Muhammad Maaz, Sahal Shaji Mullappilly, Abdelrahman Shaker, Salman Khan, Hisham Cholakkal, Rao M. Anwer, Erix Xing, Ming-Hsuan Yang, and Fahad S. Khan. Glamm: Pixel grounding large multimodal model, 2024."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[30] Zhongwei Ren, Zhicheng Huang, Yunchao Wei, Yao Zhao, Dongmei Fu, Jiashi Feng, and Xiaojie Jin. Pixellm: Pixel reasoning with large multimodal model, 2024. 3"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[31] Paul Hongsuck Seo, Tobias Weyand, Jack Sim, and Bohyung Han. CPlaNet: Enhancing Image Geolocalization by Combinatorial Partitioning of Maps. In Proceedings of the European Conference on Computer Vision, pages 536–551, 2018. 2"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[32] Paul Hongsuck Seo, Tobias Weyand, Jack Sim, and Bohyung Han. Cplanet: Enhancing image geolocalization by combinatorial partitioning of maps. In Proceedings of the European Conference on Computer Vision, pages 536–551, 2018. 5"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[33] Qiaomu Shen, Wei Zeng, Yu Ye, Stefan Mueller Arisona, Simon Schubiger, Remo Burkhard, and Huamin Qu. StreetVizor: Visual Exploration of Human-Scale Urban Forms Based on Street Views. IEEE Transactions on Visualization and Computer Graphics, 24(1):1004–1013, 2018. 1"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[34] Vicente Vivanco Cepeda, Gaurav Kumar Nayak, and Mubarak Shah. Geoclip: Clip-inspired alignment between locations and images for effective worldwide geolocalization. In Advances in Neural Information Processing Systems, pages 8690–8701, 2023. 2, 5, 6"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[35] Nam Vo, Nathan Jacobs, and James Hays. Revisiting im2gps in the deep learning era. In Proceedings of the IEEE International Conference on Computer Vision, pages 2621–2630, 2017. 1, 2, 5"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[36] Chun Wang, Xiaojun Ye, Xiaoran Pan, Zihao Pan, Haofan Wang, and Yiren Song. Gre suite: Geo-localization inference via fine-tuned vision-language models and enhanced reasoning chains, 2025. 1, 2, 3, 5, 6"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[37] Zhangyu Wang, Zeping Liu, Jielu Zhang, Zhongliang Zhou, Qian Cao, Nemin Wu, Lan Mu, Yang Song, Yiqun Xie, Ni Lao, and Gengchen Mai. Locdiff: Identifying locations on earth by diffusing in the hilbert space, 2025. 2"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[38] Tobias Weyand, Ilya Kostrikov, and James Philbin. Planet: Photo geolocation with convolutional neural networks. In European Conference on Computer Vision, pages 37–55, 2016. 1, 2, 5, 6"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[39] Biao Wu, Meng Fang, Ling Chen, Ke Xu, Tao Cheng, and Jun Wang. Vision-language reasoning for geolocalization: A reinforcement learning approach, 2026. 1, 5"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[40] Xiaohan Zhang, Xingyu Li, Waqas Sultani, Yi Zhou, and Safwan Wshah. Cross-view geo-localization via learning disentangled geometric layout correspondence. In Proceed ings of the AAAI Conference on Artificial Intelligence, pages 3480–3488, 2023. 2"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[41] Xiaohan Zhang, Waqas Sultani, and Safwan Wshah. Crossview image sequence geo-localization. In WACV, 2023. 2"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[42] Zhongliang Zhou, Jielu Zhang, Zihan Guan, Mengxuan Hu, Ni Lao, Lan Mu, Sheng Li, and Gengchen Mai. Img2loc: Revisiting image geolocalization using multi-modality foun dation models and image-based retrieval-augmented generation. In Proceedings of the 47th international acm sigir conference on research and development in information retrieval, pages 2749–2754, 2024. 3"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[43] Sijie Zhu, Taojiannan Yang, and Chen Chen. Vigor: Crossview image geo-localization beyond one-to-one retrieval, 2021. 2"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[44] Sijie Zhu, Mubarak Shah, and Chen Chen. TransGeo: Transformer Is All You Need for Cross-view Image Geolocalization. In IEEE Conference on Computer Vision and Pattern Recognition, pages 1162–1171, 2022. 2"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "[45] Xueyan Zou, Zi-Yi Dou, Jianwei Yang, Zhe Gan, Linjie Li, Chunyuan Li, Xiyang Dai, Harkirat Behl, Jianfeng Wang, Lu Yuan, Nanyun Peng, Lijuan Wang, Yong Jae Lee, and Jianfeng Gao. Generalized decoding for pixel, image, and language, 2022. 3"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                122,
+                93,
+                482,
+                133
+            ]
+        }
+    ],
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Supplementary Material"
+                    }
+                ],
+                "level": 1
+            },
+            "bbox": [
+                346,
+                99,
+                650,
+                125
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/3df650ec134a11a0cb9b32a0df14ef5bdec65e4713f5422635026f38a8e3a796.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 7. Key training hyperparameters for GeoBridge."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Item</td><td>Value</td></tr><tr><td>Base MLLM</td><td>GLOBE-Qwen2.5-VL-7B</td></tr><tr><td>Coordinate head</td><td>Frozen PLONK Riemannian-flow head</td></tr><tr><td>Training data</td><td>MP16-Pro-subset-1M</td></tr><tr><td>Evaluation data</td><td>IM2GPS3K</td></tr><tr><td>Epochs</td><td>1</td></tr><tr><td>Batching</td><td>8 GPUs, batch size 4/GPU, accumula- tion 4</td></tr><tr><td>Learning rate</td><td> $1 \\times 1 0 ^ { - 4 } .$  cosine decay, warmup 1000 steps</td></tr><tr><td>1-to-N expansion</td><td> $N = 8$  flow samples per image condi- tion</td></tr><tr><td>Role tokens</td><td> $M = 5 \\mathrm { : }$  country, region, city, latitude, longitude</td></tr><tr><td>Connector</td><td>1-layer bidirectional connector, hid- den/output dim 1024</td></tr><tr><td>Role grouping</td><td>3 contextual roles + 2 spatial roles</td></tr><tr><td>Losses</td><td>RFM loss; country CE weight 0.05; re- gion CE weight 0.03; city CE weight</td></tr><tr><td>Frozen modules</td><td>0.02 MLLM backbone and PLONK/RFM</td></tr><tr><td>Trainable modules</td><td>head Role-token embeddings, connec-</td></tr><tr><td></td><td>tor/projection, country/city heads Optimization memory DeepSpeed ZeRO-2 + gradient check-</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                96,
+                178,
+                477,
+                571
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "A. Training Details"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                89,
+                595,
+                256,
+                613
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Table 7 summarizes the key GeoBridge training hyperparameters. The entries are taken from the run configuration, with local filesystem paths omitted for anonymity."
+                    }
+                ]
+            },
+            "bbox": [
+                88,
+                622,
+                483,
+                669
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "B. 1-to-N Condition Expansion"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                89,
+                681,
+                357,
+                699
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The RFM objective contains stochasticity from the sampled base point ϵ and flow time t. Computing the MLLM condition "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "c _ { i }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is expensive, while evaluating the frozen RFM head on additional flow samples is comparatively cheap. We therefore use 1-to-N condition expansion: for each image, compute the condition once and reuse it across N independent RFM training samples."
+                    }
+                ]
+            },
+            "bbox": [
+                88,
+                707,
+                485,
+                813
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "For a mini-batch "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\{ ( x _ { i } , y _ { i } ) \\} _ { i = 1 } ^ { B }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", GeoBridge first computes"
+                    }
+                ]
+            },
+            "bbox": [
+                89,
+                813,
+                482,
+                844
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\boldsymbol c _ { i } = h _ { \\boldsymbol \\theta } ( f _ { \\mathrm { M L L M } } ( \\boldsymbol x _ { i } ) ) , \\qquad i = 1 , \\dots , B .\\tag{10}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/33c1a555624e225f83b905e08e96b19dc33f3aca769ea25e58ad711400ca9cf8.jpg"
+                }
+            },
+            "bbox": [
+                148,
+                856,
+                424,
+                873
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Then, for each "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "i ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "sample N independent pairs "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( \\epsilon _ { i , n } , t _ { i , n } )"
+                    }
+                ]
+            },
+            "bbox": [
+                89,
+                885,
+                480,
+                901
+            ]
+        },
+        {
+            "type": "algorithm",
+            "content": {
+                "algorithm_caption": [],
+                "algorithm_content": [
+                    {
+                        "type": "text",
+                        "content": "Algorithm 1 GeoBridge training with 1-to-N expansion Require: Image batch "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "x _ { 1 : B } ."
+                    },
+                    {
+                        "type": "text",
+                        "content": ", targets "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "y _ { 1 : B }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", semantic labels, expansion factor N 1: Run the frozen MLLM with trainable role-token embeddings and obtain role states "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "H _ { 1 : B }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "2: Compute conditions "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "c _ { 1 : B }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and country/city logits with the connector and auxiliary heads 3: Compute "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathcal { L } _ { \\mathrm { s e m } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "once over the B images 4: Repeat each condition and target N times: "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "c _ { i , n }  c _ { i } ,"
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "y _ { i , n } \\gets y _ { i }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "5: Sample "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\epsilon _ { i , n } \\sim \\mathrm { U n i f } ( \\mathbb { S } ^ { 2 } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "t _ { i , n } \\sim \\mathcal { U } [ 0 , 1 ]"
+                    },
+                    {
+                        "type": "text",
+                        "content": "6: Construct "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "z _ { i , n }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and target tangent velocity "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "u _ { i , n }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "using the RFM interpolant 7: Predict "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\hat { u } _ { i , n } = v _ { \\phi } ( z _ { i , n } , t _ { i , n } , c _ { i , n } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "with frozen head parameters 8: Compute "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\begin{array} { r } { \\widehat { \\mathcal { L } } _ { \\mathrm { R F M } } ^ { ( N ) } = ( B N ) ^ { - 1 } \\sum _ { i , n } \\| \\widehat { u } _ { i , n } - u _ { i , n } \\| _ { T _ { z _ { i , n } } \\mathbb { S } ^ { 2 } } ^ { 2 } } \\end{array}"
+                    },
+                    {
+                        "type": "text",
+                        "content": "9: Backpropagate "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\widehat { \\mathcal { L } } _ { \\mathrm { R F M } } ^ { ( N ) } + \\mathcal { L } _ { \\mathrm { s e m } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "into role tokens and connector modules only"
+                    }
+                ],
+                "algorithm_footnote": []
+            },
+            "bbox": [
+                514,
+                151,
+                906,
+                449
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The expanded estimator is"
+                    }
+                ]
+            },
+            "bbox": [
+                513,
+                474,
+                692,
+                491
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\widehat { \\mathcal { L } } _ { \\mathrm { R F M } } ^ { ( N ) } = \\frac { 1 } { B N } \\sum _ { i = 1 } ^ { B } \\sum _ { n = 1 } ^ { N } \\| v _ { \\phi } ( z _ { i , n } , t _ { i , n } , c _ { i } ) - u _ { i , n } \\| _ { T _ { z _ { i , n } } \\mathbb { S } ^ { 2 } } ^ { 2 } .\\tag{11}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/28cd4fce738f070f168b0168b7ca9f58d31822668b38372a8ea17f72ef0273f8.jpg"
+                }
+            },
+            "bbox": [
+                519,
+                500,
+                898,
+                541
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The semantic auxiliary loss is computed once per image:"
+                    }
+                ]
+            },
+            "bbox": [
+                513,
+                554,
+                890,
+                570
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathcal { L } = \\widehat { \\mathcal { L } } _ { \\mathrm { R F M } } ^ { ( N ) } + \\sum _ { r \\in \\mathcal { R } _ { \\mathrm { a d m } } } \\lambda _ { r } \\mathcal { L } _ { r } ^ { \\mathrm { C E } } .\\tag{12}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/7379169f449d9420748350e2da3738bdf3101e3e8f2c9128876f3c235229da48.jpg"
+                }
+            },
+            "bbox": [
+                606,
+                578,
+                810,
+                613
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "This estimator is unbiased for the RFM expectation. If the N flow samples are conditionally independent given "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( x _ { i } , y _ { i } , c _ { i } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", the Monte-Carlo variance of the flow-sampling component decreases approximately as "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "1 / N"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", while the MLLM forward cost remains unchanged. The trade-off is that RFM-head compute and activation memory scale linearly with N."
+                    }
+                ]
+            },
+            "bbox": [
+                511,
+                619,
+                908,
+                727
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "C. Sweep over the Expansion Factor N"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                513,
+                738,
+                844,
+                756
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Figure 7 reports an oracle-condition sweep over the expansion factor N on IM2GPS3K. The oracle protocol uses teacher-forced ground-truth semantic fields and therefore probes condition-to-coordinate training rather than the deployable generated-condition setting."
+                    }
+                ]
+            },
+            "bbox": [
+                511,
+                763,
+                906,
+                840
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Among the strictly comparable runs, moderate expansion gives the strongest fine- and mid-range oracle accuracy: "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "N = 8"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is best at @25 and @200. Larger expansion does not monotonically improve accuracy, suggesting that too many repeated flow samples from the same semantic condition can over-emphasize local flow-sampling variance relative to condition diversity."
+                    }
+                ]
+            },
+            "bbox": [
+                511,
+                840,
+                908,
+                901
+            ]
+        }
+    ],
+    [
+        {
+            "type": "chart",
+            "content": {
+                "image_source": {
+                    "path": "images/bfed1409cc778fc5fb39722c7583ed712ee2ded6cccd46250d456e7837974e06.jpg"
+                },
+                "content": "",
+                "chart_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 7. Oracle accuracy versus 1-to-N expansion."
+                    }
+                ],
+                "chart_footnote": []
+            },
+            "bbox": [
+                114,
+                90,
+                460,
+                251
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                89,
+                309,
+                483,
+                357
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "D. Freezing versus Unfreezing the RFM Head"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                89,
+                371,
+                478,
+                390
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "GeoBridge freezes the pretrained RFM head and trains only the semantic interface. To verify that this is not merely a computational shortcut, we compare freezing and unfreezing the coordinate head under two settings."
+                    }
+                ]
+            },
+            "bbox": [
+                89,
+                398,
+                485,
+                460
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "End-to-end unfreezing from the start. We first train GeoBridge end-to-end with the same connector and roletoken design, but allow the RFM head to update together with the bridge. As shown in Fig. 8, unfreezing the head produces nearly the same optimization curve as the frozenhead run. The training losses rapidly enter the same range, and the @200 km validation accuracy converges to an almost identical plateau. Although the unfrozen head has more trainable capacity, it does not yield a measurable accuracy gain; in mean-error evaluation, the frozen-head run is slightly better. We therefore keep the RFM head frozen in the final model."
+                    }
+                ]
+            },
+            "bbox": [
+                88,
+                483,
+                485,
+                666
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Second-stage unfreezing after connector pretraining. We also test a two-stage alternative: first train the Geo-Bridge connector with the RFM head frozen, then load the first-stage connector and continue training while unfreezing the coordinate head. Fig. 9 shows that the second-stage loss first rises rapidly after unfreezing the coordinate head and then gradually stabilizes. Meanwhile, validation accuracy drops immediately after unfreezing and later recovers, but it never surpasses the first-stage frozen-head performance; longer second-stage training yields only marginal gains. This suggests that adapting the pretrained vector field after the connector has already learned its interface mainly perturbs a useful spherical decoder prior rather than improving the semantic-to-coordinate mapping."
+                    }
+                ]
+            },
+            "bbox": [
+                88,
+                689,
+                485,
+                902
+            ]
+        },
+        {
+            "type": "chart",
+            "content": {
+                "image_source": {
+                    "path": "images/56d683fcf707cabd23f971d4344d722774c2e7155331180d4ab567ea33bfb6c2.jpg"
+                },
+                "content": "",
+                "chart_caption": [],
+                "chart_footnote": []
+            },
+            "bbox": [
+                514,
+                87,
+                702,
+                241
+            ]
+        },
+        {
+            "type": "chart",
+            "content": {
+                "image_source": {
+                    "path": "images/f0284a120125edbc786eb082ab9cf91bccbb325906238de6b8ca3f9f1ee0b6cf.jpg"
+                },
+                "content": "",
+                "chart_caption": [
+                    {
+                        "type": "text",
+                        "content": " Freeze PLONK  Unfreeze PLONK"
+                    }
+                ],
+                "chart_footnote": []
+            },
+            "bbox": [
+                725,
+                87,
+                906,
+                241
+            ]
+        },
+        {
+            "type": "chart",
+            "content": {
+                "image_source": {
+                    "path": "images/d7bf59327459552acff9639a9047c0814da0c873128f406aa87105ecf3b644c4.jpg"
+                },
+                "content": "",
+                "chart_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 8. End-to-end comparison between freezing and unfreezing the RFM head."
+                    }
+                ],
+                "chart_footnote": []
+            },
+            "bbox": [
+                513,
+                310,
+                699,
+                450
+            ]
+        },
+        {
+            "type": "chart",
+            "content": {
+                "image_source": {
+                    "path": "images/c52d77a6b6ebfa99792a89cf60cd101ddc96fa98e46647d9601a001451df32d2.jpg"
+                },
+                "content": "",
+                "chart_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 9. Two-stage unfreezing after connector pretraining. We initialize from a first-stage connector trained with a frozen RFM head, then unfreeze the coordinate head for continued training."
+                    }
+                ],
+                "chart_footnote": []
+            },
+            "bbox": [
+                727,
+                310,
+                905,
+                452
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/d8c2559bb1bacc9830787a30ddd1c9affad07a2b0486ecfb0941c76aae232f51.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 8. Conditioning-interface ablation under the deployable condition (IM2GPS3K). The same variants as Table 4, but each model uses its own generated semantic prefix at inference rather than a teacher-forced oracle condition. Acc@k (%); best per column in bold. The last row is GeoBridge’s deployable result."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Conditioning variant</td><td>@25 @200</td><td>@750</td><td>@2500</td></tr><tr><td>Single-token, MLP</td><td>21.72</td><td>42.63 65.34</td><td>82.59</td></tr><tr><td>Role tokens, ungrouped, MLP</td><td>20.94</td><td>41.79 65.57</td><td>83.00</td></tr><tr><td>Role tokens, grouped, MLP</td><td>23.36</td><td>48.74 67.89</td><td>84.38</td></tr><tr><td>Role tokens, grouped, Q2Enc</td><td>38.50</td><td>52.81 70.90</td><td>84.38</td></tr><tr><td>Full GeoBridge (+ role CE)</td><td>38.67</td><td>52.89 70.37</td><td>84.42</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                521,
+                601,
+                898,
+                696
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "E. Deployable component ablation"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                513,
+                723,
+                807,
+                742
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Table 4 isolates each conditioning component under the oracle condition, which measures the ceiling a variant could reach with a correct semantic prefix. Table 8 repeats the same progression under the deployable condition—each variant using its own generated prefix on IM2GPS3K— so the two tables together separate representational ceiling from realized gain."
+                    }
+                ]
+            },
+            "bbox": [
+                511,
+                750,
+                908,
+                854
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Three observations follow. First, the ordering of the early steps matches the oracle study: adding ungrouped tokens does not help (it slightly dips), while grouping gives a modest gain, reaffirming that structured decomposition rather than token count is the active ingredient. Second, the connector is the dominant deployable driver: replacing the MLP with Q2Enc lifts @25 from 23.3 to 38.5—the single largest deployable jump, accounting for roughly 90% of GeoBridge’s improvement over the single-token baseline. Third, and unlike the oracle study, the auxiliary role crossentropy is approximately neutral in deployment: it moves @25 by only +0.2 (38.50→38.67) and is marginally lower at 750 km, even though it raised the oracle ceiling by more than ten points (Table 4)."
+                    }
+                ]
+            },
+            "bbox": [
+                511,
+                854,
+                908,
+                901
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                88,
+                92,
+                485,
+                257
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "This gap is consistent with our central finding rather than at odds with it. Deployable accuracy is gated by the quality of the generated semantic prefix, so a component that sharpens how a correct condition is exploited yields little when the condition itself is frequently wrong; role CE accordingly shows its value at the ceiling (oracle) far more than in realized accuracy (deployable). We retain it because it raises the achievable ceiling and is expected to pay off as upstream semantics improve, but we report its current deployable contribution transparently. The same reading explains why most of GeoBridge’s deployable accuracy comes from the connector, which improves the semanticsto-coordinate mapping regardless of whether the underlying prefix is correct."
+                    }
+                ]
+            },
+            "bbox": [
+                88,
+                257,
+                485,
+                470
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "F. Flow Matching and Riemannian Flow Matching"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                89,
+                484,
+                482,
+                518
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "This section expands the coordinate generator used by Geo-Bridge. The head itself is inherited from RFM [5] and kept frozen; GeoBridge only learns the semantic condition supplied to this head. We use the prior-to-data convention below, matching the sampling direction in GeoBridge: a random base point is drawn at t = 0 and transported to a predicted geographic point at "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "t = 1"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". This is equivalent to the data-to-noise convention often used in flow-matching papers after the time change "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "t \\mapsto 1 - t"
+                    }
+                ]
+            },
+            "bbox": [
+                88,
+                527,
+                485,
+                666
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Coordinates on the sphere. A latitude–longitude pair "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( \\varphi , \\lambda )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is represented as a unit vector"
+                    }
+                ]
+            },
+            "bbox": [
+                89,
+                685,
+                483,
+                717
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "y ( \\varphi , \\lambda ) = \\big ( \\cos \\varphi \\cos \\lambda , \\cos \\varphi \\sin \\lambda , \\sin \\varphi \\big ) \\in \\mathbb { S } ^ { 2 } \\subset \\mathbb { R } ^ { 3 } .\\tag{13}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/d27b0b990b9bb7be857b0f1b253e6a7f18b1693fbfa8167cb9ea7de6e89e055a.jpg"
+                }
+            },
+            "bbox": [
+                98,
+                728,
+                472,
+                746
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The geodesic distance between two unit vectors "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "p , q \\in \\mathbb { S } ^ { 2 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is"
+                    }
+                ]
+            },
+            "bbox": [
+                89,
+                760,
+                482,
+                776
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "d _ { \\mathbb { S } ^ { 2 } } ( p , q ) = \\operatorname { a r c c o s } \\big ( \\mathrm { c l i p } ( p ^ { \\top } q , - 1 , 1 ) \\big ) ,\\tag{14}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/e5ceb59a7494ad10e574af00cf4540f927f08938fab10734a41068b7d696caf8.jpg"
+                }
+            },
+            "bbox": [
+                155,
+                787,
+                416,
+                806
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "and the distance in kilometers is obtained by multiplying by the Earth radius "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "R _ { \\oplus }"
+                    }
+                ]
+            },
+            "bbox": [
+                88,
+                818,
+                482,
+                849
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Exponential and logarithmic maps. For "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "p , q \\in \\mathbb { S } ^ { 2 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", let "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\alpha = d _ { \\mathbb { S } ^ { 2 } } ( p , q )"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". The logarithmic map sends q to a tangent"
+                    }
+                ]
+            },
+            "bbox": [
+                88,
+                869,
+                483,
+                901
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "vector at p:"
+                    }
+                ]
+            },
+            "bbox": [
+                513,
+                93,
+                593,
+                106
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\log _ { p } ( q ) = { \\frac { \\alpha } { \\sin \\alpha } } { \\big ( } q - \\cos \\alpha p { \\big ) } \\in T _ { p } \\mathbb { S } ^ { 2 } .\\tag{15}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/899ae823bf5ab71cc88bb822d47d5f1f1426aa36570c11a7618d5bbb2ebbddbe.jpg"
+                }
+            },
+            "bbox": [
+                578,
+                113,
+                839,
+                140
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "For a tangent vector "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "v \\in T _ { p } \\mathbb { S } ^ { 2 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", the exponential map is"
+                    }
+                ]
+            },
+            "bbox": [
+                511,
+                147,
+                872,
+                164
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\exp _ { p } ( v ) = \\cos \\| v \\| p + \\sin \\| v \\| { \\frac { v } { \\| v \\| } } .\\tag{16}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/2decdde27cdbc4dc55d7f1bb55840d039a497cdfda44e4d35c1decd77dac8ba0.jpg"
+                }
+            },
+            "bbox": [
+                586,
+                171,
+                831,
+                200
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "In implementation, the usual small-angle limits are used when α or "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\lVert v \\rVert"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is close to zero. A vector "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "a \\in \\mathbb { R } ^ { 3 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "can be projected to the tangent plane at p by"
+                    }
+                ]
+            },
+            "bbox": [
+                511,
+                207,
+                906,
+                253
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\begin{array} { r } { \\Pi _ { p } ( a ) = a - ( \\overline { { a } } ^ { \\top } p ) p . } \\end{array}\\tag{17}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/ed7ae26247af392bea3ad42772136436797f3b8276018335398c38cc4da5a807.jpg"
+                }
+            },
+            "bbox": [
+                633,
+                260,
+                784,
+                279
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Euclidean flow matching. Let c denote the GeoBridge condition, "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "y \\in \\mathbb { S } ^ { 2 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "the target coordinate, and ϵ a base sample. In Euclidean flow matching, the interpolant is defined in "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbb { R } ^ { 3 }"
+                    }
+                ]
+            },
+            "bbox": [
+                511,
+                295,
+                906,
+                340
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "z _ { t } ^ { \\mathrm { E } } = ( 1 - \\kappa ( t ) ) \\epsilon + \\kappa ( t ) y , \\qquad \\kappa ( 0 ) = 0 , \\quad \\kappa ( 1 ) = 1 .\\tag{18}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/19e255375eff864a9348906f8db7fecef64a89e5b3726ed6cb64095ab5166a35.jpg"
+                }
+            },
+            "bbox": [
+                526,
+                348,
+                890,
+                366
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The target velocity is"
+                    }
+                ]
+            },
+            "bbox": [
+                513,
+                380,
+                658,
+                395
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "u _ { t } ^ { \\mathrm { E } } = \\frac { d z _ { t } ^ { \\mathrm { E } } } { d t } = \\dot { \\kappa } ( t ) ( y - \\epsilon ) ,\\tag{19}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/cc15214c0a0085b0716a0ce49bcf476166d00b1608a7ee1eca744654f948957f.jpg"
+                }
+            },
+            "bbox": [
+                619,
+                402,
+                799,
+                434
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "and the Euclidean FM loss is"
+                    }
+                ]
+            },
+            "bbox": [
+                513,
+                440,
+                709,
+                455
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathcal { L } _ { \\mathrm { F M } } = \\mathbb { E } _ { ( y , c ) , \\epsilon , t } \\left[ \\left| \\left| v _ { \\phi } ( z _ { t } ^ { \\mathrm { E } } , t , c ) - u _ { t } ^ { \\mathrm { E } } \\right| \\right| _ { 2 } ^ { 2 } \\right] .\\tag{20}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/f8d1801a5fd5a83dc0ac8acc5cbd64d0fcf8ddcd6679986d8f3916e2da93439f.jpg"
+                }
+            },
+            "bbox": [
+                552,
+                459,
+                838,
+                486
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Because "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "z _ { t } ^ { \\mathrm { E } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "does not generally stay on "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbb { S } ^ { 2 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", Euclidean FM requires a final projection or normalization to produce a valid location."
+                    }
+                ]
+            },
+            "bbox": [
+                511,
+                493,
+                906,
+                540
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Riemannian flow matching on "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbb { S } ^ { 2 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". RFM instead constructs the interpolation directly on the sphere. Given "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\epsilon \\sim"
+                    },
+                    {
+                        "type": "text",
+                        "content": "Unif(S<sup>2</sup>) and target "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "y \\in \\mathbb { S } ^ { 2 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", define"
+                    }
+                ]
+            },
+            "bbox": [
+                511,
+                556,
+                906,
+                604
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "z _ { t } = \\exp _ { \\epsilon } \\left( \\kappa ( t ) \\log _ { \\epsilon } ( y ) \\right) \\in \\mathbb { S } ^ { 2 } .\\tag{21}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/f7938fa597fdc0874e38560419dd91ff1d8f03a2f58c4479c4dc51f45f873621.jpg"
+                }
+            },
+            "bbox": [
+                604,
+                611,
+                813,
+                628
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The corresponding tangent velocity is"
+                    }
+                ]
+            },
+            "bbox": [
+                513,
+                637,
+                766,
+                654
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "u _ { t } = \\dot { \\kappa } ( t ) \\operatorname { P T } _ { \\epsilon \\to z _ { t } } \\left[ \\log _ { \\epsilon } ( y ) \\right] \\in T _ { z _ { t } } \\mathbb { S } ^ { 2 } ,\\tag{22}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/52514360674207efa5e5cfb1fc0cde204b898e808947d0bffb549be556a1f8a2.jpg"
+                }
+            },
+            "bbox": [
+                583,
+                660,
+                834,
+                678
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathrm { P T } _ { \\epsilon  z _ { t } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "denotes parallel transport along the geodesic from "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbf { \\mu } \\in \\mathbf { t o } \\ z _ { t }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". The RFM objective is"
+                    }
+                ]
+            },
+            "bbox": [
+                511,
+                685,
+                905,
+                717
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\begin{array} { r } { \\mathcal { L } _ { \\mathrm { R F M } } = \\mathbb { E } _ { ( y , c ) , \\epsilon , t } \\left[ \\left\\| v _ { \\phi } ( z _ { t } , t , c ) - u _ { t } \\right\\| _ { T _ { z _ { t } } \\mathbb { S } ^ { 2 } } ^ { 2 } \\right] . } \\end{array}\\tag{23}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/868d642edda442eb3339b0bae452a26a84b11752047e5f3bcd5374404e9558ec.jpg"
+                }
+            },
+            "bbox": [
+                539,
+                724,
+                851,
+                750
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "At inference, the frozen RFM head transports a random point on the sphere by integrating"
+                    }
+                ]
+            },
+            "bbox": [
+                511,
+                756,
+                906,
+                787
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\begin{array} { r } { \\dot { z } _ { t } = v _ { \\phi } ( z _ { t } , t , c ) , \\qquad z _ { 0 } \\sim \\operatorname { U n i f } ( \\mathbb { S } ^ { 2 } ) , } \\end{array}\\tag{24}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/e23c6dbcc89d1e68c3e0ec9f37a7e99712b054d6802acfc9917d75a109633500.jpg"
+                }
+            },
+            "bbox": [
+                581,
+                795,
+                836,
+                813
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "with manifold Euler steps"
+                    }
+                ]
+            },
+            "bbox": [
+                513,
+                821,
+                687,
+                837
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "z _ { t + \\Delta t } = \\exp _ { z _ { t } } \\left( \\Delta t v _ { \\phi } ( z _ { t } , t , c ) \\right) , \\qquad \\Delta t = 1 / K .\\tag{25}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/204d2b9ea07c2d1844ed54f7d868f668e7c6937e6e9e09f44480539a7c54b717.jpg"
+                }
+            },
+            "bbox": [
+                529,
+                844,
+                859,
+                862
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "This keeps every intermediate point on "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbb { S } ^ { 2 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and avoids the Euclidean projection mismatch."
+                    }
+                ]
+            },
+            "bbox": [
+                511,
+                869,
+                906,
+                900
+            ]
+        }
+    ],
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "G. Additional Qualitative Results"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                91,
+                89,
+                375,
+                107
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The main paper groups deployable predictions by whether the generated semantic condition contains the correct country and city. Figure 10 provides additional examples for each bucket to show how the coordinate decoder responds to semantic condition quality."
+                    }
+                ]
+            },
+            "bbox": [
+                89,
+                117,
+                485,
+                195
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "H. Inference efficiency"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                89,
+                214,
+                284,
+                233
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "GeoBridge is attached after the same frozen GLOBE semantic-generation pass used by the place-name baseline, so it does not add another autoregressive decode. Consequently, the MLLM-side TTFT and TPOT are unchanged: GeoBridge only incurs a fixed post-generation cost for reading the role-token states, projecting them into a single condition, and running the frozen RFM sampler. In the current implementation, the role-token readout is profiled as an uncached one-forward pass and takes 0.62s median latency, while the 32-step RFM sampler adds 0.25s; together they form a conservative 0.85s median bridge overhead. The deterministic linear-layer MAC estimate is 2.33G, dominated by the RFM head. A deployable implementation can reuse the generated-prefix KV cache for the role-token readout, so the measured latency should be interpreted as an implementation upper bound rather than a required extra reasoning pass."
+                    }
+                ]
+            },
+            "bbox": [
+                89,
+                242,
+                485,
+                502
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "I. Discussion and Limitations"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                89,
+                521,
+                341,
+                537
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "What limits deployable accuracy. Our analysis consistently localizes the limit to the condition rather than the head. Under an oracle condition the frozen RFM head reaches a far higher ceiling; deployable error tracks the correctness of the generated semantics; and stronger geographic backbones yield better conditions. Together these reframe the open problem from designing a better coordinate head to producing a more distribution-aligned geospatial condition. That goal is complementary to advances in MLLM reasoning: a reasoning- or CoT-augmented backbone would improve the very condition GeoBridge decodes, so the two lines compose rather than compete."
+                    }
+                ]
+            },
+            "bbox": [
+                88,
+                549,
+                485,
+                733
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Formatted prompting. GeoBridge reads its condition from a fixed prompt template, with the role tokens occupying designated positions. It therefore does not yet support coordinate estimation embedded in free-form generation— for example, emitting a location partway through openended reasoning. A natural extension is to fold the learnable role tokens into the MLLM’s own vocabulary, so the model can emit them directly and produce flexible, on-demand coordinate estimates under arbitrary outputs."
+                    }
+                ]
+            },
+            "bbox": [
+                88,
+                763,
+                485,
+                902
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Sensitivity to the textual condition. Because we inject ground-truth semantic text during training, the learned condition is sensitive to surface form: different verbalizations of the same place—abbreviations, alternate names, or language variants—can yield markedly different predictions, since coordinates are bound to specific training-set strings rather than to a normalized geographic entity. Normalizing place references, or grounding them in an entity vocabulary, is a promising way to reduce this variance."
+                    }
+                ]
+            },
+            "bbox": [
+                511,
+                90,
+                908,
+                229
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "J. Training Prompt and Teacher-Forced Prefix"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                513,
+                239,
+                906,
+                258
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "GeoBridge uses structured semantic prompts to expose geographic fields before reading the learned role-token states. We used two prompt templates during development."
+                    }
+                ]
+            },
+            "bbox": [
+                511,
+                266,
+                906,
+                313
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Country–state–city prompt. We also used a more structured administrative prompt that asks for three geographic fields:"
+                    }
+                ]
+            },
+            "bbox": [
+                511,
+                329,
+                906,
+                375
+            ]
+        },
+        {
+            "type": "algorithm",
+            "content": {
+                "algorithm_caption": [],
+                "algorithm_content": [
+                    {
+                        "type": "text",
+                        "content": "You must analyze the input image and provide a structured location prediction at exactly four levels of geographic granularity: 1. Country 2. State (Administrative region) 3. City (e.g., \"Auschwitz\", \"Golden Gate Bridge\", \"Forbidden City\")"
+                    }
+                ],
+                "algorithm_footnote": []
+            },
+            "bbox": [
+                545,
+                383,
+                867,
+                510
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The corresponding teacher-forced answer prefix is"
+                    }
+                ]
+            },
+            "bbox": [
+                514,
+                518,
+                848,
+                535
+            ]
+        },
+        {
+            "type": "code",
+            "content": {
+                "code_caption": [],
+                "code_content": [
+                    {
+                        "type": "text",
+                        "content": "{{\"country\": \"{country text}\", \"state\": \"{region text}\", \"city\": \"{city text}\"<coordinates>"
+                    }
+                ],
+                "code_footnote": [],
+                "code_language": "handlebars"
+            },
+            "bbox": [
+                547,
+                542,
+                843,
+                587
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Country–city prompt. The first template follows the GLOBE-style semantic geolocation format and asks the MLLM to output only country and city fields:"
+                    }
+                ]
+            },
+            "bbox": [
+                511,
+                603,
+                906,
+                650
+            ]
+        },
+        {
+            "type": "algorithm",
+            "content": {
+                "algorithm_caption": [],
+                "algorithm_content": [
+                    {
+                        "type": "text",
+                        "content": "Based on the provided image, please output its location (country and city) directly without any explanation. Your final answer includes these two lines in your response: country: [country name] city: [city name]"
+                    }
+                ],
+                "algorithm_footnote": []
+            },
+            "bbox": [
+                545,
+                659,
+                867,
+                770
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "For image i, the teacher-forced answer prefix is constructed as"
+                    }
+                ]
+            },
+            "bbox": [
+                511,
+                779,
+                906,
+                809
+            ]
+        },
+        {
+            "type": "algorithm",
+            "content": {
+                "algorithm_caption": [],
+                "algorithm_content": [
+                    {
+                        "type": "text",
+                        "content": "teacher answer = f\"country: {country text} city: {city text}<coordinates>\""
+                    }
+                ],
+                "algorithm_footnote": []
+            },
+            "bbox": [
+                547,
+                819,
+                782,
+                861
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "In both templates, <coordinates> is a dataformatting placeholder rather than a literal text span used by the language model. Before forwarding through the MLLM, this placeholder is replaced by M learnable special tokens."
+                    }
+                ]
+            },
+            "bbox": [
+                513,
+                871,
+                906,
+                902
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/7ca1b3b295a5682dd06d6a8ccf59c8b2c7be70f0e630e819e8ebbd2facd30477.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 10. Additional qualitative results in the both correct, country correct, city wrong, both wrong bucket."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                96,
+                90,
+                903,
+                761
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                88,
+                815,
+                485,
+                862
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "For semantic supervision, we apply a field-level mask to handle incomplete administrative annotations. If the annotation file does not contain a valid region/state entry for a sample, the corresponding region CE term is set to zero for that sample. More generally, when a region head is enabled, the semantic loss can be written as"
+                    }
+                ]
+            },
+            "bbox": [
+                89,
+                869,
+                485,
+                901
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                509,
+                816,
+                908,
+                877
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathcal { L } _ { \\mathrm { s e m } } = \\lambda _ { \\mathrm { c t y } } \\mathcal { L } _ { \\mathrm { c t y } } ^ { \\mathrm { C E } } + \\lambda _ { \\mathrm { r e g } } m _ { \\mathrm { r e g } } \\mathcal { L } _ { \\mathrm { r e g } } ^ { \\mathrm { C E } } + \\lambda _ { \\mathrm { c i t y } } \\mathcal { L } _ { \\mathrm { c i t y } } ^ { \\mathrm { C E } } ,\\tag{26}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/e155fe15cf50ce647ca3bcb873e5aca686946951fca8366002cf589b205bd41e.jpg"
+                }
+            },
+            "bbox": [
+                534,
+                882,
+                856,
+                904
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "m _ { \\mathrm { r e g } } \\in \\{ 0 , 1 \\}"
+                    },
+                    {
+                        "type": "text",
+                        "content": "indicates whether a valid region/state label is available. For GLOBE-based GeoBridge, the base model predicts country and city but not region; therefore we keep "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\lambda _ { \\mathrm { r e g } } = 0"
+                    },
+                    {
+                        "type": "text",
+                        "content": "throughout. The region token is still retained as a contextual role, but it is not optimized with a region classification loss in this setting."
+                    }
+                ]
+            },
+            "bbox": [
+                89,
+                90,
+                483,
+                183
+            ]
+        }
+    ]
+]
