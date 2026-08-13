@@ -1,0 +1,351 @@
+(b)
+
+(a)
+
+# Dual Anchors, Do It Better: Hierarchical Group Merging for Zero-Shot Anomaly Detection
+
+Jimin Roh<sup>1,2∗</sup> DongKyu Kim<sup>1,3∗</sup> Suk-Ju Kang<sup>1,B</sup>
+
+<sup>1</sup>Sogang University, <sup>2</sup>LG Electronics, <sup>3</sup>NAVER Cloud shwlals96@gmail.com kyu15911@gmail.com sjkang@sogang.ac.kr <sup>∗</sup> Equal contribution <sup>B</sup> Corresponding author
+
+![](images/8bb07d88cb42e50c3153b56cd800e890003f87c7c9f6ad34abb2a1846b4ce902.jpg)  
+(c)  
+Figure 1. Overview of the proposed Dual-Anchor for Zero-Shot Anomaly Detection. Previous methods perform text-driven alignment, anchoring semantics only on text prompts, which causes excessive text dependency and weak visual grounding. Our approach introduces a Hierarchical Group Merging that constructs image semantic anchors and fuses them with text anchors, forming a dual-anchor paradigm that achieves balanced alignment and clearer semantic separation. The proposed framework ensures consistent anomaly localization across diverse object quantities and defect scales, demonstrating robust generalization and stable anomaly reasoning.
+
+## Abstract
+
+Zero-shot anomaly detection (ZSAD) aims to identify anomalies in unseen domains, a setting that is particularly critical for industrial and medical applications where domain shifts are prevalent. However, most CLIP-based ZSAD methods anchor semantics solely on the text modality, making performance highly sensitive to prompt design and leading to weak visual grounding. To mitigate these limitations, we propose a Dual-Anchor framework that complements conventional text anchors with hierarchical image anchors constructed via a top-down grouping mechanism. This mechanism progressively aggregates local-to-global imagefeatures toform normal and abnormal group tokens, which serve as image anchors and act as gating signals in a Group-Gated Token Refiner to enhance the global representation. The refined image anchors are then fused with text prompts to construct dynamic state prompts. By jointly re-
+
+inforcing visual and textual semantics, our framework stabilizes image-text alignment, reduces prompt dependency, and achieves strong generalization across 8 industrial and 6 medical benchmarks.
+
+## 1. Introduction
+
+Anomaly detection has become increasingly crucial in highreliability domains such as industrial inspection and medical diagnostics. In particular, in scenarios characterized by high annotation costs and significant domain shifts, there is a growing demand for approaches that can achieve robust generalization without relying on pre-collected normal or anomalous data. To address this challenge, Zero-Shot Anomaly Detection (ZSAD), empowered by Vision-Language Models such as CLIP [23], has recently emerged as a promising research paradigm. In ZSAD, a model is trained on auxiliary data and then deployed to unseen target domains without any target-domain labels. By leveraging large-scale pre-trained image-text representations, ZSAD enables anomaly detection in unseen target domain and domain-agnostic manner.
+
+Most ZSAD approaches leverage the powerful imagetext alignment capability of CLIP, which is trained on largescale image-text pairs. Early studies [9, 15] employed manually crafted prompts that explicitly encode semantic cues describing normal and anomalous states, thereby directly utilizing the representational power of CLIP while exploiting multi-layer visual features extracted from the image encoder. Subsequent research introduced the concept of learnable prompts to alleviate the reliance on manual design and improve adaptability. These methods learn contextaware prompts that dynamically adjust to visual content by incorporating global or instance-level cues from images, resulting in enhanced generalization across diverse domains [6, 22, 30]. More recently, several studies have attempted to embed anomalous cues derived from the image itself into the prompt representation, further enriching the expressiveness and scalability of text-guided anomaly detection frameworks.
+
+However, existing studies still suffer from several limitations. First, as illustrated in Fig. 1(a, top), most methods place the semantic anchors for normal and anomalous concepts primarily on the text prompt side. This design makes the overall performance highly sensitive to prompt construction and tuning, resulting in excessive dependence on textual representations. Consequently, as shown in Fig. 1(b, top), the decision boundary in the unseen domain fails to encompass all anomalous images. Second, many existing approaches do not fully exploit the structural advantage of image encoders, which inherently capture visual features from local to global levels. Instead, they often treat features extracted from different layers as independent, thereby overlooking the hierarchical integration of semantic information essential for understanding normal and anomalous patterns.
+
+Therefore, as illustrated in Fig. 1(a, bottom), we propose a Dual-anchor framework that hierarchically merges the features extracted from the image encoder to construct image anchors. Specifically, the proposed method employs a top-down Hierarchical Group Merging strategy, which progressively aggregates visual features from local to global levels, thereby enhancing the semantic representations of normal and anomalous concepts in a hierarchical manner. During this process, semantically distinct normal and abnormal group tokens are formed and utilized as image anchors. Subsequently, a Group-Gated Token Refiner is introduced, which leverages a gating mechanism on the group tokens to strengthen the global image representation. As shown in Fig. 1(b, bottom), unlike previous approaches that rely on a single anchor, the proposed dual-anchor framework mitigates bias toward one anchor and enables a more balanced decision boundary in unseen domains. Lastly, the group tokens are integrated with text prompts to construct Dynamic State Prompts for normal and abnormal states, thereby reducing the dependency and manual cost associated with prompt engineering.
+
+Finally, we fairly evaluate our dual-anchor framework across eight industrial domains and six medical domains to demonstrate its effectiveness. Our main contributions are as follows:
+
+• Dual-Anchor Framework. We propose a novel dualanchor paradigm that constructs normal and abnormal visual anchors, mitigating bias toward text prompts and enabling balanced decision boundaries in unseen domains.
+
+• Hierarchical Group Merging. A top-down merging strategy that progressively aggregates local-to-global visual features, forming semantically enriched image anchors with hierarchical anomaly representations.
+
+• Dynamic State Prompt. Group tokens are integrated with text prompts to generate adaptive state-aware prompts, reducing manual design costs and enhancing image-text alignment stability.
+
+## 2. Related Works
+
+## 2.1. Zero-Shot Anomaly Detection
+
+Zero-Shot Anomaly Detection (ZSAD) aims to distinguish between normal and abnormal samples that have not been observed during training. Most recent approaches leverage the large-scale image–text alignment capability of Vision–Language Models (VLMs), such as CLIP [23], by measuring the semantic similarity between an input image and text prompts that define the concepts of normality and abnormality. This paradigm has attracted growing attention in industrial and medical domains, as it enables anomaly recognition without the need for defective training data.
+
+Early approaches relied on hand-crafted prompts to directly compare features extracted from CLIP’s image and text encoders. However, these methods were highly sensitive to the phrasing of prompts and often exhibited unstable results due to linguistic biases [7, 8, 15]. To address this limitation, subsequent studies introduced learnable prompts to reduce language bias [6, 30] or modeled the prompt space as a probabilistic distribution to enable diverse prompt sampling and improve generalization [22].
+
+Accordingly, recent works have attempted to alleviate textual dependency by introducing visual-context prompts [21], where image-conditioned cues are incorporated to enrich textual representations. While such approaches mitigate linguistic bias to some extent, they still rely primarily on text-driven alignment and lack structured visual reasoning that captures hierarchical semantics.
+
+Despite these advances, most methods still depend heavily on textual supervision. Thus, robust zero-shot anomaly detection requires not only cross-modal alignment with textual semantics but also image-centric representations, in which visual structures play a central role in semantic reasoning.
+
+![](images/052a76fff8c0277775c72d89dca5d6dd4a2c3d02de41b96fbbd72983e45d1a0d.jpg)  
+Figure 2. Overall Architecture of our framework. Our framework adopt frozen DINOv3 backbone (Sec. 3.2) to extract multi-scale patch tokens as visual representations. Subsequently, the Hierarchical Group Merging module aggregates these features with learnable group tokens to construct image anchors (Sec. 3.3). The generated image anchors are then utilized by the Group-Gated Token Refiner and the Dynamic State Prompt (Sec. 3.4) to refine the global representations and establish balanced dual-anchor alignment between image and text semantics.
+
+## 2.2. Hierarchical Grouping
+
+GroupViT [28] introduces an explicit grouping mechanism into Vision Transformers, where patch-level tokens are progressively merged via cross-attention with learnable group tokens to form hierarchical visual structures. Later studies, such as TokenLearner [24] and ToMe [4], further explored adaptive token aggregation to balance semantic expressiveness and computational efficiency. HGFormer [10] extends this concept by grouping features across multiple transformer layers to integrate local information and global context within a unified hierarchical framework, explicitly modeling semantic dependencies to enhance spatial and contextual coherence.
+
+These grouping-based approaches move beyond simple feature aggregation and instead organize representations to capture the intrinsic hierarchy of visual data.
+
+In this work, we utilize hierarchical grouping to organize patch-level representations into semantically coherent groups, focusing on leveraging such structured visual hierarchies to facilitate zero-shot anomaly reasoning without requiring explicit supervision.
+
+## 3. Method
+
+Our framework consists of three main modules: 1) Hierarchical Group Merging that generates normal and anomalous group tokens as image anchors, 2) Group-Gated Token Refiner that leverages these group tokens to refine and coordinate the global image representation, and 3) Dynamic State Prompt that constructs adaptive prompts conditioned on the image state. Collectively, these modules are integrated to achieve robust image-text alignment performance in ZSAD.
+
+## 3.1. Problem Setting
+
+Our task follows the standard ZSAD setting, where the model is trained on an auxiliary dataset and evaluated on unseen target domains. Formally, the auxiliary training dataset is defined as $D _ { \mathrm { t r a i n } } ~ = ~ \bar { \{ } ( I _ { i } , y _ { i } ) \} _ { i = 1 } ^ { N _ { t r a i n } }$ , where $\bar { I _ { i } } \doteq \mathbb { R } ^ { H \times W \times 3 }$ and $y _ { i } \in \{ 0$ (normal), 1 (abnormal)}. During evaluation, we consider a target test, which contains samples from unseen domains or categories that do not overlap with $D _ { \mathrm { t r a i n } }$
+
+## 3.2. Feature Extraction.
+
+Given an input image $I _ { i } ,$ we extract patch tokens $F _ { i } ^ { ( l ) } \in$ $\mathbb { R } ^ { M \times C }$ from the l-th layer of the backbone network, where M denotes the number of patches and C the feature dimension. We adopt DINOv3 [25] as our backbone. While DI-NOv3 is renowned for its exceptional image representation capability, it exhibits relatively weaker text alignment compared to CLIP [23]. We acknowledge this trade-off between visual representation power and text-language alignment, and therefore prioritize high quality image features that are more suitable for anomaly localization and representation learning.
+
+## 3.3. Hierarchical Group Merging
+
+Figure 2 (a) illustrates the detailed architecture of a single Merge Block. Each consists of four sequential stages designed to progressively refine group representations across layers:
+
+1. Initialization: Initializing the grouping process with previous-layer group representations.
+
+2. Assignment: Assigning current patch tokens to the corresponding groups based on feature similarity.
+
+3. Merging: Merging the assigned groups to form higherlevel group representations for the next layer.
+
+4. Update: Update: Re-assigning merged group tokens for inter-layer propagation.
+
+Initialization. In the initialization stage, a cross-attention layer is applied between the previous group tokens and the current patch tokens to inherit grouping cues from the preceding layer. This design allows hierarchical information captured by the backbone to be progressively accumulated, facilitating efficient grouping without requiring additional sequential feature extraction:
+
+$$
+F _ { i } ^ { \prime ( l ) } = \mathrm { C r o s s A t t n } \Big ( F _ { i } ^ { ( l ) } , { \bf G } ^ { \prime ( h ) } \Big ) ,\tag{1}
+$$
+
+where $\mathbf { G } ^ { \prime ( h ) } \in \mathbb { R } ^ { K \times C }$ denotes the learnable group tokens at the h-th stage of the grouping process.
+
+Assignment. After obtaining the initialized tokens $\boldsymbol { F } _ { i } ^ { \prime ( l ) } ~ \in ~ \mathbb { R } ^ { M \times C }$ , these tokens are assigned to the current groups through a learnable Gumbel Softmax-based assignment [14, 19]. This process enables discrete yet differentiable group selection, allowing each patch token to be stochastically associated with one of the candidate groups during training. The Gumbel Softmax function provides a continuous relaxation of categorical sampling, defined as:
+
+$$
+\pi _ { i } = \frac { \exp ( ( \log \alpha _ { i } + g _ { i } ) / \tau ) } { \sum _ { j = 1 } ^ { K } \exp ( ( \log \alpha _ { j } + g _ { j } ) / \tau ) } , \quad g _ { i } \sim \mathrm { G u m b e l } ( 0 , 1 ) ,\tag{2}
+$$
+
+where $\alpha _ { i }$ denotes the unnormalized attention logits, τ is the temperature controlling the discreteness, and $g _ { i }$ is Gumbel noise sampled from Gumbel(0, 1). By incorporating the Gumbel-Softmax mechanism into cross-attention, the model approximates hard group assignments while remaining fully differentiable. This enables stable end-to-end optimization and enhances the semantic discreteness and interpretability of the grouping process.
+
+$$
+\boldsymbol { \Pi } = \operatorname { S o f t m a x } \left( \frac { \mathbf { F } _ { i } ^ { \prime ( l ) } W _ { Q } ( \mathbf { G } ^ { ( h ) } W _ { K } ) ^ { \top } + \mathbf { \Gamma } } { \boldsymbol { \tau } } \right)\tag{3}
+$$
+
+$$
+\mathbf { G } ^ { \prime ( h ) } = \mathbf { G } ^ { ( h ) } + \mathrm { L i n e a r } \big ( \mathbf { \Pi } \mathbf { \mathbf { I } } ( \mathbf { G } ^ { ( h ) } W _ { V } ) \big )\tag{4}
+$$
+
+where Γ denotes the Gumbel noise sampled from Gumbel(0, 1) used for stochastic and differentiable group assignment.
+
+Merging. To efficiently merge the group tokens, we adopt a bipartite soft matching strategy [4], which performs parameter-free token reduction based on pairwise similarity. Given the group tokens $\mathbf { G } ^ { \prime ( h ) } \in \mathbb { R } ^ { K \times C }$ , we partition them into a source set $\mathbf { G } _ { \mathrm { s r c } } ^ { \prime } \in \mathbb { R } ^ { ( K / 2 ) \times C }$ and a destination set $\mathbf { G } _ { \mathrm { d s t } } ^ { \prime } \in \mathbb { R } ^ { ( K / 2 ) \times C }$ . We then compute the pairwise similarity matrix between $\mathbf { G } _ { \mathrm { s r c } } ^ { \prime }$ and $\mathbf { G } _ { \mathrm { d s t } } ^ { \prime }$ as:
+
+$$
+\mathbf { S } = \cos ( \mathbf { G } _ { \mathrm { s r c } } ^ { \prime } , \mathbf { G } _ { \mathrm { d s t } } ^ { \prime } ) ,\tag{5}
+$$
+
+where cos $. ( \cdot , \cdot )$ denotes the cosine similarity.
+
+Next, for each token $\mathbf { g } _ { u } \in \mathbf { G } _ { \mathrm { s r c } } ^ { \prime }$ , we select the token $\mathbf { g } _ { v } \in \mathbf { G } _ { \mathrm { d s t } } ^ { \prime }$ that maximizes the similarity:
+
+$$
+v ^ { \prime } ( u ) = \arg \operatorname* { m a x } _ { v } \mathbf { S } _ { u , v } .\tag{6}
+$$
+
+From the resulting pairs, we keep the top-r matches according to the similarity scores to maintain gradual token reduction.
+
+Each matched pair is then merged by averaging their features:
+
+$$
+\tilde { \bf g } _ { u } = \frac { 1 } { 2 } \left( { \bf g } _ { u } + { \bf g } _ { v ^ { \prime } ( u ) } \right) .\tag{7}
+$$
+
+Finally, the merged tokens replace the original pairs, and the resulting token set is concatenated for further processing:
+
+$$
+\mathbf { G } ^ { \prime ( h + 1 ) } = \mathrm { C o n c a t } \Big ( \tilde { \mathbf { G } } ^ { \prime } , \mathbf { G } _ { \mathrm { r e m a i n } } ^ { \prime } \Big ) ,\tag{8}
+$$
+
+where $\mathbf { G } _ { \mathrm { r e m a i n } } ^ { \prime }$ denotes the tokens not merged in this process. This approach avoids iterative clustering, enables efficient parallel computation, and ensures that most tokens remain unmerged, preserving representational fidelity throughout the network.
+
+![](images/aa3b7845bd0622b3742c00f07fcb53fd65884ca9e3d7a363e3617c48863cf805.jpg)  
+Figure 3. T-SNE visualization of image and text anchors on VisA and MVTec-AD datasets.
+
+Update. The update stage is applied only in the final Merge Block, where the group tokens encapsulating hierarchical semantics are assigned back to the patch tokens to produce the final assigned representation $F _ { a s s i g n }$
+
+Image Anchor. Through this top-down hierarchical merging process, information from different levels is progressively integrated, and the model ultimately produces the normal and anomalous group tokens $G _ { N } , G _ { A }$ along with the corresponding assigned tokens A. This process can be formulated as:
+
+$$
+\{ { \bf G } _ { N } , { \bf G } _ { A } \} , F _ { a s s i g n } = \sum _ { h = 1 } ^ { H } M e r g e B l o c k \Big ( F ^ { ( h ) } , { \bf G } ^ { \prime ( h ) } \Big )\tag{9}
+$$
+
+Here, $\mathbf { G } _ { N }$ and $\mathbf { G } _ { A }$ denote the first and second group tokens obtained from the final grouping stage, respectively. Figure 3 presents the t-SNE visualization of our dual-anchor representation in an unseen domain. As shown, the image anchor exhibits a clear separation between normal and abnormal groups, demonstrating that our method effectively establishes distinct visual semantics for each state. Moreover, this result highlights that our approach mitigates the dependence on text anchors (text embeddings) and provides a new criterion for distinguishing normal and anomalous samples in unseen domains.
+
+## 3.4. Dual-Anchor Contrastive Learning
+
+Group-Gated Token Refiner. The Group-Gated Token Refiner (GGTR) refines the [CLS] token $t _ { \mathrm { c l s } }$ using the normal and anomaly group tokens obtained from the hierarchical merging process, as illustrated in Figure $2 \ ( \mathbf { b } )$ . In this module, the normal and anomaly group tokens act as image anchors that provide semantic guidance for calibrating the [CLS] representation. Specifically, given a [CLS] token and the normal/anomaly group anchors $G _ { N }$ and $G _ { A }$ we compute their gating weights as follows:
+
+$$
+w _ { n } = \frac { t _ { \mathrm { c l s } } ^ { \top } G _ { N } } { \left\| t _ { \mathrm { c l s } } \right\| \left\| G _ { N } \right\| } , \quad w _ { a } = \frac { t _ { \mathrm { c l s } } ^ { \top } G _ { A } } { \left\| t _ { \mathrm { c l s } } \right\| \left\| G _ { A } \right\| } .\tag{10}
+$$
+
+The concatenated gating weights are then normalized and passed through a linear layer followed by a sigmoid activation, after which the refined representation is obtained via a residual connection with the original [CLS] token:
+
+$$
+\begin{array} { r } { \hat { w } = \mathrm { C o n c a t } ( w _ { n } , w _ { a } ) , \qquad } \\ { t _ { \mathrm { c l s } } ^ { \mathrm { r e f i n e d } } = t _ { \mathrm { c l s } } + \sigma ( \mathrm { L i n e a r } ( \mathrm { N o r m } ( \hat { w } ) ) ) , } \end{array}\tag{11}
+$$
+
+where Concat denotes concatenation, Norm(·) is a normalization function, and $\sigma ( \cdot )$ denotes the sigmoid function. This refinement process allows the [CLS] token to adaptively incorporate information from both normal and abnormal semantic anchors, thereby enhancing its global discriminative representation for anomaly detection.
+
+Dynamic State Prompt. Unlike conventional approaches that rely solely on static textual prompts, our method constructs dynamic state prompts by incorporating imagedependent group tokens extracted from the input image. Specifically, the prompts are formulated as:
+
+$$
+\begin{array} { r } { p _ { n } = [ V _ { 1 } ] [ V _ { 2 } ] \cdot \cdot \cdot [ V _ { E } ] [ W _ { 1 } ] [ G _ { N } ] [ \mathrm { c l a s s } ] , } \\ { p _ { a } = [ V _ { 1 } ^ { \prime } ] [ V _ { 2 } ^ { \prime } ] \cdot \cdot \cdot [ V _ { E } ^ { \prime } ] [ W _ { 1 } ^ { \prime } ] [ G _ { A } ] [ \mathrm { c l a s s } ] , } \end{array}\tag{12}
+$$
+
+where [V<sub>i</sub>] and $[ W _ { i } ]$ denote learnable context tokens. By leveraging these image-grounded state tokens, the proposed prompts dynamically adapt to the underlying visual distribution, rather than depending solely on pre-defined textual semantics. Such an image-conditioned formulation enhances the model’s robustness to domain shifts and significantly improves its generalization capability to open-set anomalies. Finally, the constructed prompts are fed into the text encoder to obtain the corresponding text embeddings $\mathcal { T } = \{ t _ { n } , t _ { a } \}$ for vision-language alignment.
+
+## 3.5. Optimization
+
+Anomaly Map and Anomaly Score. Unlike conventional approaches that independently compute similarity for all patch tokens, our method measures the patch-level anomaly score by directly computing the similarity not only across the original patch tokens but also including the assigned token, formulated as:
+
+$$
+\mathcal { A } ^ { ( L + 1 ) } = \mathrm { S o f t m a x } \big ( \mathrm { U p } ( [ \frac { 1 } { L } \sum _ { l = 1 } ^ { L } F _ { i } ^ { ( l ) } , { F } _ { \mathrm { a s s i g n } } ] \mathcal { T } ^ { \top } ) \big ) .\tag{13}
+$$
+
+Table 1. Image-level AUROC and F1-score, and Average Precision (AP) on both industrial and medical datasets. The best results are marked in red, while the second-best are indicated in blue.
+<table><tr><td>Dataset</td><td>WinCLIP [15] [CVPR’23]</td><td>APRIL-GAN [7] [CVPR workshop&#x27;23]</td><td>AnomalyCLIP [30] [ICLR&#x27;24]</td><td>AdaCLIP [6] [ECCV&#x27;24]</td><td>AA-CLIP [18] [CVPR’25]</td><td>Bayes-PFL [22] [CVPR’25]</td><td>Ours</td></tr><tr><td>MVTec-AD</td><td>(91.8, 92.9, 95.1)</td><td>(86.1, 90.4, 93.5)</td><td>(91.5, 92.8, 96.2)</td><td>(92.0, 92.7, 96.4)</td><td>(90.5, 78.5, 95.9)</td><td>(92.3, 93.1, 96.7)</td><td>(92.7, 94.0, 97.1)</td></tr><tr><td>VisA</td><td>(78.1, 79.0, 77.5)</td><td>(78.0, 78.7, 81.4)</td><td>(82.1, 80.4, 85.4)</td><td>(83.0, 81.6, 84.9)</td><td>(77.8, 73.9, 81.4)</td><td>(87.0, 84.1, 89.2)</td><td>(88.3, 85.0, 91.8)</td></tr><tr><td>MPDD</td><td>(61.4, 77.5, 69.9)</td><td>(76.7, 80.9, 82.5)</td><td>(77.0, 80.8, 82.0)</td><td>(71.2, 77.6, 75.0)</td><td>(55.9, 70.4, 65.4)</td><td>(78.3, 82.2, 80.1)</td><td>(78.5, 81.9, 84.5)</td></tr><tr><td>BTAD</td><td>(83.3, 81.0, 84.1)</td><td>(74.2, 70.0, 71.7)</td><td>(89.1, 86.0, 91.1)</td><td>(91.6, 88.9, 92.4)</td><td>(92.5, 55.1, 94.4)</td><td>(93.2, 91.9, 96.5)</td><td>(95.9, 91.0, 94.6)</td></tr><tr><td>RSDD</td><td>(85.3, 73.5, 65.3)</td><td>(73.1, 59.7, 50.5)</td><td>(73.5, 59.0, 55.0)</td><td>(89.1, 75.0, 70.8)</td><td>(87.7, 73.6, 80.6)</td><td>(94.1, 89.6, 92.3)</td><td>(94.0, 89.5, 94.4)</td></tr><tr><td>KSDD2</td><td>(93.5, 71.4, 77.9)</td><td>(90.3, 70.0, 74.4)</td><td>(92.1, 71.0, 77.8)</td><td>(95.9, 84.5, 95.9)</td><td>(96.1, 82.4, 87.6)</td><td>(97.3, 92.3, 97.9)</td><td>(97.1, 92.6, 97.7)</td></tr><tr><td>DAGM</td><td>(89.6, 86.4, 90.4)</td><td>(90.4, 86.9, 90.1)</td><td>(95.6, 93.2, 94.6)</td><td>(96.5, 94.1, 95.7)</td><td>(93.8, 75.7, 94.2)</td><td>(97.7, 95.7, 97.0)</td><td>(98.0, 96.9, 97.7)</td></tr><tr><td>DTD-Synthetic</td><td>(95.0, 94.3, 97.9)</td><td>(83.9, 89.4, 93.6)</td><td>(94.5, 94.5, 97.7)</td><td>(92.8, 92.2, 97.0)</td><td>(94.3, 75.0, 98.0)</td><td>(95.1, 95.1, 98.4)</td><td>(98.8, 98.5, 99.6)</td></tr><tr><td>Average</td><td>(84.8, 82.0, 82.3)</td><td>(82.0, 78.3, 78.8)</td><td>(86.9, 82.1, 85.0)</td><td>(89.0, 86.0, 88.5)</td><td>(86.6, 73.1, 87.2)</td><td>(91.2, 90.3, 92.9)</td><td>(92.9, 91.1, 94.6)</td></tr></table>
+
+Table 2. Pixel-level AUROC and Average Precision (AP) on both industrial and medical datasets. The best results are marked in red, while the second-best are indicated in blue.
+<table><tr><td>Dataset</td><td>WinCLIP [15] [CVPR’23]</td><td>APRIL-GAN [7] [VAND&#x27;23]</td><td>AnomalyCLIP [30] [ICLR’24]</td><td>AdaCLIP [6] [ECCV&#x27;24]</td><td>AA-CLIP [18] [CVPR&#x27;25]</td><td>Bayes-PFL [22] [CVPR&#x27;25]</td><td>Ours</td></tr><tr><td>MVTec-AD</td><td>(85.1, 18.0)</td><td>(87.6, 40.8)</td><td>(91.1, 34.5)</td><td>(86.8, 38.1)</td><td>(91.9, 46.7)</td><td>(91.8, 48.3)</td><td>(92.4, 50.4)</td></tr><tr><td>VisA</td><td>(79.6, 5.0)</td><td>(94.2, 25.7)</td><td>(95.5, 21.3)</td><td>(95.1, 29.2)</td><td>(94.7, 23.8)</td><td>(95.6, 29.8)</td><td>(96.6, 34.4)</td></tr><tr><td>MPDD</td><td>(71.2, 14.1)</td><td>(91.8, 26.4)</td><td>(96.5, 23.8)</td><td>(95.6, 31.0)</td><td>(95.9, 23.2)</td><td>(97.1, 30.3)</td><td>(95.9, 31.8)</td></tr><tr><td>BTAD</td><td>(71.4, 11.2)</td><td>(91.3, 32.9)</td><td>(93.3, 42.0)</td><td>(87.7, 36.6)</td><td>(94.0, 41.6)</td><td>(93.9, 47.1)</td><td>(97.5, 59.3)</td></tr><tr><td>RSDD</td><td>(95.1, 2.1)</td><td>(99.4, 30.6)</td><td>(99.1, 19.1)</td><td>(99.5, 38.2)</td><td>(99.5, 40.6)</td><td>(99.6, 39.1)</td><td>(99.2, 40.1)</td></tr><tr><td>KSDD2</td><td>(97.9, 17.1)</td><td>(97.9, 61.6)</td><td>(99.4, 41.8)</td><td>(96.1, 56.4)</td><td>(98.6, 38.0)</td><td>(99.6, 73.7)</td><td>(99.5, 81.3)</td></tr><tr><td>DAGM</td><td>(83.2, 3.1)</td><td>(99.2, 42.6)</td><td>(99.1, 29.5)</td><td>(97.0, 44.2)</td><td>(87.4, 40.3)</td><td>(99.3, 43.1)</td><td>(98.3, 55.7)</td></tr><tr><td>DTD-Synthetic</td><td>(82.5, 11.6)</td><td>(96.6, 67.3)</td><td>(97.6, 52.4)</td><td>(94.1, 52.8)</td><td>(97.0, 60.6)</td><td>(97.8, 69.9)</td><td>(98.9, 82.7)</td></tr><tr><td>ISIC</td><td>(83.3, 62.4)</td><td>(85.8, 69.8)</td><td>(88.4, 74.4)</td><td>(85.4, 70.6)</td><td>(94.3, 87.7)</td><td>(92.2, 84.6)</td><td>(93.0, 84.7)</td></tr><tr><td>CVC-ColonDB</td><td>(64.8, 14.3)</td><td>(78.4, 23.2)</td><td>(81.9, 31.3)</td><td>(79.3, 26.2)</td><td>(80.0, 20.6)</td><td>(82.1, 31.9)</td><td>(83.4, 27.4)</td></tr><tr><td>CVC-ClinicDB</td><td>(70.7, 19.4)</td><td>(86.0, 38.8)</td><td>(85.9, 42.2)</td><td>(84.3, 36.0)</td><td>(85.9, 41.5)</td><td>(89.6, 53.2)</td><td>(87.1, 39.8)</td></tr><tr><td>TN3K</td><td>(70.7, 20.3)</td><td>(73.6, 35.7)</td><td>(81.5, 44.8)</td><td>(75.4, 31.1)</td><td>(77.9, 35.6)</td><td>(78.6, 40.0)</td><td>(83.9, 46.0)</td></tr><tr><td>Endo</td><td>(68.2, 23.8)</td><td>(84.1, 47.9)</td><td>(86.3, 50.4)</td><td>(84.0, 44.8)</td><td>(88.2, 69.4)</td><td>(89.2, 58.6)</td><td>(88.8, 60.4)</td></tr><tr><td>Kvasir</td><td>(69.8, 27.5)</td><td>(80.2, 42.4)</td><td>(81.8, 42.5)</td><td>(79.4, 43.8)</td><td>(83.1, 49.5)</td><td>(85.4, 54.2)</td><td>(86.1, 65.4)</td></tr><tr><td>Average</td><td>(78.1, 17.9)</td><td>(89.0, 41.8)</td><td>(91.2, 39.3)</td><td>(88.6, 41.4)</td><td>(90.6, 44.2)</td><td>(92.3, 50.3)</td><td>(92.9, 54.2)</td></tr></table>
+
+where Up(·) denotes the upsampling operation to restore the spatial resolution of the anomaly map. The final anomaly map M is computed based on the normal and anomaly similarity maps as follows:
+
+$$
+\mathcal { M } = \frac { 1 } { L + 1 } \sum _ { l = 1 } ^ { L + 1 } \frac { \mathcal { A } _ { a } ^ { ( l ) } + ( 1 - \mathcal { A } _ { n } ^ { ( l ) } ) } { 2 } ,\tag{14}
+$$
+
+where $\mathcal { A } _ { a } ^ { ( l ) }$ and $\mathcal { A } _ { n } ^ { ( l ) }$ denote the anomaly and normal similarity maps, respectively.
+
+Furthermore, to obtain the final anomaly score, we measure the similarity between the refined class token and the text embedding. The similarity is computed using the cosine similarity with a temperature parameter τ as follows:
+
+$$
+p _ { \mathrm { c l s } } = \frac { t _ { \mathrm { c l s } } ^ { \mathrm { r e f i n e d } } \cdot T } { t _ { \mathrm { c l s } } ^ { \mathrm { r e f i n e d } } \parallel _ { 2 } \parallel T \parallel _ { 2 } } ,\tag{15}
+$$
+
+Loss function. We optimize the model with losses at two granularities. At the pixel level, we employ Focal and Dice losses to improve localization; at the image level, we use a Binary Cross-Entropy (BCE) loss for robust classification.
+
+$$
+\begin{array} { r l } & { \mathcal { L } _ { \mathrm { c l s } } = \mathrm { B C E } ( p _ { \mathrm { c l s } } , y ) , } \\ & { \mathcal { L } _ { \mathrm { s e g } } = \mathrm { D i c e } ( \mathcal { A } ^ { ( L + 1 ) } , S ) + \mathrm { F o c a l } ( \mathcal { A } ^ { ( L + 1 ) } , S ) , } \end{array}\tag{16}
+$$
+
+where S denotes the ground-truth mask.
+
+To encourage disentangled semantics between normal and abnormal group tokens, we add an orthogonality regularizer:
+
+$$
+\mathcal { L } _ { \mathrm { o r t h o } } \ = \ \big | \langle \mathbf { G } _ { N } , \mathbf { G } _ { A } \rangle \big | ^ { 2 } .\tag{17}
+$$
+
+Moreover, to endow the two group tokens extracted above with explicit representations for normal and anomalous regions, we use the ground-truth segmentation mask to partition the assigned tokens into normal and anomalous subsets and compute their mean features. Let $\mathbf { Z } _ { N }$ and $\mathbf { Z } _ { A }$ denote the mean features of the normal and anomalous assigned tokens, respectively. We then minimize the following cosine similarity loss:
+
+$$
+\begin{array} { r } { \mathcal { L } _ { \mathrm { g r o u p } } ~ = ~ 1 - \frac { 1 } { 2 } ( \cos ( { \bf G } _ { N } , { \bf Z } _ { N } ) + \cos ( { \bf G } _ { A } , { \bf Z } _ { A } ) ) . } \end{array}\tag{18}
+$$
+
+The overall training objective is
+
+$$
+{ \mathcal { L } } _ { \mathrm { t o t a l } } = { \mathcal { L } } _ { \mathrm { c l s } } + { \mathcal { L } } _ { \mathrm { s e g } } + { \mathcal { L } } _ { \mathrm { o r t h o } } + { \mathcal { L } } _ { \mathrm { g r o u p } } .\tag{19}
+$$
+
+## 4. Experiment
+
+## 4.1. Experimental Setup
+
+Datasets. We conduct experiments on a total of 14 datasets, comprising 8 industrial-domain datasets and
+
+![](images/b04bfee9674d0d06b4345791a7104e3ec1deba17abffded9150c7abced9a2c24.jpg)  
+Figure 4. Qualitative comparison of anomaly localization results on industrial and medical datasets.Our method achieves more precise and consistent anomaly detection.
+
+6 medical-domain datasets. Specifically, the industrial datasets include MVTec AD [2], VisA [31], MPDD [16], BTAD [20], RSDD [29], KSDD2 [5], DAGM [27], and DTD-Synthetic [1], while the medical datasets consist of ISIC [12], ClinicDB [3], ColonDB [26], TN3K [11], Endo [13], and Kvasir [17]. All datasets follow the same configurations as used in Qu et al. [22]. Detailed descriptions of each dataset are provided in the Supplementary Material A. For experiments spanning both industrial and medical domains, we employ the MVTec AD dataset as auxiliary training data, whereas for evaluation on MVTec AD itself, the VisA dataset is utilized for training.
+
+Evaluation Metrics. For evaluation, we follow the standard zero-shot anomaly detection protocol and report AU-ROC and AP as the primary metric. We additionally include F1-score for image-level evaluation.
+
+Implementation Details. We adopt a pre-trained DI-NOv3 (ViT-L/16) backbone to extract 1024 -dimensional patch features from the 6<sup>th</sup>, 12<sup>th</sup>, 18<sup>th</sup>, and 24<sup>th</sup> transformer layers. For the text branch, we employ CLIP (ViT-
+
+Table 3. Ablation on key components.
+<table><tr><td>Module</td><td>Image-level</td><td>Pixel-level</td></tr><tr><td>(a) w/o Hierarchical Group Merging</td><td>88.3, 90.8, 93.2</td><td>82.8, 44.1</td></tr><tr><td>(b) w/o Group-Gated Token Refiner</td><td>88.4, 90.9, 93.5</td><td>80.6, 46.1</td></tr><tr><td>(c) w/o Dynamic State Prompt</td><td>90.6, 92.2, 95.5</td><td>84.6,44.8</td></tr><tr><td>Ours</td><td>92.7, 94.0, 97.1</td><td>92.4, 50.4</td></tr></table>
+
+L/14@336px)<sup>1</sup> to obtain 768 -dimensional embeddings. All images are resized to 518 × 518 prior to inference. Additional implementation details including the hyperparameter settings are explained in Supplementary Material A.
+
+## 4.2. Experimental Results
+
+Quantitative Results. As shown in Table 2, our model consistently outperforms all existing baselines across both industrial and medical benchmarks. In particular, the proposed Hierarchical Group Merging mechanism demonstrates strong generalization not only on object-centric datasets such as MVTec-AD and VisA, but also on textureoriented datasets including DAGM and DTD-Synthetic, highlighting its robustness across diverse visual domains.
+
+Table 4. Ablation on the number of group tokens.
+<table><tr><td># Groups  $[ G _ { 1 } , G _ { 2 } , \bar { G _ { 3 } } , G _ { 4 } ]$ </td><td colspan="2">Image-level AUROC AP</td><td colspan="2">Pixel-level AUROC</td></tr><tr><td>[2, 2, 2, 2]</td><td></td><td></td><td>83.9</td><td>AP 42.7</td></tr><tr><td>[16, 8, 4, 2]</td><td>88.2 92.7</td><td>90.8 97.1</td><td>92.4</td><td>50.4</td></tr><tr><td>[128, 32, 8, 2]</td><td>92.3</td><td>96.2</td><td>86.8</td><td>39.5</td></tr></table>
+
+Furthermore, the superior performance achieved in medical datasets validates that our Dual-Anchor framework effectively establishes more balanced and discriminative decision boundaries for anomalies in unseen domains, compared to conventional single-anchor approaches.
+
+Qualitative Results. As illustrated in Figure 4, our qualitative results demonstrate superior localization performance compared to existing approaches. For instance, in the bottle class, previous methods either fail to fully capture the anomalous regions or incorrectly assign high anomaly scores to normal areas, whereas our method precisely localizes only the true anomalous regions. This result verifies that the proposed hierarchical group merging effectively captures anomaly-aware semantic information. Furthermore, the results on the tile class indicate that our approach is more robust to background noise and false positive regions. Such robustness validates the effectiveness of our dual-anchor strategy in overcoming the limitations of single anchor strategy. More qualitative results are provided in Supplementary Material B.
+
+## 4.3. Ablations Analysis
+
+Ablation on Hierarchical Group Merging. To assess the contribution of the proposed Hierarchical Group Merging (HGM), we remove the assigned token produced by the topdown fusion process, as shown in Table 3(a). This leads to a clear performance drop, confirming that hierarchical semantic fusion is crucial for constructing discriminative anomaly representations beyond independent patch tokens.
+
+Figure 5 further visualizes the assignment attention maps across merge stages in an unseen domain. The group tokens initially capture diverse features, but progressively form normal/anomaly specific groups, with the final stage closely aligning with the ground-truth masks. These findings demonstrate that HGM effectively aggregates semantic information and enhances anomaly discrimination even under unseen conditions.
+
+Ablation on Group-Gated Token Refiner. As shown in Table 3(b), removing the Group-Gated Token Refiner substantially degrades both image-level and pixel-level performance, confirming that the normal and anomaly group tokens act as effective image anchors that enhance the discriminability of the decision boundary. Table 4 further analyzes the effect of varying the number of group tokens across merge blocks. With the final stage fixed to two groups, increasing or decreasing the initial group count from an appropriate setting either weakens hierarchical fusion or introduces unnecessary redundancy. These results highlight the importance of choosing a balanced number of group tokens for stable semantic aggregation.
+
+![](images/396eaf442a66ecbece935dd7c3a1c7775a3212a96ffb571ae9ae8a35c267d1a5.jpg)  
+Figure 5. Visualization of attention maps across hierarchical levels in the Hierarchical Group Merging process.
+
+Ablation on Dynamic State Prompt. As shown in Table 3(c), removing the Dynamic State Prompt weakens the model’s ability to generate image-dependent, domainaware textual conditioning in unseen domains. Without this adaptive mechanism, the text representation becomes static and less aligned with the input image characteristics, ultimately leading to less reliable and less consistent normal/anomaly discrimination. Additional ablation results are provided in Supplementary Material C.
+
+## 5. Conclusion
+
+We proposed a Dual-Anchor framework for ZSAD that balances image–text alignment through hierarchical image anchors. Our method constructs normal and abnormal group tokens via Hierarchical Group Merging, refines them as visual anchors with a Group-Gated Token Refiner, and applies a Dynamic State Prompt for adaptive text conditioning that reduces prompt dependence and improves robustness to domain shifts. Experiments on 8 industrial and 6 medical benchmarks show consistent gains over prior ZSAD approaches.
+
+Limitation. Our method, like prior ZSAD approaches, still struggles with high-level logical defects in unseen domains. As future work, we plan to extend it to a queryimage-based few-shot setting to better handle such cases.
+
+## Acknowledgements
+
+This research was supported by the IITP(Institute of Information & Communications Technology Planning & Evaluation)-ITRC(Information Technology Research Center) grant funded by the Korea government(Ministry of Science and ICT) (IITP-2026-RS-2023-00260091, 34%), the National Research Foundation of Korea(NRF) grant funded by the Korea government(MSIT)(RS-2025-16066849, 33%), and the Institute of Information & Communications Technology Planning & Evaluation(IITP) grant funded by the Korea government(MSIT) (No.RS-2025-02263706, Development of an analog-digital mixed ultra-low power neuromorphic edge SoC, 33%).
+
+## References
+
+[1] Toshimichi Aota, Lloyd Teh Tzer Tong, and Takayuki Okatani. Zero-shot versus many-shot: Unsupervised texture anomaly detection. In Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision, pages 5564–5572, 2023. 7
+
+[2] Paul Bergmann, Kilian Batzner, Michael Fauser, David Sattlegger, and Carsten Steger. The mvtec anomaly detection dataset: a comprehensive real-world dataset for unsupervised anomaly detection. International Journal of Computer Vision, 129(4):1038–1059, 2021. 7
+
+[3] Jorge Bernal, F Javier Sanchez, Gloria Fern´ andez-Esparrach,´ Debora Gil, Cristina Rodr´ıguez, and Fernando Vilarino.˜ Wm-dova maps for accurate polyp highlighting in colonoscopy: Validation vs. saliency maps from physicians. Computerized medical imaging and graphics, 43: 99–111, 2015. 7
+
+[4] Daniel Bolya, Cheng-Yang Fu, Xiaoliang Dai, Peizhao Zhang, Christoph Feichtenhofer, and Judy Hoffman. Token merging: Your vit but faster. arXiv preprint arXiv:2210.09461, 2022. 3, 4
+
+[5] Jakob Boziˇ c, Domen Tabernik, and Danijel Skoˇ caj. Mixedˇ supervision for surface-defect detection: From weakly to fully supervised learning. Computers in Industry, 129: 103459, 2021. 7
+
+[6] Yunkang Cao, Jiangning Zhang, Luca Frittoli, Yuqi Cheng, Weiming Shen, and Giacomo Boracchi. Adaclip: Adapting clip with hybrid learnable prompts for zero-shot anomaly detection. In European Conference on Computer Vision, pages 55–72. Springer, 2024. 2, 6
+
+[7] Xuhai Chen, Yue Han, and Jiangning Zhang. April-gan: A zero-/few-shot anomaly classification and segmentation method for cvpr 2023 vand workshop challenge tracks 1&2: 1st place on zero-shot ad and 4th place on few-shot ad. arXiv preprint arXiv:2305.17382, 2023. 2, 6
+
+[8] Xuhai Chen, Jiangning Zhang, Guanzhong Tian, Haoyang He, Wuhao Zhang, Yabiao Wang, Chengjie Wang, and Yong Liu. Clip-ad: A language-guided staged dual-path model for zero-shot anomaly detection. In International Joint Conference on Artificial Intelligence, pages 17–33. Springer, 2024. 2
+
+[9] Hanqiu Deng, Zhaoxiang Zhang, Jinan Bao, and Xingyu Li. Bootstrap fine-grained vision-language alignment for
+
+unified zero-shot anomaly localization. arXiv preprint arXiv:2308.15939, 2023. 2
+
+[10] Jian Ding, Nan Xue, Gui-Song Xia, Bernt Schiele, and Dengxin Dai. Hgformer: Hierarchical grouping transformer for domain generalized semantic segmentation. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition, pages 15413–15423, 2023. 3
+
+[11] Haifan Gong, Guanqi Chen, Ranran Wang, Xiang Xie, Mingzhi Mao, Yizhou Yu, Fei Chen, and Guanbin Li. Multitask learning for thyroid nodule segmentation with thyroid region prior. In 2021 IEEE 18th international symposium on biomedical imaging (ISBI), pages 257–261. IEEE, 2021. 7
+
+[12] David Gutman, Noel CF Codella, Emre Celebi, Brian Helba, Michael Marchetti, Nabin Mishra, and Allan Halpern. Skin lesion analysis toward melanoma detection: A challenge at the international symposium on biomedical imaging (isbi) 2016, hosted by the international skin imaging collaboration (isic). arXiv preprint arXiv:1605.01397, 2016. 7
+
+[13] Steven A Hicks, Debesh Jha, Vajira Thambawita, Pal˚ Halvorsen, Hugo L Hammer, and Michael A Riegler. The endotect 2020 challenge: evaluation and comparison of classification, segmentation and inference time for endoscopy. In International Conference on Pattern Recognition, pages 263–274. Springer, 2021. 7
+
+[14] Eric Jang, Shixiang Gu, and Ben Poole. Categorical reparameterization with gumbel-softmax. arXiv preprint arXiv:1611.01144, 2016. 4
+
+[15] Jongheon Jeong, Yang Zou, Taewan Kim, Dongqing Zhang, Avinash Ravichandran, and Onkar Dabeer. Winclip: Zero-/few-shot anomaly classification and segmentation. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pages 19606–19616, 2023. 2, 6
+
+[16] Stepan Jezek, Martin Jonak, Radim Burget, Pavel Dvorak, and Milos Skotak. Deep learning-based defect detection of metal parts: evaluating current methods in complex condi tions. In 2021 13th International congress on ultra mod ern telecommunications and control systems and workshops (ICUMT), pages 66–71. IEEE, 2021. 7
+
+[17] Debesh Jha, Pia H Smedsrud, Michael A Riegler, Pal˚ Halvorsen, Thomas De Lange, Dag Johansen, and Havard D˚ Johansen. Kvasir-seg: A segmented polyp dataset. In In ternational conference on multimedia modeling, pages 451– 462. Springer, 2019. 7
+
+[18] Wenxin Ma, Xu Zhang, Qingsong Yao, Fenghe Tang, Chenxu Wu, Yingtai Li, Rui Yan, Zihang Jiang, and S Kevin Zhou. Aa-clip: Enhancing zero-shot anomaly detection via anomaly-aware clip. In Proceedings of the Computer Vi sion and Pattern Recognition Conference, pages 4744–4754, 2025. 6
+
+[19] Chris J Maddison, Andriy Mnih, and Yee Whye Teh. The concrete distribution: A continuous relaxation of discrete random variables. arXiv preprint arXiv:1611.00712, 2016. 4
+
+[20] Pankaj Mishra, Riccardo Verk, Daniele Fornasier, Claudio Piciarelli, and Gian Luca Foresti. Vt-adl: A vision transformer network for image anomaly detection and localization. In 2021 IEEE 30th International Symposium on Industrial Electronics (ISIE), pages 01–06. IEEE, 2021. 7
+
+[21] Zhen Qu, Xian Tao, Mukesh Prasad, Fei Shen, Zhengtao Zhang, Xinyi Gong, and Guiguang Ding. Vcp-clip: A visual context prompting model for zero-shot anomaly segmentation. In European Conference on Computer Vision, pages 301–317. Springer, 2024. 2
+
+[22] Zhen Qu, Xian Tao, Xinyi Gong, Shichen Qu, Qiyu Chen, Zhengtao Zhang, Xingang Wang, and Guiguang Ding. Bayesian prompt flow learning for zero-shot anomaly detection. In Proceedings of the Computer Vision and Pattern Recognition Conference, pages 30398–30408, 2025. 2, 6, 7
+
+[23] Alec Radford, Jong Wook Kim, Chris Hallacy, Aditya Ramesh, Gabriel Goh, Sandhini Agarwal, Girish Sastry, Amanda Askell, Pamela Mishkin, Jack Clark, et al. Learning transferable visual models from natural language supervision. In International conference on machine learning, pages 8748–8763. PmLR, 2021. 1, 2, 4
+
+[24] Michael S Ryoo, AJ Piergiovanni, Anurag Arnab, Mostafa Dehghani, and Anelia Angelova. Tokenlearner: What can 8 learned tokens do for images and videos? arXiv preprint arXiv:2106.11297, 2021. 3
+
+[25] Oriane Simeoni, Huy V Vo, Maximilian Seitzer, Federico´ Baldassarre, Maxime Oquab, Cijo Jose, Vasil Khalidov, Marc Szafraniec, Seungeun Yi, Michael Ramamonjisoa,¨ et al. Dinov3. arXiv preprint arXiv:2508.10104, 2025. 4
+
+[26] Nima Tajbakhsh, Suryakanth R Gurudu, and Jianming Liang. Automated polyp detection in colonoscopy videos using shape and context information. IEEE transactions on medical imaging, 35(2):630–644, 2015. 7
+
+[27] Matthias Wieler and Tobias Hahn. Weakly supervised learning for industrial optical inspection. In DAGM symposium in, page 11, 2007. 7
+
+[28] Jiarui Xu, Shalini De Mello, Sifei Liu, Wonmin Byeon, Thomas Breuel, Jan Kautz, and Xiaolong Wang. Groupvit: Semantic segmentation emerges from text supervision. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition, pages 18134–18144, 2022. 3
+
+[29] Haomin Yu, Qingyong Li, Yunqiang Tan, Jinrui Gan, Jianzhu Wang, Yangli-ao Geng, and Lei Jia. A coarse-to-fine model for rail surface defect detection. IEEE Transactions on Instrumentation and Measurement, 68(3):656–666, 2018. 7
+
+[30] Qihang Zhou, Guansong Pang, Yu Tian, Shibo He, and Jiming Chen. Anomalyclip: Object-agnostic prompt learning for zero-shot anomaly detection. arXiv preprint arXiv:2310.18961, 2023. 2, 6
+
+[31] Yang Zou, Jongheon Jeong, Latha Pemula, Dongqing Zhang, and Onkar Dabeer. Spot-the-difference self-supervised pretraining for anomaly detection and segmentation. In European conference on computer vision, pages 392–408. Springer, 2022. 7
