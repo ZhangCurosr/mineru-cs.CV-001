@@ -1,0 +1,1774 @@
+[
+    {
+        "type": "text",
+        "text": "Highlights",
+        "text_level": 2,
+        "bbox": [
+            178,
+            154,
+            297,
+            180
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "A Remote Approach to Cashew Orchard Detection: Leveraging Active Learning with Satellite Imagery in Guinea-Bissau",
+        "bbox": [
+            176,
+            191,
+            818,
+            231
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "Miguel Pereira, Sofia C. Pereira, Maria J.P. Vasconcelos, Patr´ıcia Guedes, Luke L. Powell, Jo˜ao P. Pedroso",
+        "bbox": [
+            176,
+            236,
+            816,
+            273
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "• Cashew cultivation dominates Guinea-Bissau’s land cover and economic structure",
+        "bbox": [
+            205,
+            292,
+            818,
+            330
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "• Mapped cashew orchards using 10m Sentinel-2 satellite imagery",
+        "bbox": [
+            205,
+            342,
+            766,
+            362
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "• Improved cashew detection performance with a new Active Learning based approach",
+        "bbox": [
+            205,
+            373,
+            818,
+            410
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "• Produced the first countrywide and openly accessible cashew map using 2021 data",
+        "bbox": [
+            205,
+            421,
+            818,
+            458
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "aside_text",
+        "text": "arXiv:2608.11996v1 [cs.CV] 12 Aug 2026",
+        "bbox": [
+            27,
+            349,
+            66,
+            801
+        ],
+        "page_idx": 0
+    },
+    {
+        "type": "text",
+        "text": "A Remote Approach to Cashew Orchard Detection: Leveraging Active Learning with Satellite Imagery in Guinea-Bissau",
+        "text_level": 1,
+        "bbox": [
+            194,
+            152,
+            797,
+            233
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "Miguel Pereira<sup>a,∗</sup>, Sofia C. Pereira<sup>b</sup>, Maria J.P. Vasconcelos<sup>c</sup>, Patr´ıcia Guedes<sup>d</sup>, Luke L. Powell<sup>d</sup>, Jo˜ao P. Pedroso<sup>e</sup>",
+        "bbox": [
+            204,
+            255,
+            790,
+            291
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "<sup>a</sup>Department of Computer Science, Faculty of Sciences, University of Porto, Rua do Campo Alegre, 4169-007 Porto, Portugal",
+        "bbox": [
+            192,
+            303,
+            802,
+            333
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "<sup>b</sup>INESC-TEC, Faculty of Engineering, University of Porto, Rua Dr. Roberto Frias, 4200-465 Porto, Portugal",
+        "bbox": [
+            196,
+            333,
+            799,
+            363
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "<sup>c</sup> Forest Research Centre, School of Agriculture, University of Lisbon, Tapada da Ajuda, 1349-017 Lisbon, Portugal",
+        "bbox": [
+            179,
+            363,
+            813,
+            393
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "<sup>d</sup>CIBIO and BIOPOLIS, InBIO Associated Laboratory, Vair˜ao Campus, University of Porto, Rua do Crasto, 4485-661 Vair˜ao, Portugal",
+        "bbox": [
+            184,
+            393,
+            812,
+            424
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "<sup>e</sup>CMUP and Department of Computer Science, Faculty of Sciences, University of Porto, Rua do Campo Alegre, 4169-007 Porto, Portugal",
+        "bbox": [
+            179,
+            424,
+            815,
+            455
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "Abstract",
+        "text_level": 2,
+        "bbox": [
+            176,
+            511,
+            267,
+            529
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "Cashew production is a widespread economic activity in Guinea-Bissau, as well as other countries in West Africa. However, unregulated cashew production can be directly associated with increasing regionwide deforestation rates, biodiversity losses, and a fragile economic structure. There is no nationwide database for listing or georeferencing cashew orchards, so there is a clear need to remotely map their locations. In recent years, multiple methods for detecting orchards have been developed, though they have only been applied on a regional level. This work expands regional analyses to a nationwide scale. It develops a scalable and cost-efective remote approach, based on Sentinel-2 satellite imagery, using Machine Learning techniques to detect cashew orchards automatically. Margin-based Active Learning techniques were employed to develop an optimal training set in terms of the number of points and their informativeness, leading to a cashew map with 94.0% balanced accuracy obtained entirely of-site. We created two datasets",
+        "bbox": [
+            174,
+            536,
+            818,
+            794
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "page_footnote",
+        "text": "<sup>∗</sup>Corresponding author. Email address: up201906711@edu.fc.up.pt",
+        "bbox": [
+            197,
+            819,
+            681,
+            837
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "page_number",
+        "text": "1",
+        "bbox": [
+            493,
+            873,
+            503,
+            887
+        ],
+        "page_idx": 1
+    },
+    {
+        "type": "text",
+        "text": "and a 2021 cashew map with 10m spatial resolution that are openly accessible through GitHub<sup>1</sup>. The results demonstrate the possibility of a broader cashew orchard mapping, creating a new stepping stone for this environmental application.",
+        "bbox": [
+            173,
+            159,
+            818,
+            233
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Keywords: Land cover, Cashew orchards, Remote Sensing, Machine Learning, Guinea-Bissau, West Africa",
+        "bbox": [
+            176,
+            239,
+            756,
+            277
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "1 Introduction",
+        "text_level": 2,
+        "bbox": [
+            176,
+            308,
+            338,
+            324
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Guinea-Bissau, West Africa, is sufering from an escalating environmental crisis related to increasing deforestation [1]. Although the expansion of the energy sector and illegal logging are associated with this phenomenon, deforestation in the region occurs mainly due to the conversion of forests to agricultural fields, primarily for the production of cashew, rice, and peanuts [1, 2, 3] (Figure 1). Cashew nut cultivation and commerce employs many thousands of Guineans, accounts for over 90% of the national exported goods, and covers between 18% − 55% of the entire planted land, depending on the region [4, 5, 6]. In addition to sustainability considerations, this overreliance on the cashew sector leads to a fragile single-crop economic structure. The subsistence of the country and multiple families is heavily dependent on market shifts and production values, which can be afected by pests, climate conditions, and the age of the orchard [6, 7, 8, 9, 10]. The associated habitat conversion also imposes a major biodiversity threat that could have irreversible long-term consequences [11, 12].",
+        "bbox": [
+            173,
+            337,
+            818,
+            611
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "Eforts to map cashew orchards have been limited due to the dificulty in diferentiating between orchards and woodlands [13]. However, one recent study combined Machine Learning models and Sentinel-2 images to successfully characterize cashew orchards in Cantanhez National Park, showing how much this crop has encroached into the park [14]. Due to the expansion of cashew orchards across the country, more comprehensive national mapping is needed.",
+        "bbox": [
+            173,
+            611,
+            818,
+            738
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "text",
+        "text": "In this work, we propose an innovative fully remote method to detect cashew orchards and the subsequent production of a cashew map, based on the application of Machine Learning classifiers trained on remote sensing data. Land cover classes were also acquired remotely, completely eliminating the need for any on-site procedures during the project’s execution.",
+        "bbox": [
+            174,
+            739,
+            818,
+            795
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "page_footnote",
+        "text": "<sup>1</sup>GitHub link: https://github.com/mrp2106/ALFICC",
+        "bbox": [
+            197,
+            819,
+            588,
+            837
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "page_number",
+        "text": "2",
+        "bbox": [
+            490,
+            873,
+            504,
+            887
+        ],
+        "page_idx": 2
+    },
+    {
+        "type": "image",
+        "img_path": "images/5ef7e9a73b5cf9c6d1c202c5bb26d7d9c04d0c67870db1fd09b4fb90649c418b.jpg",
+        "image_caption": [
+            "Figure 1: Transformation of a forested area into a cashew plantation. Note the structured row pattern in some portions of the orchard. Google Earth, Maxar Technologies/Airbus."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            178,
+            156,
+            815,
+            550
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            174,
+            621,
+            818,
+            656
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "The remote annotation process still represents a considerably time-consuming step. Motivated by this dificulty, our study explores the capacity of Active Learning (AL) techniques to optimize the class acquisition process. These techniques are applied when the learning algorithm is allowed to query an expert for labels (also called classes, in our case being land cover types) of certain samples [15]. This is an iterative process, where at each step, a small batch of the currently most valuable points are passed onto the expert, which then assigns a class to each of them — called the annotation or labeling process — and uses them to expand the current training dataset. This way, an optimal training set with non-redundant data samples is created, which can",
+        "bbox": [
+            173,
+            657,
+            846,
+            840
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "page_number",
+        "text": "3",
+        "bbox": [
+            490,
+            873,
+            504,
+            887
+        ],
+        "page_idx": 3
+    },
+    {
+        "type": "text",
+        "text": "positively impact the performance of associated ML classifier. This iterative procedure is typically repeated until either we are satisfied with the performance of the ML model, or have reached the time and/or resource budget allocated to the labeling process.",
+        "bbox": [
+            173,
+            160,
+            818,
+            232
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "The remainder of the article is organized as follows: Section 2 contains a brief review of previous cashew monitoring and detection work, as well as the application of AL for remote data classification. Section 3 describes the proposed methodology for analyzing the defined region of interest. Section 4 presents the results of the project’s experiments, notably the AL performance and the production of a cashew map, together with a brief discussion of the obtained results. Section 5 concludes the article.",
+        "bbox": [
+            173,
+            232,
+            820,
+            361
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "2 Related Work",
+        "text_level": 2,
+        "bbox": [
+            176,
+            382,
+            351,
+            400
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "Monitoring land use and land use changes (LULUC) is essential to understand the impact of primary sector activities on habitats and biodiversity changes. The advancements of satellite or aerial imagery, in terms of availability and spatiotemporal resolution, paired with more powerful geoprocessing tools, significantly improve the monitoring capabilities [16]. This has led to the expansion of cashew detection research in recent years [14, 16, 17, 18].",
+        "bbox": [
+            173,
+            412,
+            818,
+            522
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "The main dificulty in detecting cashew remotely comes from the identical spectral signatures of cashew and forests, as well as the typical placement of cashew trees in already forested areas, which creates a spatial mixture of both land cover types [13, 14, 16]. Despite these issues, past research has shown the aptitude of ML classifiers to identify cashew orchards based on medium-high spatial resolution imagery, using either Sentinel-2 or PlanetScope satellite-acquired data [14, 16], or sub-meter aerial images [16, 17, 18]. Ensemble-based algorithms or Support Vector Machines appear as capable classifiers [14, 16], despite their inability to work with non-tabular datasets. In contrast, deep learning algorithms are better suited for matrixbased rasters typically associated with remote sensing imagery, and can use this to extract latent spatial features that are valuable to the classification task [17]. Either way, these studies agree that the addition of non-spectral variables containing either temporal or spatial-based information about each sample and its neighboring region typically helps any type of classifier in overcoming the dificulty of distinguishing spectrally similar classes, such as cashew orchards and forest woodlands, and improving overall classification performance.",
+        "bbox": [
+            173,
+            522,
+            820,
+            852
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "page_number",
+        "text": "4",
+        "bbox": [
+            490,
+            873,
+            504,
+            887
+        ],
+        "page_idx": 4
+    },
+    {
+        "type": "text",
+        "text": "The main contributions of our work to the cashew detection problem come in two fronts: the technique used and the spatial coverage. Firstly, we applied Active Learning (AL) heuristics in order to optimize the labeling process — that is, the process of assigning labels (in our case, land cover classes) to certain selected samples (in our case, pixels). We focused on poolbased sampling techniques, which deal with large amounts of raw, unlabeled data [19]. Despite the clear applicability in remote sensing classification projects with access to large amounts of raw unlabeled satellite imagery, no previous work has ever attempted to apply AL to create refined datasets for cashew mapping, which made us eager to evaluate the impact of these techniques for this specific use case. Secondly, we took advantage of the scalability aspect of a fully remote approach to perform a cashew mapping for a larger region, contrasting pre-existing work that focused on monitoring smallholder farms or protected areas [14, 16, 17, 18]. To our knowledge, no cashew orchard map for the entire country of Guinea-Bissau has ever been created or made publicly available; thus, filling this gap was the major goal of our study. Both these fronts create an innovative approach to the study of cashew cultivation and associated efects in Guinea-Bissau, in an eficient and scalable way that is capable of keeping up with the nationwide cashew expansion and changes.",
+        "bbox": [
+            173,
+            160,
+            820,
+            526
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "3 Data and Methods",
+        "text_level": 2,
+        "bbox": [
+            174,
+            546,
+            398,
+            564
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "3.1 Study area and datasets",
+        "text_level": 2,
+        "bbox": [
+            176,
+            577,
+            428,
+            594
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "text",
+        "text": "The project’s region of interest (ROI) corresponds to the entire country of Guinea-Bissau — mainland and islands of the western coast, as shown in Figure 2 —, covering an extent of 34, 800 km<sup>2</sup>. The region’s land cover is formed by savanna woodlands, tropical and sub-tropical forests, and other open or closed-canopy landscapes [2]. This vegetation is marked by two seasonal behaviors: a rainy season from May to October, and a dry season from November to April. Despite its smaller area, the country holds a large plant and animal diversity and includes key biodiversity areas, which have been threatened by the habitat conversion accelerated by cashew cultivation [11, 12]. Two datasets were created for the development of the study’s ML and AL procedures. Samples were acquired not only in Guinea-Bissau, but also in a 2, 700 km<sup>2</sup> neighboring region down to the Kogon river in the Republic of Guinea — also shown in Figure 2 — which contains very similar environmental and land cover patterns [12]. The datasets followed diferent sampling techniques, namely:",
+        "bbox": [
+            173,
+            598,
+            820,
+            838
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "page_number",
+        "text": "5",
+        "bbox": [
+            490,
+            873,
+            504,
+            887
+        ],
+        "page_idx": 5
+    },
+    {
+        "type": "image",
+        "img_path": "images/cf02113d560dc95e60dc8702338af82871d21faebce9da712779f71060700998.jpg",
+        "image_caption": [
+            "Figure 2: Visualization of the main study area and region of interest, the country of Guinea-Bissau, West Africa. A smaller region in the Republic of Guinea, down to the Kogon river, is also represented. Data samples were collected in both areas. Made with QGIS [20]."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            186,
+            155,
+            815,
+            503
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            174,
+            604,
+            816,
+            642
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "• Random Sampling (RS) dataset: corresponds to 4498 samples (pixels) randomly selected for labeling. This heuristic represents the simplest form of expanding a training set, which is useful as a baseline comparison with other AL algorithms [21]. Further, the unbiased and scattered selection of new samples likely ensures a diverse and representative data selection.",
+        "bbox": [
+            205,
+            657,
+            818,
+            767
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "• Margin Sampling (MS) dataset: is comprised of 1816 points (pixels) selected by the Margin Sampling AL heuristic. This technique requests the unlabeled samples with the smallest margin values, that is, those closest to the ML classifier’s stipulated decision boundary [15, 22].",
+        "bbox": [
+            204,
+            779,
+            818,
+            853
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "page_number",
+        "text": "6",
+        "bbox": [
+            490,
+            873,
+            504,
+            887
+        ],
+        "page_idx": 6
+    },
+    {
+        "type": "text",
+        "text": "The heuristic was chosen for its compatibility with the SVM classifier that was considered in the remainder of the project (more details in sections 3.4 and 4.1).",
+        "bbox": [
+            222,
+            160,
+            818,
+            215
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "text",
+        "text": "Both datasets consider pixels from eight land cover classes. Our classification system follows the one utilized in the Forest Reference Emission Level report (FREL) for Guinea-Bissau [23], which was further expanded by RSeT [24] to include more land cover types. Namely, the eight classes we considered are: Closed-canopy Forest, Open-canopy Forest, Mangrove, Savanna woodlands/ Sparse vegetation, Cashew orchards, Non-Forest, Water, and Other (Non-Cashew). Non-Forest is considered an ”umbrella class”, as it aggregates pixels corresponding to buildings, roads, farm fields, and empty land. Meanwhile, Other (Non-Cashew) is used to describe pixels that are definitely not cashew, but which do not fall under the scope of any other class — for example, pixels that encompass forest and urban areas, or mangrove and water, or any other combination of multiple land cover types that thus cannot be attributed to any other individual class. These pixels can be useful in a Cashew vs. Non-Cashew classification setting, but should be discarded in any other context (more details in section 4.1). Figure 3 shows the geographical distribution of each dataset, and Table 1 presents the respective pixel counts per class.",
+        "bbox": [
+            173,
+            231,
+            820,
+            542
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "page_number",
+        "text": "7",
+        "bbox": [
+            491,
+            872,
+            504,
+            888
+        ],
+        "page_idx": 7
+    },
+    {
+        "type": "chart",
+        "img_path": "images/380c54383f736cefb3557cf37c7ce40d68651fa264b35665dd395a3808758c32.jpg",
+        "content": "",
+        "chart_caption": [],
+        "chart_footnote": [],
+        "bbox": [
+            214,
+            169,
+            782,
+            435
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "chart",
+        "img_path": "images/4ff8cdceb111744fc5531da5a602871d555afb30945f4a73d7359e0712cd70ca.jpg",
+        "content": "",
+        "chart_caption": [
+            "MS labeled samples distribution across ROI",
+            "Figure 3: Geographical distribution of the Random Sampling (top) and Margin Sampling (bottom) datasets."
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            215,
+            449,
+            784,
+            714
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "3.2 Satellite image processing",
+        "text_level": 2,
+        "bbox": [
+            176,
+            795,
+            444,
+            813
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "text",
+        "text": "Remote sensing imagery from Copernicus Sentinel-2 (S2) was used as the base satellite data [25]. This mission is composed of two orbiting satellites phased at 180<sup>◦</sup>, producing a new image with almost global coverage with a five-day revisiting time. The satellites collect radiance measurements across 13 discrete bands in the electromagnetic spectrum’s visible, near-infrared, and shortwave-infrared regions, with spatial resolutions of either 10m, 20m, or 60m. In our work, every non-10m band was resampled to a 10m spatial resolution, which matches the resolution of every considered additional band — thus, the produced cashew map also presents a 10m spatial resolution. Satellite image processing and feature extraction were performed in Google Earth Engine (GEE), a cloud-based platform that combines open-access imagery with distributed computational resources for advanced processing [26]. Figure 4 presents a flowchart of this procedure.",
+        "bbox": [
+            174,
+            815,
+            818,
+            853
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "header",
+        "text": "RS labeled samples distribution across ROI",
+        "bbox": [
+            401,
+            160,
+            627,
+            171
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "page_number",
+        "text": "8",
+        "bbox": [
+            490,
+            873,
+            504,
+            887
+        ],
+        "page_idx": 8
+    },
+    {
+        "type": "table",
+        "img_path": "images/2a5589cebabe003d6aeed1a729e86265eebaf586c12523369a82fb1372b9b0ea.jpg",
+        "table_caption": [
+            "Table 1: Number of pixels per class in the two obtained datasets."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td rowspan=\"2\"></td><td colspan=\"2\">Nº of pixels</td></tr><tr><td>Random Sampling</td><td>Margin Sampling</td></tr><tr><td>Closed Forest</td><td>9</td><td>0</td></tr><tr><td>Open Forest</td><td>289</td><td>132</td></tr><tr><td>Mangrove</td><td>417</td><td>57</td></tr><tr><td>Savanna</td><td>1303</td><td>511</td></tr><tr><td>Cashew</td><td>993</td><td>503</td></tr><tr><td>Non-Forest</td><td>1024</td><td>261</td></tr><tr><td>Water</td><td>111</td><td>9</td></tr><tr><td>Other (non-cashew)</td><td>352</td><td>436</td></tr><tr><td>Total</td><td>4498</td><td>1909</td></tr></table>",
+        "bbox": [
+            212,
+            183,
+            781,
+            409
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            174,
+            436,
+            818,
+            637
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "An image collection was considered using the S2 images from March 2017 up to April 2021. These data were collected and stored in tiles — 109.8km × 109.8km segments of the Earth’s surface —, which can be assembled to form a spatially continuous image for the entire region of interest through a process called mosaicking [14]. From the resulting 13-band raster collection, training features were extracted to develop the ML classifiers. They are categorized and shown in the flowchart across three diferent branches according to the nature of the information they represent:",
+        "bbox": [
+            174,
+            637,
+            818,
+            785
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "• Spectral features: Four Sentinel-2 bands were discarded from the analysis: bands B1, B9, and B10 are typically ignored in surface-level applications, as they account for atmospheric efects; also, band B8A was dropped due to its spectral similarity and overlap with band B8. Four bands related to diferent vegetation indices were added to the base image collection, corresponding to the NDVI, NBR, EVI, and EVI2 indices. Spectral overlap between diferent land cover types is a typical concern during the classification procedure, noticeably between cashew orchards and certain types of forest woodlands. This overlap is not the same at every time of the year and is typically smaller by the end of the dry season, which spans from November to April [14]. Therefore, we combined all the base S2 images from April 2021 and extracted the median image with the 13 spectral bands through a process called compositing — using an aggregation function to merge spatially overlapping imagery into a single image.",
+        "bbox": [
+            204,
+            797,
+            818,
+            853
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "page_number",
+        "text": "9",
+        "bbox": [
+            490,
+            873,
+            504,
+            887
+        ],
+        "page_idx": 9
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            222,
+            160,
+            820,
+            381
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "• Temporal features: Temporal information can highlight other distinctive characteristics of land cover types, such as the seasonal variability of savanna woodlands or the stability of a closed-canopy forest, thus enhancing the predictive capacity of an associated classifier. For this purpose, we applied the Continuous Change Detection and Classification (CCDC) algorithm to the S2 2017-2021 image collection [27]. The procedure works in two stages: initially, a change detection algorithm identifies breaks in the typical behavior of each pixel — which can be associated with a land cover change —, partitioning a pixel’s time series into segments; secondly, a harmonic regression is applied to each of the resulting segments for each pixel. The coeficients of the harmonic regression can then be extracted and used as temporal predictors for the classification procedure. For each pixel, we extracted 104 coeficients of the time segment overlapping with the 30<sup>th</sup> of April 2021, plus nine other bands that were also added during the preprocessing phase of GEE’s CCDC implementation regarding Elevation, Rainfall, and other geographic-related features, creating a 113-band image.",
+        "bbox": [
+            204,
+            391,
+            820,
+            703
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "• Spatial features: The most common type of manually extracted features for multispectral image classification regard spatial information [14]. The similarity or contrast with neighboring pixels can be used to detect, for example, the sparse pattern of savanna woodlands in the dry season, as well as the structured tree pattern that concerns certain cashew orchards, such as the one shown in Figure 1. We utilized the Gray-Level Co-Occurrence Matrix (GLCM) algorithm to calculate spatial statistics [28]. This method works with gray-scale intensities — valued between 0 and 255 — to describe a central pixel’s neighboring region, using metrics like the sum average, entropy, local contrast, and dissimilarity between pairs of pixels. The GEE implementation calculates 18 statistics per input band and thus was only applied to the April 2021 median composite. This resulted in a 234-band image, which was merged with the spectral April 2021 median composite and the CCDC image to produce the final image asset, containing 360 features for every pixel in the region of interest.",
+        "bbox": [
+            204,
+            714,
+            820,
+            842
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "page_number",
+        "text": "10",
+        "bbox": [
+            486,
+            872,
+            509,
+            887
+        ],
+        "page_idx": 10
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            222,
+            160,
+            820,
+            325
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "image",
+        "img_path": "images/80a1b022cadb5f9e585b28f3a40136eaf1fe999747ff5a3079003fcf3304005f.jpg",
+        "image_caption": [
+            "Figure 4: Satellite image processing and feature acquisition flowchart."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            186,
+            359,
+            808,
+            611
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "3.3 Active Learning and label acquisition",
+        "text_level": 2,
+        "bbox": [
+            176,
+            680,
+            537,
+            696
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "Figure 5 shows a flowchart of the sampling techniques and AL procedures that led to the creation of the Random Sampling and Margin Sampling datasets. An initial training set common to both sampling heuristics was stipulated before any other data acquisition process because the evolution of the AL iterative procedure is directly influenced by its training data. We separated 11 randomly acquired polygons — 93 pixels — for this purpose, having at least one polygon of each of the eight annotated classes to ensure that every classifier does not have to discover new classes during the iterative labeling process, and two polygons for Savanna, Cashew, Non-Forest, and Other (Non-Cashew).",
+        "bbox": [
+            173,
+            702,
+            820,
+            832
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "page_number",
+        "text": "11",
+        "bbox": [
+            486,
+            872,
+            508,
+            887
+        ],
+        "page_idx": 11
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            173,
+            160,
+            816,
+            213
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "The labeling process was accompanied by RSeT researchers [24] with previous experience from other remote or on-site projects in the area. Google Earth Pro’s Historical Imagery tool (Landsat/Copernicus/Maxar Technologies/Airbus) was used to view the terrain and assign classes according to each pixel’s land cover in April 2021, at the end of the dry season. In each Random and Margin Sampling iteration, after the algorithm requested pixels for labeling, the entire 3 × 3 patch of the immediate neighboring pixels was also stored and given to the annotator (the first author) for labeling, which sped up the annotation process. Often, cases were too dificult to classify with confidence, mostly due to the fuzzy nature of land cover over such a large and diverse area (multiple pixels contained mixed behaviors and were thus not suited to be categorized into one single class), or the lack of highresolution imagery in Google Earth Pro to assess the land cover type in 2021. In such cases, the samples were discarded.",
+        "bbox": [
+            173,
+            214,
+            820,
+            470
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "image",
+        "img_path": "images/cadad4dfc4a37c23e3fdbefc412a0e0ca8d975c771ab203b414bce5c73d62072.jpg",
+        "image_caption": [
+            "Figure 5: Schema of the Active Learning and dataset creation process."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            83,
+            484,
+            905,
+            695
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "The final step of the AL process is the stopping criteria, which stipulate when the iterations and dataset creation end. The literature typically suggests stopping the acquisition process either when the associated model performance reaches satisfactory levels or when the time and labeling budgets have been exhausted. However, we also considered the possibility of stopping if a significant portion of the samples requested by the heuristic became overwhelmingly hard to annotate and/or had to be discarded. Thus, we decided that the AL procedure should be terminated when one of the three aforementioned criteria was reached.",
+        "bbox": [
+            173,
+            743,
+            820,
+            854
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "page_number",
+        "text": "12",
+        "bbox": [
+            486,
+            873,
+            509,
+            887
+        ],
+        "page_idx": 12
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            174,
+            160,
+            818,
+            214
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "3.4 Machine Learning workflow and post-processing",
+        "text_level": 2,
+        "bbox": [
+            176,
+            229,
+            627,
+            247
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "All Machine Learning and image classification procedures were implemented in Python [29]. This includes the stipulation of a test set, feature selection, and hyperparameter tuning for model selection, with every step being performed after the creation of the Random Sampling (RS) dataset, but before the acquisition of Margin Sampling (MS) data, since this heuristic’s iterative selection of points is dependent on these choices. A train-test split of the RS data was performed using a grouped stratified sampling strategy, which deals with data representation in each set with stratified sampling; the approach keeps all the pixels from the same patch together in either training or testing to avoid spatial autocorrelation afecting the test scores [14]. The dataset was split 50 − 50 to ensure a highly representative test set. Meanwhile, the MS dataset was only used for model training - every MS result was also evaluated on the RS test set to ensure the comparability with the RS results.",
+        "bbox": [
+            173,
+            251,
+            820,
+            506
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "Due to the high number of bands in the raster described in section 3.2 (360), feature selection was performed on the RS training set, following two diferent procedures: scikit-learn’s [30] recursive feature elimination algorithm, which iteratively removes the least prominent features that have little to no impact on the model’s predictive performance; a featureimportance based approach, where we utilized scikit-learn’s Random Forests feature importances attribute to get an estimate of each variable’s usefulness with a value between 0 and 1, and only kept those with a score above the threshold of $\\frac { 1 } { 3 6 0 }$ , which represents the average importance in a random classifier scenario (where every feature would have the same impact on the model’s performance).",
+        "bbox": [
+            173,
+            506,
+            820,
+            707
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "Hyperparameter tuning followed the bayesian optimization strategies of the hyperopt Python library [31]. Two types of classifiers were considered for optimization: Support Vector Machines (SVMs) and Random Forests (RFs). SVMs had already shown the highest cashew detection performance in previous research [14]. RFs have been considered in the aforementioned research as well, and despite not presenting the best results, they are one of the few ML algorithms implemented in GEE’s native Machine Learning tools, which can facilitate the transition between the satellite image processing and",
+        "bbox": [
+            173,
+            707,
+            820,
+            854
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "page_number",
+        "text": "13",
+        "bbox": [
+            486,
+            873,
+            509,
+            887
+        ],
+        "page_idx": 13
+    },
+    {
+        "type": "text",
+        "text": "ML sections. The hyperparameter search was performed optimizing mean F1-Cashew on 5-fold cross-validation in the RS training set for both models.",
+        "bbox": [
+            174,
+            160,
+            816,
+            195
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "During hyperparameter tuning, we explored two diferent classification scenarios: firstly, we discarded the samples from the eighth class (Other non-cashew) and worked with 7-class classifiers; after, we considered binary classifiers to work in a Cashew vs. Non-Cashew classification setting (this time including the eighth class into the broader Non-Cashew category). We performed hyperparameter tuning separately for each case to observe if a noticeable performance diference could arise from this label change. As discussed in section 4.1, the binary SVM classifier outperforms the 7-class model, and as such was the considered model for the AL section.",
+        "bbox": [
+            174,
+            196,
+            818,
+            359
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "The final classifier of the MS experiments, trained on the full MS dataset, was used to create a prediction-based land cover map for the entire region of interest. A final post-processing step was performed by applying a sieve filter to the land cover map. This filter removes raster polygons that are smaller than a pre-defined threshold and replaces them with the pixel value (class) of the largest neighboring polygon, thus smoothing the land cover map. The optimal threshold value will be discussed in section 4.3.",
+        "bbox": [
+            174,
+            361,
+            818,
+            489
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "4 Results and Discussion",
+        "text_level": 2,
+        "bbox": [
+            176,
+            511,
+            436,
+            527
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "4.1 Feature selection and hyperparameter tuning",
+        "text_level": 2,
+        "bbox": [
+            176,
+            540,
+            599,
+            558
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "During the feature selection process, the recursive feature elimination algorithm selected 250 of the initial 360 variables, while the above-average importance process kept only 67 features. Figure A.8 in Appendix A shows that the latter does not translate to any performance drop in comparison to the recursive feature elimination procedure or the usage of the total 360 features, even presenting a slightly higher median score than the other two. Hence, we only kept the 67 features selected by the above-average procedure for the remaining ML procedures and the training of the Active Learning classifiers.",
+        "bbox": [
+            174,
+            561,
+            818,
+            724
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "The details of the hyperparameter tuning section, including the search spaces for each classifier type and the architecture of the best classifier in both 7-class and 2-class scenarios, are available in Appendix A. Table 2 shows the test scores of the best 7-class algorithm, a Random Forest, and the 2-class model, an SVM. Both balanced accuracy and Cashew F1 scores are higher for the binary SVM classifier. Naturally, the binary prediction task is less complex: collapsing the original Non-Cashew land cover classes into just a single category erases minority classes - such as Closed Forest and Water (Table 1) - which typically drag the metrics down.",
+        "bbox": [
+            173,
+            726,
+            820,
+            853
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "page_number",
+        "text": "14",
+        "bbox": [
+            486,
+            873,
+            509,
+            887
+        ],
+        "page_idx": 14
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            174,
+            160,
+            816,
+            196
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "table",
+        "img_path": "images/e6df070025371e6f6d5fa80efe4dab5db45a2c2b3923e60f60dfc05333a74adb.jpg",
+        "table_caption": [
+            "Table 2: RS test results for the best 7-class and 2-class classifiers. Hyperparameter search was made for maximizing mean F1-Cashew on 5-fold cross-validation in the RS training set."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td></td><td>Balanced Accuracy</td><td>F1-score Cashew</td></tr><tr><td>Best 7-class model (RF)</td><td>0.803</td><td>0.814</td></tr><tr><td>Best 2-class model (SVM)</td><td>0.905</td><td>0.843</td></tr></table>",
+        "bbox": [
+            178,
+            257,
+            838,
+            328
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "Due to our main goal of detecting cashew cultivation, we have decided to work with the binary classification approach and the best 2-class model from this point onward. Because the best binary classifier is an SVM, we opted to use a margin-based heuristic, specifically MS, as the AL heuristic to build the dataset.",
+        "bbox": [
+            174,
+            348,
+            820,
+            439
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "4.2 Active Learning results",
+        "text_level": 2,
+        "bbox": [
+            176,
+            454,
+            421,
+            472
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "After optimizing a classifier on the Random Sampling train set and selecting an initial training set for the Active Learning process, we advanced to the acquisition of newly labeled samples to form the Margin Sampling dataset. We also simulated an AL evolution on the RS training data by iteratively selecting larger portions of this dataset, to serve as a baseline comparison. The results are presented in Figure 6.",
+        "bbox": [
+            173,
+            477,
+            818,
+            585
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "Both selection procedures lead to improvements of the associated ML classifiers — that is, the performance of the ML model increases as we add new labeled pixels to the training set in each RS or MS iteration, until it stagnates. However, MS does so more eficiently, with steeper increases during the early iterations: just after two AL steps, the classifier obtained an F1-score of 81.2% using MS, in comparison to the 71.2% score using randomly selected data. Peak performance is also higher with MS labeled training data, reaching 87.2% Cashew F1-score with 1254 training samples — in comparison, RS’s peak is 85.4% F1-score with 1599 samples.",
+        "bbox": [
+            173,
+            587,
+            820,
+            750
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "text",
+        "text": "The results of the final iterations show a degree of oscillation. This could mean the classifier is reaching the maximum predictive performance, though we cannot claim this with certainty, considering this behavior is only observed for a small number of final iterations. However, during the MS annotation task, the performance decay after the fifth iteration’s peak was noticeably accompanied by the request of more intricate samples and the increase in sample rejection rates (the proportion of requested samples by the AL heuristic for which the annotators could not attribute a land cover class), as shown in Figure B.9 in Appendix B. Thus, even if we hadn’t already reached the performance cap, we would have stopped the annotation process due to the increased dificulty in labeling new pixels with confidence, which could steeply increase the risk of mislabeling and data intrusion, whilst also adding little new informative samples to the train set.",
+        "bbox": [
+            174,
+            750,
+            818,
+            842
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "page_number",
+        "text": "15",
+        "bbox": [
+            486,
+            872,
+            509,
+            887
+        ],
+        "page_idx": 15
+    },
+    {
+        "type": "chart",
+        "img_path": "images/ef46e4eaa815efd13164b9592a2849560c3a20309062c9978b5823db00847738.jpg",
+        "content": "",
+        "chart_caption": [
+            "Figure 6: Cashew F1-score evolution during the Active Learning procedure"
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            189,
+            166,
+            802,
+            473
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            174,
+            530,
+            818,
+            674
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "Therefore, the AL experiments finished with a Balanced Accuracy of 92.2% and F1-score of 85.7% after nine iterations, with 1909 samples. Random Sampling finalizes with 90.9% Balanced Accuracy and 85.0% F1-score, using 2274 training samples. The results show the power of Active Learning in the context of multi-spectral image classification and cashew detection, as it allows for a more eficient training sample selection, which helps improve a classifier’s maximum predictive performance and also leads to better results with fewer labeled data.",
+        "bbox": [
+            173,
+            675,
+            820,
+            821
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "page_number",
+        "text": "16",
+        "bbox": [
+            486,
+            873,
+            509,
+            887
+        ],
+        "page_idx": 16
+    },
+    {
+        "type": "text",
+        "text": "4.3 Post-processing and final land cover map",
+        "text_level": 2,
+        "bbox": [
+            176,
+            160,
+            571,
+            178
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "With the final Margin Sampling classifier (the SVM trained on the full MS dataset), we obtained a cashew land cover map from the predictions for every pixel in the ROI. In order to apply the sieve filter to smoothen the map, we first needed to stipulate the minimum polygon size p. Since this is a user-defined threshold, we searched for the optimal value in a grid. As shown in Figure C.10 in Appendix C, the best results are obtained with $p = 3 5 0$ , which leads to a Cashew F1-score of 89.5% and balanced accuracy equal to 94.0%, an improvement of both metrics over the unfiltered results, as interpreted in the figure.",
+        "bbox": [
+            173,
+            180,
+            820,
+            345
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "table",
+        "img_path": "images/a68dea0022de3051f607f3aef66ee47d89ac609856bfe122069d2c65a549e4b8.jpg",
+        "table_caption": [
+            "Table 3: Area estimates and percentage of Cashew and Non-Cashew in Guinea-Bissau."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td></td><td>Cashew (ha) Non-Cashew (ha) Cashew (%)</td><td></td><td>Non-Cashew (%)</td></tr><tr><td>902,149</td><td>2,575,932</td><td>25.9</td><td>74.1</td></tr></table>",
+        "bbox": [
+            179,
+            383,
+            828,
+            433
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "The filtered 2021 land cover map for cashew monitoring, based on SVM predictions, is shown in Figure 7. In total, 25.9% of the country’s area is identified as Cashew, as presented in Table 3, almost equal to the percentage of terrestrial protected areas [14]. The northwest quadrant of the country contains the most cashew, followed by the southwest and northeast. Cashew plantations are scarcer in the southeast. These results constitute the basis for an accurate assessment of the state of the cashew sector in the country, which then allows the implementation of appropriate measures to control its prevalence.",
+        "bbox": [
+            174,
+            450,
+            820,
+            616
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "text",
+        "text": "Further insights can be drawn from this study, and particularly from the cashew land cover map. For example, the relationship between cashew cultivation and human activity becomes clear in the overlay presented in Figure C.11 in Appendix C, as it highlights the geographical relationship between cashew orchards and communities. Another example is presented in Figure C.12, which shows the spatial intersection between the cashew map and Guinea-Bissau’s terrestrial protected areas (PAs). This example highlights an opposite relation to that of the communities overlay, as the PAs typically intersect regions with fewer cashew plantations (aside from Cantanhez National Park, whose case was studied in [14]). This visual interpretation already hints at the correlation of cashew cultivation with both phenomena, though further analysis is needed to draw out causal efects from these interactions, if they exist.",
+        "bbox": [
+            173,
+            616,
+            820,
+            853
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "page_number",
+        "text": "17",
+        "bbox": [
+            486,
+            872,
+            509,
+            887
+        ],
+        "page_idx": 17
+    },
+    {
+        "type": "image",
+        "img_path": "images/8d30e3af7f24226b1e9fc0e25d2178a06301838382b789a5af594a13e97ef3ed.jpg",
+        "image_caption": [
+            "Figure 7: Final 2021 Land cover map. Obtained with a post-processing 350p sieve filter applied to the SVM predictions map."
+        ],
+        "image_footnote": [],
+        "bbox": [
+            184,
+            157,
+            815,
+            462
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "5 Conclusions",
+        "text_level": 2,
+        "bbox": [
+            176,
+            532,
+            330,
+            549
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "This study is the first attempt at an openly accessible cashew mapping for Guinea-Bissau, West Africa. Through the combined use of an SVM classifier paired with an Active Learning procedure that developed a minimal but optimized training dataset, we were able to produce a fully remote and costefective approach to detect cashew orchards. Margin Sampling proved to be an eficient sample selection algorithm, resulting in 89.5% Cashew f1-score and 94.0% balanced accuracy test results after a sieve filter was applied to the predictions map.",
+        "bbox": [
+            174,
+            560,
+            818,
+            707
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "Cashew cultivation has a deep environmental, economic, and humanitarian impact in many West African countries, including Guinea-Bissau [11]. This efect is exacerbated by the unregulated expansion of plantations, which in turn complicates the accurate estimation of cultivation areas and production values. Recently, researchers have identified mapping and monitoring cashew orchards as a priority for a sustainable future in West Africa [11, 14]. Our work directly contributes to this by serving as the basis for a deeper assessment of the state of the cashew sector in the area, which can lead to more adequate and efective action focused on the country’s sustainable development. Further, our approach can be applied to other Western African countries where cashew orchard expansion is a threat to biodiversity, facilitating an accurate measure of the area this crop currently occupies.",
+        "bbox": [
+            174,
+            707,
+            818,
+            853
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "page_number",
+        "text": "18",
+        "bbox": [
+            488,
+            873,
+            509,
+            887
+        ],
+        "page_idx": 18
+    },
+    {
+        "type": "text",
+        "text": "",
+        "bbox": [
+            174,
+            160,
+            818,
+            232
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "text",
+        "text": "Further developments can be made to expand the approach presented in this study. Cashew mapping accuracy might increase with the usage of more advanced patch-based classifiers [32], or through the creation of a new training dataset based on a diferent AL heuristic. It would also be valuable to map land cover across years to develop a change detection system that could then be used to monitor the expansion of cashew orchards in Guinea-Bissau and beyond.",
+        "bbox": [
+            174,
+            233,
+            818,
+            361
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "page_number",
+        "text": "19",
+        "bbox": [
+            488,
+            872,
+            509,
+            887
+        ],
+        "page_idx": 19
+    },
+    {
+        "type": "text",
+        "text": "Appendix A Feature selection and hyperparameter tuning",
+        "text_level": 2,
+        "bbox": [
+            176,
+            160,
+            766,
+            179
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "Figure A.8 compares the results obtained using every feature with two variable selection procedures: recursive feature elimination (RFECV) and selecting features with an importance score above the 1/360 threshold that corresponds to the mean (average) importance. Considering the performance similarity between the diferent scenarios, the boxplots demonstrate that we can reduce the dimensionality of the feature space without sacrificing model performance. This justifies our choice of working with the smallest feature space composed of the 67 variables with an above-average importance score.",
+        "bbox": [
+            173,
+            189,
+            820,
+            337
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "chart",
+        "img_path": "images/1489a5d86b5776071b6f84a9a1133087c6cff81841ed7d8c4251c7efe46d1436.jpg",
+        "content": "",
+        "chart_caption": [
+            "Figure A.8: Performance with three diferent variable sets: every feature (360), the selection through recursive feature elimination RFECV (250), and features with above average importance value (67). Results were obtained with stratified grouped 10-fold on the Random Sampling training set."
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            223,
+            361,
+            771,
+            638
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "text",
+        "text": "Regarding the hyperparameter tuning process, Table A.4 shows the considered hyperparameters for RFs and SVMs, and the respective search spaces. A separate search was performed for 7-class and 2-class classification paradigms, with the best models from each scenario being detailed in Table A.5. The AL results that followed were obtained using the best binary SVM classifier due to its higher cashew prediction scores, as shown in Table 2.",
+        "bbox": [
+            174,
+            742,
+            834,
+            852
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "page_number",
+        "text": "20",
+        "bbox": [
+            485,
+            872,
+            509,
+            887
+        ],
+        "page_idx": 20
+    },
+    {
+        "type": "table",
+        "img_path": "images/af79aadf5bf2ca51d1883b4a30a9f32faf7cad9f4728c7365c9fd8ebbeeb431f.jpg",
+        "table_caption": [
+            "Table A.4: Hyperparameter search space for Random Forests and Support Vector Machines. The search space was equivalent for the 7-class and 2-class classification paradigms."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>Hyperparameters</td><td>Search range</td></tr><tr><td>Random Forests</td><td></td></tr><tr><td>Number of estimators Maximum depth</td><td>50 – 450, with steps of 10 1-12</td></tr><tr><td>Max features per split</td><td>3 – 70, with steps of 3</td></tr><tr><td>Support Vector Machines</td><td></td></tr><tr><td>C (regularization parameter)</td><td> $1 0 ^ { - 3 } - 1 0 ^ { 1 }$ </td></tr><tr><td>Kernel</td><td>Linear, poly, or rbf</td></tr><tr><td>Gamma</td><td> $1 0 ^ { - 1 0 } - 1 0 ^ { 1 }$  (for rbf or poly kernel)</td></tr><tr><td>Degree</td><td>2, 3, or 4 (for poly kernel)</td></tr></table>",
+        "bbox": [
+            205,
+            198,
+            787,
+            406
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "table",
+        "img_path": "images/e373d77bf5e25dd7644fd7c648a96a5dc25a1798ad2bab3e019b49bdfc889a69.jpg",
+        "table_caption": [
+            "Table A.5: Best classifiers after hyperparameter tuning, for both 2-class and 7-class classification scenarios."
+        ],
+        "table_footnote": [],
+        "table_body": "<table><tr><td>2 class</td><td colspan=\"2\">7 class</td></tr><tr><td>Best model</td><td>SVM</td><td>Best model RF</td></tr><tr><td>C 0.0117</td><td>Number of estimators</td><td>73</td></tr><tr><td>Kernel poly</td><td>Maximum depth</td><td>10</td></tr><tr><td>Gamma</td><td>0.6439 Max features per split</td><td>t 2</td></tr><tr><td>Degree</td><td>4</td><td></td></tr></table>",
+        "bbox": [
+            259,
+            473,
+            735,
+            601
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "text",
+        "text": "Appendix B AL experiments and MS rejection rates",
+        "text_level": 2,
+        "bbox": [
+            176,
+            628,
+            710,
+            647
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "text",
+        "text": "Figure B.9 highlights the increase in labeling dificulty after the peak performance iteration, for the MS labeling process. After the peak, the heuristic started requesting more and more dificult pixels, often with a mixture of land cover classes, which translated in an increase in the number of discarded samples. This was especially evident during the final iteration, where over a third of the pixels requested by the model could not be labeled.",
+        "bbox": [
+            173,
+            657,
+            818,
+            768
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "page_number",
+        "text": "21",
+        "bbox": [
+            485,
+            872,
+            508,
+            887
+        ],
+        "page_idx": 21
+    },
+    {
+        "type": "chart",
+        "img_path": "images/27ef2d5ee2345521369ef898c514284a8010d2e411b917a5e85b825ed4ec80b8.jpg",
+        "content": "",
+        "chart_caption": [
+            "Figure B.9: Percentage of the number of requested pixels per MS iteration that could not be labeled and were thus discarded."
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            279,
+            161,
+            710,
+            410
+        ],
+        "page_idx": 22
+    },
+    {
+        "type": "text",
+        "text": "Appendix C Sieve filter and communities overlay",
+        "text_level": 2,
+        "bbox": [
+            176,
+            478,
+            678,
+            497
+        ],
+        "page_idx": 22
+    },
+    {
+        "type": "text",
+        "text": "Figure C.10 shows how the map scores vary with the sieve filter polygon size threshold. The first data point represents the scenario where no filter is applied to the map. The results show that the application of such a filter is beneficial, since the test scores are always higher when applying a sieve filter, no matter the value of the polygon size threshold.",
+        "bbox": [
+            174,
+            507,
+            818,
+            601
+        ],
+        "page_idx": 22
+    },
+    {
+        "type": "page_number",
+        "text": "22",
+        "bbox": [
+            485,
+            872,
+            509,
+            887
+        ],
+        "page_idx": 22
+    },
+    {
+        "type": "chart",
+        "img_path": "images/0e4a42988f05dcd5460745c95e18d3b67eb44b7ccdfc94bd1036623887deeeca.jpg",
+        "content": "",
+        "chart_caption": [
+            "Figure C.10: Test scores obtained after applying a sieve filter with diferent polygon size threshold p parameter values. The first point, with minimum polygon size threshold p equal to 0, represents the test scores obtained with no filter applied."
+        ],
+        "chart_footnote": [],
+        "bbox": [
+            276,
+            156,
+            715,
+            422
+        ],
+        "page_idx": 23
+    },
+    {
+        "type": "text",
+        "text": "Figure C.11 shows the spatial overlap between the largest cashew predominant regions and existing urban locations, overlaying Guinea-Bissau’s 2017 census data on a land cover map processed with a 350p sieve filter. This evidence is clearer in the Northern part of the country. In addition, Figure C.12 presents the overlay with Guinea-Bissau’s terrestrial protected areas (PAs), showing the opposite tendency: most protected areas appear in southeastern regions, with little cashew orchards (aside from Cantanhez National Park). The northwest quadrant, which shows the highest orchard density, also coincides with the absence of any terrestrial PAs.",
+        "bbox": [
+            173,
+            491,
+            820,
+            657
+        ],
+        "page_idx": 23
+    },
+    {
+        "type": "page_number",
+        "text": "23",
+        "bbox": [
+            485,
+            872,
+            509,
+            888
+        ],
+        "page_idx": 23
+    },
+    {
+        "type": "image",
+        "img_path": "images/d3cef5c5d3c4ee830678a5a216db8dbf4408a116e9e5f808ba00ce4ceb33eabe.jpg",
+        "image_caption": [
+            "Figure C.11: Land cover map with an overlay of Guinea-Bissau communities according to the 2017 national census. [24]"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            220,
+            156,
+            776,
+            426
+        ],
+        "page_idx": 24
+    },
+    {
+        "type": "image",
+        "img_path": "images/1a3a722002ad4139d4af727bbda6622c6f24e7e54c2dc31aeaad7dda918f81b7.jpg",
+        "image_caption": [
+            "Figure C.12: Land cover map with an overlay of Guinea-Bissau Terrestrial and Inland Waters Protected Areas. [33]"
+        ],
+        "image_footnote": [],
+        "bbox": [
+            217,
+            502,
+            774,
+            775
+        ],
+        "page_idx": 24
+    },
+    {
+        "type": "page_number",
+        "text": "24",
+        "bbox": [
+            485,
+            873,
+            509,
+            887
+        ],
+        "page_idx": 24
+    },
+    {
+        "type": "text",
+        "text": "Acknowledgements",
+        "text_level": 2,
+        "bbox": [
+            178,
+            160,
+            364,
+            178
+        ],
+        "page_idx": 25
+    },
+    {
+        "type": "text",
+        "text": "We want to thank Lu´ıs Palma for his valuable insights and input about the results and project applicability, as well as RSeT [24] for providing us with supporting technical documentation and datasets that were crucial for the early project development.",
+        "bbox": [
+            174,
+            189,
+            818,
+            261
+        ],
+        "page_idx": 25
+    },
+    {
+        "type": "text",
+        "text": "This work was co-funded by the European Union’s Horizon 2020 research and innovation programme under grant agreement No 854248 and by the project TROPIBIO NORTE-01-0145-FEDER-000046, supported by Norte Portugal Regional Operational Programme (NORTE2020), under the POR-TUGAL 2020 Partnership Agreement, through the European Regional Development Fund (ERDF).",
+        "bbox": [
+            174,
+            262,
+            818,
+            371
+        ],
+        "page_idx": 25
+    },
+    {
+        "type": "text",
+        "text": "The author Jo˜ao Pedro Pedroso was partially supported by CMUP, member of LASI, which is financed by national funds through FCT – Funda¸c˜ao para a Ciˆencia e a Tecnologia, I.P., under the projects with reference UIDB/00144/2020 and UIDP/00144/2020.",
+        "bbox": [
+            174,
+            371,
+            816,
+            445
+        ],
+        "page_idx": 25
+    },
+    {
+        "type": "text",
+        "text": "References",
+        "text_level": 2,
+        "bbox": [
+            178,
+            467,
+            285,
+            484
+        ],
+        "page_idx": 25
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "[1] A. I. Seca, et al., Expansion of Cashew Cultivation and its Environmental and Economic Impacts on Guinea-Bissau, Brazilian Journal of Environmental Sciences (RBCIAMB) 56 (2021) 385–397. doi:10.5327/ Z21769478950.",
+            "[2] Republic of Guinea-Bissau, Updated Nationally Determined Contribution In The Framework Of The Paris Climate Agreement, United Nations Climate Change (2021).",
+            "[3] L. Powell, et al., EU deforestation law overlooks emerging crops, Science 379 (2023) 340–341. doi:10.1126/science.adf9994.",
+            "[4] World Food Programme Executive Board, Guinea-Bissau country strategic plan (2023–2027), 2022 (last accessed: 2025-03- 28). URL: https://executiveboard.wfp.org/document download/ WFP-0000142930.",
+            "[5] Y. Kone, Improving cashew cultivation: FAO supports research activities in Guinea-Bissau, 2022 (last accessed: 2025-03- 28). URL: https://www.fao.org/africa/news-stories/news-"
+        ],
+        "bbox": [
+            187,
+            496,
+            816,
+            568
+        ],
+        "page_idx": 25
+    },
+    {
+        "type": "page_number",
+        "text": "25",
+        "bbox": [
+            486,
+            873,
+            509,
+            887
+        ],
+        "page_idx": 25
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "detail/Improving-cashew-cultivation-FAO-supports-researchactivities-in-Guinea-Bissau/en.",
+            "[6] E. Djassi, Cashew nuts production in Guinea-Bissau (2022) 3–12. doi:10.52270/27132447 2022 12 3.",
+            "[7] UNDP, COVID-19 Socio Economic Impact Assessment in Guinea-Bissau, 2020 (last accessed: 2025-04-26). URL: https: //www.undp.org/guinea-bissau/news/covid-19-socio-economicimpact-assessment-guinea-bissau.",
+            "[8] P. Sierra-Baquero, et al., Insights into the cashew production system in Guinea-Bissau: implications for agroecosystem sustainability, Frontiers in Sustainable Food Systems 8 (2024) 1439820. doi:10.3389/ fsufs.2024.1439820.",
+            "[9] S. Vasconcelos, et al., New records of insect pest species associated with cashew, Anacardium occidentale L.(Anacardiaceae), in Guinea-Bissau, African Entomology 22 (2014) 673–677. doi:10520/EJC160231.",
+            "[10] P. Havik, et al., Agro-Economic Transitions in Guinea-Bissau (West Africa): Historical Trends and Current Insights, Sustainability 10 (2018) 3408. doi:10.3390/su10103408.",
+            "[11] P. Guedes, et al., At the tipping point: Can biodiversity and rural livelihoods endure uncontrolled cashew expansion in West Africa?, Biotropica 56 (2024). doi:10.1111/btp.13374.",
+            "[12] L. Palma, et al., Updating the conservation status of the forest elephant Loxodonta cyclotis in Guinea-Bissau, Oryx (2023). doi:10.1017/ S0030605323000674.",
+            "[13] M. P. Temudo, M. Abrantes, The cashew frontier in Guinea-Bissau, West Africa: changing landscapes and livelihoods, Human ecology 42 (2014) 217–230. doi:10.1007/s10745-014-9641-0.",
+            "[14] S. C. Pereira, et al., Mapping Cashew Orchards in Cantanhez National Park (Guinea-Bissau), Remote Sensing Applications: Society and Environment 26 (2022) 100746. doi:10.1016/j.rsase.2022.100746."
+        ],
+        "bbox": [
+            214,
+            160,
+            808,
+            195
+        ],
+        "page_idx": 26
+    },
+    {
+        "type": "page_number",
+        "text": "26",
+        "bbox": [
+            486,
+            873,
+            509,
+            887
+        ],
+        "page_idx": 26
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "[15] D. Tuia, et al., A survey of active learning algorithms for supervised remote sensing image classification, IEEE Journal of Selected Topics in Signal Processing 5 (2011) 606–617. doi:10.1109/JSTSP.2011.2139193.",
+            "[16] A. Rege, et al., Mapping cashew monocultures in the Western Ghats using optical and radar imagery in Google Earth Engine, Remote Sensing Applications: Society and Environment 28 (2022) 100861. doi:10.1016/j.rsase.2022.100861.",
+            "[17] L. Yin, et al., Mapping smallholder cashew plantations to inform sustainable tree crop expansion in Benin, Remote Sensing of Environment 295 (2023) 113695. doi:10.1016/j.rse.2023.113695.",
+            "[18] Nitidae, A pilot study of remote sensing by drone and satellite to strengthen the cashew sector in Mozambique, 2022 (last accessed: 2025-03-28). URL: https://www.nitidae.org/en/actualites/uneetude-pilote-de-teledetection-par-drone-et-satellite-pourrenforcer-la-filiere-anacardier-au-mozambique.",
+            "[19] R. Thoreau, et al., Active learning for hyperspectral image classification: A comparative review, IEEE geoscience and remote sensing magazine 10 (2022) 256–278. doi:10.1109/MGRS.2022.3169947.",
+            "[20] QGIS development team, QGIS Geographic Information System, 2009 (last accessed: 2025-04-26). URL: http://qgis.org.",
+            "[21] Z. Lei, et al., Active deep learning for hyperspectral image classification with uncertainty learning, IEEE geoscience and remote sensing letters 19 (2021) 1–5. doi:10.1109/LGRS.2020.3045437.",
+            "[22] J. Kremer, et al., Active learning with support vector machines, Wiley Interdisciplinary Reviews: Data Mining and Knowledge Discovery 4 (2014) 313–326. doi:10.1002/widm.1132.",
+            "[23] V. Cassama, et al., Proposed Forest Reference Emission Level for the National System of Protected Areas of Guinea-Bissau, 2019 (last accessed: 2025-04-26). URL: https://redd.unfccc.int/ submissions.html?country=gnb."
+        ],
+        "bbox": [
+            178,
+            159,
+            818,
+            215
+        ],
+        "page_idx": 27
+    },
+    {
+        "type": "page_number",
+        "text": "27",
+        "bbox": [
+            485,
+            872,
+            509,
+            887
+        ],
+        "page_idx": 27
+    },
+    {
+        "type": "list",
+        "sub_type": "ref_text",
+        "list_items": [
+            "[24] RSeT, NGO for international cooperation in renewable natural resource management and adaptation to climate change, 2011 (last accessed: 2025-04-26). URL: https://www.rset.eu/.",
+            "[25] ESA, Sentinel-2, Colour vision for Copernicus, 2024 (last accessed: 2025-03-28). URL: https://www.esa.int/Applications/ Observing the Earth/Copernicus/Sentinel-2.",
+            "[26] N. Gorelick, et al., Google Earth Engine: Planetary-scale geospatial analysis for everyone, Remote Sensing of Environment 202 (2017) 18– 27. doi:10.1016/j.rse.2017.06.031.",
+            "[27] Z. Zhu, C. E. Woodcock, Continuous change detection and classification of land cover using all available Landsat data, Remote Sensing of Environment 144 (2014) 152–171. doi:10.1016/j.rse.2014.01.011.",
+            "[28] G. Ajmera, Feature extraction of images using GLCM (gray level cooccurrence matrix), 2024 (last accessed: 2025-03-28). URL: https: //medium.com/@girishajmera/feature-extraction-of-imagesusing-glcm-gray-level-cooccurrence-matrix-e4bda8729498.",
+            "[29] G. Van Rossum, F. L. Drake, Python 3 Reference Manual, CreateSpace, 2009.",
+            "[30] Scikit-learn development team, Scikit-learn: Machine Learning in Python, 2007 (last accessed: 2025-04-26). URL: https://scikitlearn.org/stable/.",
+            "[31] Hyperopt development team, Hyperopt: Distributed Asynchronous Hyper-parameter Optimization, 2021 (last accessed: 2025-04-26). URL: https://hyperopt.github.io/hyperopt/.",
+            "[32] X.-Y. Tong, et al., Land-cover classification with high-resolution remote sensing images using transferable deep models, Remote Sensing of Environment 237 (2020) 111322. doi:10.1016/j.rse.2019.111322.",
+            "[33] UNEP-WCMC and IUCN, Protected Planet: The World Database on Protected Areas (WDPA) and World Database on Other Efective Areabased Conservation Measures (WD-OECM), 2025 (last accessed: 2025- 05-01). URL: www.protectedplanet.net."
+        ],
+        "bbox": [
+            178,
+            159,
+            816,
+            214
+        ],
+        "page_idx": 28
+    },
+    {
+        "type": "page_number",
+        "text": "28",
+        "bbox": [
+            486,
+            873,
+            509,
+            887
+        ],
+        "page_idx": 28
+    }
+]

@@ -1,0 +1,2654 @@
+[
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Seed2GS: Camera-Free, Training-Free Object Extraction fr<sub>o</sub>m 3D G<sub>auss</sub>i<sub>a</sub>n S<sub>ce</sub>n<sub>es v</sub>i<sub>a a</sub> Sin<sub>g</sub>l<sub>e</sub> R<sub>e</sub>f<sub>e</sub>r<sub>e</sub>n<sub>ce-</sub>Vi<sub>ew</sub> Gr<sub>ou</sub>ndin<sub>g</sub>"
+                    }
+                ],
+                "level": 1
+            },
+            "bbox": [
+                169,
+                118,
+                826,
+                161
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "<sub>Zongjian Ding</sub>1<sub>,</sub>2<sub>,</sub>†<sub>, Yudong Gao</sub>4<sub>,</sub>†<sub>, Jiale Liu</sub>3<sub>, Yu Xinglin</sub>5<sub>, Junxing Ren</sub>1<sub>,</sub>2<sub>,</sub> Dong Wei<sup>1,2</sup>, Yajing Chen<sup>1</sup>, Shan Huang<sup>3</sup>, Mingjun Cheng<sup>3,*</sup>, Li Min<sup>1,2,*</sup>"
+                    }
+                ]
+            },
+            "bbox": [
+                187,
+                167,
+                808,
+                205
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "<sup>1</sup>U<sub>n</sub>i<sub>vers</sub>it<sub>y</sub> <sub>o</sub>f Chi<sub>nese</sub> A<sub>ca</sub>d<sub>emy</sub> <sub>o</sub>f S<sub>c</sub>i<sub>ences</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                349,
+                205,
+                650,
+                220
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "<sup>2</sup>I<sub>ns</sub>tit<sub>u</sub>t<sub>e</sub> <sub>o</sub>f I<sub>n</sub>f<sub>orma</sub>ti<sub>on</sub> E<sub>ng</sub>i<sub>neer</sub>i<sub>ng,</sub> Chi<sub>nese</sub> A<sub>ca</sub>d<sub>emy</sub> <sub>o</sub>f S<sub>c</sub>i<sub>ences</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                271,
+                219,
+                725,
+                236
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "<sup>3</sup>Zhejiang University"
+                    }
+                ]
+            },
+            "bbox": [
+                429,
+                234,
+                570,
+                248
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "<sup>4</sup>Th<sub>e</sub> H<sub>o</sub>n<sub>g</sub> K<sub>o</sub>n<sub>g</sub> Uni<sub>ve</sub>r<sub>s</sub>it<sub>y</sub> <sub>o</sub>f S<sub>c</sub>i<sub>e</sub>n<sub>ce</sub> <sub>a</sub>nd T<sub>ec</sub>hn<sub>o</sub>l<sub>ogy</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                313,
+                246,
+                684,
+                262
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "<sup>5</sup>Beijing Institute of Technology"
+                    }
+                ]
+            },
+            "bbox": [
+                390,
+                262,
+                607,
+                276
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "†<sub>Equal</sub> <sub>contribution.</sub> *<sub>Corresponding</sub> <sub>authors.</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                348,
+                275,
+                650,
+                290
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Abstract"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                250,
+                303,
+                315,
+                318
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Extracting a target object from a pre-built 3D Gaussian Splattin<sub>g</sub> (3DGS) scene enables interactive 3D editin<sub>g</sub>. Existin<sub>g</sub> <sub>me</sub>th<sub>o</sub>d<sub>s e</sub>ith<sub>er</sub> t<sub>ra</sub>i<sub>n</sub> f<sub>or</sub> t<sub>ens o</sub>f <sub>m</sub>i<sub>nu</sub>t<sub>es per scene, sacr</sub>ifi<sub>ce</sub> <sub>accuracy, or requ</sub>i<sub>re or</sub>i<sub>g</sub>i<sub>na</sub>l <sub>recons</sub>t<sub>ruc</sub>ti<sub>on cameras</sub> th<sub>a</sub>t <sub>pre-</sub> b<sub>u</sub>ilt <sub>asse</sub>t<sub>s may no</sub>t i<sub>nc</sub>l<sub>u</sub>d<sub>e.</sub> W<sub>e presen</sub>t S<sub>eed</sub>2GS<sub>, w</sub>hi<sub>c</sub>h <sub>ac</sub>hi<sub>eves</sub> th<sub>e</sub> hi<sub>g</sub>h<sub>es</sub>t <sub>repor</sub>t<sub>e</sub>d LERF<sub>-</sub>MASK <sub>accuracy w</sub>ith<sub>ou</sub>t <sub>or</sub>i<sub>g</sub>i<sub>na</sub>l <sub>recons</sub>t<sub>ruc</sub>ti<sub>on cameras or scene-spec</sub>ifi<sub>c represen-</sub> t<sub>a</sub>ti<sub>on</sub> t<sub>ra</sub>i<sub>n</sub>i<sub>ng.</sub> It<sub>s</sub> k<sub>ey</sub> i<sub>ns</sub>i<sub>g</sub>ht i<sub>s</sub> t<sub>o separa</sub>t<sub>e</sub> t<sub>arge</sub>t id<sub>en</sub>tit<sub>y</sub> from 3D covera<sub>g</sub>e. QD-SAM3 selects one reliable reference <sub>mas</sub>k f<sub>rom severa</sub>l <sub>open-voca</sub>b<sub>u</sub>l<sub>ary can</sub>did<sub>a</sub>t<sub>es,</sub> fi<sub>x</sub>i<sub>ng</sub> id<sub>en-</sub> tit<sub>y once.</sub> S<sub>ee</sub>d lift <sub>an</sub>d <sub>v</sub>i<sub>s</sub>ibilit<sub>y-a</sub>d<sub>ap</sub>ti<sub>ve v</sub>i<sub>r</sub>t<sub>ua</sub>l <sub>or</sub>bit<sub>s</sub> th<sub>en</sub> expose the object from new viewpoints, while tracking prop-<sub>aga</sub>t<sub>es</sub> th<sub>e see</sub>d <sub>w</sub>ith<sub>ou</sub>t <sub>repea</sub>t<sub>e</sub>d d<sub>e</sub>t<sub>ec</sub>ti<sub>on.</sub> B<sub>ecause</sub> th<sub>e scene</sub> <sub>rema</sub>i<sub>ns</sub> f<sub>rozen,</sub> th<sub>ese mas</sub>k<sub>s superv</sub>i<sub>se on</sub>l<sub>y one</sub> t<sub>emporary</sub> f<sub>o</sub>r<sub>eg</sub>r<sub>ou</sub>nd l<sub>og</sub>it <sub>pe</sub>r G<sub>auss</sub>i<sub>a</sub>n<sub>.</sub> On LERF<sub>-</sub>MASK<sub>,</sub> S<sub>eed</sub>2GS reaches 92.1% mean intersection over union (mIoU) with a m<sub>easu</sub>r<sub>e</sub>d <sub>co</sub>m<sub>pu</sub>t<sub>e-o</sub>nl<sub>y</sub> l<sub>a</sub>t<sub>e</sub>n<sub>cy o</sub>f 9<sub>.</sub>3 <sub>seco</sub>nd<sub>s,</sub> 3<sub>.</sub>7 <sub>po</sub>int<sub>s</sub> <sub>a</sub>b<sub>ove</sub> th<sub>e s</sub>t<sub>ronges</sub>t <sub>scene-</sub>t<sub>ra</sub>i<sub>ne</sub>d b<sub>ase</sub>li<sub>ne an</sub>d 7<sub>.</sub>6 <sub>po</sub>i<sub>n</sub>t<sub>s a</sub>b<sub>ove</sub> th<sub>e</sub> <sub>c</sub>l<sub>oses</sub>t <sub>camera-</sub>f<sub>ree</sub> b<sub>ase</sub>li<sub>ne.</sub> With <sub>one</sub> fi<sub>xe</sub>d t<sub>es</sub>t <sub>re</sub>f<sub>erence</sub> <sub>per</sub> <sub>scene,</sub> th<sub>e</sub> <sub>comp</sub>l<sub>e</sub>t<sub>e</sub> <sub>p</sub>i<sub>pe</sub>li<sub>ne</sub> <sub>re</sub>t<sub>a</sub>i<sub>ns</sub> 91<sub>.</sub>1% <sub>m</sub>I<sub>o</sub>U<sub>;</sub> <sub>re-</sub> <sub>p</sub>l<sub>ac</sub>i<sub>ng</sub> it<sub>s</sub> <sub>pre</sub>di<sub>c</sub>t<sub>e</sub>d <sub>see</sub>d <sub>w</sub>ith <sub>a</sub> <sub>groun</sub>d<sub>-</sub>t<sub>ru</sub>th <sub>mas</sub>k i<sub>mproves</sub> mI<sub>o</sub>U b<sub>y</sub> <sub>o</sub>nl<sub>y</sub> 0<sub>.</sub>72 <sub>po</sub>int<sub>s.</sub> On 3D<sub>-</sub>OVS<sub>,</sub> S<sub>eed</sub>2GS r<sub>eac</sub>h<sub>es</sub> 95<sub>.</sub>7% mI<sub>o</sub>U<sub>.</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                98,
+                327,
+                464,
+                619
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "1 Intr<sub>o</sub>d<sub>uc</sub>ti<sub>o</sub>n"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                210,
+                642,
+                352,
+                659
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "M<sub>any</sub> 3D <sub>e</sub>diti<sub>ng wor</sub>kfl<sub>ows rece</sub>i<sub>ve</sub> fi<sub>n</sub>i<sub>s</sub>h<sub>e</sub>d 3D G<sub>auss</sub>i<sub>an</sub> S<sub>p</sub>lattin<sub>g</sub> (3DGS) scenes without the source ima<sub>g</sub>es, ca<sub>p</sub>ture cameras, or reconstruction <sub>p</sub>i<sub>p</sub>eline (Kerbl et al. 2023). Their <sub>exp</sub>li<sub>c</sub>it <sub>pr</sub>i<sub>m</sub>iti<sub>ves ren</sub>d<sub>er</sub> i<sub>n rea</sub>l ti<sub>me an</sub>d <sub>rema</sub>i<sub>n</sub> di<sub>rec</sub>tl<sub>y</sub> manipulable. Editing one object in such an asset first requires id<sub>en</sub>tif<sub>y</sub>i<sub>ng w</sub>hi<sub>c</sub>h G<sub>auss</sub>i<sub>ans</sub> f<sub>orm</sub> th<sub>e</sub> t<sub>arge</sub>t<sub>.</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                81,
+                665,
+                480,
+                750
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "E<sub>x</sub>i<sub>s</sub>ti<sub>ng</sub> 3DGS <sub>segmen</sub>t<sub>a</sub>ti<sub>on me</sub>th<sub>o</sub>d<sub>s</sub> i<sub>mpose one o</sub>f th<sub>ree</sub> <sub>cos</sub>t<sub>s.</sub> O<sub>ne c</sub>l<sub>ass a</sub>tt<sub>ac</sub>h<sub>es</sub> l<sub>anguage</sub> f<sub>ea</sub>t<sub>ures</sub> t<sub>o pr</sub>i<sub>m</sub>iti<sub>ves or</sub> l<sub>earns</sub> i<sub>ns</sub>t<sub>ance</sub> id<sub>en</sub>titi<sub>es</sub> d<sub>ur</sub>i<sub>ng recons</sub>t<sub>ruc</sub>ti<sub>on, so</sub> th<sub>a</sub>t G<sub>aus-</sub> sians carr<sub>y</sub> quer<sub>y</sub>able semantics (Kerr et al. 2023; Qin et al. 2024; Ye et al. 2024; Zhu et al. 2025b). These methods <sub>ac</sub>hi<sub>eve</sub> hi<sub>g</sub>h <sub>accuracy</sub> b<sub>u</sub>t <sub>op</sub>ti<sub>m</sub>i<sub>ze</sub> <sub>a</sub> <sub>represen</sub>t<sub>a</sub>ti<sub>on</sub> f<sub>or</sub> <sub>ev-</sub> <sub>ery</sub> t<sub>arge</sub>t <sub>scene.</sub> B<sub>u</sub>ildi<sub>ng</sub> th<sub>a</sub>t <sub>represen</sub>t<sub>a</sub>ti<sub>on</sub> t<sub>a</sub>k<sub>es</sub> t<sub>ens</sub> <sub>o</sub>f <sub>m</sub>i<sub>nu</sub>t<sub>es an</sub>d <sub>preven</sub>t<sub>s on-</sub>d<sub>eman</sub>d <sub>quer</sub>i<sub>es.</sub> A <sub>secon</sub>d <sub>c</sub>l<sub>ass</sub> lift<sub>s</sub> 2D <sub>mas</sub>k<sub>s</sub> i<sub>n</sub>t<sub>o</sub> 3D<sub>,</sub> b<sub>u</sub>t <sub>rea</sub>d<sub>s</sub> <sub>v</sub>i<sub>s</sub>ibilit<sub>y</sub> f<sub>rom</sub> th<sub>e</sub> <sub>or</sub>i<sub>g</sub>i<sub>na</sub>l <sub>re-</sub> construction cameras (Shen, Yan<sub>g</sub>, and Wan<sub>g</sub> 2024; Chacko et al. 2025). A finished asset ma<sub>y</sub> omit these cameras, maki<sub>ng suc</sub>h <sub>me</sub>th<sub>o</sub>d<sub>s unava</sub>il<sub>a</sub>bl<sub>e</sub> i<sub>n</sub> th<sub>e</sub> t<sub>arge</sub>t <sub>se</sub>tti<sub>ng.</sub> A thi<sub>r</sub>d <sub>c</sub>l<sub>ass</sub> <sub>removes</sub> b<sub>o</sub>th <sub>requ</sub>i<sub>remen</sub>t<sub>s</sub> b<sub>y</sub> <sub>ren</sub>d<sub>er</sub>i<sub>ng</sub> <sub>v</sub>i<sub>r</sub>t<sub>ua</sub>l <sub>v</sub>i<sub>ews</sub> from the frozen scene. B3-Se<sub>g</sub> (Kamata, Munro, and Homma 2026) re<sub>p</sub>eatedl<sub>y</sub> selects its next view b<sub>y</sub> anal<sub>y</sub>tic ex<sub>p</sub>ected i<sub>n</sub>f<sub>orma</sub>ti<sub>on ga</sub>i<sub>n,</sub> th<sub>en re-</sub>d<sub>e</sub>t<sub>ec</sub>t<sub>s</sub> th<sub>e</sub> t<sub>arge</sub>t th<sub>ere w</sub>ith <sub>an</sub> <sub>open-voca</sub>b<sub>u</sub>l<sub>ary</sub> d<sub>e</sub>t<sub>ec</sub>t<sub>or.</sub> E<sub>ac</sub>h d<sub>e</sub>t<sub>ec</sub>ti<sub>on up</sub>d<sub>a</sub>t<sub>es a</sub> B<sub>ayes</sub>i<sub>an</sub> f<sub>oregroun</sub>d b<sub>e</sub>li<sub>e</sub>f f<sub>or every</sub> G<sub>auss</sub>i<sub>an.</sub> B3<sub>-</sub>S<sub>eg nee</sub>d<sub>s ne</sub>ith<sub>er</sub> <sub>or</sub>i<sub>g</sub>i<sub>na</sub>l <sub>recons</sub>t<sub>ruc</sub>ti<sub>on cameras nor scene-spec</sub>ifi<sub>c</sub> t<sub>ra</sub>i<sub>n</sub>i<sub>ng</sub> <sub>an</sub>d <sub>answers</sub> i<sub>n secon</sub>d<sub>s,</sub> b<sub>u</sub>t it <sub>s</sub>till t<sub>ra</sub>il<sub>s</sub> th<sub>e</sub> b<sub>es</sub>t <sub>scene-</sub> t<sub>ra</sub>i<sub>ne</sub>d <sub>me</sub>th<sub>o</sub>d i<sub>n accuracy.</sub> N<sub>o me</sub>th<sub>o</sub>d i<sub>n</sub> th<sub>e</sub> LERF<sub>-</sub>MASK <sub>compar</sub>i<sub>son</sub> th<sub>ere</sub>f<sub>ore</sub> <sub>com</sub>bi<sub>nes</sub> <sub>accuracy,</sub> l<sub>ow</sub> l<sub>a</sub>t<sub>ency,</sub> <sub>an</sub>d wea<sup>k</sup> o<sub>p</sub>erat<sup>i</sup>n<sub>g</sub> assum<sub>p</sub>t<sup>i</sup>ons."
+                    }
+                ]
+            },
+            "bbox": [
+                81,
+                750,
+                480,
+                890
+            ]
+        },
+        {
+            "type": "chart",
+            "content": {
+                "image_source": {
+                    "path": "images/99f5f92dd853b4701d536aed9f6116615e2e52b3647ec3f49fda648895854613.jpg"
+                },
+                "content": "",
+                "chart_caption": [
+                    {
+                        "type": "text",
+                        "content": "Runtime"
+                    },
+                    {
+                        "type": "text",
+                        "content": "Fi<sub>gu</sub>r<sub>e</sub> 1<sub>:</sub> A<sub>ccu</sub>r<sub>acy–</sub>r<sub>u</sub>ntim<sub>e</sub> tr<sub>a</sub>d<sub>e-o</sub>f <sub>o</sub>n LERF<sub>-</sub>MASK <sub>us-</sub> i<sub>ng</sub> th<sub>e repor</sub>t<sub>e</sub>d <sub>run</sub>ti<sub>mes</sub> i<sub>n</sub> T<sub>a</sub>bl<sub>e</sub> 1<sub>.</sub> G<sub>ray,</sub> bl<sub>ue, an</sub>d <sub>re</sub>d d<sub>eno</sub>t<sub>e scene-spec</sub>ifi<sub>c me</sub>th<sub>o</sub>d<sub>s, scene-</sub>t<sub>ra</sub>i<sub>n</sub>i<sub>ng-</sub>f<sub>ree me</sub>th<sub>o</sub>d<sub>s,</sub> <sub>an</sub>d S<sub>eed</sub>2GS<sub>;</sub> th<sub>e</sub> b<sub>ro</sub>k<sub>en</sub> <sub>ax</sub>i<sub>s</sub> <sub>separa</sub>t<sub>es</sub> <sub>secon</sub>d<sub>s</sub> <sub>an</sub>d <sub>m</sub>i<sub>n-</sub> utes."
+                    }
+                ],
+                "chart_footnote": []
+            },
+            "bbox": [
+                535,
+                301,
+                893,
+                454
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                516,
+                593,
+                915,
+                776
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Th<sub>e</sub> <sub>cen</sub>t<sub>ra</sub>l d<sub>es</sub>i<sub>gn</sub> <sub>ques</sub>ti<sub>on</sub> i<sub>s</sub> <sub>w</sub>h<sub>ere</sub> t<sub>o</sub> <sub>spen</sub>d <sub>query-</sub>ti<sub>me</sub> <sub>compu</sub>t<sub>a</sub>ti<sub>on.</sub> T<sub>arge</sub>t id<sub>en</sub>tit<sub>y</sub> <sub>an</sub>d 3D <sub>coverage</sub> <sub>requ</sub>i<sub>re</sub> dif<sub>-</sub> f<sub>eren</sub>t <sub>ev</sub>id<sub>ence.</sub> G<sub>roun</sub>di<sub>ng</sub> d<sub>e</sub>t<sub>erm</sub>i<sub>nes w</sub>hi<sub>c</sub>h i<sub>ns</sub>t<sub>ance</sub> th<sub>e</sub> <sub>promp</sub>t d<sub>eno</sub>t<sub>es, w</sub>h<sub>ereas a</sub>dditi<sub>ona</sub>l <sub>v</sub>i<sub>ews revea</sub>l <sub>w</sub>h<sub>ere</sub> th<sub>a</sub>t fi<sub>xe</sub>d i<sub>ns</sub>t<sub>ance</sub> <sub>ex</sub>t<sub>en</sub>d<sub>s</sub> i<sub>n</sub> 3D<sub>.</sub> R<sub>e-groun</sub>di<sub>ng</sub> <sub>every</sub> <sub>v</sub>i<sub>ew</sub> <sub>re-</sub> <sub>pea</sub>t<sub>e</sub>dl<sub>y</sub> <sub>so</sub>l<sub>ves</sub> th<sub>e</sub> <sub>seman</sub>ti<sub>c</sub> <sub>pro</sub>bl<sub>em</sub> <sub>an</sub>d <sub>can</sub> <sub>sw</sub>it<sub>c</sub>h <sub>among</sub> <sub>s</sub>i<sub>m</sub>il<sub>ar</sub> i<sub>ns</sub>t<sub>ances;</sub> <sub>cos</sub>tl<sub>y</sub> <sub>v</sub>i<sub>ew</sub> <sub>sc</sub>h<sub>e</sub>d<sub>u</sub>li<sub>ng</sub> <sub>canno</sub>t <sub>repa</sub>i<sub>r</sub> <sub>a</sub> <sub>poor</sub> i<sub>n</sub>iti<sub>a</sub>l id<sub>en</sub>tit<sub>y.</sub> W<sub>e</sub> th<sub>ere</sub>f<sub>ore</sub> i<sub>nves</sub>t <sub>seman</sub>ti<sub>c compu</sub>t<sub>a</sub>ti<sub>on</sub> i<sub>n</sub> one reliable seed, then use tracking and simple object-centric trajectories to expand its coverage."
+                    }
+                ]
+            },
+            "bbox": [
+                516,
+                777,
+                915,
+                890
+            ]
+        },
+        {
+            "type": "page_aside_text",
+            "content": {
+                "page_aside_text_content": [
+                    {
+                        "type": "text",
+                        "content": "arXiv:2608.11928v1 [cs.CV] 12 Aug 2026"
+                    }
+                ]
+            },
+            "bbox": [
+                29,
+                351,
+                63,
+                800
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                83,
+                69,
+                478,
+                97
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "W<sub>e p</sub>r<sub>ese</sub>nt S<sub>eed</sub>2GS t<sub>o c</sub>l<sub>ose</sub> thi<sub>s gap o</sub>n LERF<sub>-</sub>MASK<sub>.</sub> S<sub>eed</sub>2GS <sub>requ</sub>i<sub>res</sub> th<sub>e</sub> <sub>user</sub>’<sub>s</sub> <sub>curren</sub>t <sub>re</sub>f<sub>erence</sub> <sub>v</sub>i<sub>ew</sub> <sub>an</sub>d <sub>pose,</sub> but no reconstruction images or camera set. Here, camerafree means independent ofthat reconstruction camera set, and training-free means no scene model or persistent semantic representation. Quer<sub>y</sub>-time refinement fits onl<sub>y</sub> disposable <sub>mem</sub>b<sub>ers</sub>hi<sub>p</sub> l<sub>og</sub>it<sub>s.</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                81,
+                97,
+                480,
+                194
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Th<sub>e</sub> <sub>resu</sub>lti<sub>ng</sub> <sub>p</sub>i<sub>pe</sub>li<sub>ne</sub> i<sub>s</sub> <sub>s</sub>i<sub>mp</sub>l<sub>e:</sub> <sub>groun</sub>d <sub>once,</sub> <sub>propaga</sub>t<sub>e,</sub> and fit. QD-SAM3 selects one reference seed from several <sub>open-voca</sub>b<sub>u</sub>l<sub>ary can</sub>did<sub>a</sub>t<sub>es.</sub> A fl<sub>a</sub>t <sub>or</sub>bit <sub>an</sub>d <sub>a v</sub>i<sub>s</sub>ibilit<sub>y-</sub> <sub>a</sub>d<sub>ap</sub>ti<sub>ve ascen</sub>di<sub>ng or</sub>bit <sub>expose new sur</sub>f<sub>aces, an</sub>d t<sub>rac</sub>ki<sub>ng</sub> <sub>propaga</sub>t<sub>es</sub> th<sub>e see</sub>d <sub>w</sub>ith<sub>ou</sub>t <sub>ano</sub>th<sub>er</sub> d<sub>e</sub>t<sub>ec</sub>ti<sub>on.</sub> Th<sub>e</sub> f<sub>rozen</sub> <sub>scene</sub> fi<sub>xes a</sub>ll <sub>ras</sub>t<sub>er</sub>i<sub>za</sub>ti<sub>on we</sub>i<sub>g</sub>ht<sub>s, so</sub> S<sub>eed</sub>2GS fit<sub>s one</sub> t<sub>emporary</sub> f<sub>oregroun</sub>d l<sub>og</sub>it <sub>per</sub> G<sub>auss</sub>i<sub>an</sub> <sub>w</sub>hil<sub>e</sub> <sub>preserv</sub>i<sub>ng</sub> <sub>geome</sub>t<sub>ry, co</sub>l<sub>or, an</sub>d <sub>opac</sub>it<sub>y.</sub> Fi<sub>gure</sub> 2 <sub>summar</sub>i<sub>zes</sub> th<sub>e wor</sub>k<sub>-</sub> fl<sub>ow.</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                81,
+                194,
+                480,
+                318
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "O<sub>ur con</sub>t<sub>r</sub>ib<sub>u</sub>ti<sub>ons are</sub> th<sub>ree</sub>f<sub>o</sub>ld<sub>:</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                99,
+                318,
+                312,
+                332
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• Ground-once extraction from frozen 3DGS assets. S<sub>eed</sub>2GS <sub>sepa</sub>r<sub>a</sub>t<sub>es</sub> t<sub>a</sub>r<sub>ge</sub>t id<sub>e</sub>ntit<sub>y</sub> fr<sub>o</sub>m <sub>cove</sub>r<sub>age,</sub> <sub>p</sub>r<sub>op-</sub> <sub>aga</sub>t<sub>es one see</sub>d <sub>a</sub>l<sub>ong v</sub>i<sub>r</sub>t<sub>ua</sub>l <sub>or</sub>bit<sub>s, an</sub>d fit<sub>s</sub> di<sub>sposa</sub>bl<sub>e</sub> G<sub>auss</sub>i<sub>an mem</sub>b<sub>ers</sub>hi<sub>p</sub> l<sub>og</sub>it<sub>s.</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                91,
+                335,
+                480,
+                391
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• A stron<sub>g</sub>er accurac<sub>y</sub>–latenc<sub>y</sub>–assum<sub>p</sub>tion trade-of. A<sub>mong repor</sub>t<sub>e</sub>d LERF<sub>-</sub>MASK <sub>resu</sub>lt<sub>s,</sub> S<sub>eed</sub>2GS <sub>ac</sub>hi<sub>eves</sub> th<sub>e</sub> hi<sub>g</sub>h<sub>es</sub>t <sub>accuracy an</sub>d l<sub>owes</sub>t <sub>query</sub> l<sub>a</sub>t<sub>ency</sub> <sub>w</sub>ith<sub>ou</sub>t <sub>recons</sub>t<sub>ruc</sub>ti<sub>on cameras or scene-spec</sub>ifi<sub>c repre-</sub> <sub>sen</sub>t<sub>a</sub>ti<sub>on</sub> t<sub>ra</sub>i<sub>n</sub>i<sub>ng.</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                89,
+                392,
+                480,
+                463
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• Com<sub>p</sub>onent-level validation. Two benchmarks<sub>,</sub> fixed-<sub>re</sub>f<sub>erence an</sub>d <sub>mu</sub>lti<sub>-re</sub>f<sub>erence s</sub>t<sub>u</sub>di<sub>es, an</sub>d <sub>con</sub>t<sub>ro</sub>ll<sub>e</sub>d <sub>a</sub>b<sub>-</sub> lations evaluate seed acquisition, trajectory design, tracki<sub>ng</sub> <sub>s</sub>t<sub>ruc</sub>t<sub>ure,</sub> <sub>an</sub>d <sub>v</sub>i<sub>ew</sub> <sub>we</sub>i<sub>g</sub>hti<sub>ng.</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                91,
+                464,
+                480,
+                521
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "2 R<sub>e</sub>l<sub>a</sub>t<sub>e</sub>d W<sub>or</sub>k"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                205,
+                531,
+                357,
+                547
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "2<sub>.</sub>1 S<sub>ce</sub>n<sub>e</sub>-S<sub>pec</sub>ifi<sub>c</sub> 3DGS S<sub>eg</sub>m<sub>e</sub>nt<sub>a</sub>ti<sub>o</sub>n"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                83,
+                551,
+                397,
+                566
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "S<sub>cene-spec</sub>ifi<sub>c me</sub>th<sub>o</sub>d<sub>s</sub> b<sub>u</sub>ild <sub>an aux</sub>ili<sub>ary represen</sub>t<sub>a</sub>ti<sub>on</sub> f<sub>or</sub> <sub>eac</sub>h <sub>scene</sub> b<sub>e</sub>f<sub>ore</sub> i<sub>n</sub>t<sub>erac</sub>ti<sub>on</sub> b<sub>eg</sub>i<sub>ns.</sub> O<sub>ne ca</sub>t<sub>egory a</sub>tt<sub>ac</sub>h<sub>es</sub> l<sub>a</sub>n<sub>guage o</sub>r <sub>ope</sub>n<sub>-voca</sub>b<sub>u</sub>l<sub>a</sub>r<sub>y</sub> f<sub>ea</sub>t<sub>u</sub>r<sub>es</sub> t<sub>o</sub> N<sub>e</sub>RF <sub>o</sub>r G<sub>auss</sub>i<sub>a</sub>n <sub>pr</sub>i<sub>m</sub>iti<sub>ves, so</sub> th<sub>a</sub>t <sub>users can query scene reg</sub>i<sub>ons w</sub>ith t<sub>ex</sub>t<sub>,</sub> as in LERF, 3D-OVS, Lan<sub>g</sub>S<sub>p</sub>lat, and O<sub>p</sub>enGaussian (Kerr et al. 2023; Liu et al. 2023; Qin et al. 2024; Wu et al. 2024). A<sub>no</sub>th<sub>er</sub> <sub>ca</sub>t<sub>egory</sub> l<sub>earns</sub> i<sub>ns</sub>t<sub>ance</sub> id<sub>en</sub>tit<sub>y,</sub> <sub>a</sub>fi<sub>n</sub>it<sub>y,</sub> <sub>group</sub>i<sub>ng</sub> cues, or object-level codes for segmentation and editing, as in Gaussian Grouping, SAGA, Gaga, Unified-Lift, ObjectGS, and O<sub>p</sub>enS<sub>p</sub>lat3D (Ye et al. 2024; Cen et al. 2025; L<sub>y</sub>u et al. 2026; Zhu et al. 2025a,b; Piekenbrinck et al. 2025). Alth<sub>oug</sub>h th<sub>e</sub>i<sub>r</sub> i<sub>mp</sub>l<sub>emen</sub>t<sub>a</sub>ti<sub>ons</sub> dif<sub>er,</sub> b<sub>o</sub>th <sub>ca</sub>t<sub>egor</sub>i<sub>es assume</sub> th<sub>a</sub>t th<sub>e</sub> t<sub>arge</sub>t <sub>scene a</sub>l<sub>rea</sub>d<sub>y con</sub>t<sub>a</sub>i<sub>ns a pers</sub>i<sub>s</sub>t<sub>en</sub>t <sub>seman</sub>ti<sub>c</sub> <sub>or</sub> i<sub>ns</sub>t<sub>ance represen</sub>t<sub>a</sub>ti<sub>on.</sub> Th<sub>ese pers</sub>i<sub>s</sub>t<sub>en</sub>t <sub>represen</sub>t<sub>a</sub>ti<sub>ons</sub> <sub>suppor</sub>t <sub>query-</sub>ti<sub>me segmen</sub>t<sub>a</sub>ti<sub>on</sub> b<sub>u</sub>t t<sub>a</sub>k<sub>e</sub> t<sub>ens o</sub>f <sub>m</sub>i<sub>nu</sub>t<sub>es</sub> t<sub>o</sub> b<sub>u</sub>ild f<sub>or eac</sub>h <sub>new scene.</sub> Thi<sub>s per-scene cos</sub>t <sub>preven</sub>t<sub>s</sub> i<sub>m-</sub> <sub>me</sub>di<sub>a</sub>t<sub>e quer</sub>i<sub>es on new</sub>l<sub>y rece</sub>i<sub>ve</sub>d <sub>asse</sub>t<sub>s.</sub> S<sub>eed</sub>2GS i<sub>ns</sub>t<sub>ea</sub>d k<sub>eeps</sub> th<sub>e</sub> in<sub>pu</sub>t 3DGS fr<sub>oze</sub>n <sub>a</sub>nd <sub>es</sub>tim<sub>a</sub>t<sub>es o</sub>nl<sub>y p</sub>r<sub>o</sub>m<sub>p</sub>t<sub>-</sub> <sub>spec</sub>ifi<sub>c</sub> f<sub>oregroun</sub>d <sub>mem</sub>b<sub>ers</sub>hi<sub>p</sub> f<sub>or</sub> th<sub>e curren</sub>t <sub>query.</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                81,
+                569,
+                480,
+                834
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "2<sub>.</sub>2 M<sub>as</sub>k Liftin<sub>g</sub> <sub>a</sub>nd C<sub>a</sub>m<sub>e</sub>r<sub>a-</sub>Fr<sub>ee</sub> S<sub>eg</sub>m<sub>e</sub>nt<sub>a</sub>ti<sub>o</sub>n"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                83,
+                843,
+                478,
+                858
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "M<sub>as</sub>k<sub>-</sub>lifti<sub>ng</sub> <sub>me</sub>th<sub>o</sub>d<sub>s</sub> <sub>avo</sub>id <sub>pers</sub>i<sub>s</sub>t<sub>en</sub>t <sub>seman</sub>ti<sub>c</sub> fi<sub>e</sub>ld<sub>s</sub> b<sub>y</sub> t<sub>rans</sub>f<sub>err</sub>i<sub>ng</sub> 2D <sub>mas</sub>k <sub>ev</sub>id<sub>ence</sub> di<sub>rec</sub>tl<sub>y</sub> t<sub>o</sub> 3D <sub>pr</sub>i<sub>m</sub>iti<sub>ves.</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                83,
+                861,
+                480,
+                890
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "SA3D<sub>,</sub> Fl<sub>as</sub>hS<sub>p</sub>l<sub>a</sub>t<sub>, an</sub>d LBG <sub>ass</sub>i<sub>gn</sub> th<sub>a</sub>t <sub>ev</sub>id<sub>ence</sub> th<sub>roug</sub>h <sub>mas</sub>k lifti<sub>ng, mu</sub>lti<sub>-v</sub>i<sub>ew</sub> f<sub>us</sub>i<sub>on, or c</sub>l<sub>ose</sub>d<sub>-</sub>f<sub>orm</sub> l<sub>a</sub>b<sub>e</sub>l <sub>es</sub>ti<sub>ma-</sub> tion (Cen et al. 2023; Shen, Yan<sub>g</sub>, and Wan<sub>g</sub> 2024; Chacko et al. 2025). The three methods solve for labels diferentl<sub>y</sub>, b<sub>u</sub>t <sub>a</sub>ll <sub>requ</sub>i<sub>re</sub> th<sub>e re</sub>l<sub>a</sub>ti<sub>ons</sub>hi<sub>p</sub> b<sub>e</sub>t<sub>ween</sub> G<sub>auss</sub>i<sub>ans an</sub>d th<sub>e</sub> <sub>or</sub>i<sub>g</sub>i<sub>na</sub>l <sub>recons</sub>t<sub>ruc</sub>ti<sub>on cameras.</sub> U<sub>sers w</sub>h<sub>o</sub> h<sub>o</sub>ld <sub>on</sub>l<sub>y</sub> th<sub>e</sub> <sub>asse</sub>t <sub>ca</sub>nn<sub>o</sub>t <sub>supp</sub>l<sub>y</sub> th<sub>ose ca</sub>m<sub>e</sub>r<sub>as.</sub> iS<sub>eg</sub>M<sub>a</sub>n <sub>avo</sub>id<sub>s sce</sub>n<sub>e-</sub> <sub>spec</sub>ifi<sub>c</sub> t<sub>ra</sub>i<sub>n</sub>i<sub>ng</sub> f<sub>or</sub> <sub>c</sub>li<sub>c</sub>k<sub>-</sub>b<sub>ase</sub>d i<sub>n</sub>t<sub>erac</sub>ti<sub>on</sub> b<sub>y</sub> <sub>propaga</sub>ti<sub>ng</sub> <sub>a</sub> 2D <sub>c</sub>li<sub>c</sub>k <sub>across pose</sub>d <sub>v</sub>i<sub>ews an</sub>d <sub>vo</sub>ti<sub>ng</sub> th<sub>roug</sub>h G<sub>auss</sub>i<sub>an</sub> visibilit<sub>y</sub> (Zhao et al. 2025). It tar<sub>g</sub>ets interactive clicks rather th<sub>an open-voca</sub>b<sub>u</sub>l<sub>ary</sub> t<sub>ex</sub>t <sub>an</sub>d <sub>uses a pose</sub>d <sub>mu</sub>lti<sub>v</sub>i<sub>ew se</sub>t<sub>.</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                514,
+                69,
+                915,
+                222
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "C<sub>amera-</sub>f<sub>ree me</sub>th<sub>o</sub>d<sub>s remove</sub> thi<sub>s requ</sub>i<sub>remen</sub>t b<sub>y ren</sub>d<sub>er-</sub> in<sub>g</sub> virtual views from the frozen scene. B3-Se<sub>g</sub> (Kamata, Munro, and Homma 2026) is the closest method to ours. Each <sub>roun</sub>d <sub>se</sub>l<sub>ec</sub>t<sub>s</sub> th<sub>e nex</sub>t <sub>v</sub>i<sub>ew</sub> b<sub>y ana</sub>l<sub>y</sub>ti<sub>c expec</sub>t<sub>e</sub>d i<sub>n</sub>f<sub>orma</sub>ti<sub>on</sub> <sub>ga</sub>i<sub>n,</sub> th<sub>en</sub> <sub>re-</sub>d<sub>e</sub>t<sub>ec</sub>t<sub>s</sub> th<sub>e</sub> t<sub>arge</sub>t th<sub>ere</sub> <sub>w</sub>ith <sub>an</sub> <sub>open-voca</sub>b<sub>u</sub>l<sub>ary</sub> d<sub>e</sub>t<sub>ec</sub>t<sub>or.</sub> Th<sub>e new mas</sub>k f<sub>o</sub>ld<sub>s</sub> i<sub>n</sub>t<sub>o a</sub> B<sub>e</sub>t<sub>a–</sub>B<sub>ernou</sub>lli f<sub>ore-</sub> <sub>groun</sub>d b<sub>e</sub>li<sub>e</sub>f f<sub>or every</sub> G<sub>auss</sub>i<sub>an.</sub> Thi<sub>s</sub> l<sub>oop nee</sub>d<sub>s no or</sub>i<sub>g</sub>i<sub>-</sub> <sub>na</sub>l <sub>recons</sub>t<sub>ruc</sub>ti<sub>on cameras or scene</sub> t<sub>ra</sub>i<sub>n</sub>i<sub>ng an</sub>d <sub>answers a</sub> <sub>query</sub> i<sub>n secon</sub>d<sub>s.</sub> S<sub>eed</sub>2GS <sub>mee</sub>t<sub>s</sub> th<sub>e same cons</sub>t<sub>ra</sub>i<sub>n</sub>t<sub>s w</sub>ith <sub>a</sub> <sub>s</sub>i<sub>mp</sub>l<sub>er</sub> di<sub>v</sub>i<sub>s</sub>i<sub>on o</sub>f l<sub>a</sub>b<sub>or: one groun</sub>di<sub>ng</sub> fi<sub>xes</sub> th<sub>e</sub> t<sub>arge</sub>t id<sub>en-</sub> tit<sub>y, an</sub>d t<sub>rac</sub>ki<sub>ng preserves</sub> it <sub>across ren</sub>d<sub>ere</sub>d <sub>v</sub>i<sub>ews.</sub> Wh<sub>ere</sub> B3<sub>-</sub>S<sub>eg op</sub>ti<sub>m</sub>i<sub>zes an acqu</sub>i<sub>s</sub>iti<sub>on cr</sub>it<sub>er</sub>i<sub>on</sub> t<sub>o c</sub>h<sub>oose eac</sub>h next view, Seed2GS uses reference-anchored trajectories and <sub>ma</sub>k<sub>es one coverage-</sub>b<sub>ase</sub>d d<sub>ec</sub>i<sub>s</sub>i<sub>on a</sub>b<sub>ou</sub>t <sub>w</sub>h<sub>e</sub>th<sub>er</sub> t<sub>o ren</sub>d<sub>er</sub> th<sub>e ascen</sub>di<sub>ng c</sub>li<sub>p.</sub> T<sub>a</sub>bl<sub>e</sub> 1 <sub>s</sub>h<sub>ows</sub> th<sub>a</sub>t thi<sub>s one-groun</sub>di<sub>ng</sub> <sub>p</sub>i<sub>pe</sub>li<sub>ne ac</sub>hi<sub>eves</sub> hi<sub>g</sub>h<sub>er accuracy w</sub>ith l<sub>ower repor</sub>t<sub>e</sub>d l<sub>a-</sub> t<sub>ency.</sub> U<sub>n</sub>d<sub>er a</sub> fi<sub>xe</sub>d t<sub>es</sub>t<sub>-re</sub>f<sub>erence pro</sub>t<sub>oco</sub>l<sub>, rep</sub>l<sub>ac</sub>i<sub>ng</sub> th<sub>e</sub> <sub>pre</sub>di<sub>c</sub>t<sub>e</sub>d <sub>see</sub>d <sub>w</sub>ith <sub>a groun</sub>d<sub>-</sub>t<sub>ru</sub>th <sub>mas</sub>k <sub>prov</sub>id<sub>es on</sub>l<sub>y</sub> 0<sub>.</sub>72 <sub>m</sub>I<sub>o</sub>U <sub>po</sub>i<sub>n</sub>t<sub>s o</sub>f h<sub>ea</sub>d<sub>room.</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                514,
+                222,
+                915,
+                487
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3 M<sub>e</sub>th<sub>o</sub>d"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                665,
+                501,
+                766,
+                517
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3<sub>.</sub>1 O<sub>ve</sub>r<sub>v</sub>i<sub>ew</sub>"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                517,
+                523,
+                635,
+                539
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "S<sub>eed</sub>2GS r<sub>ece</sub>i<sub>ves a</sub> fr<sub>oze</sub>n 3DGS <sub>sce</sub>n<sub>e</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathcal { G } = \\{ g _ { i } \\} _ { i = 1 } ^ { N } ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "a <sup>text</sup> p<sup>rom</sup>p<sup>t</sup> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "p ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "<sub>an</sub>d th<sub>e</sub> <sub>user</sub>’<sub>s</sub> <sub>curren</sub>t <sub>re</sub>f<sub>erence</sub> <sub>camera</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "c _ { r } ."
+                    },
+                    {
+                        "type": "text",
+                        "content": "It outputs the Gaussian subset that forms the target object. Th<sub>e</sub> <sub>me</sub>th<sub>o</sub>d <sub>uses</sub> th<sub>e</sub> <sub>re</sub>f<sub>erence</sub> <sub>pose</sub> <sub>on</sub>l<sub>y</sub> t<sub>o</sub> <sub>anc</sub>h<sub>or</sub> <sub>v</sub>i<sub>r</sub>t<sub>ua</sub>l trajectories and accesses no original reconstruction cameras. It f<sub>reezes every scene parame</sub>t<sub>er,</sub> t<sub>ra</sub>i<sub>ns no ne</sub>t<sub>wor</sub>k<sub>,</sub> b<sub>u</sub>ild<sub>s no</sub> <sub>pers</sub>i<sub>s</sub>t<sub>en</sub>t <sub>represen</sub>t<sub>a</sub>ti<sub>on, an</sub>d <sub>es</sub>ti<sub>ma</sub>t<sub>es on</sub>l<sub>y one</sub> di<sub>sposa</sub>bl<sub>e</sub> fore<sub>g</sub>round lo<sub>g</sub>it <sub>p</sub>er Gaussian (Sec. 3.2)."
+                    }
+                ]
+            },
+            "bbox": [
+                516,
+                545,
+                913,
+                659
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Th<sub>e p</sub>i<sub>pe</sub>li<sub>ne separa</sub>t<sub>es</sub> t<sub>arge</sub>t id<sub>en</sub>tit<sub>y, v</sub>i<sub>ew coverage, an</sub>d Gaussian membership. QD-SAM3 grounds p into one seed <sub>mas</sub>k "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "m ^ { \\star }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "<sub>, an</sub>d <sub>see</sub>d lift <sub>conver</sub>t<sub>s</sub> it i<sub>n</sub>t<sub>o a conserva</sub>ti<sub>ve</sub> 3D <sup>s</sup>upp<sup>ort</sup> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathcal { G } _ { 0 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and estimates its center o (Sec. 3.3). VAAS ex-<sub>pan</sub>d<sub>s coverage w</sub>ith fl<sub>a</sub>t <sub>an</sub>d <sub>ascen</sub>di<sub>ng v</sub>i<sub>r</sub>t<sub>ua</sub>l <sub>or</sub>bit<sub>s aroun</sub>d o, while tracking preserves identity across views. Gaussian <sub>re</sub>fi<sub>nemen</sub>t fit<sub>s</sub> <sub>mem</sub>b<sub>ers</sub>hi<sub>p</sub> l<sub>og</sub>it<sub>s</sub> t<sub>o</sub> th<sub>e</sub> <sub>propaga</sub>t<sub>e</sub>d <sub>mas</sub>k<sub>s;</sub> th<sub>res</sub>h<sub>o</sub>ldi<sub>ng</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "q _ { i } = \\sigma ( l _ { i } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "then exports the object. Algorithm 1 <sub>s</sub>t<sub>a</sub>t<sub>es</sub> th<sub>e proce</sub>d<sub>ure;</sub> Fi<sub>gure</sub> 2 <sub>v</sub>i<sub>sua</sub>li<sub>zes</sub> th<sub>e</sub> d<sub>a</sub>t<sub>a</sub> fl<sub>ow.</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                516,
+                657,
+                915,
+                784
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3<sub>.</sub>2 Pr<sub>e</sub>limin<sub>a</sub>ri<sub>es:</sub> 3D G<sub>auss</sub>i<sub>a</sub>n S<sub>p</sub>l<sub>a</sub>ttin<sub>g</sub>"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                516,
+                797,
+                848,
+                814
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "3D Gaussian S<sub>p</sub>lattin<sub>g</sub> (3DGS) (Kerbl et al. 2023) re<sub>p</sub>resents <sub>a scene w</sub>ith <sub>an</sub>i<sub>so</sub>t<sub>rop</sub>i<sub>c</sub> G<sub>auss</sub>i<sub>an pr</sub>i<sub>m</sub>iti<sub>ves.</sub> E<sub>ac</sub>h <sub>pr</sub>i<sub>m</sub>iti<sub>ve</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "g _ { i }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "h<sub>as</sub> <sub>a</sub> 3D <sub>ce</sub>nt<sub>e</sub>r "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mu _ { i } ."
+                    },
+                    {
+                        "type": "text",
+                        "content": "<sub>,</sub> <sub>covar</sub>i<sub>ance</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\Sigma _ { i }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "<sub>,</sub> <sub>sp</sub>h<sub>er</sub>i<sub>ca</sub>l<sub>-</sub>h<sub>armon</sub>i<sub>c</sub> <sub>co</sub>l<sub>or</sub> <sub>coe</sub>fi<sub>c</sub>i<sub>en</sub>t<sub>s</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbf { h } _ { i } ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", an<sup>d</sup> o<sub>p</sub>ac<sup>i</sup>t<sub>y</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\alpha _ { i } ."
+                    },
+                    {
+                        "type": "text",
+                        "content": "<sub>.</sub> F<sub>or</sub> <sub>a</sub> <sub>camera</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "c ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "rasterization projects visible Gaussians to the image plane and <sub>a</sub>l<sub>p</sub>h<sub>a-compos</sub>it<sub>es</sub> th<sub>e</sub>i<sub>r con</sub>t<sub>r</sub>ib<sub>u</sub>ti<sub>ons</sub> i<sub>n</sub> d<sub>ep</sub>th <sub>or</sub>d<sub>er.</sub> W<sub>e</sub> d<sub>e-</sub> note the final contribution of Gaussian g<sub>i</sub> to pixel u by "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "w _ { u , i } ^ { ( c ) } ."
+                    },
+                    {
+                        "type": "text",
+                        "content": "A<sub>pp</sub>l<sub>y</sub>i<sub>ng</sub> th<sub>e</sub> <sub>same</sub> <sub>compos</sub>iti<sub>ng</sub> <sub>we</sub>i<sub>g</sub>ht<sub>s</sub> t<sub>o</sub> <sub>a</sub> <sub>per-</sub>G<sub>auss</sub>i<sub>an</sub> f<sub>oregroun</sub>d <sub>var</sub>i<sub>a</sub>bl<sub>e</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "q _ { i } \\in [ 0 , 1 ]"
+                    },
+                    {
+                        "type": "text",
+                        "content": "produces a soft object mask"
+                    }
+                ]
+            },
+            "bbox": [
+                516,
+                819,
+                915,
+                890
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/83563e1ca6dba61fad5e706b33db900b7af7aa759d98f3b40ca56f63d49e0cfa.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fi<sub>g</sub>ure 2: Seed2GS overview. (A) QD-SAM3 scores o<sub>p</sub>en-vocabular<sub>y</sub> candidates to select one seed. (B) Seed lift initializes 3D su<sub>pp</sub>ort, and VAAS with SAM2 <sub>p</sub>ro<sub>p</sub>a<sub>g</sub>ates that seed alon<sub>g</sub> two virtual cli<sub>p</sub>s. (C) Frozen rasterization and reliabilit<sub>y</sub>-wei<sub>g</sub>hted <sub>mas</sub>k fitti<sub>ng op</sub>ti<sub>m</sub>i<sub>ze on</sub>l<sub>y</sub> G<sub>auss</sub>i<sub>an mem</sub>b<sub>ers</sub>hi<sub>p</sub> l<sub>og</sub>it<sub>s.</sub>"
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                94,
+                70,
+                905,
+                332
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                81,
+                412,
+                480,
+                474
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "P _ { u } ^ { ( c ) } = \\sum _ { i } w _ { u , i } ^ { ( c ) } q _ { i } .\\tag{1}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/3b009d5bc5be15010e99eb90287eee8e171438b3467b51a96ca847670411e365.jpg"
+                }
+            },
+            "bbox": [
+                215,
+                478,
+                348,
+                511
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Stacking the U pixels of view c turns Eq. (1) into "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "P ^ { ( c ) } ="
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "W ^ { ( c ) } q ."
+                    },
+                    {
+                        "type": "text",
+                        "content": "<sub>, w</sub>h<sub>ere</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "W ^ { ( c ) } ~ \\in ~ \\mathbb { R } ^ { U \\times N }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "<sub>co</sub>ll<sub>ec</sub>t<sub>s</sub> th<sub>e</sub> <sub>compos</sub>iti<sub>ng</sub> <sub>we</sub>i<sub>g</sub>ht<sub>s an</sub>d "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\boldsymbol { q } = ( q _ { 1 } , \\dots , q _ { N } ) ^ { \\top }"
+                    }
+                ]
+            },
+            "bbox": [
+                83,
+                518,
+                478,
+                563
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Th<sub>e</sub> f<sub>rozen scene</sub> fi<sub>xes every en</sub>t<sub>ry o</sub>f "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "W ^ { ( c ) }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "<sub>,</sub> l<sub>eav</sub>i<sub>ng no</sub> <sub>un</sub>k<sub>nown</sub> i<sub>n</sub> th<sub>e opera</sub>t<sub>or.</sub> P<sub>romp</sub>t<sub>a</sub>bl<sub>e ex</sub>t<sub>rac</sub>ti<sub>on</sub> th<sub>ere</sub>f<sub>ore</sub> b<sub>ecomes a</sub> b<sub>ox-cons</sub>t<sub>ra</sub>i<sub>ne</sub>d i<sub>nverse pro</sub>bl<sub>em w</sub>ith <sub>a</sub> fi<sub>xe</sub>d li<sub>n-</sub> <sub>ear</sub> f<sub>orwar</sub>d <sub>opera</sub>t<sub>or: g</sub>i<sub>ven</sub> fi<sub>xe</sub>d <sub>opera</sub>t<sub>ors</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\{ W ^ { ( c ) } \\}"
+                    },
+                    {
+                        "type": "text",
+                        "content": "} and target <sub>mas</sub>k<sub>s</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\{ Y ^ { ( c ) } \\}"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", recover "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "q \\in [ 0 , 1 ] ^ { N }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "<sub>w</sub>ith "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "W ^ { ( c ) } q \\approx Y ^ { ( c ) }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "i<sub>n</sub> <sub>eve</sub>r<sub>y v</sub>i<sub>ew.</sub> S<sub>eed</sub>2GS <sub>w</sub>rit<sub>es</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\dot { q } _ { i } \\doteq \\sigma ( l _ { i } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "t<sub>o</sub> <sub>en</sub>f<sub>orce</sub> th<sub>e</sub> b<sub>ox</sub> <sub>cons</sub>t<sub>ra</sub>i<sub>n</sub>t<sub>,</sub> fit<sub>s one</sub> t<sub>emporary</sub> l<sub>og</sub>it <sub>per</sub> G<sub>auss</sub>i<sub>an, an</sub>d di<sub>s-</sub> cards the logits after object export."
+                    }
+                ]
+            },
+            "bbox": [
+                81,
+                563,
+                480,
+                678
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "T<sub>wo</sub> d<sub>es</sub>i<sub>gn c</sub>h<sub>o</sub>i<sub>ces</sub> di<sub>s</sub>ti<sub>ngu</sub>i<sub>s</sub>h <sub>me</sub>th<sub>o</sub>d<sub>s</sub> th<sub>a</sub>t <sub>s</sub>h<sub>are</sub> thi<sub>s</sub> f<sub>ormu</sub>l<sub>a</sub>ti<sub>on.</sub> Th<sub>e</sub> fi<sub>rs</sub>t <sub>concerns</sub> th<sub>e</sub> i<sub>nverse so</sub>l<sub>ver:</sub> Fl<sub>as</sub>h<sub>-</sub> S<sub>p</sub>lat (Shen, Yan<sub>g</sub>, and Wan<sub>g</sub> 2024) uses a closed form, B3-Se<sub>g</sub> (Kamata, Munro, and Homma 2026) uses Ba<sub>y</sub>esian <sub>up</sub>d<sub>a</sub>t<sub>es, an</sub>d S<sub>eed</sub>2GS <sub>m</sub>i<sub>n</sub>i<sub>m</sub>i<sub>zes</sub> th<sub>e re</sub>li<sub>a</sub>bilit<sub>y-we</sub>i<sub>g</sub>ht<sub>e</sub>d objective of Sec. 3.4. The second concerns the source of <sup>tar</sup>g<sup>ets</sup> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "Y ^ { \\left( c \\right) }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "<sub>:</sub> S<sub>eed</sub>2GS d<sub>er</sub>i<sub>ves every</sub> t<sub>arge</sub>t <sub>mas</sub>k f<sub>rom one</sub> <sub>g</sub>roun<sup>di</sup>n<sub>g</sub>."
+                    }
+                ]
+            },
+            "bbox": [
+                81,
+                678,
+                480,
+                791
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.3 QD-SAM3 Seed Acquisition"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                83,
+                800,
+                343,
+                815
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "QD-SAM3 produces the onl<sub>y</sub> semanticall<sub>y</sub> <sub>g</sub>rounded mask i<sub>n</sub> th<sub>e</sub> <sub>p</sub>i<sub>pe</sub>li<sub>ne.</sub> H<sub>ere,</sub> <sub>one</sub> <sub>groun</sub>di<sub>ng</sub> <sub>means</sub> <sub>one</sub> <sub>re</sub>f<sub>erence-</sub> <sub>v</sub>i<sub>ew seman</sub>ti<sub>c s</sub>t<sub>age</sub> th<sub>a</sub>t <sub>re</sub>t<sub>urns one se</sub>l<sub>ec</sub>t<sub>e</sub>d <sub>see</sub>d<sub>, no</sub>t <sub>one</sub> l<sub>oca</sub>li<sub>za</sub>ti<sub>on-mo</sub>d<sub>e</sub>l <sub>ca</sub>ll<sub>.</sub> B<sub>ecause a</sub>ll l<sub>a</sub>t<sub>er mas</sub>k<sub>s</sub> d<sub>escen</sub>d f<sub>rom</sub> thi<sub>s see</sub>d<sub>, an error wou</sub>ld <sub>propaga</sub>t<sub>e</sub> th<sub>roug</sub>h <sub>see</sub>d lift<sub>,</sub> th<sub>e</sub> virtual orbits, and the lo<sub>g</sub>it fit. QD-SAM3 reduces this risk b<sub>y se</sub>l<sub>ec</sub>ti<sub>ng among can</sub>did<sub>a</sub>t<sub>es</sub> f<sub>rom severa</sub>l <sub>sources ra</sub>th<sub>er</sub> th<sub>an</sub> t<sub>rus</sub>ti<sub>ng one</sub> t<sub>ex</sub>t<sub>-groun</sub>di<sub>ng resu</sub>lt<sub>.</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                81,
+                818,
+                480,
+                890
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                514,
+                412,
+                915,
+                455
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "QD-SAM3 combines three released models: Qwen3-VL, Groundin<sub>g</sub>DINO, and SAM3 (Bai et al. 2025; Liu et al. 2024; Carion et al. 2025). The first two models su<sub>pp</sub>l<sub>y</sub> lo-<sub>ca</sub>li<sub>za</sub>ti<sub>on cues;</sub> SAM3 <sub>conver</sub>t<sub>s eac</sub>h <sub>cue</sub> i<sub>n</sub>t<sub>o a mas</sub>k<sub>.</sub> Gi<sub>ven</sub> th<sub>e ren</sub>d<sub>ere</sub>d <sub>re</sub>f<sub>erence canvas</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "I _ { r } = \\mathcal { R } ( \\mathcal { G } , c _ { r } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and prompt p, Qwen3-VL and Groundin<sub>g</sub>DINO return semantic and detection boxes, respectively. The prompt p provides a third cue b<sub>ecause</sub> SAM3 <sub>a</sub>l<sub>so accep</sub>t<sub>s</sub> t<sub>ex</sub>t di<sub>rec</sub>tl<sub>y.</sub> W<sub>r</sub>iti<sub>ng</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\{ a _ { k } \\} _ { k = 1 } ^ { K }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "f<sub>or</sub> th<sub>ese cues,</sub> th<sub>e same</sub> SAM3 <sub>mo</sub>d<sub>e</sub>l <sub>processes</sub> th<sub>em a</sub>ll<sub>:</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                514,
+                454,
+                915,
+                580
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathcal { M } ( p ) = \\{ m _ { k } = \\mathrm { S A M 3 } ( I _ { r } , a _ { k } ) \\} _ { k = 1 } ^ { K } .\\tag{2}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/aa4a4e210ae419a28aa52ff4587057bcad8e80725bab82b801df1a7eb999609a.jpg"
+                }
+            },
+            "bbox": [
+                588,
+                588,
+                841,
+                606
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "U<sub>s</sub>i<sub>ng one mas</sub>k <sub>genera</sub>t<sub>or</sub> h<sub>o</sub>ld<sub>s</sub> th<sub>e segmen</sub>t<sub>a</sub>ti<sub>on</sub> b<sub>ac</sub>k<sub>en</sub>d fi<sub>xe</sub>d<sub>, so can</sub>did<sub>a</sub>t<sub>e</sub> dif<sub>erences pr</sub>i<sub>mar</sub>il<sub>y re</sub>fl<sub>ec</sub>t th<sub>e</sub> l<sub>oca</sub>l<sub>-</sub> i<sub>za</sub>ti<sub>on cues.</sub> E<sub>very mo</sub>d<sub>e</sub>l <sub>uses re</sub>l<sub>ease</sub>d <sub>we</sub>i<sub>g</sub>ht<sub>s;</sub> S<sub>eed</sub>2GS fi<sub>ne-</sub>t<sub>unes none o</sub>f th<sub>em.</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                516,
+                613,
+                913,
+                669
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "QD-SAM3 then selects the final seed mask with a threet<sub>erm we</sub>i<sub>g</sub>ht<sub>e</sub>d <sub>score:</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                516,
+                669,
+                913,
+                698
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\begin{array} { r l } { m ^ { \\star } = \\underset { m _ { k } \\in \\mathcal { M } ( p ) } { \\arg \\operatorname* { m a x } } } & { w _ { s } S _ { \\mathrm { s r c } } ( m _ { k } ) + w _ { c } S _ { \\mathrm { c o n f } } ( m _ { k } ) } \\\\ & { } \\\\ & { + w _ { t } S _ { \\mathrm { l a n g } } ( m _ { k } , p ) . } \\end{array}\\tag{3}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/bca281cca0d2b074902e0c7df9eb7e236c5d8fc9210bb282b3d8f9725acc7b55.jpg"
+                }
+            },
+            "bbox": [
+                555,
+                705,
+                872,
+                751
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Th<sub>e</sub> th<sub>ree</sub> t<sub>erms score</sub> dif<sub>eren</sub>t <sub>ev</sub>id<sub>ence.</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "S _ { \\mathrm { s r c } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "ass<sup>i</sup><sub>g</sub>ns a <sub>p</sub>r<sup>i</sup>or t<sub>o</sub> th<sub>e can</sub>did<sub>a</sub>t<sub>e</sub>’<sub>s</sub> l<sub>oca</sub>li<sub>za</sub>ti<sub>on source,</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "S _ { \\mathrm { c o n f } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "<sub>uses</sub> th<sub>a</sub>t <sub>source</sub> <sub>mo</sub>d<sub>e</sub>l’<sub>s con</sub>fid<sub>ence, an</sub>d "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "S _ { \\mathrm { l a n g } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "<sub>measures compa</sub>tibilit<sub>y</sub> b<sub>e-</sub> t<sub>ween</sub> th<sub>e source an</sub>d th<sub>e seman</sub>ti<sub>c</sub> t<sub>ype o</sub>f th<sub>e query.</sub> Th<sub>e</sub> hi<sub>g</sub>h<sub>es</sub>t<sub>-scor</sub>i<sub>ng can</sub>did<sub>a</sub>t<sub>e</sub> b<sub>ecomes</sub> th<sub>e re</sub>f<sub>erence see</sub>d "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "m ^ { \\star }"
+                    }
+                ]
+            },
+            "bbox": [
+                514,
+                758,
+                915,
+                830
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3<sub>.</sub>4 S<sub>ee</sub>d Lift<sub>,</sub> Virt<sub>ua</sub>l Orbit<sub>s, a</sub>nd R<sub>e</sub>fin<sub>e</sub>m<sub>e</sub>nt"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                516,
+                840,
+                880,
+                856
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "S<sub>ee</sub>d lift<sub>,</sub> <sub>v</sub>i<sub>r</sub>t<sub>ua</sub>l <sub>or</sub>bit<sub>s,</sub> <sub>an</sub>d G<sub>auss</sub>i<sub>an</sub> <sub>re</sub>fi<sub>nemen</sub>t <sub>carry</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "m ^ { \\star }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "int<sub>o</sub> 3D<sub>.</sub> B<sub>ecause</sub> S<sub>eed</sub>2GS d<sub>oes</sub> n<sub>o</sub>t <sub>assu</sub>m<sub>e access</sub> t<sub>o</sub> th<sub>e</sub> <sub>or</sub>i<sub>g</sub>i<sub>na</sub>l <sub>recons</sub>t<sub>ruc</sub>ti<sub>on cameras,</sub> it <sub>ren</sub>d<sub>ers a</sub>ll <sub>superv</sub>i<sub>s</sub>i<sub>on</sub> views with virtual cameras. Seed lift first locates the object <sub>cen</sub>t<sub>er nee</sub>d<sub>e</sub>d b<sub>y</sub> th<sub>e or</sub>bit<sub>s.</sub> Th<sub>e or</sub>bit<sub>s</sub> th<sub>en supp</sub>l<sub>y superv</sub>i<sub>-</sub> <sub>s</sub>i<sub>on</sub> <sub>v</sub>i<sub>ews,</sub> <sub>an</sub>d <sub>re</sub>fi<sub>nemen</sub>t fit<sub>s</sub> th<sub>e</sub> l<sub>og</sub>it<sub>s</sub> t<sub>o</sub> th<sub>e</sub>i<sub>r</sub> <sub>mas</sub>k<sub>s.</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                516,
+                859,
+                915,
+                888
+            ]
+        }
+    ],
+    [
+        {
+            "type": "code",
+            "content": {
+                "code_caption": [],
+                "code_content": [
+                    {
+                        "type": "text",
+                        "content": "Al<sub>go</sub>rithm 1 S<sub>eed</sub>2GS i<sub>n</sub>f<sub>erence</sub> Input: frozen 3DGS G, text <sub>p</sub>rom<sub>p</sub>t p, reference camera "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "c _ { r }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "1<sub>:</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "I _ { r } \\gets \\mathcal { R } ( \\mathcal { G } , c _ { r } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "{render reference canvas} 2<sub>:</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "m ^ { \\star } \\gets \\mathrm { Q D } { \\cdot } \\mathrm { S A M } 3 ( I _ { r } , p )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "{Eq. (3)} 3<sub>:</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathcal { G } _ { 0 } , \\mathbf { o } \\gets \\mathrm { S e e d L i f t } ( \\mathcal { G } , m ^ { \\star } , c _ { r } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "4<sub>:</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\{ Y ^ { ( c ) } \\} \\gets \\mathrm { V A A S } ( \\mathcal { G } , \\mathcal { G } _ { 0 } , \\mathbf { o } , m ^ { \\star } , c _ { r } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "{Eq. (4)} 5<sub>:</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\tilde { l _ { i } } \\gets \\dot { \\mathrm { i n i t } } ( \\mathcal { G } _ { 0 } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "for all i 6: {l<sup>⋆</sup><sub>i</sub> }<sup>N</sup><sub>i=</sub> i Si=1 ← arg min "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\{ l _ { i } \\} _ { i = 1 } ^ { N } \\mathcal { L }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "{Eqs. (5)–(6)} 7<sub>:</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "q _ { i } \\gets \\sigma ( l _ { i } ^ { \\star } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "for all i Output: object subset "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathcal { G } _ { f } = \\{ g _ { i } : q _ { i } > \\tau \\}"
+                    }
+                ],
+                "code_footnote": [],
+                "code_language": "latex"
+            },
+            "bbox": [
+                81,
+                65,
+                478,
+                222
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                81,
+                251,
+                480,
+                309
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "S<sub>ee</sub>d lift<sub>.</sub> S<sub>ee</sub>d lift <sub>conver</sub>t<sub>s</sub> th<sub>e</sub> <sub>re</sub>f<sub>erence</sub> <sub>mas</sub>k "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "m ^ { \\star }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "i<sub>n</sub>t<sub>o</sub> <sub>a</sub> <sub>co</sub>n<sub>se</sub>r<sub>va</sub>ti<sub>ve</sub> 3D G<sub>auss</sub>i<sub>a</sub>n <sub>suppo</sub>rt b<sub>e</sub>f<sub>o</sub>r<sub>e ge</sub>n<sub>e</sub>r<sub>a</sub>tin<sub>g</sub> n<sub>ew su-</sub> <sub>perv</sub>i<sub>s</sub>i<sub>on</sub> <sub>v</sub>i<sub>ews.</sub> Th<sub>ree</sub> <sub>cons</sub>t<sub>ra</sub>i<sub>n</sub>t<sub>s</sub> l<sub>oca</sub>li<sub>ze</sub> f<sub>oregroun</sub>d G<sub>aus-</sub> sians projected into the reference view. Let "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\pi _ { i }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "<sub>an</sub>d "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "z _ { i }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "d<sub>e-</sub> note the projected center and depth of "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "g _ { i }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "<sub>,</sub> <sub>an</sub>d l<sub>e</sub>t "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "D _ { r }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "d<sub>e-</sub> <sub>no</sub>t<sub>e</sub> th<sub>e</sub> <sub>ren</sub>d<sub>ere</sub>d <sub>re</sub>f<sub>erence</sub> d<sub>ep</sub>th <sub>map.</sub> Th<sub>e</sub> <sub>mas</sub>k <sub>an</sub>d d<sub>ep</sub>th <sub>cons</sub>t<sub>ra</sub>i<sub>n</sub>t<sub>s re</sub>t<sub>a</sub>i<sub>n can</sub>did<sub>a</sub>t<sub>es sa</sub>ti<sub>s</sub>f<sub>y</sub>i<sub>ng</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "m ^ { \\star } ( \\pi _ { i } ) ~ = ~ 1"
+                    },
+                    {
+                        "type": "text",
+                        "content": "<sub>an</sub>d "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "| z _ { i } - D _ { r } ( \\pi _ { i } ) | \\leq \\epsilon _ { d } ."
+                    },
+                    {
+                        "type": "text",
+                        "content": "C<sub>onnec</sub>t<sub>e</sub>d<sub>-componen</sub>t filt<sub>er</sub>i<sub>ng on</sub> th<sub>e</sub> <sub>resu</sub>lti<sub>ng</sub> 3D <sub>can</sub>did<sub>a</sub>t<sub>e grap</sub>h th<sub>en re</sub>t<sub>a</sub>i<sub>ns</sub> th<sub>e componen</sub>t <sub>a</sub>t<sub>-</sub> tached to the target body and removes projection outliers. Th<sub>e</sub> r<sub>esu</sub>ltin<sub>g suppo</sub>rt "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\dot { \\mathcal { G } _ { 0 } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "i<sub>n</sub>iti<sub>a</sub>li<sub>zes</sub> th<sub>e</sub> f<sub>oregroun</sub>d l<sub>og</sub>it<sub>s.</sub> The support also estimates the object center o and 3D extent th<sub>a</sub>t <sub>parame</sub>t<sub>er</sub>i<sub>ze</sub> th<sub>e</sub> VAAS <sub>v</sub>i<sub>r</sub>t<sub>ua</sub>l <sub>or</sub>bit<sub>s.</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                81,
+                315,
+                480,
+                500
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Virt<sub>u</sub>al orbit s<sub>up</sub>er<sub>v</sub>ision<sub>.</sub> VAAS <sub>expa</sub>nd<sub>s</sub> 3D <sub>cove</sub>r<sub>age</sub> <sub>w</sub>ith<sub>ou</sub>t <sub>ma</sub>ki<sub>ng</sub> <sub>ano</sub>th<sub>er</sub> <sub>seman</sub>ti<sub>c</sub> d<sub>ec</sub>i<sub>s</sub>i<sub>on.</sub> R<sub>e-</sub>d<sub>e</sub>t<sub>ec</sub>ti<sub>ng</sub> th<sub>e</sub> t<sub>arge</sub>t i<sub>n every ren</sub>d<sub>ere</sub>d <sub>v</sub>i<sub>ew wou</sub>ld <sub>requ</sub>i<sub>re one open-</sub> <sub>voca</sub>b<sub>u</sub>l<sub>ary ca</sub>ll <sub>per v</sub>i<sub>ew.</sub> S<sub>eed</sub>2GS i<sub>ns</sub>t<sub>ea</sub>d <sub>groun</sub>d<sub>s</sub> th<sub>e</sub> t<sub>ar-</sub> <sub>ge</sub>t <sub>once</sub> <sub>an</sub>d <sub>propaga</sub>t<sub>es</sub> th<sub>a</sub>t <sub>resu</sub>lt<sub>.</sub> Gi<sub>ven</sub> th<sub>e</sub> lift<sub>e</sub>d <sub>suppor</sub>t "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathcal { G } _ { 0 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and object center o, VAAS renders object-centric virtual views from the frozen scene G. SAM2 video trackin<sub>g</sub> (Ravi et al. 2024) <sub>p</sub>ro<sub>p</sub>a<sub>g</sub>ates the reference seed "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "m ^ { \\star }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "t<sub>o</sub> th<sub>ese</sub> <sub>v</sub>i<sub>ews.</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                81,
+                506,
+                480,
+                617
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "VAAS (Visibilit<sub>y</sub>-Ada<sub>p</sub>tive Ascendin<sub>g</sub> S<sub>p</sub>iral) constructs <sub>a re</sub>f<sub>erence-anc</sub>h<sub>ore</sub>d fl<sub>a</sub>t <sub>or</sub>bit <sub>an</sub>d <sub>an ascen</sub>di<sub>ng sp</sub>i<sub>ra</sub>l <sub>or</sub>bit around o. Both trajectories start at the reference camera "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "c _ { r } ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "<sub>w</sub>h<sub>ere</sub> SAM2 <sub>rece</sub>i<sub>ves</sub> th<sub>e canvas</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "I _ { r }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "<sub>an</sub>d <sub>see</sub>d <sub>mas</sub>k "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "m ^ { \\star }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "<sub>.</sub> Th<sub>e</sub> fl<sub>a</sub>t <sub>or</sub>bit <sub>ma</sub>i<sub>n</sub>l<sub>y prov</sub>id<sub>es</sub> h<sub>or</sub>i<sub>zon</sub>t<sub>a</sub>l <sub>o</sub>b<sub>serva</sub>ti<sub>ons, w</sub>hil<sub>e</sub> th<sub>e</sub> <sub>ascen</sub>di<sub>ng or</sub>bit <sub>comp</sub>l<sub>emen</sub>t<sub>s</sub> it <sub>w</sub>ith <sub>ver</sub>ti<sub>ca</sub>l <sub>o</sub>b<sub>serva</sub>ti<sub>ons o</sub>f t<sub>op,</sub> b<sub>o</sub>tt<sub>om, an</sub>d <sub>occ</sub>l<sub>u</sub>d<sub>e</sub>d <sub>reg</sub>i<sub>ons.</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                81,
+                617,
+                480,
+                715
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "O<sub>r</sub>bit h<sub>e</sub>i<sub>g</sub>ht <sub>a</sub>d<sub>ap</sub>t<sub>s</sub> t<sub>o m</sub>i<sub>ss</sub>i<sub>ng v</sub>i<sub>s</sub>ibilit<sub>y.</sub> A fl<sub>a</sub>t <sub>or</sub>bit <sub>sees</sub> the object from the side but can miss top, bottom, and self-<sub>occ</sub>l<sub>u</sub>d<sub>e</sub>d <sub>sur</sub>f<sub>aces,</sub> <sub>so</sub> <sub>poor</sub>l<sub>y</sub> <sub>o</sub>b<sub>serve</sub>d t<sub>arge</sub>t<sub>s</sub> <sub>may</sub> <sub>requ</sub>i<sub>re</sub> <sub>a</sub> t<sub>a</sub>ll<sub>er c</sub>li<sub>m</sub>b<sub>.</sub> VAAS <sub>measures</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\bar { V }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "<sub>as</sub> th<sub>e mean</sub> f<sub>rac</sub>ti<sub>on o</sub>f "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathcal { G } _ { 0 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "visible under depth-consistent projection across the flat-orbit <sub>v</sub>i<sub>ews an</sub>d <sub>se</sub>t<sub>s</sub> th<sub>e ascen</sub>di<sub>ng p</sub>it<sub>c</sub>h <sub>amp</sub>lit<sub>u</sub>d<sub>e</sub> t<sub>o</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                81,
+                715,
+                480,
+                799
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "A = A _ { \\operatorname* { m a x } } ( 1 - \\bar { V } ) ^ { \\gamma } .\\tag{4}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/55efd74db324f55673d7523d9792ffd3af039ecf8bf16d8ebe9a7c5cad04dcbf.jpg"
+                }
+            },
+            "bbox": [
+                209,
+                806,
+                352,
+                824
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "W<sub>e</sub>ll<sub>-covere</sub>d t<sub>arge</sub>t<sub>s</sub> h<sub>ave</sub> l<sub>arge</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\bar { V }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and keep the trajectory <sub>near-p</sub>l<sub>anar;</sub> <sub>poor</sub>l<sub>y</sub> <sub>covere</sub>d t<sub>arge</sub>t<sub>s</sub> h<sub>ave</sub> <sub>sma</sub>ll "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\bar { V }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "<sub>an</sub>d <sub>c</sub>li<sub>m</sub>b hi<sub>g</sub>h<sub>er.</sub> Wh<sub>en</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "A < 5 ^ { \\circ }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "<sub>,</sub> VAAS <sub>om</sub>it<sub>s</sub> th<sub>e</sub> <sub>near-</sub>d<sub>up</sub>li<sub>ca</sub>t<sub>e</sub> <sub>as-</sub> <sub>cen</sub>di<sub>ng c</sub>li<sub>p an</sub>d <sub>uses on</sub>l<sub>y</sub> th<sub>e</sub> fl<sub>a</sub>t <sub>c</sub>li<sub>p.</sub> Oth<sub>erw</sub>i<sub>se,</sub> it <sub>ren</sub>d<sub>ers</sub> b<sub>o</sub>th <sub>re</sub>f<sub>erence-anc</sub>h<sub>ore</sub>d <sub>c</sub>li<sub>ps.</sub> Th<sub>e</sub> <sub>s</sub>ki<sub>p</sub> <sub>ru</sub>l<sub>e</sub> <sub>spen</sub>d<sub>s</sub> <sub>a</sub>ddi<sub>-</sub> ti<sub>ona</sub>l <sub>v</sub>i<sub>ews on</sub>l<sub>y w</sub>h<sub>en</sub> th<sub>e</sub> fl<sub>a</sub>t <sub>or</sub>bit i<sub>n</sub>di<sub>ca</sub>t<sub>es m</sub>i<sub>ss</sub>i<sub>ng cov-</sub> <sub>erage.</sub> Th<sub>e mas</sub>k<sub>s propaga</sub>t<sub>e</sub>d <sub>over a</sub>ll VAAS <sub>v</sub>i<sub>ews</sub> f<sub>orm</sub> th<sub>e</sub> <sub>superv</sub>i<sub>s</sub>i<sub>on se</sub>t "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\{ \\bar { Y } ^ { ( c ) } \\}"
+                    },
+                    {
+                        "type": "text",
+                        "content": "f<sub>or re</sub>fi<sub>nemen</sub>t<sub>.</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                81,
+                832,
+                480,
+                890
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                514,
+                68,
+                913,
+                128
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "G<sub>auss</sub>i<sub>an re</sub>fi<sub>nemen</sub>t<sub>.</sub> G<sub>auss</sub>i<sub>an re</sub>fi<sub>nemen</sub>t <sub>uses</sub> th<sub>e mas</sub>k<sub>s</sub> <sub>p</sub>r<sub>opaga</sub>t<sub>e</sub>d b<sub>y</sub> VAAS t<sub>o op</sub>timi<sub>ze pe</sub>r<sub>-</sub>G<sub>auss</sub>i<sub>a</sub>n f<sub>o</sub>r<sub>eg</sub>r<sub>ou</sub>nd <sub>mem</sub>b<sub>ers</sub>hi<sub>p.</sub> Th<sub>e</sub> i<sub>n</sub>iti<sub>a</sub>l <sub>suppor</sub>t "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathcal { G } _ { 0 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "<sub>on</sub>l<sub>y</sub> i<sub>n</sub>iti<sub>a</sub>li<sub>zes</sub> th<sub>e</sub> f<sub>ore-</sub> <sub>groun</sub>d l<sub>og</sub>it<sub>s an</sub>d <sub>parame</sub>t<sub>er</sub>i<sub>zes</sub> th<sub>e v</sub>i<sub>r</sub>t<sub>ua</sub>l <sub>or</sub>bit<sub>s.</sub> Th<sub>e</sub> <sub>or</sub>i<sub>g</sub>i<sub>na</sub>l <sub>scene geome</sub>t<sub>ry, co</sub>l<sub>or, an</sub>d <sub>opac</sub>it<sub>y rema</sub>i<sub>n</sub> f<sub>rozen</sub> th<sub>roug</sub>h<sub>ou</sub>t<sub>.</sub> L<sub>e</sub>t "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "q _ { i } ~ = ~ \\sigma ( l _ { i } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "d<sub>eno</sub>t<sub>e</sub> th<sub>e</sub> f<sub>oregroun</sub>d <sub>pro</sub>b<sub>a-</sub> bilit<sub>y o</sub>f G<sub>auss</sub>i<sub>an</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "g _ { i } ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "<sub>an</sub>d l<sub>e</sub>t <sub>ras</sub>t<sub>er</sub>i<sub>za</sub>ti<sub>on pro</sub>d<sub>uce</sub> th<sub>e so</sub>ft f<sub>oregroun</sub>d <sub>mas</sub>k "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "P ^ { ( c ) }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "f<sub>or</sub> <sub>v</sub>i<sub>ew</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "c ."
+                    },
+                    {
+                        "type": "text",
+                        "content": "O<sub>cc</sub>l<sub>us</sub>i<sub>on</sub> <sub>an</sub>d t<sub>rac</sub>ki<sub>ng</sub> d<sub>r</sub>ift <sub>can</sub> <sub>corrup</sub>t <sub>propaga</sub>t<sub>e</sub>d <sub>mas</sub>k<sub>s,</sub> <sub>so</sub> S<sub>eed</sub>2GS <sub>we</sub>i<sub>g</sub>ht<sub>s</sub> <sub>eac</sub>h <sub>v</sub>i<sub>ew</sub> b<sub>y</sub> it<sub>s runn</sub>i<sub>ng</sub> BCE <sub>res</sub>id<sub>ua</sub>l "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "D _ { c }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "<sub>.</sub> S<sub>pec</sub>ifi<sub>ca</sub>ll<sub>y, us-</sub> i<sub>ng</sub> th<sub>e me</sub>di<sub>an res</sub>id<sub>ua</sub>l "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "m _ { D }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "<sub>an</sub>d <sub>a</sub> MAD<sub>-</sub>b<sub>ase</sub>d <sub>ro</sub>b<sub>us</sub>t <sub>sca</sub>l<sub>e</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "s _ { D }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "<sub>,</sub> <sub>we</sub> d<sub>e</sub>fi<sub>ne</sub> th<sub>e</sub> <sub>v</sub>i<sub>ew</sub> <sub>we</sub>i<sub>g</sub>ht <sub>as</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                514,
+                136,
+                915,
+                305
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\omega _ { c } = \\mathrm { N o r m } \\bigg [ r _ { \\mathrm { m i n } } + ( 1 - r _ { \\mathrm { m i n } } ) \\sigma \\bigg ( \\frac { m _ { D } + s _ { D } - D _ { c } } { \\lambda _ { \\tau } s _ { D } } \\bigg ) \\bigg ] ,\\tag{5}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/b63b6f1510a0cef167914700453c6862f8acaf7606da90f07e5f97236cd6a232.jpg"
+                }
+            },
+            "bbox": [
+                526,
+                313,
+                898,
+                349
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where Norm[·] denotes mean normalization. This weight <sub>re</sub>d<sub>uces</sub> th<sub>e</sub> i<sub>n</sub>fl<sub>uence o</sub>f hi<sub>g</sub>h<sub>-res</sub>id<sub>ua</sub>l <sub>v</sub>i<sub>ews</sub> th<sub>a</sub>t <sub>con</sub>fli<sub>c</sub>t <sub>w</sub>ith th<sub>e curren</sub>t 3D f<sub>oregroun</sub>d <sub>es</sub>ti<sub>ma</sub>t<sub>e.</sub> Th<sub>e nonzero</sub> fl<sub>oor</sub> r<sub>min</sub> preserves supervision from dificult viewpoints early i<sub>n op</sub>ti<sub>m</sub>i<sub>za</sub>ti<sub>on.</sub> Th<sub>e</sub> f<sub>oregroun</sub>d l<sub>og</sub>it<sub>s are op</sub>ti<sub>m</sub>i<sub>ze</sub>d <sub>w</sub>ith <sub>a</sub> reliability-weighted multi-view mask objective,"
+                    }
+                ]
+            },
+            "bbox": [
+                516,
+                358,
+                915,
+                444
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathcal { L } = \\sum _ { c , u } \\omega _ { c } \\mathrm { \\tiny ~ B C E } \\Big ( P _ { u } ^ { ( c ) } , Y _ { u } ^ { ( c ) } \\Big ) ,\\tag{6}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/b5bf647140c0ec6d52eef470c95c6fdc6a6201881c8f5aaf4d26948f51470c42.jpg"
+                }
+            },
+            "bbox": [
+                607,
+                453,
+                823,
+                486
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "<sub>w</sub>h<sub>ere</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "Y ^ { \\left( c \\right) }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "i<sub>s</sub> th<sub>e propaga</sub>t<sub>e</sub>d <sub>superv</sub>i<sub>s</sub>i<sub>on mas</sub>k f<sub>or v</sub>i<sub>ew</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "c ."
+                    },
+                    {
+                        "type": "text",
+                        "content": "Aft<sub>er convergence,</sub> th<sub>res</sub>h<sub>o</sub>ldi<sub>ng</sub> th<sub>e</sub> f<sub>oregroun</sub>d <sub>pro</sub>b<sub>a</sub>biliti<sub>es</sub> <sub>g</sub>i<sub>ves</sub> th<sub>e</sub> t<sub>arge</sub>t G<sub>auss</sub>i<sub>an su</sub>b<sub>se</sub>t<sub>:</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                516,
+                497,
+                913,
+                542
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathcal { G } _ { f } = \\{ g _ { i } \\ | \\ q _ { i } > \\tau \\} .\\tag{7}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/897cf1a7d73be90e0979d10c1c985d89418a61b9c6df203376a859abc3c34c1c.jpg"
+                }
+            },
+            "bbox": [
+                645,
+                550,
+                782,
+                568
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4 E<sub>xpe</sub>rim<sub>e</sub>nt<sub>s</sub>"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                643,
+                607,
+                785,
+                625
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4<sub>.</sub>1 E<sub>xpe</sub>rim<sub>e</sub>nt<sub>a</sub>l S<sub>e</sub>t<sub>up</sub>"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                516,
+                630,
+                717,
+                647
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "E<sub>va</sub>l<sub>ua</sub>ti<sub>on pro</sub>t<sub>oco</sub>l<sub>.</sub> Th<sub>e exper</sub>i<sub>men</sub>t<sub>s eva</sub>l<sub>ua</sub>t<sub>e</sub> th<sub>e</sub> <sub>groun</sub>d<sub>-once, propaga</sub>t<sub>e, an</sub>d fit d<sub>es</sub>i<sub>gn on</sub> t<sub>wo</sub> d<sub>a</sub>t<sub>ase</sub>t<sub>s w</sub>ith<sub>-</sub> <sub>ou</sub>t <sub>or</sub>i<sub>g</sub>i<sub>na</sub>l <sub>recons</sub>t<sub>ruc</sub>ti<sub>on cameras or scene-</sub>l<sub>eve</sub>l <sub>seman</sub>ti<sub>c</sub> t<sub>ra</sub>i<sub>n</sub>i<sub>ng.</sub> U<sub>n</sub>l<sub>ess o</sub>th<sub>erw</sub>i<sub>se s</sub>t<sub>a</sub>t<sub>e</sub>d<sub>, every exper</sub>i<sub>men</sub>t <sub>uses a</sub> fr<sub>oze</sub>n 3DGS <sub>sce</sub>n<sub>e as</sub> in<sub>pu</sub>t<sub>.</sub> E<sub>ac</sub>h <sub>que</sub>r<sub>y co</sub>n<sub>s</sub>i<sub>s</sub>t<sub>s o</sub>f <sub>a</sub> t<sub>ex</sub>t <sub>promp</sub>t <sub>an</sub>d <sub>one re</sub>f<sub>erence v</sub>i<sub>ew w</sub>ith it<sub>s camera pose.</sub> Th<sub>e</sub> h<sub>ea</sub>dli<sub>ne</sub> LERF<sub>-</sub>MASK <sub>resu</sub>lt <sub>uses one user-se</sub>l<sub>ec</sub>t<sub>e</sub>d <sub>re</sub>f<sub>er-</sub> <sub>ence per query, c</sub>h<sub>osen</sub> f<sub>rom ren</sub>d<sub>ere</sub>d RGB <sub>v</sub>i<sub>ews</sub> i<sub>n w</sub>hi<sub>c</sub>h th<sub>e</sub> t<sub>arge</sub>t i<sub>s v</sub>i<sub>s</sub>ibl<sub>e.</sub> R<sub>e</sub>f<sub>erence se</sub>l<sub>ec</sub>ti<sub>on uses ne</sub>ith<sub>er eva</sub>l<sub>ua-</sub> ti<sub>on mas</sub>k<sub>s nor</sub> d<sub>owns</sub>t<sub>ream</sub> 3D <sub>scores,</sub> b<sub>u</sub>t th<sub>e resu</sub>lt d<sub>oes no</sub>t <sub>average over re</sub>f<sub>erence c</sub>h<sub>o</sub>i<sub>ces.</sub> A fi<sub>xe</sub>d<sub>-</sub>t<sub>es</sub>t<sub>-re</sub>f<sub>erence con</sub>t<sub>ro</sub>l <sub>an</sub>d <sub>a</sub> 230<sub>-run</sub> f<sub>avora</sub>bl<sub>e-re</sub>f<sub>erence</sub> <sub>sweep</sub> <sub>separa</sub>t<sub>e</sub>l<sub>y</sub> t<sub>es</sub>t thi<sub>s</sub> d<sub>epen</sub>d<sub>ence.</sub> B<sub>eyon</sub>d thi<sub>s re</sub>f<sub>erence pose,</sub> S<sub>eed</sub>2GS <sub>accesses</sub> <sub>no</sub> <sub>or</sub>i<sub>g</sub>i<sub>na</sub>l <sub>recons</sub>t<sub>ruc</sub>ti<sub>on</sub> i<sub>mages</sub> <sub>or</sub> <sub>cameras</sub> <sub>an</sub>d <sub>no</sub> <sub>groun</sub>d<sub>-</sub> t<sub>ru</sub>th <sub>mas</sub>k<sub>s.</sub> It <sub>per</sub>f<sub>orms</sub> <sub>no</sub> <sub>scene-spec</sub>ifi<sub>c</sub> <sub>seman</sub>ti<sub>c</sub> t<sub>ra</sub>i<sub>n</sub>i<sub>ng.</sub> Th<sub>e</sub> <sub>eva</sub>l<sub>ua</sub>ti<sub>on</sub> <sub>coun</sub>t<sub>s</sub> <sub>quer</sub>i<sub>es</sub> <sub>w</sub>ith<sub>ou</sub>t <sub>va</sub>lid <sub>pre</sub>di<sub>c</sub>ti<sub>ons</sub> <sub>as</sub> <sub>zero</sub> i<sub>n</sub> th<sub>e</sub> <sub>correspon</sub>di<sub>ng</sub> <sub>scene</sub> <sub>average.</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                514,
+                652,
+                915,
+                891
+            ]
+        }
+    ],
+    [
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/ee2ef6bc5338ab74cacae2e0b26e47b2c3cbbd44164bcd29563bd008032e4385.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "T<sub>a</sub>bl<sub>e</sub> 1<sub>:</sub> LERF<sub>-</sub>MASK <sub>accu</sub>r<sub>acy,</sub> r<sub>epo</sub>rt<sub>e</sub>d tim<sub>e, a</sub>nd <sub>ope</sub>r<sub>a</sub>tin<sub>g assu</sub>m<sub>p</sub>ti<sub>o</sub>n<sub>s.</sub> M<sub>ea</sub>n <sub>ave</sub>r<sub>ages sce</sub>n<sub>es equa</sub>ll<sub>y.</sub> “Tr<sub>a</sub>in” m<sub>a</sub>rk<sub>s sce</sub>n<sub>e-</sub> <sub>s ec</sub>ifi<sub>c re resen</sub>t<sub>a</sub>ti<sub>on</sub> t<sub>ra</sub>i<sub>n</sub>i<sub>n ;</sub> “Vi<sub>ews</sub>” <sub>mar</sub>k<sub>s use o</sub>f <sub>or</sub>i i<sub>na</sub>l <sub>recons</sub>t<sub>ruc</sub>ti<sub>on v</sub>i<sub>ews.</sub> Ti<sub>me re or</sub>t<sub>s re resen</sub>t<sub>a</sub>ti<sub>on cons</sub>t<sub>ruc</sub>ti<sub>on</sub> f<sub>or</sub> t<sub>ra</sub>i<sub>ne</sub>d <sub>me</sub>th<sub>o</sub>d<sub>s an</sub>d <sub>query</sub> l<sub>a</sub>t<sub>ency o</sub>th<sub>erw</sub>i<sub>se.</sub> S<sub>eed</sub>2GS i<sub>s s</sub>h<sub>own</sub> i<sub>n</sub> b<sub>o</sub>ld<sub>.</sub>"
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td rowspan=\"2\">Method</td><td colspan=\"2\">Figurines</td><td colspan=\"2\">Ramen</td><td colspan=\"2\">Teatime</td><td colspan=\"2\">Mean</td><td rowspan=\"2\">Time</td><td rowspan=\"2\">Train</td><td rowspan=\"2\">Views</td><td rowspan=\"2\"></td></tr><tr><td>mIoU</td><td>mBIoU</td><td>mIoU</td><td>mBIoU</td><td>mIoU</td><td>mBIoU</td><td>mIoU</td><td>mBIoU</td></tr><tr><td>LERF</td><td>33.5</td><td>30.6</td><td>28.3</td><td>14.7</td><td>49.7</td><td>42.6</td><td>37.2</td><td></td><td>29.3</td><td>45 min</td><td>Yes</td><td>Yes</td></tr><tr><td>SA3D</td><td>24.9</td><td>23.8</td><td>7.4</td><td>7.0</td><td>42.5</td><td></td><td>39.2</td><td>24.9</td><td>23.3</td><td>35 min</td><td>Yes</td><td>Yes</td></tr><tr><td>LangSplat</td><td>52.8</td><td>50.5</td><td>50.4</td><td>44.7</td><td>69.5</td><td>65.6</td><td>57.6</td><td></td><td>53.6</td><td>19 min</td><td>Yes</td><td>Yes</td></tr><tr><td>Gauss. Group.</td><td>69.7</td><td>67.9</td><td>77.0</td><td>68.8</td><td>71.7</td><td>66.1</td><td>72.8</td><td></td><td>67.6</td><td>37 min</td><td>Yes</td><td>Yes</td></tr><tr><td>Gaga</td><td>90.7</td><td>89.0</td><td>64.1</td><td>61.6</td><td>69.3</td><td>66.0</td><td>74.7</td><td></td><td>72.2</td><td>13 min</td><td>Yes</td><td>Yes</td></tr><tr><td>Unified-Lift</td><td></td><td></td><td></td><td></td><td></td><td></td><td>80.9</td><td></td><td>77.1</td><td>40 min</td><td>Yes</td><td>Yes</td></tr><tr><td>ObjectGS</td><td>88.2</td><td>89.0</td><td>88.0</td><td>79.9</td><td>88.9</td><td>88.6</td><td></td><td>88.4</td><td>85.8</td><td>~50min</td><td>Yes</td><td>Yes</td></tr><tr><td>OpenSplat3D</td><td>92.3</td><td>89.4</td><td>75.9</td><td>68.2</td><td>83.7</td><td>78.8</td><td></td><td>84.0</td><td>78.8</td><td>一</td><td>Yes</td><td>Yes</td></tr><tr><td>LBG</td><td>82.2</td><td></td><td>73.2</td><td></td><td>86.6</td><td></td><td>1</td><td>80.7</td><td>一</td><td>一</td><td>Yes</td><td>Yes</td></tr><tr><td>FlashSplat-U</td><td>60.2</td><td>57.5</td><td>68.4</td><td>61.5</td><td>80.4</td><td></td><td>76.3</td><td>69.6</td><td>65.1</td><td>10.2s</td><td>No</td><td>Yes</td></tr><tr><td>FlashSplat-R</td><td>71.6</td><td>69.1</td><td>71.4</td><td>66.3</td><td>86.6</td><td>83.9</td><td></td><td>76.5</td><td>73.1</td><td>10.1 s</td><td>No</td><td>Yes</td></tr><tr><td>B3-Seg</td><td>88.3</td><td>85.4</td><td>75.3</td><td>69.7</td><td>89.8</td><td>88.0</td><td></td><td>84.5</td><td>81.0</td><td>12.1 s</td><td>No</td><td>No</td></tr><tr><td>SEED2GS</td><td>93.1</td><td>91.8</td><td>91.5</td><td>85.2</td><td>91.8</td><td></td><td>88.9</td><td>92.1</td><td>88.6</td><td>9.3s</td><td>No</td><td>No</td></tr></table>",
+                "table_type": "complex_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                129,
+                65,
+                867,
+                287
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Datasets. LERF-MASK (Ye et al. 2024) annotates 23 textquer<sub>y</sub> tar<sub>g</sub>ets in three LERF scenes (Kerr et al. 2023): Fi<sub>g</sub>- <sub>ur</sub>i<sub>nes,</sub> R<sub>amen, an</sub>d T<sub>ea</sub>ti<sub>me.</sub> Th<sub>e</sub> t<sub>arge</sub>t<sub>s cover common o</sub>b<sub>-</sub> jects, thin structures, relational prompts, and semantic ambi-<sub>g</sub>uities between containers and contents. 3D-OVS (Liu et al. 2023) contains four scenes: Bed, Bench, Sofa, and Lawn. F<sub>o</sub>r 3D<sub>-</sub>OVS<sub>, we</sub> f<sub>o</sub>ll<sub>ow</sub> th<sub>e pu</sub>bli<sub>c</sub> B3<sub>-</sub>S<sub>eg se</sub>ttin<sub>g</sub> f<sub>o</sub>r <sub>sce</sub>n<sub>e</sub> <sub>se</sub>l<sub>ec</sub>ti<sub>on,</sub> t<sub>es</sub>t <sub>sp</sub>lit<sub>, an</sub>d <sub>supp</sub>li<sub>e</sub>d <sub>re</sub>f<sub>erence camera poses,</sub> b<sub>u</sub>t <sub>no</sub>t it<sub>s</sub> i<sub>n</sub>f<sub>erence</sub> <sub>proce</sub>d<sub>ure.</sub> M<sub>e</sub>t<sub>r</sub>i<sub>c</sub> d<sub>e</sub>fi<sub>n</sub>iti<sub>ons</sub> <sub>an</sub>d <sub>compu</sub>t<sub>a-</sub> tion follow the <sub>p</sub>ublic Gaussian Grou<sub>p</sub>in<sub>g p</sub>rotocol (Ye et al. 2024)."
+                    }
+                ]
+            },
+            "bbox": [
+                81,
+                368,
+                480,
+                523
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Metrics. We re<sub>p</sub>ort mean IoU (mIoU), mean boundar<sub>y</sub> IoU (mBIoU), and <sub>p</sub>er-quer<sub>y</sub> runtime. For each tar<sub>g</sub>et, evaluation fi<sub>rs</sub>t <sub>averages</sub> <sub>a</sub>ll <sub>o</sub>fi<sub>c</sub>i<sub>a</sub>l t<sub>es</sub>t <sub>v</sub>i<sub>ews</sub> <sub>an</sub>d th<sub>en</sub> <sub>averages</sub> t<sub>arge</sub>t<sub>s</sub> <sub>w</sub>ithi<sub>n eac</sub>h <sub>scene, coun</sub>ti<sub>ng m</sub>i<sub>ss</sub>i<sub>ng pre</sub>di<sub>c</sub>ti<sub>ons as zero.</sub> Th<sub>e</sub> d<sub>a</sub>t<sub>ase</sub>t<sub>-</sub>l<sub>eve</sub>l M<sub>ean we</sub>i<sub>g</sub>ht<sub>s a</sub>ll <sub>scene scores equa</sub>ll<sub>y.</sub> B<sub>o</sub>th <sub>na</sub>ti<sub>ve eva</sub>l<sub>ua</sub>t<sub>ors</sub> th<sub>res</sub>h<sub>o</sub>ld f<sub>oregroun</sub>d <sub>pro</sub>b<sub>a</sub>bilit<sub>y a</sub>t 0<sub>.</sub>40<sub>.</sub> S<sub>eed</sub>2GS r<sub>u</sub>ntim<sub>e</sub> i<sub>s</sub> m<sub>easu</sub>r<sub>e</sub>d <sub>o</sub>n <sub>a</sub>n NVIDIA H800 PCI<sub>e</sub> GPU <sub>an</sub>d i<sub>nc</sub>l<sub>u</sub>d<sub>es query-</sub>ti<sub>me mo</sub>d<sub>e</sub>l i<sub>n</sub>f<sub>erence, v</sub>i<sub>r</sub>t<sub>ua</sub>l<sub>-v</sub>i<sub>ew</sub> <sub>process</sub>i<sub>ng, an</sub>d G<sub>auss</sub>i<sub>an re</sub>fi<sub>nemen</sub>t<sub>.</sub> It <sub>exc</sub>l<sub>u</sub>d<sub>es process</sub> <sub>s</sub>t<sub>ar</sub>t<sub>up,</sub> <sub>mo</sub>d<sub>e</sub>l <sub>an</sub>d <sub>scene</sub> l<sub>oa</sub>di<sub>ng,</sub> <sub>eva</sub>l<sub>ua</sub>ti<sub>on</sub> <sub>ren</sub>d<sub>er</sub>i<sub>ng,</sub> <sub>an</sub>d <sub>me</sub>t<sub>r</sub>i<sub>c compu</sub>t<sub>a</sub>ti<sub>on.</sub> F<sub>or scene-</sub>t<sub>ra</sub>i<sub>n</sub>i<sub>ng-</sub>f<sub>ree</sub> b<sub>ase</sub>li<sub>nes, we</sub> <sub>quo</sub>t<sub>e query</sub> l<sub>a</sub>t<sub>ency</sub> f<sub>rom pu</sub>bli<sub>s</sub>h<sub>e</sub>d <sub>resu</sub>lt<sub>s;</sub> f<sub>or scene-spec</sub>ifi<sub>c</sub> b<sub>ase</sub>li<sub>nes,</sub> T<sub>a</sub>bl<sub>e</sub> 1 <sub>repor</sub>t<sub>s</sub> th<sub>e</sub>i<sub>r per-scene represen</sub>t<sub>a</sub>ti<sub>on-</sub> <sub>cons</sub>t<sub>ruc</sub>ti<sub>on</sub> ti<sub>me.</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                81,
+                531,
+                482,
+                728
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "B<sub>ase</sub>lin<sub>es.</sub> W<sub>e compare</sub> S<sub>eed</sub>2GS <sub>w</sub>ith l<sub>anguage-</sub>d<sub>r</sub>i<sub>ven</sub> <sub>an</sub>d i<sub>ns</sub>t<sub>ance-</sub>l<sub>eve</sub>l 3DGS <sub>segmen</sub>t<sub>a</sub>ti<sub>on me</sub>th<sub>o</sub>d<sub>s,</sub> i<sub>nc</sub>l<sub>u</sub>d<sub>-</sub> in<sub>g</sub> LERF (Kerr et al. 2023), SA3D (Cen et al. 2023), Lan<sub>g</sub>S<sub>p</sub>lat (Qin et al. 2024), Gaussian Grou<sub>p</sub>in<sub>g</sub> (Ye et al. 2024), Ga<sub>g</sub>a (L<sub>y</sub>u et al. 2026), Unified-Lift (Zhu et al. 2025a), ObjectGS (Zhu et al. 2025b), O<sub>p</sub>enS<sub>p</sub>lat3D (Piekenbrinck et al. 2025), LBG (Chacko et al. 2025), FlashS<sub>p</sub>lat (Shen, Yan<sub>g</sub>, and Wan<sub>g</sub> 2024), and B3-Se<sub>g</sub> (Kamata, Munro, and Homma 2026). The tables ex<sub>p</sub>ose two o<sub>p</sub>eratin<sub>g</sub> assum<sub>p</sub>- ti<sub>ons: w</sub>h<sub>e</sub>th<sub>er eac</sub>h <sub>me</sub>th<sub>o</sub>d <sub>requ</sub>i<sub>res seman</sub>ti<sub>c or</sub> i<sub>ns</sub>t<sub>ance</sub> t<sub>ra</sub>i<sub>n</sub>i<sub>ng</sub> f<sub>or</sub> th<sub>e</sub> t<sub>arge</sub>t <sub>scene an</sub>d <sub>w</sub>h<sub>e</sub>th<sub>er</sub> it<sub>s repor</sub>t<sub>e</sub>d i<sub>n-</sub> f<sub>erence</sub> <sub>p</sub>i<sub>pe</sub>li<sub>ne</sub> d<sub>epen</sub>d<sub>s</sub> <sub>on</sub> <sub>or</sub>i<sub>g</sub>i<sub>na</sub>l <sub>recons</sub>t<sub>ruc</sub>ti<sub>on</sub> <sub>v</sub>i<sub>ews.</sub> Fl<sub>as</sub>hS<sub>p</sub>l<sub>a</sub>t <sub>an</sub>d B3<sub>-</sub>S<sub>eg</sub> <sub>are</sub> th<sub>e</sub> <sub>c</sub>l<sub>oses</sub>t b<sub>ase</sub>li<sub>nes</sub> th<sub>a</sub>t d<sub>o</sub> <sub>no</sub>t <sub>requ</sub>i<sub>re scene-</sub>l<sub>eve</sub>l <sub>seman</sub>ti<sub>c</sub> t<sub>ra</sub>i<sub>n</sub>i<sub>ng, an</sub>d B3<sub>-</sub>S<sub>eg a</sub>l<sub>so avo</sub>id<sub>s</sub> <sub>or</sub>i i<sub>na</sub>l <sub>recons</sub>t<sub>ruc</sub>ti<sub>on cameras.</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                81,
+                736,
+                482,
+                891
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                514,
+                368,
+                915,
+                426
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4<sub>.</sub>2 R<sub>esu</sub>lt<sub>s a</sub>nd An<sub>a</sub>l<sub>ys</sub>i<sub>s</sub>"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                516,
+                436,
+                720,
+                453
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "O<sub>ve</sub>r<sub>a</sub>ll <sub>co</sub>m<sub>pa</sub>ri<sub>so</sub>n<sub>.</sub> LERF<sub>-</sub>MASK<sub>.</sub> S<sub>eed</sub>2GS l<sub>ea</sub>d<sub>s</sub> th<sub>e</sub> <sub>ca</sub>m<sub>e</sub>r<sub>a-</sub>fr<sub>ee, sce</sub>n<sub>e-</sub>tr<sub>a</sub>inin<sub>g-</sub>fr<sub>ee se</sub>ttin<sub>g o</sub>n LERF<sub>-</sub>MASK (Table 1), reachin<sub>g</sub> 92.1% mIoU and 88.6% mBIoU under th<sub>e eva</sub>l<sub>ua</sub>t<sub>e</sub>d <sub>re</sub>f<sub>erence v</sub>i<sub>ews.</sub> A<sub>ga</sub>i<sub>ns</sub>t B3<sub>-</sub>S<sub>eg,</sub> S<sub>eed</sub>2GS <sub>ga</sub>i<sub>ns</sub> 7<sub>.</sub>6 <sub>po</sub>i<sub>n</sub>t<sub>s on</sub> b<sub>o</sub>th <sub>me</sub>t<sub>r</sub>i<sub>cs;</sub> th<sub>e</sub>i<sub>r separa</sub>t<sub>e</sub>l<sub>y repor</sub>t<sub>e</sub>d <sub>run</sub>ti<sub>mes are</sub> 9<sub>.</sub>3 <sub>an</sub>d 12<sub>.</sub>1 <sub>secon</sub>d<sub>s, respec</sub>ti<sub>ve</sub>l<sub>y.</sub> Th<sub>ese en</sub>d<sub>-</sub> t<sub>o-en</sub>d <sub>resu</sub>lt<sub>s s</sub>h<sub>ow</sub> th<sub>a</sub>t th<sub>e repor</sub>t<sub>e</sub>d <sub>accuracy an</sub>d l<sub>a</sub>t<sub>ency</sub> <sub>are ac</sub>hi<sub>eva</sub>bl<sub>e w</sub>ith<sub>ou</sub>t <sub>repea</sub>t<sub>e</sub>d d<sub>e</sub>t<sub>ec</sub>ti<sub>on.</sub> Th<sub>ey</sub> d<sub>o no</sub>t i<sub>so</sub>l<sub>a</sub>t<sub>e</sub> th<sub>e e</sub>f<sub>ec</sub>t <sub>o</sub>f <sub>any s</sub>i<sub>ng</sub>l<sub>e componen</sub>t<sub>.</sub> S<sub>eed</sub>2GS <sub>a</sub>l<sub>so excee</sub>d<sub>s</sub> scene-trained ObjectGS by 3.7 mIoU points despite building <sub>no pers</sub>i<sub>s</sub>t<sub>en</sub>t <sub>seman</sub>ti<sub>c or</sub> i<sub>ns</sub>t<sub>ance represen</sub>t<sub>a</sub>ti<sub>on.</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                514,
+                455,
+                915,
+                609
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "3D-OVS<sub>.</sub> On 3D<sub>-</sub>OVS<sub>,</sub> S<sub>eed</sub>2GS l<sub>ea</sub>d<sub>s</sub> th<sub>e ca</sub>m<sub>e</sub>r<sub>a-</sub>fr<sub>ee</sub> com<sub>p</sub>arison b<sub>y</sub> a narrower mar<sub>g</sub>in (Table 2). The method r<sub>eac</sub>h<sub>es</sub> 95<sub>.</sub>7% m<sub>ea</sub>n mI<sub>o</sub>U<sub>,</sub> 0<sub>.</sub>7 <sub>po</sub>int<sub>s a</sub>b<sub>ove</sub> B3<sub>-</sub>S<sub>eg, a</sub>nd <sub>recor</sub>d<sub>s</sub> th<sub>e</sub> b<sub>es</sub>t <sub>per-scene resu</sub>lt <sub>on</sub> L<sub>awn.</sub> All <sub>me</sub>th<sub>o</sub>d<sub>s</sub> i<sub>n</sub> T<sub>a</sub>bl<sub>e</sub> 2 <sub>excee</sub>d 91% <sub>m</sub>I<sub>o</sub>U <sub>on</sub> thi<sub>s</sub> f<sub>our-scene se</sub>tti<sub>ng.</sub> LERF<sub>-</sub> MASK <sub>pro</sub>d<sub>uces</sub> l<sub>arger emp</sub>i<sub>r</sub>i<sub>ca</sub>l <sub>separa</sub>ti<sub>on among me</sub>th<sub>-</sub> <sub>o</sub>d<sub>s;</sub> it<sub>s quer</sub>i<sub>es</sub> i<sub>nc</sub>l<sub>u</sub>d<sub>e</sub> thi<sub>n s</sub>t<sub>ruc</sub>t<sub>ures, re</sub>l<sub>a</sub>ti<sub>ona</sub>l <sub>p</sub>h<sub>rases,</sub> <sub>an</sub>d <sub>con</sub>t<sub>a</sub>i<sub>ner</sub>/<sub>con</sub>t<sub>en</sub>t<sub>s</sub> <sub>am</sub>bi<sub>gu</sub>iti<sub>es.</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                514,
+                608,
+                915,
+                722
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Runtime. On an H800, the loaded pipeline averages 9.26± 0.97 seconds across the 23 LERF-MASK targets; QD-SAM3 and VAAS account for 47.7% and 52.3% of runtime (Table 3). B3-Se<sub>g</sub> code is unavailable, so its re<sub>p</sub>orted 12.1 sec-<sub>on</sub>d<sub>s an</sub>d <sub>our measure</sub>d 9<sub>.</sub>3 <sub>secon</sub>d<sub>s are no</sub>t <sub>same-</sub>h<sub>ar</sub>d<sub>ware</sub> measurements."
+                    }
+                ]
+            },
+            "bbox": [
+                514,
+                727,
+                915,
+                813
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Re<sub>p</sub>eated backend a<sub>u</sub>dit<sub>.</sub> Thr<sub>ee</sub> <sub>co</sub>m<sub>p</sub>l<sub>e</sub>t<sub>e</sub> <sub>passes</sub> <sub>pe</sub>r <sub>v</sub>i<sub>ew</sub> b<sub>u</sub>d<sub>ge</sub>t <sub>pro</sub>d<sub>uce</sub> 138 <sub>success</sub>f<sub>u</sub>l <sub>runs.</sub> Th<sub>e</sub> d<sub>e</sub>f<sub>au</sub>lt 24<sub>-v</sub>i<sub>ew se</sub>t<sub>-</sub> ti<sub>ng</sub> <sub>a</sub>dd<sub>s</sub> <sub>on</sub>l<sub>y</sub> 0<sub>.</sub>373 <sub>secon</sub>d<sub>s</sub> <sub>o</sub>f b<sub>ac</sub>k<sub>en</sub>d ti<sub>me</sub> <sub>over</sub> 12 <sub>v</sub>i<sub>ews,</sub> <sub>w</sub>hil<sub>e</sub> i<sub>mprov</sub>i<sub>ng</sub> LERF<sub>-</sub>MASK b<sub>y</sub> 0<sub>.</sub>24 <sub>m</sub>I<sub>o</sub>U <sub>an</sub>d 0<sub>.</sub>19 mBIoU <sub>p</sub>oints (Table 4). Across both bud<sub>g</sub>ets, within-scene <sub>corre</sub>l<sub>a</sub>ti<sub>ons</sub> b<sub>e</sub>t<sub>ween</sub> i<sub>n</sub>iti<sub>a</sub>l f<sub>oregroun</sub>d <sub>coun</sub>t <sub>an</sub>d <sub>warm</sub> l<sub>a-</sub> t<sub>ency rema</sub>i<sub>n sma</sub>ll "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( | \\rho | \\leq 0 . 3 2 1 , \\mathrm { \\bar { a l l } } p \\geq 0 . 4 8 2 )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "<sub>.</sub> On T<sub>ea</sub>tim<sub>e,</sub> th<sub>e</sub> i<sub>n</sub>iti<sub>a</sub>l <sub>suppor</sub>t <sub>spans</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "2 1 2 { - } 2 6 { , } 8 7 4 \\mathrm { G a u s s i a n s } \\left( 1 2 6 { . } 8 { \\times } \\right)"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", y<sup>et</sup> th<sub>e</sub> "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "< 1 \\mathrm { K } , 1 \\bar { \\mathrm { K } } { - } 1 0 \\mathrm { K }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", and > 10K groups average 8.754, 9.108, <sub>a</sub>nd 8<sub>.</sub>807 <sub>seco</sub>nd<sub>s</sub> <sub>pe</sub>r f<sub>u</sub>ll <sub>que</sub>r<sub>y.</sub> T<sub>oge</sub>th<sub>e</sub>r<sub>,</sub> th<sub>ese</sub> m<sub>easu</sub>r<sub>e-</sub> <sub>men</sub>t<sub>s</sub> ti<sub>e run</sub>ti<sub>me pr</sub>i<sub>mar</sub>il<sub>y</sub> t<sub>o scene-w</sub>id<sub>e ren</sub>d<sub>er</sub>i<sub>ng an</sub>d th<sub>e</sub> <sub>ren</sub>d<sub>ere</sub>d <sub>v</sub>i<sub>ew</sub> b<sub>u</sub>d<sub>ge</sub>t <sub>ra</sub>th<sub>er</sub> th<sub>an</sub> t<sub>arge</sub>t <sub>s</sub>i<sub>ze;</sub> th<sub>e</sub> <sub>supp</sub>l<sub>emen-</sub> t<sub>ary ma</sub>t<sub>er</sub>i<sub>a</sub>l <sub>prov</sub>id<sub>es</sub> b<sub>o</sub>th <sub>au</sub>dit<sub>s</sub> i<sub>n</sub> d<sub>e</sub>t<sub>a</sub>il<sub>.</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                514,
+                818,
+                915,
+                890
+            ]
+        }
+    ],
+    [
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/55c7548d4def7156973be6d0ea719d5eb59985c5bfe77b621909a429ef628a69.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Gaussian Grouping"
+                    },
+                    {
+                        "type": "text",
+                        "content": "OpenSplat3D"
+                    },
+                    {
+                        "type": "text",
+                        "content": "FlashSplat"
+                    },
+                    {
+                        "type": "text",
+                        "content": "Gaga"
+                    },
+                    {
+                        "type": "text",
+                        "content": "Seed2GS (Ours)"
+                    },
+                    {
+                        "type": "text",
+                        "content": "Fi<sub>g</sub>ure 3: Qualitative com<sub>p</sub>arison on 3D-OVS (to<sub>p</sub> two rows) and LERF-MASK (bottom row). Columns show the reference/quer<sub>y</sub>, G<sub>auss</sub>i<sub>a</sub>n Gr<sub>oup</sub>in<sub>g,</sub> O<sub>pe</sub>nS<sub>p</sub>l<sub>a</sub>t3D<sub>,</sub> Fl<sub>as</sub>hS<sub>p</sub>l<sub>a</sub>t<sub>,</sub> G<sub>aga, a</sub>nd S<sub>eed</sub>2GS<sub>.</sub> A<sub>c</sub>r<sub>oss</sub> th<sub>ese exa</sub>m<sub>p</sub>l<sub>es,</sub> S<sub>eed</sub>2GS <sub>p</sub>r<sub>ese</sub>r<sub>ves</sub> th<sub>e</sub> t<sub>a</sub>r<sub>ge</sub>t <sub>w</sub>hil<sub>e</sub> <sub>re</sub>d<sub>uc</sub>i<sub>ng</sub> b<sub>ac</sub>k<sub>groun</sub>d l<sub>ea</sub>k<sub>age.</sub>"
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                117,
+                90,
+                900,
+                337
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/1e5a47ced9de991080e832b47a13820a134352121ef403a4ba563a691bf49647.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "T<sub>a</sub>bl<sub>e</sub> 2<sub>:</sub> 3D<sub>-</sub>OVS mI<sub>o</sub>U <sub>u</sub>nd<sub>e</sub>r th<sub>e</sub> B3<sub>-</sub>S<sub>eg</sub> d<sub>a</sub>t<sub>a</sub>/<sub>pose</sub> <sub>se</sub>ttin<sub>g</sub> <sub>a</sub>nd G<sub>auss</sub>i<sub>a</sub>n Gr<sub>oup</sub>in<sub>g eva</sub>l<sub>ua</sub>ti<sub>o</sub>n <sub>p</sub>r<sub>o</sub>t<sub>oco</sub>l<sub>.</sub> M<sub>ea</sub>n <sub>ave</sub>r<sub>ages</sub> <sub>scenes</sub> <sub>equa</sub>ll<sub>y;</sub> b<sub>ase</sub>li<sub>ne</sub> <sub>va</sub>l<sub>ues</sub> <sub>come</sub> f<sub>rom</sub> th<sub>e</sub> <sub>correspon</sub>di<sub>ng</sub> <sub>papers.</sub> S<sub>eed</sub>2GS i<sub>s</sub> <sub>s</sub>h<sub>own</sub> i<sub>n</sub> b<sub>o</sub>ld<sub>.</sub>"
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Method</td><td>Bed</td><td>Bench</td><td>Sofa</td><td>Lawn</td><td>Mean</td></tr><tr><td>FlashSplat-R</td><td>94.3</td><td>90.3</td><td>85.7</td><td>96.3</td><td>91.7</td></tr><tr><td>LangSplat</td><td>92.5</td><td>94.2</td><td>90.0</td><td>96.1</td><td>93.2</td></tr><tr><td>FastLGS (Ji et al. 2025)</td><td>94.7</td><td>95.1</td><td>90.6</td><td>96.2</td><td>94.2</td></tr><tr><td>LBG</td><td>97.7</td><td>96.3</td><td>97.3</td><td>87.4</td><td>94.7</td></tr><tr><td>B3-Seg</td><td>97.1</td><td>92.2</td><td>94.1</td><td>96.8</td><td>95.0</td></tr><tr><td>SEED2GS</td><td>97.1</td><td>95.9</td><td>92.7</td><td>97.1</td><td>95.7</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                93,
+                422,
+                470,
+                525
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/4dab6c0b55bdfa8fa714069d225ecb850c3ff7597f327e3e0571c21fdee2da19.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "T<sub>a</sub>bl<sub>e</sub> 3<sub>:</sub> P<sub>er-scene run</sub>ti<sub>me</sub> i<sub>n secon</sub>d<sub>s.</sub> O<sub>vera</sub>ll <sub>me</sub>di<sub>an</sub>/P95<sub>:</sub> 8<sub>.</sub>861/11<sub>.</sub>195 <sub>secon</sub>d<sub>s.</sub>"
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Scene</td><td></td><td>N QD-SAM3</td><td>VAAS</td><td>Total mean ± SD</td></tr><tr><td>Figurines</td><td>7</td><td>4.624</td><td>4.708</td><td> $9 . 3 3 2 \\pm 1 . 4 3 9$ </td></tr><tr><td>Ramen</td><td>6</td><td>4.363</td><td>5.277</td><td> $9 . 6 4 0 \\pm 0 . 7 9 9$ </td></tr><tr><td>Teatime</td><td>10</td><td>4.294</td><td>4.678</td><td> $8 . 9 7 2 \\pm 0 . 3 7 2$ </td></tr><tr><td>Overall</td><td>23</td><td>4.412</td><td>4.843</td><td> $9 . 2 5 6 \\pm 0 . 9 6 5$ </td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                120,
+                616,
+                442,
+                699
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                81,
+                773,
+                480,
+                887
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/0124c047b2c442e352c3c248b63c32f11c0006018656dbb3493d742ab8515a19.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "T<sub>a</sub>bl<sub>e</sub> 4<sub>:</sub> R<sub>epea</sub>t<sub>e</sub>d VAAS<sub>-</sub>b<sub>ac</sub>k<sub>en</sub>d ti<sub>m</sub>i<sub>ng</sub> <sub>on</sub> LERF<sub>-</sub>MASK<sub>.</sub> E<sub>ac</sub>h <sub>v</sub>i<sub>ew</sub> b<sub>u</sub>d<sub>ge</sub>t <sub>runs a</sub>ll 23 t<sub>arge</sub>t<sub>s</sub> th<sub>ree</sub> ti<sub>mes.</sub>"
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Views/clip</td><td>Runs</td><td>Backend (s)</td><td>∆(s)</td></tr><tr><td>12</td><td>69</td><td>4.657</td><td></td></tr><tr><td>24 (default)</td><td>69</td><td>5.030</td><td>+0.373</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                581,
+                424,
+                849,
+                474
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/0bd972231cd9b53f5cb407ffbc3ff896e7e483b99f14e648f64f1d4533c44939.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "T<sub>a</sub>bl<sub>e</sub> 5<sub>:</sub> LERF<sub>-</sub>MASK <sub>re</sub>f<sub>erence-v</sub>i<sub>ew s</sub>t<sub>u</sub>d<sub>y.</sub> Fi<sub>xe</sub>d <sub>pro</sub>t<sub>oco</sub>l<sub>s</sub> <sub>use</sub> t<sub>es</sub>t <sub>v</sub>i<sub>ews</sub> 0/2/0<sub>;</sub> th<sub>e</sub> t<sub>op-</sub>10 <sub>sweep ave</sub>r<sub>ages</sub> f<sub>avo</sub>r<sub>a</sub>bl<sub>e</sub> t<sub>ra</sub>i<sub>n</sub>i<sub>ng</sub> <sub>re</sub>f<sub>erences.</sub>"
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Protocol</td><td>Figurines</td><td>Ramen</td><td>Teatime Mean</td><td></td></tr><tr><td>mIoU</td><td></td><td></td><td></td><td></td></tr><tr><td>Fixed QD-SAM3</td><td>91.74</td><td>90.38</td><td>91.29</td><td>91.14</td></tr><tr><td>Fixed GT oracle</td><td>92.93</td><td>90.90</td><td>91.73</td><td>91.86</td></tr><tr><td>Top-10 sweep</td><td>92.96</td><td>89.32</td><td>91.23</td><td>91.17</td></tr><tr><td>mBIoU</td><td></td><td></td><td></td><td></td></tr><tr><td>Fixed QD-SAM3</td><td>90.06</td><td>83.02</td><td></td><td>89.24 87.44</td></tr><tr><td>Fixed GT oracle</td><td>91.45</td><td>83.30</td><td></td><td>90.14 88.30</td></tr><tr><td>Top-10 sweep</td><td>91.31</td><td>82.22</td><td>87.90</td><td>87.15</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                553,
+                531,
+                877,
+                665
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "R<sub>e</sub>f<sub>e</sub>r<sub>e</sub>n<sub>ce-v</sub>i<sub>ew se</sub>n<sub>s</sub>iti<sub>v</sub>it<sub>y.</sub> Fi<sub>xe</sub>d t<sub>es</sub>t r<sub>e</sub>f<sub>e</sub>r<sub>e</sub>n<sub>ces.</sub> U<sub>s</sub>i<sub>ng</sub> one fixed test reference per scene, QD-SAM3 reaches 91.14% mIoU (Table 5). Re<sub>p</sub>lacin<sub>g</sub> onl<sub>y</sub> its seed with the reference <sub>g</sub>r<sub>ou</sub>nd tr<sub>u</sub>th r<sub>a</sub>i<sub>ses</sub> mI<sub>o</sub>U b<sub>y</sub> 0<sub>.</sub>72 <sub>po</sub>int<sub>s a</sub>nd mBI<sub>o</sub>U b<sub>y</sub> 0<sub>.</sub>86 <sub>po</sub>i<sub>n</sub>t<sub>s,</sub> l<sub>eav</sub>i<sub>ng</sub> li<sub>m</sub>it<sub>e</sub>d h<sub>ea</sub>d<sub>room</sub> f<sub>rom</sub> th<sub>e</sub> i<sub>n</sub>iti<sub>a</sub>l <sub>mas</sub>k <sub>a</sub>l<sub>one.</sub> All th<sub>ree</sub> fi<sub>xe</sub>d<sub>-re</sub>f<sub>erence scene means rema</sub>i<sub>n a</sub>b<sub>ove</sub> 90% <sub>m</sub>I<sub>o</sub>U<sub>, so</sub> th<sub>e resu</sub>lt d<sub>oes no</sub>t d<sub>epen</sub>d <sub>on one</sub> f<sub>avora</sub>bl<sub>e</sub> scene."
+                    }
+                ]
+            },
+            "bbox": [
+                514,
+                748,
+                915,
+                859
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Fa<sub>v</sub>orable-reference s<sub>w</sub>ee<sub>p.</sub> A<sub>c</sub>r<sub>oss</sub> 230 r<sub>u</sub>n<sub>s,</sub> S<sub>eed</sub>2GS <sub>averages</sub> 91<sub>.</sub>17% <sub>scene-equa</sub>l <sub>m</sub>I<sub>o</sub>U <sub>w</sub>ith <sub>a</sub> 1<sub>.</sub>16<sub>-po</sub>i<sub>n</sub>t <sub>w</sub>ithi<sub>n-</sub> tar<sub>g</sub>et deviation (Table 5 and Fi<sub>g</sub>ure 4). Onl<sub>y</sub> five of 23 t<sub>arge</sub>t<sub>s</sub> <sub>excee</sub>d <sub>one</sub> <sub>po</sub>i<sub>n</sub>t <sub>o</sub>f <sub>m</sub>I<sub>o</sub>U d<sub>ev</sub>i<sub>a</sub>ti<sub>on,</sub> <sub>an</sub>d th<sub>e</sub> t<sub>wo</sub> l<sub>arges</sub>t d<sub>ev</sub>i<sub>a</sub>ti<sub>ons occur on</sub> R<sub>amen.</sub> E<sub>ven</sub> th<sub>e</sub> t<sub>arge</sub>t<sub>-equa</sub>l <sub>wo</sub>r<sub>s</sub>t<sub>-</sub>r<sub>e</sub>f<sub>e</sub>r<sub>e</sub>n<sub>ce ave</sub>r<sub>age</sub> r<sub>e</sub>m<sub>a</sub>in<sub>s</sub> 88<sub>.</sub>98% mI<sub>o</sub>U <sub>a</sub>nd 83<sub>.</sub>90% <sub>m</sub>BI<sub>o</sub>U<sub>, an</sub>d <sub>a</sub>ll 230 <sub>runs re</sub>t<sub>urn va</sub>lid <sub>ex</sub>t<sub>rac</sub>ti<sub>ons.</sub> Th<sub>e</sub> fi<sub>xe</sub>d <sub>an</sub>d <sub>mu</sub>lti<sub>-re</sub>f<sub>erence con</sub>t<sub>ro</sub>l<sub>s</sub> th<sub>ere</sub>f<sub>ore preserve</sub> th<sub>e ma</sub>i<sub>n ac-</sub> <sub>curacy</sub> <sub>a</sub>d<sub>van</sub>t<sub>age</sub> <sub>w</sub>hil<sub>e</sub> <sub>remov</sub>i<sub>ng</sub> d<sub>epen</sub>d<sub>ence</sub> <sub>on</sub> <sub>a</sub> <sub>s</sub>i<sub>ng</sub>l<sub>e</sub> <sub>se</sub>l<sub>ec</sub>t<sub>e</sub>d <sub>see</sub>d <sub>or v</sub>i<sub>ew.</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                516,
+                859,
+                915,
+                890
+            ]
+        }
+    ],
+    [
+        {
+            "type": "chart",
+            "content": {
+                "image_source": {
+                    "path": "images/ab51f4858c8df251f2752a9a240470184d917fa45ca3de222d5e2a00694968f2.jpg"
+                },
+                "content": "",
+                "chart_caption": [
+                    {
+                        "type": "text",
+                        "content": "Fi <sub>ure</sub> 4<sub>:</sub> P<sub>er-</sub>t<sub>ar e</sub>t <sub>re</sub>f<sub>erence-v</sub>i<sub>ew ro</sub>b<sub>us</sub>t<sub>ness over</sub> 230 <sub>runs.</sub> E<sub>ac</sub>h <sub>co</sub>l<sub>umn summar</sub>i<sub>zes</sub> t<sub>en</sub> f<sub>avora</sub>bl<sub>e re</sub>f<sub>erences</sub> f<sub>or one</sub> t<sub>ar e</sub>t<sub>.</sub> T<sub>op: mean ex</sub>t<sub>rac</sub>ti<sub>on accuracy.</sub> B<sub>o</sub>tt<sub>om: w</sub>ithi<sub>n-</sub>t<sub>arge</sub>t <sub>s</sub>t<sub>an</sub>d<sub>ar</sub>d d<sub>ev</sub>i<sub>a</sub>ti<sub>on, w</sub>h<sub>ere</sub> l<sub>ower va</sub>l<sub>ues</sub> i<sub>n</sub>di<sub>ca</sub>t<sub>e grea</sub>t<sub>er s</sub>t<sub>a</sub>bilit<sub>y.</sub>"
+                    }
+                ],
+                "chart_footnote": []
+            },
+            "bbox": [
+                88,
+                66,
+                908,
+                215
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/2eddfed6e1246b8ee04e2125f8badcc30a7b9a0dd78f10908876a3d03723388d.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 6: QD-SAM3 ablation on LERF-MASK (mIoU)."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Variant</td><td>Figurines</td><td>Ramen</td><td>Teatime</td><td>Mean</td></tr><tr><td>Selection policy</td><td></td><td></td><td></td><td></td></tr><tr><td>max-confidence</td><td>93.11</td><td>78.99</td><td>91.08</td><td>87.73</td></tr><tr><td>three-term selector</td><td>93.13</td><td>91.51</td><td>91.77</td><td>92.14</td></tr><tr><td>Candidate-source removal</td><td></td><td></td><td></td><td></td></tr><tr><td>w/o Qwen3-VL</td><td>83.42</td><td>77.97</td><td>91.62</td><td>84.34</td></tr><tr><td>w/o GroundingDINO</td><td>93.13</td><td>84.03</td><td>91.77</td><td>89.64</td></tr><tr><td>w/o SAM3-text</td><td>93.12</td><td>91.49</td><td>89.76</td><td>91.46</td></tr><tr><td>Selection-term removal</td><td></td><td></td><td></td><td></td></tr><tr><td>w/o  $S _ { \\mathrm { s r c } }$ </td><td>93.12</td><td>91.53</td><td></td><td>91.64 92.10</td></tr><tr><td>w/o  $S _ { \\mathrm { c o n f } }$ </td><td>93.13</td><td>84.03</td><td>90.32</td><td>89.16</td></tr><tr><td>w/o lexical  $S _ { \\mathrm { l a n g } }$ </td><td>93.13</td><td>91.48</td><td></td><td>89.76 91.46</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                106,
+                280,
+                455,
+                458
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/6536ca2f919032d9133fcd120247b96a1f1f32aa866843655e0aa93bad650437.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 7: VAAS ablations. Parentheses give average trajectory <sub>v</sub>i<sub>ews;</sub> <sub>or</sub>bit<sub>-v</sub>i<sub>ew</sub> <sub>coun</sub>t<sub>s</sub> <sub>are</sub> <sub>per</sub> <sub>c</sub>li<sub>p.</sub>"
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Dataset</td><td>Setting</td><td>∆mIoU</td><td>∆mBIoU</td></tr><tr><td colspan=\"4\">Trajectory policy; relative to flat orbit</td></tr><tr><td>LERF-MASK Fixed (48.0)</td><td></td><td>+0.76</td><td>+0.38</td></tr><tr><td rowspan=\"3\">3D-OVS</td><td>Adaptive (27.1)</td><td>+2.17</td><td>+2.08</td></tr><tr><td>Fixed (48.0)</td><td>+0.86</td><td>-0.26</td></tr><tr><td>Adaptive (38.4)</td><td>+0.89</td><td>+0.00</td></tr><tr><td colspan=\"4\">Orbit-view count; relative to 24 views</td></tr><tr><td>LERF-MASK 12 views</td><td></td><td>-0.24</td><td>-0.19</td></tr><tr><td rowspan=\"3\">3D-OVS</td><td>48 views</td><td>-0.84</td><td>-0.95</td></tr><tr><td>12 views</td><td>-0.17</td><td>-0.78</td></tr><tr><td>48 views</td><td>+0.28</td><td>-0.19</td></tr></table>",
+                "table_type": "complex_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                117,
+                525,
+                444,
+                684
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                81,
+                776,
+                482,
+                890
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/95bb294e49a110d3dd680cdf2e0e9d6ddb81d6fa937e65782076ca4025205b8e.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 8: Trackin<sub>g</sub> and view-wei<sub>g</sub>htin<sub>g</sub> ablation (mIoU)."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Variant</td><td>LERF</td><td>Bed</td><td>Bench</td><td>Sofa</td><td>Lawn</td><td>Mean</td></tr><tr><td>Single clip</td><td>81.58</td><td>95.76</td><td>86.87</td><td>62.93</td><td>67.16</td><td>78.18</td></tr><tr><td>No reweighting</td><td>90.89</td><td>96.99</td><td>91.37</td><td>91.68</td><td>97.09</td><td>94.28</td></tr><tr><td>Full</td><td>92.14</td><td>97.07</td><td>95.90</td><td>92.66</td><td>97.08</td><td>95.68</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                517,
+                281,
+                913,
+                344
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4<sub>.</sub>3 Abl<sub>a</sub>ti<sub>o</sub>n St<sub>u</sub>di<sub>es</sub>"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                517,
+                398,
+                691,
+                415
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Seed acquisition. QD-SAM3 improves max-confidence selection b<sub>y</sub> 4.41 mIoU points; Qwen3-VL and confidence are its stron<sub>g</sub>est source and score term, res<sub>p</sub>ectivel<sub>y</sub> (Table 6)."
+                    }
+                ]
+            },
+            "bbox": [
+                516,
+                419,
+                915,
+                463
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Trajectory design. Under fixed scenes and downstream settings, VAAS gains come from adapting its trajectory rather th<sub>an s</sub>i<sub>mp</sub>l<sub>y ren</sub>d<sub>er</sub>i<sub>ng more v</sub>i<sub>ews.</sub> Ad<sub>ap</sub>ti<sub>ve</sub> VAAS i<sub>mproves</sub> LERF<sub>-</sub>MASK <sub>m</sub>I<sub>o</sub>U b<sub>y</sub> 2<sub>.</sub>17 <sub>po</sub>i<sub>n</sub>t<sub>s over</sub> th<sub>e</sub> fl<sub>a</sub>t <sub>or</sub>bit <sub>an</sub>d b<sub>y</sub> 1<sub>.</sub>41 <sub>po</sub>i<sub>n</sub>t<sub>s over</sub> th<sub>e</sub> fi<sub>xe</sub>d <sub>ascen</sub>di<sub>ng or</sub>bit<sub>, w</sub>hil<sub>e us</sub>i<sub>ng</sub> 27<sub>.</sub>1 <sub>ra</sub>th<sub>er</sub> th<sub>an</sub> 48 <sub>v</sub>i<sub>ews on average.</sub> Th<sub>e v</sub>i<sub>ew-coun</sub>t <sub>sweep</sub> <sub>suppor</sub>t<sub>s</sub> th<sub>e</sub> <sub>same</sub> <sub>conc</sub>l<sub>us</sub>i<sub>on:</sub> 24 <sub>v</sub>i<sub>ews</sub> <sub>per</sub>f<sub>orms</sub> b<sub>es</sub>t <sub>on</sub> LERF<sub>-</sub>MASK<sub>;</sub> 48 <sub>v</sub>i<sub>ews a</sub>dd<sub>s</sub> 0<sub>.</sub>28 <sub>m</sub>I<sub>o</sub>U <sub>po</sub>i<sub>n</sub>t<sub>s on</sub> 3D<sub>-</sub>OVS but sli<sub>g</sub>htl<sub>y</sub> lowers boundar<sub>y</sub> IoU (Table 7)."
+                    }
+                ]
+            },
+            "bbox": [
+                514,
+                469,
+                915,
+                597
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Pro<sub>p</sub>a<sub>g</sub>ation and <sub>w</sub>ei<sub>g</sub>htin<sub>g.</sub> R<sub>ep</sub>l<sub>ac</sub>in<sub>g o</sub>n<sub>e co</sub>ntin<sub>uous</sub> <sub>c</sub>li<sub>p w</sub>ith t<sub>wo re</sub>f<sub>erence-anc</sub>h<sub>ore</sub>d <sub>c</sub>li<sub>ps</sub> i<sub>mproves m</sub>I<sub>o</sub>U b<sub>y</sub> 10<sub>.</sub>56 <sub>po</sub>i<sub>n</sub>t<sub>s on</sub> LERF<sub>-</sub>MASK <sub>an</sub>d 17<sub>.</sub>50 <sub>po</sub>i<sub>n</sub>t<sub>s on</sub> 3D<sub>-</sub>OVS<sub>,</sub> <sub>w</sub>hil<sub>e v</sub>i<sub>ew re</sub>li<sub>a</sub>bilit<sub>y we</sub>i<sub>g</sub>hti<sub>ng a</sub>dd<sub>s</sub> 1<sub>.</sub>25 <sub>an</sub>d 1<sub>.</sub>40 <sub>po</sub>i<sub>n</sub>t<sub>s,</sub> res<sub>p</sub>ectivel<sub>y</sub> (Table 8)."
+                    }
+                ]
+            },
+            "bbox": [
+                514,
+                603,
+                915,
+                674
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "5 Limit<sub>a</sub>ti<sub>o</sub>n<sub>s</sub>"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                648,
+                688,
+                782,
+                703
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "A <sub>s</sub>i<sub>ng</sub>l<sub>e groun</sub>di<sub>ng crea</sub>t<sub>es one po</sub>i<sub>n</sub>t <sub>o</sub>f f<sub>a</sub>il<sub>ure</sub> b<sub>ecause an</sub> i<sub>ncorrec</sub>t <sub>see</sub>d <sub>propaga</sub>t<sub>es</sub> th<sub>roug</sub>h lift<sub>,</sub> t<sub>rac</sub>ki<sub>ng, an</sub>d <sub>re</sub>fi<sub>ne-</sub> <sub>men</sub>t<sub>.</sub> S<sub>evere</sub> <sub>occ</sub>l<sub>us</sub>i<sub>on,</sub> <sub>same-c</sub>l<sub>ass</sub> i<sub>ns</sub>t<sub>ances,</sub> <sub>or</sub> <sub>comp</sub>l<sub>ex</sub> references can still defeat QD-SAM3. The 230-run sweep <sub>covers</sub> f<sub>avora</sub>bl<sub>e re</sub>f<sub>erences, no</sub>t <sub>ar</sub>bit<sub>rary v</sub>i<sub>ews w</sub>h<sub>ere</sub> th<sub>e</sub> t<sub>arge</sub>t <sub>may</sub> b<sub>e</sub> ti<sub>ny,</sub> hidd<sub>en, or a</sub>b<sub>sen</sub>t<sub>.</sub> Vi<sub>r</sub>t<sub>ua</sub>l <sub>v</sub>i<sub>ews can-</sub> <sub>no</sub>t <sub>recover m</sub>i<sub>ss</sub>i<sub>ng geome</sub>t<sub>ry, an</sub>d l<sub>arge v</sub>i<sub>ewpo</sub>i<sub>n</sub>t <sub>c</sub>h<sub>anges</sub> <sub>can</sub> <sub>cause</sub> t<sub>rac</sub>ki<sub>ng</sub> d<sub>r</sub>ift<sub>.</sub> M<sub>u</sub>lti<sub>-re</sub>f<sub>erence</sub> i<sub>n</sub>iti<sub>a</sub>li<sub>za</sub>ti<sub>on</sub> <sub>an</sub>d <sub>uncer</sub>t<sub>a</sub>i<sub>n</sub>t<sub>y-aware</sub> <sub>propaga</sub>ti<sub>on</sub> <sub>cou</sub>ld <sub>a</sub>dd<sub>ress</sub> th<sub>ese</sub> f<sub>a</sub>il<sub>ures.</sub> B<sub>ecause</sub> th<sub>a</sub>t <sub>s</sub>i<sub>ng</sub>l<sub>e groun</sub>di<sub>ng</sub> i<sub>s</sub> d<sub>e</sub>l<sub>ega</sub>t<sub>e</sub>d t<sub>o o</sub>f<sub>-</sub>th<sub>e-s</sub>h<sub>e</sub>lf <sub>recogn</sub>iti<sub>on we</sub>i<sub>g</sub>ht<sub>s,</sub> S<sub>eed</sub>2GS <sub>a</sub>l<sub>so</sub> i<sub>n</sub>h<sub>er</sub>it<sub>s w</sub>h<sub>a</sub>t<sub>ever</sub> th<sub>ose</sub> <sub>we</sub>i<sub>g</sub>ht<sub>s</sub> <sub>enco</sub>d<sub>e:</sub> <sub>a</sub> <sub>corrup</sub>t<sub>e</sub>d b<sub>ac</sub>kb<sub>one</sub> <sub>can</sub> <sub>respon</sub>d t<sub>o</sub> t<sub>r</sub>i<sub>g-</sub> <sub>gers</sub> th<sub>a</sub>t <sub>s</sub>t<sub>ay</sub> i<sub>nv</sub>i<sub>s</sub>ibl<sub>e</sub> i<sub>n</sub> b<sub>o</sub>th th<sub>e</sub> <sub>spa</sub>ti<sub>a</sub>l <sub>an</sub>d f<sub>requency</sub> domains (Gao et al. 2024a), and screenin<sub>g</sub> a released check-<sub>po</sub>i<sub>n</sub>t f<sub>or suc</sub>h b<sub>e</sub>h<sub>av</sub>i<sub>or requ</sub>i<sub>res</sub> d<sub>e</sub>di<sub>ca</sub>t<sub>e</sub>d <sub>proce</sub>d<sub>ures ra</sub>th<sub>er</sub> than clean-in<sub>p</sub>ut accurac<sub>y</sub> (Gao et al. 2024b). We assume a t<sub>rus</sub>t<sub>e</sub>d d<sub>e</sub>t<sub>ec</sub>t<sub>or an</sub>d d<sub>o no</sub>t <sub>au</sub>dit it<sub>.</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                514,
+                708,
+                916,
+                891
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                81,
+                69,
+                480,
+                126
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "6 C<sub>o</sub>n<sub>c</sub>l<sub>us</sub>i<sub>o</sub>n"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                215,
+                140,
+                346,
+                156
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "S<sub>eed</sub>2GS <sub>groun</sub>d<sub>s</sub> id<sub>en</sub>tit<sub>y once, co</sub>ll<sub>ec</sub>t<sub>s coverage</sub> th<sub>roug</sub>h t<sub>rac</sub>ki<sub>ng, an</sub>d fit<sub>s one</sub> t<sub>emporary</sub> f<sub>oregroun</sub>d l<sub>og</sub>it <sub>per</sub> G<sub>aus-</sub> <sub>s</sub>i<sub>an</sub> th<sub>roug</sub>h fi<sub>xe</sub>d <sub>ras</sub>t<sub>er</sub>i<sub>za</sub>ti<sub>on.</sub> Th<sub>e me</sub>th<sub>o</sub>d <sub>reac</sub>h<sub>es</sub> 92<sub>.</sub>1% mI<sub>o</sub>U in 9<sub>.</sub>3 <sub>seco</sub>nd<sub>s o</sub>n LERF<sub>-</sub>MASK <sub>a</sub>nd 95<sub>.</sub>7% <sub>o</sub>n 3D<sub>-</sub> OVS <sub>w</sub>ith<sub>ou</sub>t <sub>recons</sub>t<sub>ruc</sub>ti<sub>on cameras or scene-spec</sub>ifi<sub>c repre-</sub> <sub>sen</sub>t<sub>a</sub>ti<sub>on</sub> t<sub>ra</sub>i<sub>n</sub>i<sub>ng.</sub> Th<sub>e ex</sub>t<sub>rac</sub>t<sub>e</sub>d <sub>su</sub>b<sub>se</sub>t <sub>can</sub> b<sub>e</sub> di<sub>rec</sub>tl<sub>y</sub> t<sub>rans-</sub> f<sub>orme</sub>d<sub>, remove</sub>d<sub>,</sub> d<sub>up</sub>li<sub>ca</sub>t<sub>e</sub>d<sub>, or reco</sub>l<sub>ore</sub>d <sub>w</sub>hil<sub>e</sub> th<sub>e or</sub>i<sub>g</sub>i<sub>na</sub>l <sub>asse</sub>t <sub>rema</sub>i<sub>ns unc</sub>h<sub>ange</sub>d<sub>.</sub> Th<sub>us promp</sub>t <sub>seman</sub>ti<sub>cs nee</sub>d <sub>no</sub>t b<sub>e s</sub>t<sub>ore</sub>d i<sub>n</sub> th<sub>e scene or recompu</sub>t<sub>e</sub>d <sub>across v</sub>i<sub>ews.</sub>"
+                    }
+                ]
+            },
+            "bbox": [
+                81,
+                162,
+                480,
+                290
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "R<sub>e</sub>f<sub>erences</sub>"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                233,
+                303,
+                330,
+                318
+            ]
+        },
+        {
+            "type": "list",
+            "content": {
+                "list_type": "reference_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "B<sub>a</sub>i<sub>,</sub> S<sub>.;</sub> C<sub>a</sub>i<sub>,</sub> Y<sub>.;</sub> Ch<sub>e</sub>n<sub>,</sub> R<sub>.;</sub> Ch<sub>e</sub>n<sub>,</sub> K<sub>.;</sub> Ch<sub>e</sub>n<sub>,</sub> X<sub>.;</sub> Ch<sub>e</sub>n<sub>g,</sub> Z<sub>.;</sub> D<sub>e</sub>n<sub>g,</sub>L.; Din<sub>g</sub>, W.; Gao, C.; Ge, C.; Ge, W.; Guo, Z.; Huan<sub>g</sub>, Q.; Huan<sub>g</sub>,J<sub>.;</sub> H<sub>uang,</sub> F<sub>.;</sub> H<sub>u</sub>i<sub>,</sub> B<sub>.;</sub> Ji<sub>ang,</sub> S<sub>.;</sub> Li<sub>,</sub> Z<sub>.;</sub> Li<sub>,</sub> M<sub>.;</sub> Li<sub>,</sub> M<sub>.;</sub> Li<sub>,</sub> K<sub>.;</sub> Li<sub>n,</sub>Z<sub>.;</sub> Li<sub>n,</sub> J<sub>.;</sub> Li<sub>u,</sub> X<sub>.;</sub> Li<sub>u,</sub> J<sub>.;</sub> Li<sub>u,</sub> C<sub>.;</sub> Li<sub>u,</sub> Y<sub>.;</sub> Li<sub>u,</sub> D<sub>.;</sub> Li<sub>u,</sub> S<sub>.;</sub> L<sub>u,</sub>D<sub>.;</sub> L<sub>uo,</sub> R<sub>.;</sub> L<sub>v,</sub> C<sub>.;</sub> M<sub>en,</sub> R<sub>.;</sub> M<sub>eng,</sub> L<sub>.;</sub> R<sub>en,</sub> X<sub>.;</sub> R<sub>en,</sub> X<sub>.;</sub> S<sub>ong,</sub>S.; Sun, Y.; Tan<sub>g</sub>, J.; Tu, J.; Wan, J.; Wan<sub>g</sub>, P.; Wan<sub>g</sub>, P.; Wan<sub>g</sub>, Q.;W<sub>ang,</sub> Y<sub>.;</sub> Xi<sub>e,</sub> T<sub>.;</sub> X<sub>u,</sub> Y<sub>.;</sub> X<sub>u,</sub> H<sub>.;</sub> X<sub>u,</sub> J<sub>.;</sub> Y<sub>ang,</sub> Z<sub>.;</sub> Y<sub>ang,</sub> M<sub>.;</sub> Y<sub>ang,</sub>J<sub>.;</sub> Y<sub>ang,</sub> A<sub>.;</sub> Y<sub>u,</sub> B<sub>.;</sub> Zh<sub>ang,</sub> F<sub>.;</sub> Zh<sub>ang,</sub> H<sub>.;</sub> Zh<sub>ang,</sub> X<sub>.;</sub> Zh<sub>eng,</sub> B<sub>.;</sub>Zh<sub>o</sub>n<sub>g,</sub> H<sub>.;</sub> Zh<sub>ou,</sub> J<sub>.;</sub> Zh<sub>ou,</sub> F<sub>.;</sub> Zh<sub>ou,</sub> J<sub>.;</sub> Zh<sub>u,</sub> Y<sub>.; a</sub>nd Zh<sub>u,</sub> K<sub>.</sub> 2025<sub>.</sub>Qwen3-VL Technical Report. arXiv preprint arXiv:2511.21631."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "C<sub>a</sub>ri<sub>o</sub>n<sub>,</sub> N<sub>.;</sub> G<sub>us</sub>t<sub>a</sub>f<sub>so</sub>n<sub>,</sub> L<sub>.;</sub> H<sub>u,</sub> Y<sub>.-</sub>T<sub>.;</sub> D<sub>e</sub>bn<sub>a</sub>th<sub>,</sub> S<sub>.;</sub> H<sub>u,</sub> R<sub>.;</sub> S<sub>u</sub>ri<sub>s,</sub> D<sub>.;</sub> R<sub>ya</sub>li<sub>,</sub> C<sub>.;</sub> Al<sub>wa</sub>l<sub>a,</sub> K<sub>.</sub> V<sub>.;</sub> Kh<sub>e</sub>dr<sub>,</sub> H<sub>.;</sub> H<sub>ua</sub>n<sub>g,</sub> A<sub>.;</sub> L<sub>e</sub>i<sub>,</sub> J<sub>.;</sub> M<sub>a,</sub> T<sub>.;</sub> G<sub>uo,</sub> B<sub>.;</sub> K<sub>a</sub>ll<sub>a,</sub> A<sub>.;</sub> M<sub>ar</sub>k<sub>s,</sub> M<sub>.;</sub> G<sub>reer,</sub> J<sub>.;</sub> W<sub>ang,</sub> M<sub>.;</sub> S<sub>un,</sub> P<sub>.;</sub> Rädl<sub>e,</sub> R<sub>.;</sub> Af<sub>ouras,</sub> T<sub>.;</sub> M<sub>avrou</sub>di<sub>,</sub> E<sub>.;</sub> X<sub>u,</sub> K<sub>.;</sub> W<sub>u,</sub> T<sub>.-</sub>H<sub>.;</sub> Zh<sub>ou,</sub> Y<sub>.;</sub> M<sub>omen</sub>i<sub>,</sub> L<sub>.;</sub> H<sub>azra,</sub> R<sub>.;</sub> Di<sub>ng,</sub> S<sub>.;</sub> V<sub>aze,</sub> S<sub>.;</sub> P<sub>orc</sub>h<sub>er,</sub> F<sub>.;</sub> Li<sub>,</sub> F<sub>.;</sub> Li<sub>,</sub> S<sub>.;</sub> K<sub>ama</sub>th<sub>,</sub> A<sub>.;</sub> Ch<sub>e</sub>n<sub>g,</sub> H<sub>.</sub> K<sub>.;</sub> D<sub>o</sub>llár<sub>,</sub> P<sub>.;</sub> R<sub>av</sub>i<sub>,</sub> N<sub>.;</sub> S<sub>ae</sub>nk<sub>o,</sub> K<sub>.;</sub> Zh<sub>a</sub>n<sub>g,</sub> P<sub>.; a</sub>nd F<sub>e</sub>i<sub>c</sub>ht<sub>en</sub>h<sub>o</sub>f<sub>er,</sub> C<sub>.</sub> 2025<sub>.</sub> SAM 3<sub>:</sub> S<sub>egmen</sub>t A<sub>ny</sub>thi<sub>ng w</sub>ith C<sub>oncep</sub>t<sub>s.</sub> arXiv preprint arXiv:2511.16719."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "C<sub>e</sub>n<sub>,</sub> J<sub>.;</sub> F<sub>a</sub>n<sub>g,</sub> J<sub>.;</sub> Y<sub>a</sub>n<sub>g,</sub> C<sub>.;</sub> Xi<sub>e,</sub> L<sub>.;</sub> Zh<sub>a</sub>n<sub>g,</sub> X<sub>.;</sub> Sh<sub>e</sub>n<sub>,</sub> W<sub>.;</sub> <sub>a</sub>nd Ti<sub>a</sub>n<sub>,</sub> Q. 2025. Segment Any 3D Gaussians. In Proceedings ofthe AAAI Conference on Artificial Intelligence, volume 39, 1971–1979."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "C<sub>e</sub>n<sub>,</sub> J<sub>.;</sub> Zh<sub>ou,</sub> Z<sub>.;</sub> F<sub>a</sub>n<sub>g,</sub> J<sub>.;</sub> Y<sub>a</sub>n<sub>g,</sub> C<sub>.;</sub> Sh<sub>e</sub>n<sub>,</sub> W<sub>.;</sub> Xi<sub>e,</sub> L<sub>.;</sub> Ji<sub>a</sub>n<sub>g,</sub> D.; Zhan<sub>g</sub>, X.; and Tian, Q. 2023. Se<sub>g</sub>ment An<sub>y</sub>thin<sub>g</sub> in 3D with NeRFs. In Advances in Neural Information Processing Systems (NeurIPS)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Ch<sub>ac</sub>k<sub>o,</sub> R<sub>.;</sub> Hä<sub>n</sub>i<sub>,</sub> N<sub>.;</sub> Kh<sub>a</sub>li<sub>u</sub>lli<sub>n,</sub> E<sub>.;</sub> S<sub>un,</sub> L<sub>.; an</sub>d L<sub>ee,</sub> D<sub>.</sub> 2025<sub>.</sub> Lifti<sub>ng</sub> b<sub>y</sub> G<sub>auss</sub>i<sub>ans:</sub> A Si<sub>mp</sub>l<sub>e,</sub> F<sub>as</sub>t <sub>an</sub>d Fl<sub>ex</sub>ibl<sub>e</sub> M<sub>e</sub>th<sub>o</sub>d f<sub>or</sub> 3D Instance Segmentation. In Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision (WACV), 3497– 3507<sub>.</sub>"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "G<sub>ao,</sub> Y<sub>.;</sub> Ch<sub>e</sub>n<sub>,</sub> H<sub>.;</sub> S<sub>u</sub>n<sub>,</sub> P<sub>.;</sub> Li<sub>,</sub> J<sub>.;</sub> Zh<sub>a</sub>n<sub>g,</sub> A<sub>.;</sub> W<sub>a</sub>n<sub>g,</sub> Z<sub>.; a</sub>nd Li<sub>u,</sub> W<sub>.</sub> 2024<sub>a.</sub> A D<sub>ua</sub>l St<sub>ea</sub>lth<sub>y</sub> B<sub>ac</sub>kd<sub>oor:</sub> F<sub>rom</sub> B<sub>o</sub>th S<sub>pa</sub>ti<sub>a</sub>l <sub>an</sub>d Frequency Perspectives. In Proceedings ofthe AAAI Conference on Artificial Intelligence, volume 38, 1851–1859."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "G<sub>ao,</sub> Y<sub>.;</sub> Ch<sub>en,</sub> H<sub>.;</sub> S<sub>un,</sub> P<sub>.;</sub> Li<sub>,</sub> Z<sub>.;</sub> Li<sub>,</sub> J<sub>.;</sub> <sub>an</sub>d Sh<sub>ao,</sub> H<sub>.</sub> 2024b<sub>.</sub> E<sub>nergy-</sub> b<sub>ase</sub>d B<sub>ac</sub>kd<sub>oor</sub> D<sub>e</sub>f<sub>ense w</sub>ith<sub>ou</sub>t T<sub>as</sub>k<sub>-</sub>S<sub>pec</sub>ifi<sub>c</sub> S<sub>amp</sub>l<sub>es an</sub>d M<sub>o</sub>d<sub>e</sub>l Retraining. In Proceedings ofthe 41st International Conference on Machine Learning (ICML), 14611–14637."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Ji<sub>,</sub> Y<sub>.;</sub> Zh<sub>u,</sub> H<sub>.;</sub> T<sub>ang,</sub> J<sub>.;</sub> Li<sub>u,</sub> W<sub>.;</sub> Zh<sub>ang,</sub> Z<sub>.;</sub> T<sub>an,</sub> X<sub>.; an</sub>d Xi<sub>e,</sub> Y<sub>.</sub> 2025<sub>.</sub> F<sub>as</sub>tLGS<sub>:</sub> S<sub>pee</sub>din<sub>g</sub> <sub>up</sub> L<sub>a</sub>n<sub>guage</sub> Emb<sub>e</sub>dd<sub>e</sub>d G<sub>auss</sub>i<sub>a</sub>n<sub>s</sub> <sub>w</sub>ith Feature Grid Mapping. In Proceedings ofthe AAAI Conference on Artificial Intelligence, volume 39, 3922–3930."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "K<sub>ama</sub>t<sub>a,</sub> H<sub>.;</sub> M<sub>unro,</sub> S<sub>.</sub> A<sub>.;</sub> <sub>an</sub>d H<sub>omma,</sub> F<sub>.</sub> 2026<sub>.</sub> B<sup>3</sup><sub>-</sub>S<sub>eg:</sub> C<sub>amera-</sub> Fr<sub>ee,</sub> Tr<sub>a</sub>inin<sub>g-</sub>Fr<sub>ee</sub> 3DGS S<sub>eg</sub>m<sub>e</sub>nt<sub>a</sub>ti<sub>o</sub>n <sub>v</sub>i<sub>a</sub> An<sub>a</sub>l<sub>y</sub>ti<sub>c</sub> EIG <sub>a</sub>nd Beta-Bernoulli Bayesian Updates. In Proceedings ofthe IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 26867<sub>–</sub>26876<sub>.</sub>"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "K<sub>e</sub>rbl<sub>,</sub> B<sub>.;</sub> K<sub>opa</sub>n<sub>as,</sub> G<sub>.;</sub> L<sub>e</sub>imkühl<sub>e</sub>r<sub>,</sub> T<sub>.; a</sub>nd Dr<sub>e</sub>tt<sub>a</sub>ki<sub>s,</sub> G<sub>.</sub> 2023<sub>.</sub> 3D Gaussian Splatting for Real-Time Radiance Field Rendering. ACM Transactions on Graphics, 42(4): 1–14."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "K<sub>e</sub>rr<sub>,</sub> J<sub>.;</sub> Kim<sub>,</sub> C<sub>.</sub> M<sub>.;</sub> G<sub>o</sub>ldb<sub>e</sub>r<sub>g,</sub> K<sub>.;</sub> K<sub>a</sub>n<sub>azawa,</sub> A<sub>.; a</sub>nd T<sub>a</sub>n<sub>c</sub>ik<sub>,</sub> M<sub>.</sub> 2023. LERF: Language Embedded Radiance Fields. In Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV), 19729–19739."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Li<sub>u,</sub> K<sub>.;</sub> Zh<sub>a</sub>n<sub>,</sub> F<sub>.;</sub> Zh<sub>a</sub>n<sub>g,</sub> J<sub>.;</sub> X<sub>u,</sub> M<sub>.;</sub> Y<sub>u,</sub> Y<sub>.;</sub> S<sub>a</sub>ddik<sub>,</sub> A<sub>.</sub> E<sub>.;</sub> Th<sub>eo</sub>b<sub>a</sub>lt<sub>,</sub> C<sub>.;</sub> Xin<sub>g,</sub> E<sub>.; a</sub>nd L<sub>u,</sub> S<sub>.</sub> 2023<sub>.</sub> W<sub>ea</sub>kl<sub>y</sub> S<sub>upe</sub>r<sub>v</sub>i<sub>se</sub>d 3D O<sub>pe</sub>n<sub>-</sub> vocabulary Segmentation. In Advances in Neural Information Processing Systems (NeurIPS)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Liu, S.; Zen<sub>g</sub>, Z.; Ren, T.; Li, F.; Zhan<sub>g</sub>, H.; Yan<sub>g</sub>, J.; Jian<sub>g</sub>, Q.; Li<sub>,</sub> C<sub>.;</sub> Y<sub>a</sub>n<sub>g,</sub> J<sub>.;</sub> S<sub>u,</sub> H<sub>.;</sub> Zh<sub>u,</sub> J<sub>.;</sub> <sub>a</sub>nd Zh<sub>a</sub>n<sub>g,</sub> L<sub>.</sub> 2024<sub>.</sub> Gr<sub>ou</sub>ndin<sub>g</sub> DINO<sub>:</sub> M<sub>a</sub>rr<sub>y</sub>in<sub>g</sub> DINO <sub>w</sub>ith Gr<sub>ou</sub>nd<sub>e</sub>d Pr<sub>e-</sub>Tr<sub>a</sub>inin<sub>g</sub> f<sub>o</sub>r O<sub>pe</sub>n<sub>-</sub>S<sub>e</sub>t Object Detection. In Proceedings of the European Conference on Computer Vision (ECCV), 38–55."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "L<sub>yu,</sub> W<sub>.;</sub> Li<sub>,</sub> X<sub>.;</sub> K<sub>un</sub>d<sub>u,</sub> A<sub>.;</sub> T<sub>sa</sub>i<sub>,</sub> Y<sub>.-</sub>H<sub>.; an</sub>d Y<sub>ang,</sub> M<sub>.-</sub>H<sub>.</sub> 2026<sub>.</sub> Gaga: Group Any Gaussians via 3D-aware Memory Bank. Transactions on Machine Learning Research (TMLR)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Pi<sub>e</sub>k<sub>en</sub>b<sub>r</sub>i<sub>nc</sub>k<sub>,</sub> J<sub>.;</sub> S<sub>c</sub>h<sub>m</sub>idt<sub>,</sub> C<sub>.;</sub> H<sub>ermans,</sub> A<sub>.;</sub> V<sub>as</sub>k<sub>ev</sub>i<sub>c</sub>i<sub>us,</sub> N<sub>.;</sub> Li<sub>n-</sub> d<sub>e</sub>r<sub>,</sub> T<sub>.; a</sub>nd L<sub>e</sub>ib<sub>e,</sub> B<sub>.</sub> 2025<sub>.</sub> O<sub>pe</sub>nS<sub>p</sub>l<sub>a</sub>t3D<sub>:</sub> O<sub>pe</sub>n<sub>-</sub>V<sub>oca</sub>b<sub>u</sub>l<sub>a</sub>r<sub>y</sub> 3D Instance Segmentation using Gaussian Splatting. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition Workshops (CVPRW), 5285–5294."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Qin, M.; Li, W.; Zhou, J.; Wan<sub>g</sub>, H.; and Pfister, H. 2024. Lan<sub>g</sub>Splat: 3D Language Gaussian Splatting. In Proceedings ofthe IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 20051<sub>–</sub>20060<sub>.</sub>"
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "R<sub>av</sub>i<sub>,</sub> N<sub>.;</sub> G<sub>a</sub>b<sub>eur,</sub> V<sub>.;</sub> H<sub>u,</sub> Y<sub>.-</sub>T<sub>.;</sub> H<sub>u,</sub> R<sub>.;</sub> R<sub>ya</sub>li<sub>,</sub> C<sub>.;</sub> M<sub>a,</sub> T<sub>.;</sub> Kh<sub>e</sub>d<sub>r,</sub> H<sub>.;</sub> Rädl<sub>e,</sub> R<sub>.;</sub> R<sub>o</sub>ll<sub>a</sub>nd<sub>,</sub> C<sub>.;</sub> G<sub>us</sub>t<sub>a</sub>f<sub>so</sub>n<sub>,</sub> L<sub>.;</sub> Mint<sub>u</sub>n<sub>,</sub> E<sub>.;</sub> P<sub>a</sub>n<sub>,</sub> J<sub>.;</sub> Al<sub>wa</sub>l<sub>a,</sub> K<sub>.</sub> V<sub>.;</sub> C<sub>a</sub>ri<sub>o</sub>n<sub>,</sub> N<sub>.;</sub> W<sub>u,</sub> C<sub>.-</sub>Y<sub>.;</sub> Gir<sub>s</sub>hi<sub>c</sub>k<sub>,</sub> R<sub>.;</sub> D<sub>o</sub>llár<sub>,</sub> P<sub>.; a</sub>nd F<sub>e</sub>i<sub>c</sub>ht<sub>e</sub>n<sub>-</sub> h<sub>o</sub>f<sub>er,</sub> C<sub>.</sub> 2024<sub>.</sub> SAM 2<sub>:</sub> S<sub>egmen</sub>t A<sub>ny</sub>thi<sub>ng</sub> i<sub>n</sub> I<sub>mages an</sub>d Vid<sub>eos.</sub> arXiv preprint arXiv:2408.00714."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Shen, Q.; Yan<sub>g</sub>, X.; and Wan<sub>g</sub>, X. 2024. FlashSplat: 2D to 3D Gaussian Splatting Segmentation Solved Optimally. In Proceedings ofthe European Conference on Computer Vision (ECCV), 456–472."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "W<sub>u,</sub> Y<sub>.;</sub> M<sub>e</sub>n<sub>g,</sub> J<sub>.;</sub> Li<sub>,</sub> H<sub>.;</sub> W<sub>u,</sub> C<sub>.;</sub> Shi<sub>,</sub> Y<sub>.;</sub> Ch<sub>e</sub>n<sub>g,</sub> X<sub>.;</sub> Zh<sub>ao,</sub> C<sub>.;</sub> F<sub>e</sub>n<sub>g,</sub> H<sub>.;</sub> Din<sub>g,</sub> E<sub>.;</sub> W<sub>a</sub>n<sub>g,</sub> J<sub>.;</sub> <sub>a</sub>nd Zh<sub>a</sub>n<sub>g,</sub> J<sub>.</sub> 2024<sub>.</sub> O<sub>pe</sub>nG<sub>auss</sub>i<sub>a</sub>n<sub>:</sub> T<sub>owa</sub>rd<sub>s</sub> P<sub>o</sub>int<sub>-</sub>L<sub>eve</sub>l 3D G<sub>auss</sub>i<sub>a</sub>n<sub>-</sub>B<sub>ase</sub>d O<sub>pe</sub>n V<sub>oca</sub>b<sub>u</sub>l<sub>a</sub>r<sub>y</sub> Und<sub>e</sub>r<sub>s</sub>t<sub>a</sub>ndin<sub>g.</sub> In Advances in Neural Information Processing Systems (NeurIPS)."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Ye, M.; Danelljan, M.; Yu, F.; and Ke, L. 2024. Gaussian Grouping: Segment and Edit Anything in 3D Scenes. In Proceedings of the European Conference on Computer Vision (ECCV), 162–179."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Zhao, Y.; Xu, W.; Zhen<sub>g</sub>, R.; Qiao, P.; Liu, C.; and Chen, J. 2025. iS<sub>eg</sub>M<sub>a</sub>n<sub>:</sub> Int<sub>e</sub>r<sub>ac</sub>ti<sub>ve</sub> S<sub>eg</sub>m<sub>e</sub>nt<sub>-a</sub>nd<sub>-</sub>M<sub>a</sub>ni<sub>pu</sub>l<sub>a</sub>t<sub>e</sub> 3D G<sub>auss</sub>i<sub>a</sub>n<sub>s.</sub> In Proceedings ofthe IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 661–670."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Zhu, R.; Qiu, S.; Liu, Z.; Hui, K.-H.; Wu, Q.; Hen<sub>g</sub>, P.-A.; and Fu, C<sub>.-</sub>W<sub>.</sub> 2025<sub>a.</sub> R<sub>e</sub>thinkin<sub>g</sub> End<sub>-</sub>t<sub>o-</sub>End 2D t<sub>o</sub> 3D S<sub>ce</sub>n<sub>e</sub> S<sub>eg</sub>m<sub>e</sub>nt<sub>a</sub>ti<sub>o</sub>n in Gaussian Splatting. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR), 3656–3665."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Zh<sub>u,</sub> R<sub>.;</sub> Y<sub>u,</sub> M<sub>.;</sub> X<sub>u,</sub> L<sub>.;</sub> Ji<sub>ang,</sub> L<sub>.;</sub> Li<sub>,</sub> Y<sub>.;</sub> Zh<sub>ang,</sub> T<sub>.;</sub> P<sub>ang,</sub> J<sub>.; an</sub>d Dai, B. 2025b. ObjectGS: Object-aware Scene Reconstruction and Scene Understanding via Gaussian Splatting. In Proceedings ofthe IEEE/CVF International Conference on Computer Vision (ICCV), 8350<sub>–</sub>8360<sub>.</sub>"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                83,
+                324,
+                478,
+                450
+            ]
+        }
+    ]
+]
