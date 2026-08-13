@@ -1,0 +1,3792 @@
+[
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "Can Vision Models Read the Radar Display? On the Feasibility of Radar Imagery for Air Trafic Complexity Estimation"
+                    }
+                ],
+                "level": 1
+            },
+            "bbox": [
+                66,
+                66,
+                911,
+                122
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Hyewook Kim<sup>a</sup>, Byul Kang<sup>b</sup>, Seokbin Yoon<sup>b</sup> and Keumjin Lee<sup>b,∗</sup>"
+                    }
+                ]
+            },
+            "bbox": [
+                66,
+                137,
+                661,
+                157
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "<sup>a</sup>Korea Aerospace Research Institute, 169-84, Gwahak-ro, Yuseong-gu, Daejeon, 34133, Republic of Korea"
+                    }
+                ]
+            },
+            "bbox": [
+                66,
+                169,
+                704,
+                184
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "<sup>b</sup>Korea Aerospace University, 76-10, Hanggongdaehak-ro, Deogyang-gu, Goyang, 10540, Republic of Korea"
+                    }
+                ]
+            },
+            "bbox": [
+                66,
+                185,
+                713,
+                200
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "A R T I C L E I N F O"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                66,
+                219,
+                229,
+                234
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Keywords: Air Trafic Complexity Radar Screen Image Deep Learning Vision Transformer"
+                    }
+                ]
+            },
+            "bbox": [
+                66,
+                246,
+                207,
+                311
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "A BS T R AC T"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                367,
+                221,
+                490,
+                237
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Air trafic controllers perceive trafic complexity through the radar display, suggesting that a computer vision model operating on the same imagery may provide a natural architecture for modeling controller-perceived complexity; however, whether radar imagery is a viable input format for deep learning vision models remains unclear. Unlike natural images, radar images are extremely sparse and self-similar, consisting primarily of a black background and a few visually identical aircraft blobs, while small changes in aircraft positions can substantially alter sector-level complexity. To test whether a vision model can capture these operationally important diferences, we encode each trafic situation as a position image supplemented by five channels representing aircraft state variables, including heading, speed, and altitude, and train a Vision Transformer (ViT) to regress four intrinsic complexity components derived from pairwise geometric relations among aircraft. The model achieves �<sup>2</sup> > 0.96 for all four components, and a one-aircraft-removal perturbation study shows that its response changes proportionally to how much the removed aircraft contributed to sector complexity rather than treating every removal as equivalent. These results demonstrate that, despite its atypical visual characteristics, radar imagery is a viable input format for air trafic complexity modeling."
+                    }
+                ]
+            },
+            "bbox": [
+                365,
+                246,
+                931,
+                440
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "1. Introduction"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                68,
+                489,
+                220,
+                506
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Air trafic complexity refers to the dificulty of managing a given trafic situation within controlled airspace. Controllers assess this dificulty by interpreting the radar display: they read each aircraft’s position and motion relative to the surrounding trafic and anticipate how the pattern of interactions—converging pairs, tightening clusters, narrowing separation margins—will evolve in the near term. Studies of controller behavior confirm this picture: controllers process trafic as a spatial pattern rather than as isolated aircraft states (Chatterji and Sridhar, 1999), relying on trafic flow patterns, aircraft groupings, and critical convergence points (Histon, Hansman, Aigoin, Delahaye, and Puechmorel, 2002). Because the radar display is the primary medium through which controllers perceive trafic, we hypothesize that a computer vision provides a natural framework for modeling, and ultimately emulating, controllerperceived complexity by using the same radar imagery available to the controller. This hypothesis motivates the present work. Before investigating it directly, however, we first ask whether radar imagery itself is an appropriate representation for modeling air trafic complexity."
+                    }
+                ]
+            },
+            "bbox": [
+                66,
+                512,
+                931,
+                690
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Existing complexity models estimate air trafic complexity from handcrafted numerical descriptors of the trafic situation rather than directly from the radar display. For instance, The Dynamic Density framework (Chatterji and Sridhar, 2001; Laudeman, Shelden, Branstrom, and Brasil, 1998; Wyndemere, 1996; Kopardekar, Schwartz, Magyarits, and Rhodes, 2009; Kopardekar and Magyarits, 2002) summarizes radar tracks into counts of interacting pairs and maneuvering aircraft, combined into a complexity estimate through weighted sums or other forms of regression model. Similarly, Gianazza (2010) selects a reduced set of complexity metrics via principal component analysis, Cao, Zhu, Tian, Chen, Wu, and Du (2018) classify sector trafic scenarios into low, normal, and high complexity levels from a pool of 28 handcrafted factors. Lee, Feron, and Pritchett (2007) define complexity as the heading-change cost of integrating a new aircraft into conflict-resolved trafic, and graph neural network methods such as Li, Li, Chen, Yan, Lv, and Du (2024) model the airspace as a sector graph whose node features consist of handcrafted complexity factors. Notably, Manning and Pfleiderer (2006) showed that a composite of such factors ofered little improvement over aircraft count alone, suggesting that reducing the trafic situation to handcrafted descriptors inevitably discards information relevant to complexity."
+                    }
+                ]
+            },
+            "bbox": [
+                66,
+                690,
+                931,
+                836
+            ]
+        },
+        {
+            "type": "page_aside_text",
+            "content": {
+                "page_aside_text_content": [
+                    {
+                        "type": "text",
+                        "content": "arXiv:2608.11810v1 [cs.CV] 12 Aug 2026"
+                    }
+                ]
+            },
+            "bbox": [
+                33,
+                342,
+                69,
+                820
+            ]
+        },
+        {
+            "type": "page_footnote",
+            "content": {
+                "page_footnote_content": [
+                    {
+                        "type": "text",
+                        "content": "<sup>⋆</sup> This work is supported by the Korea Agency for Infrastructure Technology Advancement (KAIA) grant funded by the Ministry of Land, Infrastructure and Transport (Grant RS-2021-KA163373 and RS-2022-00156364)."
+                    }
+                ]
+            },
+            "bbox": [
+                64,
+                845,
+                930,
+                871
+            ]
+        },
+        {
+            "type": "page_footnote",
+            "content": {
+                "page_footnote_content": [
+                    {
+                        "type": "text",
+                        "content": "<sup>∗</sup>Corresponding author"
+                    }
+                ]
+            },
+            "bbox": [
+                93,
+                871,
+                237,
+                885
+            ]
+        },
+        {
+            "type": "page_footnote",
+            "content": {
+                "page_footnote_content": [
+                    {
+                        "type": "text",
+                        "content": "hyewookkim@kari.re.kr (H. Kim); star1012@kau.kr (B. Kang); sierra.bin@kau.ac.kr (S. Yoon); keumjin.lee@kau.ac.kr (K. Lee)"
+                    }
+                ]
+            },
+            "bbox": [
+                64,
+                885,
+                928,
+                912
+            ]
+        },
+        {
+            "type": "page_footnote",
+            "content": {
+                "page_footnote_content": [
+                    {
+                        "type": "text",
+                        "content": "ORCID(s): 0000-0001-7511-2910 (H. Kim); 0009-0005-8956-6661 (B. Kang); 0009-0006-4431-6746 (S. Yoon)"
+                    }
+                ]
+            },
+            "bbox": [
+                97,
+                911,
+                806,
+                924
+            ]
+        },
+        {
+            "type": "page_footer",
+            "content": {
+                "page_footer_content": [
+                    {
+                        "type": "text",
+                        "content": "H. Kim et al.: Preprint submitted to Elsevier"
+                    }
+                ]
+            },
+            "bbox": [
+                66,
+                948,
+                376,
+                963
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "Page 1 of 12"
+                    }
+                ]
+            },
+            "bbox": [
+                834,
+                947,
+                930,
+                963
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                64,
+                72,
+                931,
+                137
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Another line of work retains the image itself. Chatterji and Sridhar (1999) proposed viewing the trafic pattern as an image, in which each aircraft is a pixel and its kinematic variables are the gray-level intensities. Their model, however, ultimately relied on numerical features extracted from the trafic pattern rather than on the image itself. More recently, Xie, Zhang, Ge, Dong, and Chen (2021) demonstrated that a convolutional neural network (CNN) trained directly on trafic images can outperform handcrafted-feature baselines. Their evaluation, however, was limited to classifying trafic situations into five coarse complexity levels, and the channels of their constructed images encode hand-designed derived quantities, so heuristic feature engineering was not fully eliminated. This leaves two questions unexamined. First, prior work does not examine why radar imagery is a challenging input for vision models. In particular, the visual characteristics that distinguish radar imagery from natural images remain undiscussed. Second, it remains untested whether the model’s estimate responds appropriately to small but operationally significant changes in the radar image, such as when a single aircraft moves or leaves the sector, a property that coarse classification accuracy alone cannot reveal."
+                    }
+                ]
+            },
+            "bbox": [
+                62,
+                137,
+                931,
+                330
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Whether radar imagery is a suitable input format for deep learning vision models is, in fact, an open question. Modern computer vision—classification, object detection and segmentation, image generation—has been developed and validated primarily on natural images, in which the visual evidence distinguishing one class from another is abundant: a cat difers from a dog in texture, color, contour, and shape, distributed over most of the image. Radar imagery, by contrast, ofers no such abundance, as illustrated in Figure 1. Instead, it exhibits two characteristics that fundamentally distinguish it from natural images:"
+                    }
+                ]
+            },
+            "bbox": [
+                62,
+                331,
+                933,
+                429
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• (C1) Extreme sparsity and self-similarity. A radar image consists of a nearly uniform black background populated by a small number of visually identical aircraft blobs, making diferent radar images highly similar in appearance. Figures 1c and 1d contain the same number of aircraft located at diferent positions within the same sector, yet represent diferent trafic situations: in the former, all aircraft fly with suficient separation, whereas in the latter, three closely spaced aircraft converge toward the route-merging fix, requiring controller intervention to restore safe separation. Despite this semantic diference, the two images difer in only 1.05% of their pixels—confined to a few white blobs—whereas the cat and dog images in Figures 1a and 1b difer in 99.66% of their pixels."
+                    }
+                ]
+            },
+            "bbox": [
+                91,
+                440,
+                933,
+                571
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "• (C2) High sensitivity of the complexity to few-pixel changes. The mapping from radar imagery to air trafic complexity is highly sensitive: displacing, adding, or removing a single aircraft can substantially change sectorlevel complexity. A domain expert (e.g., an air trafic controller) reads such diferences of the display without dificulty, but modern vision models are deliberately designed to be invariant to small pixel perturbations through augmentation, pooling, and translation-robust design. This task requires the opposite behavior: the few pixels that a robust model is trained to ignore are the ones that carry the complexity signal."
+                    }
+                ]
+            },
+            "bbox": [
+                93,
+                579,
+                933,
+                679
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/10620107df4b95033b2bc8dbe3523cb9a493d23f676dd25e2b36f4bda67967aa.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "(a) Cat"
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                84,
+                704,
+                275,
+                845
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/aac4a3e5c730e92bcccbfa5129fcb33afce65dd1f1ea41154d5fb494c8862761.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "(b) Dog"
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                297,
+                704,
+                488,
+                845
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/a644e66b6e0f79b1509f5fbecbb9d4546047d2c708a1d9a50a939e52aba9a230.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "(c) Radar image A"
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                509,
+                703,
+                700,
+                845
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/a0c9aedb7f1cf2eca8719f988bd736326f70e8bd876907ae3fbcd5fba845c551.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "(d) Radar image B"
+                    },
+                    {
+                        "type": "text",
+                        "content": "Figure 1: Natural images versus radar images. The two radar images (c) and (d) follow the standard configuration of a radar display: on a black background, thin white lines trace the fixed route structure, and each aircraft appears as a white blob, with a solid line indicating its heading direction and a dotted line marking its short past trail."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                720,
+                704,
+                911,
+                845
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Can Vision Models Read the Radar Display?"
+                    }
+                ]
+            },
+            "bbox": [
+                338,
+                43,
+                658,
+                59
+            ]
+        },
+        {
+            "type": "page_footer",
+            "content": {
+                "page_footer_content": [
+                    {
+                        "type": "text",
+                        "content": "H. Kim et al.: Preprint submitted to Elsevier"
+                    }
+                ]
+            },
+            "bbox": [
+                66,
+                947,
+                376,
+                962
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "Page 2 of 12"
+                    }
+                ]
+            },
+            "bbox": [
+                836,
+                947,
+                930,
+                962
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "In combination, (C1) and (C2) place radar imagery outside the regime in which the success of deep vision models has been demonstrated. Whether such models can operate reliably under these conditions therefore remains an open question, determining whether radar imagery is a feasible input representation for air trafic complexity modeling at all."
+                    }
+                ]
+            },
+            "bbox": [
+                62,
+                72,
+                931,
+                137
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We address this question through a feasibility study set up as follows. Rather than engineering numerical descriptors from the trafic situation, we preserve the radar image itself as the spatial representation. Specifically, the input consists of the original radar image as the position channel, supplemented by five additional channels that encode each aircraft’s state variables at its image location. No handcrafted features, such as pairwise distances or conflict indicators, are computed (Section 3). A Vision Transformer (ViT) (Dosovitskiy et al., 2021) is trained to regress complexity directly from this representation. Because the extreme sparsity of radar images also afects how attention should be distributed, the encoder applies a diferentiated masking strategy that keeps patch-to-patch attention unrestricted while confining the readout to aircraft-bearing patches (Section 4.4). Reference labels are generated with the intrinsic complexity metric of Delahaye and Puechmorel (2000), which defines complexity through pairwise geometric relations and yields four sector-level components: density, convergence, divergence, and insensitivity to control actions (Section 3.3)."
+                    }
+                ]
+            },
+            "bbox": [
+                62,
+                137,
+                933,
+                299
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The two characteristics motivate the two evaluations. Prediction accuracy on a diverse test set addresses (C1): can the model discriminate among visually sparse and highly similar radar images enough to recover four continuous complexity components? A one-aircraft-removal perturbation study addresses (C2): although removing a single aircraft produces only a minute change in pixel space, the model should respond strongly when the removed aircraft was a major contributor to sector complexity and respond only weakly when the aircraft contributed little."
+                    }
+                ]
+            },
+            "bbox": [
+                64,
+                299,
+                931,
+                380
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "This work makes two contributions:"
+                    }
+                ]
+            },
+            "bbox": [
+                91,
+                380,
+                365,
+                394
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "1. Feasibility of radar imagery as a data format. We identify the two characteristics that set radar imagery apart from natural images: extreme sparsity with near-identical samples (C1) and high sensitivity of the complexity to few-pixel changes (C2). Despite both, we show experimentally that radar imagery is a viable representation for complexity estimation. A ViT regresses four intrinsic complexity components with "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "R ^ { 2 } > 0 . 9 6 ."
+                    },
+                    {
+                        "type": "text",
+                        "content": ", and the model’s response under one-aircraft removal tracks the removed aircraft’s actual contribution to sector complexity rather than its mere presence."
+                    }
+                ]
+            },
+            "bbox": [
+                88,
+                402,
+                931,
+                500
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "2. Diferentiated attention masking. To handle the sparsity of radar imagery, we propose a masking strategy that treats the two levels of attention diferently: patch-to-patch attention is left unmasked, so that empty background patches can carry the spatial relations among aircraft, while each readout query token attends only to aircraftbearing patches, so that the few informative patches are not averaged away among the many empty patches."
+                    }
+                ]
+            },
+            "bbox": [
+                86,
+                501,
+                931,
+                567
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The remainder of this paper formalizes the problem (Section 2), describes data generation and labeling (Section 3), presents the model (Section 4) and experimental design (Section 5), and reports results (Section 6) before concluding (Section 7)."
+                    }
+                ]
+            },
+            "bbox": [
+                64,
+                574,
+                931,
+                622
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "2. Problem Formulation"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                66,
+                645,
+                305,
+                663
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Let "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "X \\in \\mathbb { R } ^ { H \\times W \\times C }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "denote the input tensor defined on a spatial grid of size "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "H \\times W"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". The first channel corresponds to the radar image itself, while the remaining �−1 channels that embed each aircraft’s state variables at the pixel locations that aircraft occupies in the position channel. Let "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "Y \\in \\mathbb { R } ^ { K }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "denote a label vector of � intrinsic complexity components computed from the geometric relations among aircraft at a given instant. We train a model "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "f _ { \\theta } : X \\mapsto { \\hat { Y } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "to minimize a regression loss over the � outputs. The model operates on a single radar frame and receives only this image-based input; no handcrafted complexity descriptors, aircraft counts, or pairwise interaction features are provided."
+                    }
+                ]
+            },
+            "bbox": [
+                62,
+                668,
+                933,
+                768
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3. Data Generation and Labeling"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                66,
+                789,
+                389,
+                808
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.1. Synthetic radar images and simulation setup"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                66,
+                814,
+                498,
+                830
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We generate synthetic radar images using the BlueSky ATM simulator (Hoekstra and Ellerbroek, 2016) rather than real-world flight trajectories. Real trafic is shaped by ATC procedures, separation standards, and controller interventions that suppress rare but complex geometries. Synthetic simulation provides direct control over trafic density, interaction structure, and scenario diversity, enabling systematic evaluation across a wider range of conditions."
+                    }
+                ]
+            },
+            "bbox": [
+                62,
+                831,
+                931,
+                894
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We define three route configurations—single, crossing, and merging—as shown in Figure 2. Each aircraft follows a flight plan specifying its aircraft type, route, cruise speed, and altitude. Each scenario is generated by Monte Carlo sampling: aircraft count (2–10), cruise speed (450–500 kt), altitude (FL300–FL380), and spawn intervals at route entry points are drawn randomly, as are the timing and vertical speed of climbs and descents. The simulated radar display is recorded as a grayscale image "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\boldsymbol { I } \\in \\mathbb { R } ^ { H \\times W }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "covering a 100 × 100 NM sector."
+                    }
+                ]
+            },
+            "bbox": [
+                64,
+                896,
+                931,
+                929
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Can Vision Models Read the Radar Display?"
+                    }
+                ]
+            },
+            "bbox": [
+                338,
+                44,
+                658,
+                59
+            ]
+        },
+        {
+            "type": "page_footer",
+            "content": {
+                "page_footer_content": [
+                    {
+                        "type": "text",
+                        "content": "H. Kim et al.: Preprint submitted to Elsevier"
+                    }
+                ]
+            },
+            "bbox": [
+                66,
+                947,
+                378,
+                962
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "Page 3 of 12"
+                    }
+                ]
+            },
+            "bbox": [
+                834,
+                947,
+                930,
+                962
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                64,
+                72,
+                931,
+                122
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The resulting sim-to-real gap, including the absence of procedural regularities, controller interventions, and environmental variability, is intentional. As this study tests the feasibility of radar imagery as an input representation, a controlled testbed is preferable, because it keeps the result attributable to the trafic geometry itself rather than to operational factors that difer from one airspace to another. Evaluation on real-world data is left for subsequent work."
+                    }
+                ]
+            },
+            "bbox": [
+                62,
+                121,
+                931,
+                187
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/3f9ed6de5414e8118bcccb4b7f364bf7c1e8a4e07a6eefb0168f864cfdd72938.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "(a) Single route"
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                181,
+                198,
+                358,
+                326
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/4d86e0e4861a03c26d263a88fcd0086cef182a04c8d4a28e19cf65024308cb6c.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "(b) Crossing routes"
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                409,
+                198,
+                586,
+                326
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/43f580128fc695bbf9327ceacaf41beffdbebcb79131b1df40589acaf190d495.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "(c) Merging routes"
+                    },
+                    {
+                        "type": "text",
+                        "content": "Figure 2: Route configuration scenarios used in simulation. All configurations feature one-directional trafic flow along each route, as indicated by the green arrows."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                639,
+                198,
+                816,
+                326
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.2. Position image with supplementary state channels"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                66,
+                419,
+                542,
+                436
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Aircraft positions alone are insuficient for inferring trafic complexity, as they omit the kinematic information controllers use to anticipate near-term trajectories and potential conflicts. On operational radar displays, this information appears in the data block associated with each aircraft symbol. We therefore use the radar image � as the position channel "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "X _ { \\mathrm { P O S } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and add five state channels encoding heading, speed, current altitude, requested altitude, and vertical speed, yielding "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "X \\in \\mathbb { R } ^ { H \\times W \\times 6 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ":"
+                    }
+                ]
+            },
+            "bbox": [
+                62,
+                436,
+                931,
+                517
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "X = [ X _ { \\mathrm { P O S } } , X _ { \\mathrm { H D G } } , X _ { \\mathrm { S P D } } , X _ { \\mathrm { A L T } } , X _ { \\mathrm { R A L T } } , X _ { \\mathrm { V S } } ] .\\tag{1}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/3333aacda43cf047b82bbf58886dd1570edec28f2443f4e27de3ee6efdeb0dbf.jpg"
+                }
+            },
+            "bbox": [
+                110,
+                526,
+                488,
+                545
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "In the position channel, routes are rendered as white line segments and aircraft as small white blobs with pixel value 255 on a black background with value 0, directly encoding both route configuration and aircraft positions. The five state channels are sparse arrays rather than visual images: each aircraft’s state value is assigned to the pixels occupied by its blob in the position channel, as illustrated in Figure 3. This spatial alignment allows the model to process positiona and kinematic information jointly. Let "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "B _ { i }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "denote the blob pixels of aircraft �; for example, the speed channel is defined by "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( X _ { \\mathrm { S P D } } ) _ { p _ { x } , p _ { y } } = s _ { i }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "for all "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( p _ { x } , p _ { y } ) \\in B _ { i }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "s _ { i }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is the aircraft’s speed."
+                    }
+                ]
+            },
+            "bbox": [
+                64,
+                552,
+                931,
+                653
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/fc6bba76bf38a152f8bebea06b5f2116dd2f344842f068913e62d8c2c0a0e02f.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 3: Input construction: the red-boxed aircraft region in radar image � defines the blob pixels in the position channel, and the same pixel region in each supplementary state channel is filled with the corresponding state variable value."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                174,
+                679,
+                821,
+                863
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Can Vision Models Read the Radar Display?"
+                    }
+                ]
+            },
+            "bbox": [
+                338,
+                44,
+                658,
+                59
+            ]
+        },
+        {
+            "type": "page_footer",
+            "content": {
+                "page_footer_content": [
+                    {
+                        "type": "text",
+                        "content": "H. Kim et al.: Preprint submitted to Elsevier"
+                    }
+                ]
+            },
+            "bbox": [
+                66,
+                947,
+                376,
+                962
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "Page 4 of 12"
+                    }
+                ]
+            },
+            "bbox": [
+                836,
+                947,
+                930,
+                962
+            ]
+        }
+    ],
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "3.3. Intrinsic complexity labels"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                66,
+                72,
+                341,
+                88
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We label each image using the intrinsic complexity metric of Delahaye and Puechmorel (2000), which characterizes the geometric disorder of the velocity field through pairwise relative distances and speeds, yielding per-aircraft indicators for density, convergence, divergence, and insensitivity to control actions. Because these labels are computed directly from trafic geometry, they provide objective targets for the feasibility test without relying on sector-specific procedures, equipment standards, or subjective human complexity ratings. We extend the original horizontal-plane formulation to three-dimensional Euclidean space by replacing its two-dimensional position and velocity vectors with three-dimensional counterparts, thereby capturing altitude-based proximity as well as vertical convergence and divergence."
+                    }
+                ]
+            },
+            "bbox": [
+                64,
+                88,
+                931,
+                218
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "For a trafic situation containing � aircraft, let aircraft � have position "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbf { p } _ { i } ~ = ~ ( x _ { i } , y _ { i } , z _ { i } ) ~ \\in ~ \\mathbb { R } ^ { 3 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and velocity "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbf v _ { i } = ( \\dot { x } _ { i } , \\dot { y } _ { i } , \\dot { z } _ { i } ) \\in \\mathbb R ^ { 3 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". For each pair (�, �), define the relative position "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbf { d } _ { i j } = \\mathbf { p } _ { j } - \\mathbf { p } _ { i }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", relative velocity "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbf { u } _ { i j } = \\mathbf { v } _ { j } - \\mathbf { v } _ { i }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", and 3-D separation distance "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "r _ { i j } = \\| \\mathbf { d } _ { i j } \\| _ { 2 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". The separation rate is"
+                    }
+                ]
+            },
+            "bbox": [
+                64,
+                218,
+                930,
+                268
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\dot { r } _ { i j } = \\frac { { \\bf d } _ { i j } ^ { \\top } { \\bf u } _ { i j } } { r _ { i j } } ,\\tag{2}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/f73581e21f458695b85b5f6606c97b7cbaf9e66e5bc2e60a3fef5e89a4503b56.jpg"
+                }
+            },
+            "bbox": [
+                112,
+                277,
+                213,
+                320
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\dot { r } _ { i j } < 0"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\dot { r } _ { i j } > 0"
+                    },
+                    {
+                        "type": "text",
+                        "content": "indicate converging and diverging pairs, respectively."
+                    }
+                ]
+            },
+            "bbox": [
+                66,
+                328,
+                652,
+                346
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The local density of aircraft � is defined by exponentially weighting neighboring aircraft:"
+                    }
+                ]
+            },
+            "bbox": [
+                91,
+                346,
+                748,
+                362
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathrm { D e n s } ( i ) = 1 + \\sum _ { j \\neq i } \\exp \\left( - a \\frac { r _ { i j } } { R } \\right) ,\\tag{3}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/1ce3593ba9372f7d7a0168f0b1f860d697145f0b2f9cd20e138052004b91d43b.jpg"
+                }
+            },
+            "bbox": [
+                110,
+                371,
+                360,
+                411
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where � is the neighborhood scale and � controls the rate at which the influence of neighboring aircraft decays with distance. The convergence and divergence indicators measure how fast surrounding aircraft approach or move away, with nearer pairs receiving greater weight:"
+                    }
+                ]
+            },
+            "bbox": [
+                64,
+                420,
+                930,
+                470
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathrm { D i v } ( i ) = \\sum _ { \\stackrel { j \\neq i } { \\dot { r } _ { i j } > 0 } } \\dot { r } _ { i j } \\exp \\left( - a \\frac { r _ { i j } } { R } \\right) ,\\tag{4}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/2ce233c413d69cb3a732393c62cf01b1fca340aa7388fa6cfe5ec49e40e15afe.jpg"
+                }
+            },
+            "bbox": [
+                121,
+                478,
+                360,
+                529
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathrm { C o n v } ( i ) = \\sum _ { \\stackrel { j \\neq i } { \\dot { r } _ { i j } < 0 } } ( - \\dot { r } _ { i j } ) \\exp \\left( - a \\frac { r _ { i j } } { R } \\right) .\\tag{5}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/e1950c82d61f322283babd554f4501c3d0efca06510d3aa9eff89f73763a57b2.jpg"
+                }
+            },
+            "bbox": [
+                112,
+                535,
+                380,
+                588
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The insensitivity indicator reflects how dificult a converging situation is to resolve. When a small change in heading, speed, or vertical rate barely alters how fast two aircraft are closing on each other, the situation is harder for a controller to resolve, and complexity is correspondingly higher. The original metric defines separate sensitivity branches for converging and diverging pairs; we retain only the convergent branch, since convergence is what drives conflict risk and hence controller monitoring efort. For each aircraft, the control-parameter vector "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\eta _ { i } = [ s _ { i } , \\psi _ { i } , \\gamma _ { i } ]"
+                    },
+                    {
+                        "type": "text",
+                        "content": "comprises speed magnitude, horizontal track angle, and flight-path angle, providing a three-dimensional extension of the original speed– direction parameterization. For each pair, "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "G _ { i j } = \\| \\nabla _ { ( \\eta _ { i } , \\eta _ { j } ) } \\dot { r } _ { i j } \\| _ { 2 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "measures the sensitivity of the pairwise range rate to small control changes by either aircraft. This responsiveness is aggregated over closing pairs:"
+                    }
+                ]
+            },
+            "bbox": [
+                62,
+                597,
+                931,
+                729
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\mathrm { S d } ( i ) = \\sum _ { { j \\neq i } \\atop { \\dot { r } _ { i j } < 0 } } G _ { i j } \\exp \\left( - a \\frac { r _ { i j } } { R } \\right) .\\tag{6}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/7e696202cb01d21204cd262d3d0eaedf463019d7d0a1b6f89cae03fccf3b709a.jpg"
+                }
+            },
+            "bbox": [
+                110,
+                737,
+                345,
+                789
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The corresponding insensitivity score is"
+                    }
+                ]
+            },
+            "bbox": [
+                66,
+                800,
+                365,
+                816
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\operatorname { I S d } ( i ) = \\left\\{ { \\frac { 1 } { \\varepsilon + \\operatorname { S d } ( i ) } } , \\exists j \\neq i : { \\dot { r } } _ { i j } < 0 , \\right.\\tag{7}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/0d4054f08b923c6d5c3c941ada7e423f3c9c2fa520f1463eb89dd4fbd030efc9.jpg"
+                }
+            },
+            "bbox": [
+                110,
+                824,
+                415,
+                889
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\varepsilon > 0"
+                    },
+                    {
+                        "type": "text",
+                        "content": "prevents division by zero. Higher responsiveness therefore produces lower insensitivity, reflecting that a converging pair is easier to resolve when a small control action can readily slow the closure rate."
+                    }
+                ]
+            },
+            "bbox": [
+                64,
+                898,
+                931,
+                932
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Can Vision Models Read the Radar Display?"
+                    }
+                ]
+            },
+            "bbox": [
+                338,
+                44,
+                658,
+                59
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "Page 5 of 12"
+                    }
+                ]
+            },
+            "bbox": [
+                836,
+                947,
+                930,
+                962
+            ]
+        },
+        {
+            "type": "page_footer",
+            "content": {
+                "page_footer_content": [
+                    {
+                        "type": "text",
+                        "content": "H. Kim et al.: Preprint submitted to Elsevier"
+                    }
+                ]
+            },
+            "bbox": [
+                66,
+                947,
+                376,
+                962
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Air trafic complexity is managed at the sector level: a controller is responsible for the trafic situation as a whole, and this study estimates complexity at that same level. Whereas the original metric defines complexity at the aircraft level, we sum the indicators over all � aircraft present in the sector to obtain scalar regression targets: "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "Y _ { \\mathrm { D e n s } } = \\sum _ { i = 1 } ^ { N }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "Dens(�), and analogously for "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "Y _ { \\mathrm { C o n v } } , Y _ { \\mathrm { D i v } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "Y _ { \\mathrm { I S d } }"
+                    }
+                ]
+            },
+            "bbox": [
+                64,
+                72,
+                931,
+                141
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4. Method"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                66,
+                164,
+                174,
+                181
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Figure 4 provides an overview of the proposed architecture. The model encodes the six-channel input, consisting of the position image and its supplementary state channels, into a sequence of patch tokens. Four dedicated component query tokens (CQTs), one for each intrinsic complexity component, are then prepended to the patch sequence. The resulting token sequence is processed through a Transformer encoder governed by the diferentiated attention masking policy described in Section 4.4."
+                    }
+                ]
+            },
+            "bbox": [
+                62,
+                187,
+                931,
+                269
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/1040ab3162039a7ca4e94f0fe0e981b6951d2458fa872f5a89f743045c77504c.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "Figure 4: Overview of the proposed model architecture. The six-channel input is partitioned into "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "N _ { p }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "patch tokens. Four component query tokens "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathrm { C Q T } _ { k } \\ ( k = 1 , \\dots , 4 )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "are prepended to the sequence and processed jointly through � Transformer layers. Each "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathrm { C Q T } _ { k }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is then passed through its own MLP head to produce the scalar complexity estimate "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\hat { Y } _ { k }"
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                286,
+                280,
+                715,
+                601
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.1. Backbone: Vision Transformer"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                64,
+                699,
+                382,
+                715
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We adopt a Vision Transformer (ViT) as the backbone (Dosovitskiy et al., 2021), which partitions the input into fixed-size patches, embeds each patch as a token, and models their interactions through stacked Transformer layers (Vaswani et al., 2017). In our setting, the ViT directly processes the six-channel input tensor, enabling joint reasoning over the spatial layout represented by the position image and the aircraft-state information encoded in the supplementary channels."
+                    }
+                ]
+            },
+            "bbox": [
+                62,
+                716,
+                931,
+                799
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.2. Patch embedding for the six-channel input"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                64,
+                811,
+                479,
+                827
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Consider "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "X \\in \\mathbb { R } ^ { H \\times \\bar { W } \\times C }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "with � = 6. We partition � into "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "N _ { p } = H W / P ^ { 2 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "non-overlapping patches of size "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "P \\times P"
+                    },
+                    {
+                        "type": "text",
+                        "content": "across all channels. Each patch is a tensor in ℝ "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "P { \\times } P { \\times } C"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and is flattened and linearly projected into a �-dimensional patch token. Stacking all tokens yields "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\boldsymbol { Z } \\in \\mathbb { R } ^ { N _ { p } \\times D }"
+                    }
+                ]
+            },
+            "bbox": [
+                64,
+                827,
+                931,
+                878
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Instead of using a single global readout token, as in the standard ViT, we prepend four learnable component query tokens "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathrm { C Q T } _ { k } , k = 1 , \\ldots , 4 ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "each dedicated to one intrinsic component "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( Y _ { \\mathrm { D e n s } } , Y _ { \\mathrm { C o n v } } , Y _ { \\mathrm { D i v } } , Y _ { \\mathrm { I S d } } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". This multioutput readout design gives each component its own aggregation pathway and regression head, so the readout for"
+                    }
+                ]
+            },
+            "bbox": [
+                64,
+                880,
+                931,
+                928
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Can Vision Models Read the Radar Display?"
+                    }
+                ]
+            },
+            "bbox": [
+                338,
+                44,
+                658,
+                59
+            ]
+        },
+        {
+            "type": "page_footer",
+            "content": {
+                "page_footer_content": [
+                    {
+                        "type": "text",
+                        "content": "H. Kim et al.: Preprint submitted to Elsevier"
+                    }
+                ]
+            },
+            "bbox": [
+                66,
+                947,
+                376,
+                962
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "Page 6 of 12"
+                    }
+                ]
+            },
+            "bbox": [
+                834,
+                947,
+                930,
+                962
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "each component can weight the patch tokens independently rather than forcing all four targets through a single shared summary vector. Learnable positional embeddings are added to all tokens to preserve spatial identity, producing the input sequence "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "Z ^ { 0 } \\in \\mathbb { R } ^ { ( N _ { p } + \\hat { 4 } ) \\times D }"
+                    }
+                ]
+            },
+            "bbox": [
+                64,
+                72,
+                931,
+                122
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.3. Transformer encoder and regression head"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                64,
+                134,
+                476,
+                150
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The input sequence "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "Z ^ { 0 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is processed by a stack of � Transformer layers with multi-head self-attention:"
+                    }
+                ]
+            },
+            "bbox": [
+                91,
+                152,
+                849,
+                169
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "{ \\mathrm { A t t e n t i o n } } ( Q , K , V ) = { \\mathrm { S o f t m a x } } \\left( { \\frac { Q K ^ { \\top } } { \\sqrt { d _ { k } } } } \\right) V ,\\tag{8}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/9720d968693a18443a6fec47219f0f0a915ffc304deafd08de60887d7c183058.jpg"
+                }
+            },
+            "bbox": [
+                110,
+                180,
+                448,
+                225
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "where �, �, and � are linear projections of the token sequence into "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathbb { R } ^ { ( N _ { p } + 4 ) \\times d _ { k } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", and "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "d _ { k } = D / n _ { h }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is the per-head key dimension for a model with "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "n _ { h }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "attention heads. After � layers, we obtain "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "Z ^ { L } \\in \\mathbb { R } ^ { ( N _ { p } ^ { \\star } + 4 ) \\times D }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". Each "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "Z _ { \\mathrm { C Q T } _ { k } } ^ { L ^ { ^ { \\bullet } } } \\in \\mathbb { R } ^ { D }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "is extracted and routed through a dedicated MLP regression head to produce the scalar complexity estimate "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\hat { Y } _ { k }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", yielding "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\hat { Y } = [ \\hat { Y } _ { \\mathrm { D e n s } } , \\hat { Y } _ { \\mathrm { C o n v } } , \\hat { Y } _ { \\mathrm { D i v } } , \\hat { Y } _ { \\mathrm { I S d } } ^ { - } ] \\in \\mathbb { R } ^ { 4 }"
+                    }
+                ]
+            },
+            "bbox": [
+                64,
+                237,
+                930,
+                311
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "4.4. Diferentiated attention masking"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                66,
+                323,
+                395,
+                339
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The sparsity of radar images (C1) imposes two conflicting demands on the self-attention mechanism: when patch tokens exchange information, the empty background should be kept, since it carries the spatial relations among aircraft; when the readout aggregates the image into a complexity estimate, the background should be set aside, since it far outnumbers the few aircraft-bearing tokens. We therefore apply distinct masking rules at the two levels, as illustrated in Figure 5."
+                    }
+                ]
+            },
+            "bbox": [
+                64,
+                339,
+                931,
+                420
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "(i) Patch-to-patch attention: no masking. All patch tokens, including empty ones, attend to one another. Empty patches encode the spatial geometry that sector complexity depends on. For example, the number of empty patches separating two aircraft is what tells the model how far apart they are. Additionally, empty patches along route segments (e.g., Patch in Fig. 5) signal an aircraft’s proximity to a merging or crossing region. Across successive layers, each aircraft-bearing tokens accumulates this spatial context alongside its own state."
+                    }
+                ]
+            },
+            "bbox": [
+                64,
+                420,
+                931,
+                501
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "(ii) CQT-to-patch attention: aircraft-bearing patches only. Because aircraft occupy only a small fraction of the image, a readout attending to every patch would average the few informative tokens together with a large number of near-identical background tokens. This dilutes what the aircraft contribute and flattens exactly the few-token diferences that distinguish one trafic situation from another. Restricting each "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathrm { C Q T } _ { k }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "to aircraft-bearing patches loses no spatial information: by the readout stage, each aircraft token has already absorbed the spatial context through the unmasked patch-to-patch layers, so it carries its own state together with its separation from other aircraft and its position relative to the route configuration."
+                    }
+                ]
+            },
+            "bbox": [
+                62,
+                501,
+                931,
+                614
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/d33fdb57d9c179b0e3337c8351fe4c7281d1484f405f63718a1c1b5463cd7e82.jpg"
+                },
+                "image_caption": [],
+                "image_footnote": []
+            },
+            "bbox": [
+                110,
+                632,
+                459,
+                734
+            ]
+        },
+        {
+            "type": "image",
+            "content": {
+                "image_source": {
+                    "path": "images/6c4fd500dbdc53bb29516a090fa7649de03ad6904719763e58324eeefe0c3e80.jpg"
+                },
+                "image_caption": [
+                    {
+                        "type": "text",
+                        "content": "(a) Patch-to-patch attention"
+                    },
+                    {
+                        "type": "text",
+                        "content": "(b) CQT-to-patch attention"
+                    },
+                    {
+                        "type": "text",
+                        "content": "Figure 5: Diferentiated attention masking strategy. (a) In patch-to-patch attention, all patch tokens attend to each other without restriction, preserving the spatial scafold including empty background patches (red). (b) In CQT-to-patch attention, each "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\mathrm { C Q T } _ { k }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "attends only to aircraft-bearing patches (green), masking out empty background patches."
+                    }
+                ],
+                "image_footnote": []
+            },
+            "bbox": [
+                509,
+                636,
+                919,
+                734
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "5. Experimental Design"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                66,
+                857,
+                299,
+                876
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "5.1. Dataset and splits"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                66,
+                881,
+                266,
+                897
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "We generate 100,000 synthetic trafic situations, each represented by a position image with five supplementary state channels at resolution 264 × 264, yielding "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "X \\in \\mathbb { R } ^ { 2 6 4 \\times 2 6 4 \\times 6 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". The dataset is evenly distributed across the three route configurations, with approximately 33,300 images per configuration. Each image is labeled with the four complexity components described in Section 3.3. The dataset is partitioned into training, validation, and test sets using a stratified split by route configuration, yielding near 80/10/10 split."
+                    }
+                ]
+            },
+            "bbox": [
+                64,
+                898,
+                931,
+                931
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Can Vision Models Read the Radar Display?"
+                    }
+                ]
+            },
+            "bbox": [
+                338,
+                44,
+                658,
+                59
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "Page 7 of 12"
+                    }
+                ]
+            },
+            "bbox": [
+                836,
+                947,
+                930,
+                962
+            ]
+        },
+        {
+            "type": "page_footer",
+            "content": {
+                "page_footer_content": [
+                    {
+                        "type": "text",
+                        "content": "H. Kim et al.: Preprint submitted to Elsevier"
+                    }
+                ]
+            },
+            "bbox": [
+                66,
+                947,
+                378,
+                962
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                64,
+                72,
+                931,
+                122
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Table 1 summarizes the distribution of the normalized complexity labels over the full dataset. Divergence exhibits a lower mean and greater positive skewness than convergence, consistent with the predominantly one-directional route design: aircraft traveling along similar headings rarely diverge substantially, concentrating divergence values toward the lower end of the range. In contrast, convergence spans a broader and more symmetric distribution, as crossing and merging configurations produce a wider range of closure rates depending on route geometry and aircraft spacing. Density and insensitivity display moderate spread with approximately symmetric distributions."
+                    }
+                ]
+            },
+            "bbox": [
+                62,
+                121,
+                931,
+                219
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/7411f3af00a8ff89be3de193bfcb2102b94f40fe26d3c38d1d4f1e837e4b9126.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 1"
+                    },
+                    {
+                        "type": "text",
+                        "content": "Distribution statistics of intrinsic complexity labels after component-wise min–max normalization."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Component</td><td>Mean</td><td>Std</td><td>Skewness</td><td>Range</td></tr><tr><td>Density</td><td>0.3831</td><td>0.3049</td><td>0.4776</td><td>[0, 1]</td></tr><tr><td>Convergence</td><td>0.2745</td><td>0.3226</td><td>0.8182</td><td>[0, 1]</td></tr><tr><td>Divergence</td><td>0.1834</td><td>0.2634</td><td>1.5029</td><td>[0, 1]</td></tr><tr><td>Insensitivity</td><td>0.4923</td><td>0.2868</td><td>0.3013</td><td>[0, 1]</td></tr></table>",
+                "table_type": "simple_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                152,
+                273,
+                843,
+                362
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "5.2. Training configuration and computational cost"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                66,
+                384,
+                514,
+                400
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The model follows the ViT-Base architecture with � = 12 encoder layers, embedding dimension "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "D = 7 6 8"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", feedforward dimension "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "D _ { f f } = 3 0 7 2 , n _ { h } = 1 2"
+                    },
+                    {
+                        "type": "text",
+                        "content": "attention heads, and patch size "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "P = 2 4 ."
+                    },
+                    {
+                        "type": "text",
+                        "content": "yielding "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "N _ { p } = 1 2 1"
+                    },
+                    {
+                        "type": "text",
+                        "content": "patch tokens per image. Training uses AdamW (Loshchilov and Hutter, 2019) with batch size 512, initial learning rate "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "1 0 ^ { - 4 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", and cosine annealing with warm restarts, optimizing the Huber loss "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( \\delta = 1 . 0 )"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". Early stopping with a patience of five epochs is employed. All experiments are conducted in PyTorch (Paszke et al., 2019) with a single NVIDIA A6000 GPU."
+                    }
+                ]
+            },
+            "bbox": [
+                64,
+                401,
+                931,
+                485
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "6. Results"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                66,
+                506,
+                170,
+                524
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The proposed model is evaluated from the two perspectives motivated by the radar-image characteristics identified in the Introduction: (i) prediction accuracy, assessing whether the model discriminates among sparse, near-identical radar images suficiently well to recover geometry-based intrinsic complexity (C1), and (ii) an aircraft-removal perturbation study, assessing whether the model’s response to a minimal pixel-level perturbation reflects how much the removed aircraft contributed to sector complexity rather than its mere presence (C2)."
+                    }
+                ]
+            },
+            "bbox": [
+                62,
+                529,
+                931,
+                613
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "6.1. Prediction Performance"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                66,
+                623,
+                319,
+                640
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Table 2 reports mean absolute error (MAE), standard deviation (STD), root mean squared error (RMSE), and coeficient of determination "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( R ^ { 2 } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "for each intrinsic component on the test set. Performance is strong across all four components "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( R ^ { 2 } > 0 . 9 6 )"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". In absolute terms, the overall MAE values of 0.0148–0.0271 remain small relative to the full range of each component, and the RMSE values, which penalize large errors more heavily than MAE, remain only within 1.7 times the corresponding MAE values across all components. This level of accuracy indicates that the model can distinguish among radar images that are nearly identical at the pixel level—difering only in the number and positions of a few aircraft blobs—finely enough to recover four distinct continuous complexity components. The position image and its supplementary state channels therefore preserve the geometric structure from which the labels are computed."
+                    }
+                ]
+            },
+            "bbox": [
+                62,
+                641,
+                933,
+                787
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Among the four components, density is predicted most robustly, as it primarily depends on spatial proximity, the geometric property most directly represented in the image. Insensitivity is predicted consistently across all three route configurations "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( R ^ { \\bar { 2 } } > 0 . 9 8 )"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", indicating that the radar image sufices for the model to capture this second-order quantity. Divergence is the weakest "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( R ^ { 2 } = 0 . 9 6 7 7 , \\mathrm { M A E } = 0 . 0 2 7 1 )"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", though its absolute error remains comparable to that of the other components."
+                    }
+                ]
+            },
+            "bbox": [
+                64,
+                787,
+                931,
+                867
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Across route configurations, prediction quality varies in ways that mirror the geometric diversity of each scenario type. For the single-route configuration, density and insensitivity are predicted accurately "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( R ^ { 2 } = 0 . 9 9 1"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and 0.984), whereas convergence and divergence exhibit substantially lower "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "R ^ { 2 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "(0.782 and 0.774). In contrast, the crossing and merging configurations, in which aircraft approach from diferent directions, ofer richer interaction trafic patterns and correspondingly yield higher "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "R ^ { 2 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "for convergence and divergence. Among these configurations, divergence in the crossing-route scenario exhibits the highest MAE (0.0428): crossing is the configuration in which substantial divergence actually occurs—pairs pass the intersection and separate at rates that vary with crossing angle and spacing— so divergence values there are the largest and most varied, and predicting larger values naturally comes with larger absolute errors."
+                    }
+                ]
+            },
+            "bbox": [
+                64,
+                867,
+                931,
+                933
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Can Vision Models Read the Radar Display?"
+                    }
+                ]
+            },
+            "bbox": [
+                338,
+                44,
+                658,
+                59
+            ]
+        },
+        {
+            "type": "page_footer",
+            "content": {
+                "page_footer_content": [
+                    {
+                        "type": "text",
+                        "content": "H. Kim et al.: Preprint submitted to Elsevier"
+                    }
+                ]
+            },
+            "bbox": [
+                66,
+                947,
+                378,
+                962
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "Page 8 of 12"
+                    }
+                ]
+            },
+            "bbox": [
+                834,
+                947,
+                930,
+                962
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                62,
+                72,
+                931,
+                153
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The low "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "R ^ { 2 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "of convergence and divergence in the single-route configuration should, however, be interpreted as a property of the evaluation metric rather than a limitation of the model. Because "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "R ^ { 2 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "measures the fraction of label variance explained, the one-directional single-route trafic concentrates convergence and divergence values near zero, leaving little variance to explain. Under such conditions, even small absolute errors can substantially reduce "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "R ^ { 2 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". Consistent with this interpretation, the single-route configuration attains the lowest MAE for both components (0.0126 and 0.0161)—smaller than in the crossing and merging configurations despite their much higher "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "R ^ { 2 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "values. The comparatively low divergence "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "R ^ { 2 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "in the merging configuration (0.9142) arises for the same reason: once aircraft have merged onto a common route, divergence values again vary little, while the absolute error remains small "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( \\mathbf { M A E } = \\mathbf { 0 . 0 2 2 2 } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". The weak overall divergence performance noted above has the same origin, since every route configuration carries one-directional trafic. Overall, the model maintains consistently low absolute errors across all route configurations, whereas the observed diferences in "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "R ^ { 2 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "primarily reflect diferences in the amount of label variance available to explain."
+                    }
+                ]
+            },
+            "bbox": [
+                62,
+                153,
+                933,
+                347
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Taken together, every case with lower performance—divergence overall, and convergence and divergence in the single-route configuration—is one in which the label values cluster near zero and so vary little. The primary limitation is thus the limited variety of trafic flow evaluated. Future work could include bi-directional trafic flows to introduce trafic patterns that produce a wider range of divergence values."
+                    }
+                ]
+            },
+            "bbox": [
+                64,
+                347,
+                931,
+                413
+            ]
+        },
+        {
+            "type": "table",
+            "content": {
+                "image_source": {
+                    "path": "images/a9f66c22072764896935da7ed9ccf67371600b28e0bc647dbade3248fe9483c2.jpg"
+                },
+                "table_caption": [
+                    {
+                        "type": "text",
+                        "content": "Table 2"
+                    },
+                    {
+                        "type": "text",
+                        "content": "Test-set prediction performance for each intrinsic component by route configuration."
+                    }
+                ],
+                "table_footnote": [],
+                "html": "<table><tr><td>Configuration</td><td>Component</td><td>MAE</td><td>STD</td><td>RMSE</td><td> $R ^ { 2 }$ </td></tr><tr><td rowspan=\"4\">Overall</td><td>Density</td><td>0.0148</td><td>0.0194</td><td>0.0244</td><td>0.9936</td></tr><tr><td>Convergence</td><td>0.0247</td><td>0.0315</td><td>0.0400</td><td>0.9846</td></tr><tr><td>Divergence</td><td>0.0271</td><td>0.0389</td><td>0.0474</td><td>0.9677</td></tr><tr><td>Insensitivity</td><td>0.0166</td><td>0.0224</td><td>0.0279</td><td>0.9906</td></tr><tr><td rowspan=\"4\">Single</td><td>Density</td><td>0.0084</td><td>0.0136</td><td>0.0160</td><td>0.9910</td></tr><tr><td>Convergence</td><td>0.0126</td><td>0.0204</td><td>0.0240</td><td>0.7820</td></tr><tr><td>Divergence</td><td>0.0161</td><td>0.0280</td><td>0.0323</td><td>0.7739</td></tr><tr><td>Insensitivity</td><td>0.0160</td><td>0.0268</td><td>0.0312</td><td>0.9837</td></tr><tr><td rowspan=\"4\">Crossing</td><td>Density</td><td>0.0213</td><td>0.0238</td><td>0.0319</td><td>0.9881</td></tr><tr><td>Convergence</td><td>0.0345</td><td>0.0359</td><td>0.0498</td><td>0.9759</td></tr><tr><td>Divergence</td><td>0.0428</td><td>0.0511</td><td>0.0667</td><td>0.9572</td></tr><tr><td>Insensitivity</td><td>0.0160</td><td>0.0187</td><td>0.0246</td><td>0.9923</td></tr><tr><td rowspan=\"4\">Merging</td><td>Density</td><td>0.0147</td><td>0.0170</td><td>0.0225</td><td>0.9950</td></tr><tr><td>Convergence</td><td>0.0268</td><td>0.0319</td><td>0.0417</td><td>0.9831</td></tr><tr><td>Divergence</td><td>0.0222</td><td>0.0271</td><td>0.0350</td><td>0.9142</td></tr><tr><td>Insensitivity</td><td>0.0178</td><td>0.0210</td><td>0.0275</td><td>0.9922</td></tr></table>",
+                "table_type": "complex_table",
+                "table_nest_level": 1
+            },
+            "bbox": [
+                66,
+                466,
+                930,
+                729
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "6.2. Complexity Response to Aircraft Removal"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                64,
+                750,
+                476,
+                766
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Air trafic complexity is inherently relational: complexity components are defined through pairwise interactions, and each aircraft’s contribution depends on the surrounding trafic. Removing a single aircraft therefore does not merely eliminate its own contribution; it also alters the interaction neighborhoods of the remaining aircraft, requiring their intrinsic complexity values to be recomputed under the modified trafic geometry. From the image perspective, however, removing one aircraft constitutes only a minimal change: a small group of pixels revert to background, and the visual change appears essentially identical regardless of which aircraft is removed. In contrast, the resulting change in true air trafic complexity can range from negligible to substantial depending on how much the removed aircraft contributed to the surrounding trafic situation."
+                    }
+                ]
+            },
+            "bbox": [
+                62,
+                766,
+                931,
+                897
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "For each test image, we compute the original ground-truth complexity "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "C _ { \\mathrm { o r i g } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and the corresponding model prediction "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\hat { C } _ { \\mathrm { o r i g } } ."
+                    },
+                    {
+                        "type": "text",
+                        "content": ". We then randomly remove one aircraft and re-render the model input (i.e., the position image and all supplementary state channels), recompute ground-truth complexity "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "C _ { \\mathrm { r e m } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "for the remaining trafic, and obtain the updated prediction "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\hat { C } _ { \\mathrm { r e m } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". The change in complexity caused by the removal—the aircraft’s marginal contribution—is defined as"
+                    }
+                ]
+            },
+            "bbox": [
+                64,
+                896,
+                931,
+                933
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Can Vision Models Read the Radar Display?"
+                    }
+                ]
+            },
+            "bbox": [
+                338,
+                44,
+                658,
+                59
+            ]
+        },
+        {
+            "type": "page_footer",
+            "content": {
+                "page_footer_content": [
+                    {
+                        "type": "text",
+                        "content": "H. Kim et al.: Preprint submitted to Elsevier"
+                    }
+                ]
+            },
+            "bbox": [
+                66,
+                947,
+                378,
+                962
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "Page 9 of 12"
+                    }
+                ]
+            },
+            "bbox": [
+                834,
+                947,
+                930,
+                962
+            ]
+        }
+    ],
+    [
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": []
+            },
+            "bbox": [
+                64,
+                72,
+                931,
+                122
+            ]
+        },
+        {
+            "type": "equation_interline",
+            "content": {
+                "math_content": "\\Delta C = C _ { \\mathrm { o r i g } } - C _ { \\mathrm { r e m } } , \\quad \\Delta \\hat { C } = \\hat { C } _ { \\mathrm { o r i g } } - \\hat { C } _ { \\mathrm { r e m } } .\\tag{9}",
+                "math_type": "latex",
+                "image_source": {
+                    "path": "images/b0af4bcd520ffbb5209ec54485b9b71da254f001b4b97ac52a5c60245f2c1e04.jpg"
+                }
+            },
+            "bbox": [
+                110,
+                133,
+                431,
+                154
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "A model that has learned the underlying trafic interactions should produce "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\Delta \\hat { C }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "that closely tracks Δ�: large values of Δ� should correspond to large values of "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\Delta \\hat { C }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", whereas small values of "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\Delta C"
+                    },
+                    {
+                        "type": "text",
+                        "content": "should correspond to small values of "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\Delta \\hat { C } ."
+                    },
+                    {
+                        "type": "text",
+                        "content": "We evaluate this relationship using identity-line regression, "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "R ^ { 2 }"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", and RMSE. Algorithm 1 details the procedure."
+                    }
+                ]
+            },
+            "bbox": [
+                66,
+                167,
+                931,
+                218
+            ]
+        },
+        {
+            "type": "algorithm",
+            "content": {
+                "algorithm_caption": [],
+                "algorithm_content": [
+                    {
+                        "type": "text",
+                        "content": "Algorithm 1 One-Aircraft Removal Perturbation Study (per test image) Require: Test image "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "X"
+                    },
+                    {
+                        "type": "text",
+                        "content": "with aircraft set "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "{ \\mathcal { A } } ,"
+                    },
+                    {
+                        "type": "text",
+                        "content": "trained model "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "f _ { \\theta }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "Ensure: Marginal changes "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\Delta C , \\Delta \\hat { C }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "1: Compute ground-truth complexity "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "C _ { \\mathrm { o r i g } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "from full trafic geometry 2: Obtain model prediction "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "{ \\hat { C } } _ { \\mathrm { o r i g } } \\gets f _ { \\theta } ( X )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "3: Sample one aircraft "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "i ^ { * }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "∼ Uniform() 4: Remove "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "i ^ { * }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "from "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\boldsymbol { A }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and update image "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "X ^ { \\prime }  X \\setminus \\{ i ^ { * } \\}"
+                    },
+                    {
+                        "type": "text",
+                        "content": "5: Recompute ground-truth complexity "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "C _ { \\mathrm { r e m } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "from remaining trafic  ⧵ {�<sup>∗</sup>} 6: Obtain model prediction "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\hat { C } _ { \\mathrm { r e m } } \\gets f _ { \\theta } ( X ^ { \\prime } )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "7: "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\Delta C \\gets C _ { \\mathrm { o r i g } } - C _ { \\mathrm { r } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "em 8: "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\Delta \\hat { C } \\gets \\hat { C } _ { \\mathrm { o r i g } } - \\hat { C } _ { \\mathrm { r e m } }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "9: return "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\Delta C , \\Delta \\hat { C }"
+                    }
+                ],
+                "algorithm_footnote": []
+            },
+            "bbox": [
+                66,
+                230,
+                930,
+                444
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Figure 6 summarizes the results for density, convergence, and divergence. All three components exhibit strong proportionality "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( R ^ { 2 } ~ \\ge ~ 0 . 9 2 )"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". Density is predicted most accurately, with the regression line closely following the identity line "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( y = x )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "(slope = 1.10, "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "R ^ { 2 } = 0 . 9 4 ."
+                    },
+                    {
+                        "type": "text",
+                        "content": ", RMSE = 0.02). Convergence and divergence also achieve strong fit (slope = 0.89, "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "R ^ { 2 } = 0 . 9 2"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and slope = 0.84, "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "R ^ { 2 } = 0 . 9 3"
+                    },
+                    {
+                        "type": "text",
+                        "content": ", respectively), although both slightly underestimate the structural impact of aircraft removal."
+                    }
+                ]
+            },
+            "bbox": [
+                64,
+                463,
+                931,
+                544
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "This proportional response also shows that the model has learned more than simply counting aircraft. Removing a single aircraft eliminates approximately the same number of pixels regardless of which aircraft is removed. A model relying only on aircraft count, or equivalently on the amount of foreground pixels in the image, would therefore produce nearly the same complexity decrement for every removal, so the points in Figure 6 would lie in a flat horizontal band regardless of the true change. Instead, the observed alignment with the identity line across the full range of "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\Delta C"
+                    },
+                    {
+                        "type": "text",
+                        "content": "shows that the model assigns each aircraft a marginal contribution determined by its relation to the surrounding aircraft: removing a peripheral aircraft (small "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\Delta C )"
+                    },
+                    {
+                        "type": "text",
+                        "content": "barely changes the prediction, while removing an aircraft embedded in a converging cluster (large Δ�) produces a substantially larger response."
+                    }
+                ]
+            },
+            "bbox": [
+                62,
+                544,
+                931,
+                675
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The systematic underestimation of large complexity changes, reflected in slopes of 0.89 and 0.84 for convergence and divergence, also admits a natural interpretation. Removals with "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\Delta C > 0 . 5"
+                    },
+                    {
+                        "type": "text",
+                        "content": "correspond to rare, geometrically pivotal aircraft, visible as the sparse points at large Δ� in Figure "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "6 ;"
+                    },
+                    {
+                        "type": "text",
+                        "content": "because such cases occupy only a small fraction of the training distribution, a regression model tends to compress these extremes toward the mean. In other words, for these rare pivotal aircraft, the predicted complexity changes are somewhat smaller than the ground-truth values, whereas predictions for small and moderate Δ� remain closely aligned with the identity line."
+                    }
+                ]
+            },
+            "bbox": [
+                64,
+                673,
+                931,
+                770
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Taken together, the removal study demonstrates the property described by characteristic (C2): the model responds to the complexity consequences of removing a single aircraft, even though every such removal changes roughly the same number of pixels. The insensitivity component is excluded from this analysis. Insensitivity is defined relative to the set of converging pairs present in a given geometry, and removing an aircraft changes that set. The before- and after-removal values are therefore computed over two diferent trafic geometries and are not comparable in the way Δ� is for the other three components. A dedicated perturbation study, in which heading, speed, and vertical speed are systematically varied while the trafic geometry is held fixed, is left for future work."
+                    }
+                ]
+            },
+            "bbox": [
+                64,
+                770,
+                933,
+                885
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Can Vision Models Read the Radar Display?"
+                    }
+                ]
+            },
+            "bbox": [
+                338,
+                44,
+                658,
+                59
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "Page 10 of 12"
+                    }
+                ]
+            },
+            "bbox": [
+                827,
+                947,
+                930,
+                962
+            ]
+        },
+        {
+            "type": "page_footer",
+            "content": {
+                "page_footer_content": [
+                    {
+                        "type": "text",
+                        "content": "H. Kim et al.: Preprint submitted to Elsevier"
+                    }
+                ]
+            },
+            "bbox": [
+                66,
+                947,
+                376,
+                962
+            ]
+        }
+    ],
+    [
+        {
+            "type": "chart",
+            "content": {
+                "image_source": {
+                    "path": "images/39210a94ddeeeaecae07273d2bdba8b921960396cdcc76ee2e2716e00e646357.jpg"
+                },
+                "content": "",
+                "chart_caption": [
+                    {
+                        "type": "text",
+                        "content": "(a) Density"
+                    }
+                ],
+                "chart_footnote": []
+            },
+            "bbox": [
+                73,
+                70,
+                352,
+                295
+            ]
+        },
+        {
+            "type": "chart",
+            "content": {
+                "image_source": {
+                    "path": "images/8379bc528a5f705822830c54bef7504aa7f2245bc00237ebd69c50241368f675.jpg"
+                },
+                "content": "",
+                "chart_caption": [
+                    {
+                        "type": "text",
+                        "content": "(b) Convergence"
+                    }
+                ],
+                "chart_footnote": []
+            },
+            "bbox": [
+                360,
+                71,
+                641,
+                295
+            ]
+        },
+        {
+            "type": "chart",
+            "content": {
+                "image_source": {
+                    "path": "images/dacc9e042896a256e5b84f68dbddc359fd67a0eb4388ef16d25123f6b133753c.jpg"
+                },
+                "content": "",
+                "chart_caption": [
+                    {
+                        "type": "text",
+                        "content": "(c) Divergence"
+                    },
+                    {
+                        "type": "text",
+                        "content": "Figure 6: One-random-aircraft removal perturbation analysis. Ground-truth marginal complexity changes Δ� versus predicted changes "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "\\Delta \\hat { C }"
+                    },
+                    {
+                        "type": "text",
+                        "content": "for each intrinsic component."
+                    }
+                ],
+                "chart_footnote": []
+            },
+            "bbox": [
+                648,
+                70,
+                926,
+                295
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "7. Conclusion"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                66,
+                394,
+                205,
+                412
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "The central question of this study was whether radar imagery—an image format that departs from the natural images on which modern computer vision was established—can serve as a data format for air trafic complexity modeling. The concern was twofold: radar images are extremely sparse and self-similar, such that any two images difer in only a small fraction of pixels (C1); and the image-to-complexity mapping is highly sensitive, so that those few difering pixels can correspond to substantial changes in air trafic complexity (C2). The experimental results provide afirmative evidence for both characteristics."
+                    }
+                ]
+            },
+            "bbox": [
+                64,
+                417,
+                931,
+                513
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "First, a Vision Transformer trained on radar position images augmented with supplementary state channels recovers four geometry-based intrinsic complexity components with "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "R ^ { \\bar { 2 } } > 0 . 9 6"
+                    },
+                    {
+                        "type": "text",
+                        "content": "and its accuracy varies across route configurations, providing evidence that the model reads trafic geometry rather than superficial pixel statistics (C1). Second, under one-aircraft removal, the predicted change is proportional to the ground-truth change "
+                    },
+                    {
+                        "type": "equation_inline",
+                        "content": "( R ^ { 2 } \\ge 0 . 9 2 )"
+                    },
+                    {
+                        "type": "text",
+                        "content": ". This sensitivity is not encouraged by conventional vision training and therefore cannot be taken for granted (C2)."
+                    }
+                ]
+            },
+            "bbox": [
+                64,
+                514,
+                931,
+                595
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Together, these results support the conclusion that radar imagery, despite its atypical visual characteristics, is a viable data format for air trafic complexity modeling. This clears the ground for the hypothesis that motivated this work: that a vision model operating directly on the same visual information available to air trafic controllers can learn to model, and ultimately approximate, the complexity perceived by human controllers."
+                    }
+                ]
+            },
+            "bbox": [
+                64,
+                595,
+                931,
+                660
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Several limitations bound this conclusion and define the path forward. The model was trained and tested on synthetic scenarios within a fixed route configuration; its transferability to real radar data, diferent sector geometries, and varying operational procedures remains open. The one-directional route configurations leave divergence values clustered near zero, and richer bi-directional scenarios are needed so that all four components are tested over a wide range of values. The model operates on single radar snapshots, whereas controllers continuously integrate the evolution of the trafic picture over time; incorporating temporal context is therefore a natural extension. Finally, the reference labels are geometry-based rather than perception-based. Having established radar imagery as a viable representation for air trafic complexity modeling, the natural continuation is to relate image-based complexity estimates to the complexity rated by controllers themselves."
+                    }
+                ]
+            },
+            "bbox": [
+                62,
+                659,
+                933,
+                805
+            ]
+        },
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "CRediT authorship contribution statement"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                66,
+                828,
+                476,
+                846
+            ]
+        },
+        {
+            "type": "paragraph",
+            "content": {
+                "paragraph_content": [
+                    {
+                        "type": "text",
+                        "content": "Hyewook Kim: Conceptualization, Methodology, Software, Formal analysis, Visualization, Writing - Original draft. Byul Kang: Conceptualization, Writing - Original draft. Seokbin Yoon: Conceptualization, Methodology, Software, Writing - Original draft. Keumjin Lee: Conceptualization, Supervision, Writing - Review & editing."
+                    }
+                ]
+            },
+            "bbox": [
+                64,
+                851,
+                931,
+                901
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Can Vision Models Read the Radar Display?"
+                    }
+                ]
+            },
+            "bbox": [
+                340,
+                44,
+                658,
+                59
+            ]
+        },
+        {
+            "type": "page_footer",
+            "content": {
+                "page_footer_content": [
+                    {
+                        "type": "text",
+                        "content": "H. Kim et al.: Preprint submitted to Elsevier"
+                    }
+                ]
+            },
+            "bbox": [
+                66,
+                947,
+                376,
+                962
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "Page 11 of 12"
+                    }
+                ]
+            },
+            "bbox": [
+                827,
+                947,
+                930,
+                962
+            ]
+        }
+    ],
+    [
+        {
+            "type": "title",
+            "content": {
+                "title_content": [
+                    {
+                        "type": "text",
+                        "content": "References"
+                    }
+                ],
+                "level": 2
+            },
+            "bbox": [
+                66,
+                75,
+                176,
+                92
+            ]
+        },
+        {
+            "type": "list",
+            "content": {
+                "list_type": "reference_list",
+                "list_items": [
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "G. B. Chatterji, B. Sridhar, Neural network based air trafic controller workload prediction, in: Proc. Amer. Control Conf. (ACC), San Diego, CA, USA, 1999, pp. 2620–2624. doi:10.1109/ACC.1999.786543."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "G. Chatterji, B. Sridhar, Measures for air trafic controller workload prediction, in: Proc. 1st AIAA Aircraft, Technology, Integration, and Operations Forum, Los Angeles, CA, USA, 2001, Paper AIAA 2001-5242. doi:10.2514/6.2001-5242."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "I. V. Laudeman, S. G. Shelden, R. Branstrom, C. L. Brasil, Dynamic Density: An Air Trafic Management Metric, NASA/TM-1998-112226, NASA Ames Research Center, Mofett Field, CA, USA, 1998."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "Wyndemere, Inc., Dynamic Resectorization and Coordination Technology: An Evaluation of Air Trafic Control Complexity, Final Rep., Contract NAS2-14284, Boulder, CO, USA, 1996."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "P. Kopardekar, A. Schwartz, S. Magyarits, J. Rhodes, Airspace complexity measurement: An air trafic control simulation analysis, International Journal of Industrial Engineering 16 (1) (2009) 61–70."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "P. Kopardekar, S. Magyarits, Dynamic density: Measuring and predicting sector complexity, in: Proc. 21st Digital Avionics Systems Conference (DASC), Irvine, CA, USA, 2002, pp. 2.C.4-1–2.C.4-6."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "K. Lee, E. Feron, A. Pritchett, Air trafic complexity: An input–output approach, in: Proc. 2007 American Control Conference (ACC), New York, NY, USA, 2007, Paper WeA14.6."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "D. Gianazza, Forecasting workload and airspace configuration with neural networks and tree search methods, Artificial Intelligence 174 (7–8) (2010) 530–549."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "X. Cao, X. Zhu, Z. Tian, J. Chen, D. Wu, W. Du, A knowledge-transfer-based learning framework for airspace operation complexity evaluation, Transportation Research Part C: Emerging Technologies 95 (2018) 61–81."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "B. Li, Z. Li, J. Chen, Y. Yan, Y. Lv, W. Du, MAST-GNN: A multimodal adaptive spatio-temporal graph neural network for airspace complexity prediction, Transportation Research Part C: Emerging Technologies 160 (2024) Art. no. 104521."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "C. A. Manning, E. M. Pfleiderer, Relationship of Sector Activity and Sector Complexity to Air Trafic Controller Taskload, Tech. Rep. DOT/FAA/AM-06/29, Federal Aviation Administration, Ofice of Aerospace Medicine, Washington, DC, USA, 2006."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "J. M. Histon, R. J. Hansman, G. Aigoin, D. Delahaye, S. Puechmorel, Introducing structural considerations into complexity metrics, Air Trafic Control Quarterly 10 (2) (2002) 115–130."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "H. Xie, M. Zhang, J. Ge, X. Dong, H. Chen, Learning air trafic as images: A deep convolutional neural network for airspace operation complexity evaluation, Complexity 2021 (2021) Art. no. 6457246, 1–16. doi:10.1155/2021/6457246."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "A. Dosovitskiy, L. Beyer, A. Kolesnikov, D. Weissenborn, X. Zhai, T. Unterthiner, M. Dehghani, M. Minderer, G. Heigold, S. Gelly, J. Uszkoreit, N. Houlsby, An image is worth 16×16 words: Transformers for image recognition at scale, in: Proc. Int. Conf. Learn. Represent. (ICLR), 2021."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "A. Vaswani, N. Shazeer, N. Parmar, J. Uszkoreit, L. Jones, A. N. Gomez, L. Kaiser, I. Polosukhin, Attention is all you need, in: Adv. Neural Inf. Process. Syst. (NeurIPS), Vol. 30, 2017."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "D. Delahaye, S. Puechmorel, Air trafic complexity: Towards intrinsic metrics, in: Proc. 3rd USA/Europe Air Trafic Management R&D Seminar (ATM2000), Napoli, Italy, 2000."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "J. M. Hoekstra, J. Ellerbroek, BlueSky ATC simulator project: An open data and open source approach, in: Proc. 7th Int. Conf. Res. Air Transp. (ICRAT), Philadelphia, PA, USA, 2016."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "I. Loshchilov, F. Hutter, Decoupled weight decay regularization, in: Proc. Int. Conf. Learn. Represent. (ICLR), 2019."
+                            }
+                        ]
+                    },
+                    {
+                        "item_type": "text",
+                        "item_content": [
+                            {
+                                "type": "text",
+                                "content": "A. Paszke, S. Gross, F. Massa, A. Lerer, J. Bradbury, G. Chanan, T. Killeen, Z. Lin, N. Gimelshein, L. Antiga, A. Desmaison, A. Köpf, E. Yang, Z. DeVito, M. Raison, A. Tejani, S. Chilamkurthy, B. Steiner, L. Fang, J. Bai, S. Chintala, PyTorch: An imperative style, high-performance deep learning library, in: Adv. Neural Inf. Process. Syst. (NeurIPS), Vol. 32, 2019, pp. 8024–8035."
+                            }
+                        ]
+                    }
+                ]
+            },
+            "bbox": [
+                66,
+                98,
+                930,
+                125
+            ]
+        },
+        {
+            "type": "page_header",
+            "content": {
+                "page_header_content": [
+                    {
+                        "type": "text",
+                        "content": "Can Vision Models Read the Radar Display?"
+                    }
+                ]
+            },
+            "bbox": [
+                338,
+                44,
+                658,
+                59
+            ]
+        },
+        {
+            "type": "page_footer",
+            "content": {
+                "page_footer_content": [
+                    {
+                        "type": "text",
+                        "content": "H. Kim et al.: Preprint submitted to Elsevier"
+                    }
+                ]
+            },
+            "bbox": [
+                66,
+                947,
+                378,
+                962
+            ]
+        },
+        {
+            "type": "page_number",
+            "content": {
+                "page_number_content": [
+                    {
+                        "type": "text",
+                        "content": "Page 12 of 12"
+                    }
+                ]
+            },
+            "bbox": [
+                827,
+                947,
+                930,
+                962
+            ]
+        }
+    ]
+]
