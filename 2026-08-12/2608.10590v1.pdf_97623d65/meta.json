@@ -3,5 +3,33 @@
  "batch_id": "97623d65-3c94-4b2e-bb25-1b395afd7154",
  "token": "sk-9BdnpHblK...",
  "created_at": "2026-08-12 15:40:53",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/4294c0f3-3bbe-4f51-adf6-07cd501af19b.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/4294c0f3-3bbe-4f51-adf6-07cd501af19b.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:08:07",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Vision Transformer",
+    "Industrial Visual Inspection",
+    "Few-Shot Learning",
+    "Feature Alignment",
+    "Pretraining Incoherence",
+    "Dense Prediction",
+    "Cross-Architecture Adaptation"
+   ],
+   "field": "工业视觉检测与ViT-CNN混合架构",
+   "innovations": [
+    "首次证明ViT低数据效率根因是预训练分布失配而非归纳偏置缺陷",
+    "提出轻量AlignBlock同时解决空间/统计/优化三层异质鸿沟",
+    "建立2×2分解框架量化neck预训练与backbone兼容性的独立贡献"
+   ],
+   "benchmarks": [
+    "Terminal Detection (703/200/100 shots)",
+    "Hook Detection (141/70 shots, 5-fold CV)",
+    "Safety-Belt Segmentation (178 shots)",
+    "COCO-10 Subsets (1500/500/200 shots)"
+   ]
+  }
+ }
 }

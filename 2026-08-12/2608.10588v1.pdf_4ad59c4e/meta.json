@@ -3,5 +3,31 @@
  "batch_id": "4ad59c4e-dd00-4bc1-a98a-4b60aed7dfd4",
  "token": "sk-9BdnpHblK...",
  "created_at": "2026-08-12 15:40:54",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/f37f61c5-cfde-46fc-a075-9d10a4cdede1.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/f37f61c5-cfde-46fc-a075-9d10a4cdede1.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:06:33",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "sign language",
+    "handshape recognition",
+    "HamNoSys",
+    "dataset",
+    "leave-one-subject-out",
+    "fine-grained classification",
+    "sign language processing"
+   ],
+   "field": "手语识别与手形分类",
+   "innovations": [
+    "构建首个基于HamNoSys 4手形图表的160类真实图像数据集，支持语言无关的精细化手形研究",
+    "提出受试者相关与LOSO双重评估协议，系统量化参与者泛化挑战",
+    "对比RGB外观模型与关键点图模型的细粒度手形识别性能，揭示拓扑与纹理信息的互补性"
+   ],
+   "benchmarks": [
+    "LSWH100",
+    "ASL Fingerspelling Dataset A"
+   ]
+  }
+ }
 }

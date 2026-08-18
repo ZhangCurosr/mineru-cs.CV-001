@@ -3,5 +3,32 @@
  "batch_id": "2762afcf-c290-4036-a0cf-ce7927d8b6bb",
  "token": "sk-owp49a3rO...",
  "created_at": "2026-08-12 16:06:08",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/4c030576-79c5-4c87-98b8-cc4e78bba392.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/4c030576-79c5-4c87-98b8-cc4e78bba392.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:08:36",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "skill transfer",
+    "robot learning",
+    "VQ-VAE",
+    "imitation learning",
+    "cross-embodiment",
+    "few-shot adaptation"
+   ],
+   "field": "机器人技能学习与表示学习",
+   "innovations": [
+    "跨模态VQ-VAE联合编码语义意图与运动动态的统一技能表示",
+    "解耦两阶段训练实现大模型预训练与轻量策略蒸馏",
+    "以动作重建替代像素重建提升对动态视觉干扰的鲁棒性"
+   ],
+   "benchmarks": [
+    "LIBERO-90",
+    "LIBERO-Goal",
+    "LIBERO-Object",
+    "LIBERO-Spatial"
+   ]
+  }
+ }
 }

@@ -3,5 +3,35 @@
  "batch_id": "d4836053-1959-4896-a7cd-6ecaab6bc548",
  "token": "sk-45Ifw5Iq3...",
  "created_at": "2026-08-12 15:34:17",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/95f62e26-3ba8-4d0f-8082-96064539738a.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/95f62e26-3ba8-4d0f-8082-96064539738a.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:04:12",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "图像恢复",
+    "流匹配",
+    "感知质量",
+    "失真-感知权衡",
+    "少步推理",
+    "潜空间生成"
+   ],
+   "field": "图像恢复",
+   "innovations": [
+    "提出统一潜空间流匹配框架 PCFlow，联合优化失真与感知，实现3-5步高效恢复",
+    "分析结构与感知目标的多目标梯度冲突，设计无冲突正交投影与SNR自适应调度策略",
+    "引入内部解码器特征作为感知约束源，配合冲突消除策略显著提升感知质量"
+   ],
+   "benchmarks": [
+    "CelebA-Test BFR",
+    "CelebAdult BFR",
+    "LFW-Test BFR",
+    "Super-Resolution",
+    "Denoising",
+    "Inpainting",
+    "Colorization"
+   ]
+  }
+ }
 }

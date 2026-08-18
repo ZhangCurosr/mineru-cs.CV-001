@@ -3,5 +3,34 @@
  "batch_id": "38f3496c-c793-4515-b331-4932fa5ccff9",
  "token": "sk-9BdnpHblK...",
  "created_at": "2026-08-12 15:40:54",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/95f62e26-3ba8-4d0f-8082-96064539738a.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/95f62e26-3ba8-4d0f-8082-96064539738a.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:02:40",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "图像恢复",
+    "流匹配",
+    "感知-失真权衡",
+    "一致性流",
+    "少步推理"
+   ],
+   "field": "图像修复与生成",
+   "innovations": [
+    "提出PCFlow统一框架，将感知一致性直接融入隐空间流匹配轨迹，实现3~5步高效图像恢复",
+    "发现并分析结构目标与感知目标的梯度冲突机制，提出无冲突梯度对齐策略",
+    "采用纯卷积轻量架构（21~32M参数），在多个恢复任务上超越多阶段扩散方法"
+   ],
+   "benchmarks": [
+    "CelebA-Test (BFR)",
+    "LFW-Test (BFR)",
+    "CelebAdult (BFR)",
+    "Super-Resolution",
+    "Denoising",
+    "Inpainting",
+    "Colorization"
+   ]
+  }
+ }
 }

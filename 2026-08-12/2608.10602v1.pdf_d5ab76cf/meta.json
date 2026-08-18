@@ -3,5 +3,31 @@
  "batch_id": "d5ab76cf-7c8b-40b2-a7c9-c53f40a2c967",
  "token": "sk-owp49a3rO...",
  "created_at": "2026-08-12 16:06:18",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/4cf7a502-99a3-4f94-8cb3-c93dc8d21dfd.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/4cf7a502-99a3-4f94-8cb3-c93dc8d21dfd.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:09:53",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Surface Reconstruction",
+    "3D Gaussian Splatting",
+    "Signed Distance Field",
+    "End-to-End Optimization",
+    "Neural Implicit Representation",
+    "Mesh Quality",
+    "Bi-level Optimization"
+   ],
+   "field": "3D 表面重建与神经隐式表示",
+   "innovations": [
+    "提出端到端 SDF 优化框架，约束高斯锚定在可微分表面指导联合训练，消除漂浮伪影",
+    "设计双层优化与梯度隔离策略，防止渲染梯度污染几何优化",
+    "引入八叉树自适应细分与 MEE/分布/不透明度高斯约束，提升网格质量与几何完整性"
+   ],
+   "benchmarks": [
+    "NeRF Synthetic",
+    "OmniObject3D"
+   ]
+  }
+ }
 }

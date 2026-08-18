@@ -3,5 +3,35 @@
  "batch_id": "e83fecdc-dc26-4e08-a1cf-cea136a6237d",
  "token": "sk-owp49a3rO...",
  "created_at": "2026-08-12 16:06:11",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/95f62e26-3ba8-4d0f-8082-96064539738a.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/95f62e26-3ba8-4d0f-8082-96064539738a.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:04:32",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "图像恢复",
+    "流匹配",
+    "感知一致性",
+    "梯度对齐",
+    "轻量模型",
+    "少步推理"
+   ],
+   "field": "条件生成模型 / 图像修复",
+   "innovations": [
+    "潜一致流匹配框架联合优化失真与感知",
+    "冲突‑free非对称梯度投影稳定多目标训练",
+    "SNR自适应感知权重调度"
+   ],
+   "benchmarks": [
+    "CelebA‑Test",
+    "LFW‑Test",
+    "CelebAdult",
+    "FFHQ超分辨率",
+    "FFHQ去噪",
+    "FFHQ补全",
+    "FFHQ着色"
+   ]
+  }
+ }
 }

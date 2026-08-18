@@ -3,5 +3,35 @@
  "batch_id": "922b26f4-9feb-4045-8aaa-5767f5620ba3",
  "token": "sk-45Ifw5Iq3...",
  "created_at": "2026-08-12 15:34:20",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/4dbd8fd7-f66a-4dd6-a0ba-64f78148b023.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/4dbd8fd7-f66a-4dd6-a0ba-64f78148b023.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:00:38",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "low-light image enhancement",
+    "color correction",
+    "adaptive cylindrical color transform",
+    "color debiasing",
+    "saturation rectification",
+    "AdaLAB",
+    "CAGE"
+   ],
+   "field": "低光照图像增强",
+   "innovations": [
+    "提出 AdaLAB 圆柱自适应色彩空间和 AdaCCT 自适应圆柱色彩变换，实现颜色保真低光照增强",
+    "前向变换通过色调定向色度去偏和亮度感知色度缩放抑制嵌入的颜色偏差",
+    "反向变换通过超色域亮度补偿校正饱和度异常，避免直接裁剪导致的颜色伪影"
+   ],
+   "benchmarks": [
+    "LOLv1",
+    "LOLv2-real",
+    "LOLv2-synthetic",
+    "SDSD-indoor",
+    "SDSD-outdoor",
+    "SID"
+   ]
+  }
+ }
 }

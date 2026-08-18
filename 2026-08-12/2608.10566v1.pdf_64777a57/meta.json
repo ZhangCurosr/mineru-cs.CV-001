@@ -3,5 +3,29 @@
  "batch_id": "64777a57-28c0-4881-8ff9-0c72689e5164",
  "token": "sk-7NOZt17oN...",
  "created_at": "2026-08-12 14:59:22",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/64ad0cf6-308b-490f-92c2-875fc1768fb9.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/64ad0cf6-308b-490f-92c2-875fc1768fb9.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:05:24",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "概念维度",
+    "迭代擦除",
+    "仿射等变性",
+    "线性探针",
+    "表征解释性"
+   ],
+   "field": "表示学习与可解释性",
+   "innovations": [
+    "证明迭代擦除计数在仿射变换下非不变，与充分维度和保护秩分离",
+    "建立完整累积度量-QR轨迹的仿射等变性定理",
+    "在冻结视觉特征上验证迭代计数对坐标变换的敏感性"
+   ],
+   "benchmarks": [
+    "100DOH",
+    "TouchMoment"
+   ]
+  }
+ }
 }

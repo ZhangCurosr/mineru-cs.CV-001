@@ -3,5 +3,31 @@
  "batch_id": "798c0688-4b22-4539-afa7-b85b24da66b0",
  "token": "sk-Ar06zcDAy...",
  "created_at": "2026-08-12 15:03:09",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/f37f61c5-cfde-46fc-a075-9d10a4cdede1.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/f37f61c5-cfde-46fc-a075-9d10a4cdede1.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:06:00",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "手语识别",
+    "手型识别",
+    "HamNoSys",
+    "细粒度分类",
+    "留一受试者交叉验证",
+    "数据集构建"
+   ],
+   "field": "手语计算与多模态识别",
+   "innovations": [
+    "基于HamNoSys 4手型图表构建160类平衡真实图像数据集并提供双协议评估",
+    "首次在同一细粒度手型数据集上同时报告受试者重叠与LOSO泛化性能并揭示约40pp落差",
+    "用匹配模型族在三个数据集（本数据集+LSWH100+ASL Fingerspelling Dataset A）上建立跨数据集可比参考点"
+   ],
+   "benchmarks": [
+    "Proposed HamNoSys Dataset (160 classes)",
+    "LSWH100 (100 classes)",
+    "ASL Fingerspelling Dataset A (24 classes)"
+   ]
+  }
+ }
 }

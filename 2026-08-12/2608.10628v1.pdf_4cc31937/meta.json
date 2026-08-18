@@ -3,5 +3,31 @@
  "batch_id": "4cc31937-0908-4c25-9fa5-10327fd9a2e1",
  "token": "sk-45Ifw5Iq3...",
  "created_at": "2026-08-12 15:40:52",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/3a689c63-de07-4f68-9c38-e837d7447860.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/3a689c63-de07-4f68-9c38-e837d7447860.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:11:25",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Long-document understanding",
+    "Agentic visual perception",
+    "Coarse-to-fine",
+    "Document VQA",
+    "Reinforcement learning"
+   ],
+   "field": "多模态大模型推理",
+   "innovations": [
+    "Proposes an end-to-end agentic framework for adaptive visual resolution",
+    "Constructs a large-scale active-perception corpus with zoom-in trajectories",
+    "Achieves significant accuracy improvements and latency reduction on document VQA benchmarks"
+   ],
+   "benchmarks": [
+    "DUDE",
+    "MP-DocVQA",
+    "MMLongBench-Doc",
+    "LongDocURL"
+   ]
+  }
+ }
 }

@@ -3,5 +3,34 @@
  "batch_id": "e1a25791-0a33-481e-9c76-499c7bf787ef",
  "token": "sk-7NOZt17oN...",
  "created_at": "2026-08-12 15:00:34",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/40426c93-a9f7-43bf-9dc6-f8a7b65a974f.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/40426c93-a9f7-43bf-9dc6-f8a7b65a974f.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:07:58",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "水下图像增强",
+    "合成数据集",
+    "物理信息建模",
+    "Jerlov水体类型",
+    "超真实感",
+    "泛化评估"
+   ],
+   "field": "水下视觉与物理驱动合成数据",
+   "innovations": [
+    "扩展Jaffe-McGlamery模型，联合建模深度依赖辐照度、生物解析吸收和体积散射",
+    "提出双轴评估协议（hyper-realism + generalizability），FID较Syrea降46%",
+    "14040对基准数据集覆盖十种Jerlov水型与多深度，完整物理metadata"
+   ],
+   "benchmarks": [
+    "UIEB",
+    "RUIE",
+    "SQUID",
+    "OceanDark",
+    "FishTrac",
+    "U45"
+   ]
+  }
+ }
 }

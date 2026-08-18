@@ -3,5 +3,34 @@
  "batch_id": "513c71b7-c93b-4e5f-8eb4-e2e865097931",
  "token": "sk-Ar06zcDAy...",
  "created_at": "2026-08-12 15:03:06",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/3a689c63-de07-4f68-9c38-e837d7447860.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/3a689c63-de07-4f68-9c38-e837d7447860.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:10:24",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "长文档理解",
+    "多模态大语言模型",
+    "视觉搜索",
+    "Agent",
+    "粗到细推理",
+    "上下文腐烂"
+   ],
+   "field": "多模态长文档理解",
+   "innovations": [
+    "提出无检索器、区域级放大的端到端agent框架InSight-doc",
+    "构建17.9K SFT+19.2K RL的主动感知训练语料",
+    "将视觉分辨率作为自适应推理时资源，显著降低延迟与幻觉"
+   ],
+   "benchmarks": [
+    "DUDE",
+    "MP-DocVQA",
+    "MMLongBench-Doc",
+    "LongDocURL",
+    "MME-RealWorld-Lite",
+    "O3-Bench"
+   ]
+  }
+ }
 }

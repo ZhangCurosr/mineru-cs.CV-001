@@ -3,5 +3,32 @@
  "batch_id": "21e54956-ed64-45b1-83bd-f2e8d9481d72",
  "token": "sk-owp49a3rO...",
  "created_at": "2026-08-12 16:06:07",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/a7202985-8447-44b9-9a99-c7fc92847f41.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/a7202985-8447-44b9-9a99-c7fc92847f41.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:10:55",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "医学视觉语言模型",
+    "统一感知理解",
+    "掩码token化",
+    "文本引导分割",
+    "区域grounding",
+    "Seg-CoT"
+   ],
+   "field": "医学多模态大模型",
+   "innovations": [
+    "提出UniMedTok将掩码编码为离散token融入LLM词汇表，原生统一感知与理解",
+    "两阶段训练范式分离掩码表征学习与区域-语言建模",
+    "构建1.84M实例四流训练语料UniMed-Train及统一基准UniMed-Bench"
+   ],
+   "benchmarks": [
+    "UniMed-Bench",
+    "SLAKE",
+    "PathVQA",
+    "VQA-RAD"
+   ]
+  }
+ }
 }

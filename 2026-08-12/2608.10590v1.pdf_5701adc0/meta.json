@@ -3,5 +3,33 @@
  "batch_id": "5701adc0-098a-4e33-a356-5665a828f924",
  "token": "sk-45Ifw5Iq3...",
  "created_at": "2026-08-12 15:34:16",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/4294c0f3-3bbe-4f51-adf6-07cd501af19b.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/4294c0f3-3bbe-4f51-adf6-07cd501af19b.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:08:13",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Few-shot learning",
+    "Industrial visual inspection",
+    "Vision Transformer",
+    "Feature alignment",
+    "Pretraining incoherence",
+    "Dense prediction",
+    "ViT-CNN hybrid"
+   ],
+   "field": "工业视觉检测中的少样本密集预测",
+   "innovations": [
+    "证明ViT低数据劣势源于预训练不一致性而非Transformer归纳偏置缺失",
+    "提出2×2分解框架独立量化Neck预训练与Backbone兼容性的贡献",
+    "设计AlignBlock轻量级跨架构对齐模块族同时解决空间/统计/优化三重失配"
+   ],
+   "benchmarks": [
+    "terminal_det",
+    "hook",
+    "safety-belt",
+    "COCO-10 subsets"
+   ]
+  }
+ }
 }

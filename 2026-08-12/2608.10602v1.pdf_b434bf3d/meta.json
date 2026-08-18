@@ -3,5 +3,30 @@
  "batch_id": "b434bf3d-e5a5-4b91-84f9-e14802115c66",
  "token": "sk-Ar06zcDAy...",
  "created_at": "2026-08-12 15:03:08",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/4cf7a502-99a3-4f94-8cb3-c93dc8d21dfd.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/4cf7a502-99a3-4f94-8cb3-c93dc8d21dfd.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:09:48",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Surface Reconstruction",
+    "3D Gaussian Splatting",
+    "SDF Optimization",
+    "End-to-End Training",
+    "Neural Implicit Representation",
+    "Gradient Isolation"
+   ],
+   "field": "3D Gaussian 表面重建",
+   "innovations": [
+    "将 Gaussian 锚定在演化 SDF 网络上实现端到端可微分表面重建",
+    "设计双层训练与梯度隔离策略防止渲染梯度污染几何优化",
+    "提出 MEE 尺度约束与重心空间分布约束保证 Gaussian-几何一致性"
+   ],
+   "benchmarks": [
+    "NeRF Synthetic",
+    "OmniObject3D"
+   ]
+  }
+ }
 }

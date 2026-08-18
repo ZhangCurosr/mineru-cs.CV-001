@@ -3,5 +3,29 @@
  "batch_id": "8305dae4-c8ab-47cf-88b6-7482e84ffd8a",
  "token": "sk-9BdnpHblK...",
  "created_at": "2026-08-12 15:40:52",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/46e882df-bc26-46e1-ae82-3cd2fe7b3322.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/46e882df-bc26-46e1-ae82-3cd2fe7b3322.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:01:58",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Vision-Language Navigation",
+    "Context Integration",
+    "Parameter-Efficient Adaptation",
+    "Temporal Modeling",
+    "Efficient Deep Learning",
+    "Memory Compression"
+   ],
+   "field": "具身视觉-语言导航",
+   "innovations": [
+    "提出双管道DCA架构，解耦历史上下文处理与VLM主干，实现恒定输入长度下的线性复杂度增长",
+    "设计记忆压缩与跨层集成模块，将变长历史帧动态压缩为固定大小可学习向量并注入每一Transformer层",
+    "在保持预训练VLM参数不变的前提下，实现25%+ FLOPs减少、13%+内存节省，同时SR提升6.47%-13.7%"
+   ],
+   "benchmarks": [
+    "VLN-CE R2R Val-Unseen"
+   ]
+  }
+ }
 }

@@ -3,5 +3,33 @@
  "batch_id": "f05add38-32a2-4c0f-998c-c5cc21d675e0",
  "token": "sk-45Ifw5Iq3...",
  "created_at": "2026-08-12 15:34:18",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/8e08eccb-9b8e-464a-a803-62bf3dba476c.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/8e08eccb-9b8e-464a-a803-62bf3dba476c.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:05:24",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "iterative erasure",
+    "affine equivariance",
+    "concept dimension",
+    "linear probe",
+    "representation interpretability",
+    "INLP",
+    "LEACE"
+   ],
+   "field": "表征可解释性与概念擦除",
+   "innovations": [
+    "证明迭代擦除计数在固定充分维度下可因可逆变换发生精确整数变化",
+    "建立完整转移度量擦除轨迹的仿射等变性定理并以精确协方差为推论",
+    "在冻结视觉特征上以新鲜攻击者审计复现过程依赖性"
+   ],
+   "benchmarks": [
+    "100DOH",
+    "TouchMoment",
+    "synthetic Gaussian",
+    "synthetic circular target"
+   ]
+  }
+ }
 }

@@ -3,5 +3,30 @@
  "batch_id": "7a22edff-300c-4a0e-a1b7-51455ac22792",
  "token": "sk-7NOZt17oN...",
  "created_at": "2026-08-12 15:00:34",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/30f1089a-b675-45ca-b91e-e48660b8f2e2.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/30f1089a-b675-45ca-b91e-e48660b8f2e2.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:06:06",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "handshape recognition",
+    "sign language",
+    "HamNoSys",
+    "fine-grained classification",
+    "leave-one-subject-out"
+   ],
+   "field": "手语计算与多模态识别",
+   "innovations": [
+    "基于HamNoSys 4手形图构建首个160类平衡真实RGB手形数据集",
+    "同时提供受试者依赖与LOSO双评估协议建立完整基准",
+    "RGB外观模型与关键点拓扑模型的系统性对比分析"
+   ],
+   "benchmarks": [
+    "HamNoSys Handshape Dataset",
+    "LSWH100",
+    "ASL Fingerspelling Dataset A"
+   ]
+  }
+ }
 }

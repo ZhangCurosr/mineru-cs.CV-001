@@ -3,5 +3,30 @@
  "batch_id": "2bdc5c98-a3eb-41c2-85db-ed6d4ac461a6",
  "token": "sk-7NOZt17oN...",
  "created_at": "2026-08-12 15:40:56",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/8edeef39-a18d-4656-ac22-dd9a23667f66.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/8edeef39-a18d-4656-ac22-dd9a23667f66.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:00:24",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "stress detection",
+    "facial video analysis",
+    "asymmetric attention",
+    "axis folding",
+    "video recognition",
+    "affective computing",
+    "temporal modeling"
+   ],
+   "field": "表情识别与情感计算",
+   "innovations": [
+    "提出axis folding将时间维度折叠到通道维度，实现完整视频记录的单一输入处理",
+    "设计非对称注意力架构，通过segment states聚合空间token信息",
+    "证明无需时间窗口分割即可处理完整面部视频压力检测"
+   ],
+   "benchmarks": [
+    "58-subject stress dataset"
+   ]
+  }
+ }
 }
