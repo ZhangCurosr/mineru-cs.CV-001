@@ -3,5 +3,30 @@
  "batch_id": "9c11d0ef-4101-4791-9111-adc60f6953a3",
  "token": "sk-7NOZt17oN...",
  "created_at": "2026-08-12 14:59:20",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/301cf3e7-47e0-4e6a-a88b-93f27246781e.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/301cf3e7-47e0-4e6a-a88b-93f27246781e.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:51:27",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Chartography",
+    "图表理解",
+    "多模态基准测试",
+    "专家构建评估",
+    "视觉感知",
+    "专业图表",
+    "前沿模型评估"
+   ],
+   "field": "多模态大模型评估",
+   "innovations": [
+    "提出由领域专家构建并验证的专业图表理解基准（100任务）",
+    "设计专家校准可接受范围与多部分全有或全无评分协议",
+    "全面评估30个前沿模型配置揭示当前最佳模型仅45.0%通过率"
+   ],
+   "benchmarks": [
+    "Chartography"
+   ]
+  }
+ }
 }

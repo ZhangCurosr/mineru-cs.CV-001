@@ -3,5 +3,35 @@
  "batch_id": "6b890ed8-cabd-4305-b825-f27d64afd317",
  "token": "sk-owp49a3rO...",
  "created_at": "2026-08-12 15:03:02",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/f702396e-6a78-4eb8-b850-9bc6ce3f32f9.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/f702396e-6a78-4eb8-b850-9bc6ce3f32f9.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:52:25",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Scene Text Recognition",
+    "Rotation Invariance",
+    "Equivariant Networks",
+    "Cross-Attention",
+    "Multi-Oriented Text"
+   ],
+   "field": "场景文字识别",
+   "innovations": [
+    "证明交叉注意力在固定查询下具有旋转不变性并据此设计 RITD 解码器",
+    "提出 RELG 编码器：深层等变卷积配合渐进下采样与自注意力，兼顾细粒度保留与字间依赖建模",
+    "端到端内嵌旋转不变性于 STR 架构，无需额外校正模块或旋转数据增强即可实现多方向鲁棒识别"
+   ],
+   "benchmarks": [
+    "Union14M-Benchmarks",
+    "IC13",
+    "SVT",
+    "IC15",
+    "SVTP",
+    "CUTE80",
+    "IIIT5k",
+    "ASOT"
+   ]
+  }
+ }
 }

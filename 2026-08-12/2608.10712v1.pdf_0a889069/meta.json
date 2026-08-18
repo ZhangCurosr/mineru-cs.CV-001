@@ -3,5 +3,31 @@
  "batch_id": "0a889069-5dd6-4140-b2d7-5fc132cf71ff",
  "token": "sk-Ir4JqYCnj...",
  "created_at": "2026-08-12 15:02:58",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/bc98921d-4ce2-4f39-8261-f55518944e2f.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/bc98921d-4ce2-4f39-8261-f55518944e2f.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:53:10",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "3D Gaussian Splatting",
+    "Feed-Forward Reconstruction",
+    "Superpixel Segmentation",
+    "Primitive Merging",
+    "Novel View Synthesis",
+    "Model Compression"
+   ],
+   "field": "3D 视觉与神经渲染",
+   "innovations": [
+    "显著性引导的内容自适应超像素分组替代均匀体素化",
+    "Feature Gaussian + Slot Decoder 实现推理时可调节 LOD 的质量-效率折中",
+    "骨干无关的跨视图学习合并模块，冻结 FF backbone 即插即用"
+   ],
+   "benchmarks": [
+    "DL3DV-Bench",
+    "MipNeRF360",
+    "Tanks and Temples"
+   ]
+  }
+ }
 }

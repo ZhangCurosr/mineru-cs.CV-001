@@ -3,5 +3,34 @@
  "batch_id": "a8b14251-529b-4682-aba9-2e0c51c7748e",
  "token": "sk-owp49a3rO...",
  "created_at": "2026-08-12 16:06:06",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/acdfb28c-be75-4462-a5d3-89982fa2bdc6.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/acdfb28c-be75-4462-a5d3-89982fa2bdc6.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:43:14",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "结直肠息肉",
+    "深度学习",
+    "层次化分类",
+    "语义分割",
+    "迁移学习",
+    "EfficientNetV2",
+    "UNet++",
+    "Focal Loss"
+   ],
+   "field": "医学图像分析-消化道息肉检测与分类",
+   "innovations": [
+    "三阶段层次化迁移学习框架，共享EfficientNetV2-M骨干实现分类-分割-亚型分类协同优化",
+    "渐进式迁移策略（Stage1→Stage2编码器→Stage3骨干）减少各阶段数据需求",
+    "任务特异性损失设计：Focal Loss处理类别不平衡，Dice+BCE联合分割损失，MixUp增强细粒度分类"
+   ],
+   "benchmarks": [
+    "Kvasir-SEG",
+    "CVC-ClinicDB",
+    "PolypGen",
+    "ERCPMP"
+   ]
+  }
+ }
 }

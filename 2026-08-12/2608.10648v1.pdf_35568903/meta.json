@@ -3,5 +3,34 @@
  "batch_id": "35568903-950c-4be0-a039-ce38bdb26e3e",
  "token": "sk-owp49a3rO...",
  "created_at": "2026-08-12 16:06:06",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/6567f749-2d66-4784-bfa7-e5f1be694247.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/6567f749-2d66-4784-bfa7-e5f1be694247.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:43:10",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "fabric segmentation",
+    "edge-aware network",
+    "shape-aware supervision",
+    "multi-branch architecture",
+    "encoder-decoder",
+    "fabric destacking",
+    "CAD prior",
+    "robotic manipulation"
+   ],
+   "field": "工业视觉与机器人",
+   "innovations": [
+    "提出边缘感知与形状感知双分支训练架构，推理时仅使用主干网络",
+    "引入CAD模型生成的参考形状作为形状监督信号",
+    "设计形状分支预训练策略以提升全局形状正则化效果"
+   ],
+   "benchmarks": [
+    "ERMSE",
+    "IoU",
+    "Pixel Accuracy",
+    "EMSE"
+   ]
+  }
+ }
 }

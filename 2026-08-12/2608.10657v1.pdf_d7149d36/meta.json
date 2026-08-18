@@ -3,5 +3,33 @@
  "batch_id": "d7149d36-95cc-4241-87b3-4ce469cc58bb",
  "token": "sk-7NOZt17oN...",
  "created_at": "2026-08-12 15:00:32",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/1fbc23ab-b723-4b7a-a343-eae2fdaca9aa.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/1fbc23ab-b723-4b7a-a343-eae2fdaca9aa.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:45:23",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "leukemia classification",
+    "vision foundation models",
+    "domain shift",
+    "LoRA",
+    "retrieval-augmented classification",
+    "cytomorphology",
+    "cross-dataset evaluation"
+   ],
+   "field": "医学图像分类与域泛化",
+   "innovations": [
+    "两阶段级联分类管线结合跨数据集held-out评估协议揭示捷径学习现象",
+    "系统量化专用vs通用视觉基础模型在白血病分类中的预训练专业化影响及LoRA/RAC的补偿能力"
+   ],
+   "benchmarks": [
+    "ALL-IDB2 (held-out)",
+    "C-NMC 2019",
+    "AML-Cytomorphology",
+    "AML-Cytomorphology MLL Helmholtz",
+    "Peripheral Blood Cell Dataset"
+   ]
+  }
+ }
 }

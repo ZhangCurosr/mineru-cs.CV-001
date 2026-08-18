@@ -3,5 +3,29 @@
  "batch_id": "f22d50be-fa38-46ff-8b66-22167c5ca070",
  "token": "sk-owp49a3rO...",
  "created_at": "2026-08-12 15:03:03",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/e57e14e1-9b79-4af2-9f6a-1c9e9eac0180.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/e57e14e1-9b79-4af2-9f6a-1c9e9eac0180.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:51:40",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "可见-红外检测",
+    "跨模态对齐",
+    "仿射变换",
+    "定向目标检测",
+    "多模态融合",
+    "UAV视觉"
+   ],
+   "field": "跨模态目标检测",
+   "innovations": [
+    "显式特征域仿射对齐（CMAA）解决严重跨模态几何不对齐",
+    "光照引导互补融合（IGCF）适应变化光照条件",
+    "对齐质量-一致性门控（AQCG）稳定联合优化"
+   ],
+   "benchmarks": [
+    "DVMA"
+   ]
+  }
+ }
 }

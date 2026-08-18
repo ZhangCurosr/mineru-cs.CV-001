@@ -3,5 +3,34 @@
  "batch_id": "dfb18422-f0d2-4039-bce7-7f798da78d8c",
  "token": "sk-45Ifw5Iq3...",
  "created_at": "2026-08-12 15:40:51",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/a7202985-8447-44b9-9a99-c7fc92847f41.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/a7202985-8447-44b9-9a99-c7fc92847f41.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:41:44",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "medical vision-language model",
+    "unified perception and understanding",
+    "mask tokenization",
+    "grounded segmentation",
+    "chain-of-thought reasoning",
+    "medical image analysis",
+    "vision-language alignment"
+   ],
+   "field": "医疗视觉-语言统一建模",
+   "innovations": [
+    "UniMedTok：将医学掩码编码为离散语言 token 的原生接口",
+    "两阶段训练：冻结 VQ 掩码自编码器后仅微调 VLM",
+    "Seg-CoT：推理引导的多掩码链式分割生成范式"
+   ],
+   "benchmarks": [
+    "UniMed-Bench",
+    "SLAKE",
+    "PathVQA",
+    "VQA-RAD",
+    "80-dataset medical segmentation family"
+   ]
+  }
+ }
 }

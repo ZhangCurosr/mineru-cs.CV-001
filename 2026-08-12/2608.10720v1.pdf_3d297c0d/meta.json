@@ -3,5 +3,31 @@
  "batch_id": "3d297c0d-9bbc-41e0-98d5-7ef4f8248106",
  "token": "sk-Ar06zcDAy...",
  "created_at": "2026-08-12 15:34:15",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/00bd6608-ad2c-4be4-b75b-c19bb1805811.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/00bd6608-ad2c-4be4-b75b-c19bb1805811.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:56:01",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "全模态对话",
+    "视觉Thought Plan",
+    "流式视频生成",
+    "多码本语音单元",
+    "分阶段训练",
+    "Prefix Streaming"
+   ],
+   "field": "多模态对话与生成",
+   "innovations": [
+    "结构化VTP将对话上下文转化为显式视觉意图规划",
+    "原生多码本语音单元作为共享声学-时序接口解耦分路训练",
+    "Prefix Streaming机制减少流式生成累积后期退化"
+   ],
+   "benchmarks": [
+    "CommonEval",
+    "OmniCharacter",
+    "VoiceBench"
+   ]
+  }
+ }
 }

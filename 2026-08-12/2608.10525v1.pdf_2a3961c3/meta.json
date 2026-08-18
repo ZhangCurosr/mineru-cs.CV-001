@@ -3,5 +3,27 @@
  "batch_id": "2a3961c3-82fb-4135-b542-db7b096bfe7d",
  "token": "sk-45Ifw5Iq3...",
  "created_at": "2026-08-12 15:34:17",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/46e882df-bc26-46e1-ae82-3cd2fe7b3322.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/46e882df-bc26-46e1-ae82-3cd2fe7b3322.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:39:29",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Vision-Language Navigation",
+    "Context Integration",
+    "Parameter-Efficient Fine-Tuning",
+    "Vision-Language Model",
+    "Sequential Decision-Making"
+   ],
+   "field": "视觉-语言导航与多模态理解",
+   "innovations": [
+    "提出Dynamic Context Adapter通过可学习压缩向量将历史视觉上下文高效注入预训练VLM各层，实现常数输入长度和线性复杂度",
+    "双通路解耦架构避免token拼接的二次复杂度瓶颈和循环压缩的信息损失"
+   ],
+   "benchmarks": [
+    "VLN-CE R2R Val-Unseen"
+   ]
+  }
+ }
 }

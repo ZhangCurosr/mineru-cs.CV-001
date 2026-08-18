@@ -3,5 +3,32 @@
  "batch_id": "549a0255-009b-43cb-94d7-e2a95f9d629c",
  "token": "sk-owp49a3rO...",
  "created_at": "2026-08-12 15:03:01",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/4b78ead4-b8cb-4976-a56c-9fa95b8cd9d2.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/4b78ead4-b8cb-4976-a56c-9fa95b8cd9d2.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:53:28",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "test-time adaptation",
+    "3D vision foundation models",
+    "multi-view geometry",
+    "epipolar geometry",
+    "LoRA",
+    "pseudo ground truth"
+   ],
+   "field": "3D 视觉重建与测试时适配",
+   "innovations": [
+    "提出 Self-Geometry 管线，以 2D 像素对应点为伪 GT 对预训练 VFM 施加显式多视图几何约束",
+    "设计 GDO，联合 MVC Loss 与 EC Loss 并通过梯度解耦消除位姿监督冲突",
+    "引入 FAN 视角采样与 LoRA 轻量化适配器，实现免 GT、免教师、即插即用的测试时适配"
+   ],
+   "benchmarks": [
+    "7Scenes",
+    "ETH3D",
+    "ScanNet++",
+    "HiRoom"
+   ]
+  }
+ }
 }

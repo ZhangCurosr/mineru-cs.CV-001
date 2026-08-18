@@ -3,5 +3,33 @@
  "batch_id": "4734de78-f6b4-4e9c-ae29-e338a45902b1",
  "token": "sk-7NOZt17oN...",
  "created_at": "2026-08-12 15:00:13",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/a7202985-8447-44b9-9a99-c7fc92847f41.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/a7202985-8447-44b9-9a99-c7fc92847f41.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:39:59",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "medical vision-language model",
+    "mask tokenization",
+    "unified perception and understanding",
+    "text-guided segmentation",
+    "region-grounded understanding",
+    "Seg-CoT",
+    "residual vector quantization"
+   ],
+   "field": "医学多模态大模型",
+   "innovations": [
+    "提出 UniMedTok 原生掩码-语言接口，将密集掩码编码为 LLM 词表中的离散 token 实现统一自回归建模",
+    "双阶段训练：冻结医学掩码 tokenizer 后在四流 184 万样本语料上联合优化，无需额外分割头",
+    "引入 Seg-CoT 推理增强分割与 round-trip 质量过滤，显著提升 mask-as-language 训练的稳定性与性能"
+   ],
+   "benchmarks": [
+    "UniMed-Bench",
+    "SLAKE",
+    "PathVQA",
+    "VQA-RAD"
+   ]
+  }
+ }
 }

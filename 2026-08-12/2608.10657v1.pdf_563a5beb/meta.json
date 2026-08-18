@@ -3,5 +3,33 @@
  "batch_id": "563a5beb-cc48-4646-b3da-9cb8ef280e7f",
  "token": "sk-owp49a3rO...",
  "created_at": "2026-08-12 15:03:04",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/1fbc23ab-b723-4b7a-a343-eae2fdaca9aa.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/1fbc23ab-b723-4b7a-a343-eae2fdaca9aa.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:43:33",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "leukemia classification",
+    "vision foundation models",
+    "domain shift",
+    "retrieval-augmented classification",
+    "low-rank adaptation",
+    "cytomorphology",
+    "cross-dataset evaluation"
+   ],
+   "field": "医学图像分析",
+   "innovations": [
+    "两阶段分类管道结合检索增强方法实现跨域白血病细胞分类",
+    "系统量化预训练专业化与低成本适应技术对域偏移泛化的贡献",
+    "保留数据集评估协议揭示模型对数据集伪影的依赖"
+   ],
+   "benchmarks": [
+    "ALL-IDB2",
+    "C-NMC 2019",
+    "AML-Cytomorphology",
+    "AML-Cytomorphology MLL Helmholtz"
+   ]
+  }
+ }
 }

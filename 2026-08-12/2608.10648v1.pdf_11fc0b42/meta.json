@@ -3,5 +3,32 @@
  "batch_id": "11fc0b42-df4b-42a4-994d-cd93c3800528",
  "token": "sk-owp49a3rO...",
  "created_at": "2026-08-12 15:03:05",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/6567f749-2d66-4784-bfa7-e5f1be694247.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/6567f749-2d66-4784-bfa7-e5f1be694247.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:42:38",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "fabric segmentation",
+    "edge-aware network",
+    "shape-aware network",
+    "encoder-decoder",
+    "multi-branch architecture",
+    "robotic fabric handling",
+    "CAD prior"
+   ],
+   "field": "柔性材料机器人感知与分割",
+   "innovations": [
+    "提出边缘感知与形状感知双分支训练架构，推理时仅用骨干网络实现轻量部署",
+    "利用CAD模型生成形状参考掩码作为全局正则化监督信号，无需额外人工标注"
+   ],
+   "benchmarks": [
+    "Real collar fabric dataset (235 images)",
+    "IoU",
+    "PA",
+    "ERMSE"
+   ]
+  }
+ }
 }

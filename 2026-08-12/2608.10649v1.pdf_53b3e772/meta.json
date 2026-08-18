@@ -3,5 +3,33 @@
  "batch_id": "53b3e772-c140-4c2c-b5f6-3f3fa37507dd",
  "token": "sk-7NOZt17oN...",
  "created_at": "2026-08-12 14:58:50",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/acdfb28c-be75-4462-a5d3-89982fa2bdc6.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/acdfb28c-be75-4462-a5d3-89982fa2bdc6.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:42:51",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "colorectal polyp",
+    "deep learning",
+    "segmentation",
+    "classification",
+    "EfficientNetV2",
+    "UNet++",
+    "transfer learning",
+    "Focal Loss"
+   ],
+   "field": "医学图像分析",
+   "innovations": [
+    "三阶段层级迁移学习框架耦合分类与分割任务",
+    "设备无关设计无需硬件校准",
+    "渐进式知识传递降低各阶段数据需求"
+   ],
+   "benchmarks": [
+    "Kvasir-SEG",
+    "CVC-ClinicDB",
+    "PolypGen"
+   ]
+  }
+ }
 }

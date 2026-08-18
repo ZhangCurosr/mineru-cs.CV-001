@@ -3,5 +3,31 @@
  "batch_id": "7c0059d5-a89f-4380-b1cc-6809291d6184",
  "token": "sk-owp49a3rO...",
  "created_at": "2026-08-12 16:06:05",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/41855e46-6045-4db6-a09b-2866f0a15d24.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/41855e46-6045-4db6-a09b-2866f0a15d24.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:45:40",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "跨视图定位",
+    "时序视觉定位",
+    "自动驾驶定位",
+    "DINOv2",
+    "时空上下文建模",
+    "两级定位",
+    "序列视觉匹配"
+   ],
+   "field": "跨视图视觉定位",
+   "innovations": [
+    "循环状态递推的跨帧上下文增强模块，以当前帧Query检索历史状态Key/Value",
+    "层级特征分离（粗语义+细纹理）服务于两级定位架构",
+    "候选掩码约束下的条件偏移回归与动态梯度屏蔽训练策略"
+   ],
+   "benchmarks": [
+    "CVIS",
+    "KITTI-CVL"
+   ]
+  }
+ }
 }

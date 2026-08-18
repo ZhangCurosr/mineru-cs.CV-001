@@ -3,5 +3,33 @@
  "batch_id": "f1876735-e433-4b19-8824-ac946e7e24f4",
  "token": "sk-45Ifw5Iq3...",
  "created_at": "2026-08-12 15:40:50",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/acdfb28c-be75-4462-a5d3-89982fa2bdc6.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/acdfb28c-be75-4462-a5d3-89982fa2bdc6.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:44:10",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "colorectal polyp",
+    "hierarchical deep learning",
+    "EfficientNetV2-M",
+    "UNet++",
+    "Focal Loss",
+    "Grad-CAM",
+    "transfer learning"
+   ],
+   "field": "医学图像分析-内镜息肉分类与分割",
+   "innovations": [
+    "三阶段层级迁移流水线实现分类-分割-亚型串联",
+    "Stage1→Stage2→Stage3 渐进式骨干复用降低数据依赖",
+    "任务特异性损失组合与设备无关设计提升临床泛化"
+   ],
+   "benchmarks": [
+    "Kvasir-SEG",
+    "CVC-ClinicDB",
+    "PolypGen",
+    "ERCPMP"
+   ]
+  }
+ }
 }

@@ -3,5 +3,32 @@
  "batch_id": "d53fb0f2-26c1-49da-b7a9-3ba311e5620a",
  "token": "sk-owp49a3rO...",
  "created_at": "2026-08-12 16:06:07",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/2db8ac8c-2f1b-4211-a38a-175455dba7b9.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/2db8ac8c-2f1b-4211-a38a-175455dba7b9.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:41:40",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "视觉文档检索",
+    "蒸馏",
+    "单向量检索器",
+    "多模态嵌入",
+    "ViDoRe",
+    "Cosine alignment",
+    "Dynamic tiling"
+   ],
+   "field": "视觉文档检索与模型压缩",
+   "innovations": [
+    "双边余弦对齐蒸馏：两学生独立回归 8B 教师 embedding，无需负样本或对比项",
+    "输入非对称性匹配的 encoder-only 架构：454M 文档塔 + 70M 查询塔",
+    "固定 visual-token 预算动态分块 + 缩略图，解决低分辨丢失与上下文超限两类失败模式"
+   ],
+   "benchmarks": [
+    "ViDoRe v1",
+    "ViDoRe v2",
+    "ViDoRe v3"
+   ]
+  }
+ }
 }

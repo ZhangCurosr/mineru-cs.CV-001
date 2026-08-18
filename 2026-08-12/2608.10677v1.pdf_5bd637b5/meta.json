@@ -3,5 +3,32 @@
  "batch_id": "5bd637b5-11ea-42cd-af96-58c35181f8b9",
  "token": "sk-45Ifw5Iq3...",
  "created_at": "2026-08-12 15:40:47",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/301cf3e7-47e0-4e6a-a88b-93f27246781e.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/301cf3e7-47e0-4e6a-a88b-93f27246781e.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:49:13",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "图表理解",
+    "多模态基准",
+    "视觉感知",
+    "专家评测",
+    "专业决策",
+    "VLM评估"
+   ],
+   "field": "多模态视觉语言理解",
+   "innovations": [
+    "专家校准的可接受范围评分协议",
+    "对抗性难度筛选与三重独立验证",
+    "推理努力对比实验揭示感知瓶颈"
+   ],
+   "benchmarks": [
+    "Chartography",
+    "ChartQAPro",
+    "ChartMuseum",
+    "CharXiv"
+   ]
+  }
+ }
 }

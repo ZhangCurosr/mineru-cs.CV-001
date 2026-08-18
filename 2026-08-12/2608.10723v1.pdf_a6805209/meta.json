@@ -3,5 +3,35 @@
  "batch_id": "a6805209-e395-4d85-a651-27a7f1801c93",
  "token": "sk-Ar06zcDAy...",
  "created_at": "2026-08-12 15:34:13",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/84d20618-c388-49af-9080-78f24b6adf98.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/84d20618-c388-49af-9080-78f24b6adf98.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:57:34",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "知识蒸馏",
+    "Vision Transformer",
+    "归纳偏置",
+    "数据稀缺",
+    "网格保持传输",
+    "卷积交叉注意力",
+    "CNN-to-ViT"
+   ],
+   "field": "视觉表征学习与知识蒸馏",
+   "innovations": [
+    "提出网格保持传输原则，定位通用蒸馏算子在CNN→ViT场景失效的结构原因",
+    "设计IBAM三阶段模块：可学习跨架构对齐+可变形增强+卷积交叉注意力融合",
+    "通过置换网格单因子实验归因，证明位置对应性是迁移偏置的核心载体"
+   ],
+   "benchmarks": [
+    "CIFAR-100",
+    "Flowers-102",
+    "Chaoyang",
+    "CUB-200",
+    "Tiny-ImageNet",
+    "CIFAR-10"
+   ]
+  }
+ }
 }

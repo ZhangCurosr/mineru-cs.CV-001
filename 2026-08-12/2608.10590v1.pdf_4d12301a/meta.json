@@ -3,5 +3,33 @@
  "batch_id": "4d12301a-1b14-4fb8-bac1-a419ec88e6f4",
  "token": "sk-owp49a3rO...",
  "created_at": "2026-08-12 16:06:09",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/4294c0f3-3bbe-4f51-adf6-07cd501af19b.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/4294c0f3-3bbe-4f51-adf6-07cd501af19b.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:38:53",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "few-shot learning",
+    "industrial defect detection",
+    "vision transformer",
+    "feature alignment",
+    "pretraining coherence",
+    "dense prediction",
+    "cross-architecture adaptation"
+   ],
+   "field": "工业视觉检测中的少样本迁移学习",
+   "innovations": [
+    "实证证明ViT少样本劣势源于预训练不连贯性而非归纳偏置不足",
+    "提出可量化的三重失配分解框架（空间/统计/优化）",
+    "设计轻量AlignBlock模块实现ViT-CNN功能兼容性转换"
+   ],
+   "benchmarks": [
+    "terminal_det (703-shot)",
+    "hook (141-shot, 5-fold CV)",
+    "safety-belt (178-shot)",
+    "COCO-10 subsets (1500/500/200-shot)"
+   ]
+  }
+ }
 }

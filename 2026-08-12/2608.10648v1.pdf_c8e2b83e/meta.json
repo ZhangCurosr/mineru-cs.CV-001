@@ -3,5 +3,28 @@
  "batch_id": "c8e2b83e-f287-49a3-8a45-231d729c1901",
  "token": "sk-45Ifw5Iq3...",
  "created_at": "2026-08-12 15:40:52",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/6567f749-2d66-4784-bfa7-e5f1be694247.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/6567f749-2d66-4784-bfa7-e5f1be694247.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:43:00",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "织物分割",
+    "边缘感知",
+    "形状感知",
+    "多分支网络",
+    "柔性物料处理",
+    "机器人视觉"
+   ],
+   "field": "工业视觉与机器人",
+   "innovations": [
+    "提出边缘与形状双分支监督训练架构，专用于织物叠层分割",
+    "将CAD模型形状先验转化为可微的监督信号用于正则化分割结果"
+   ],
+   "benchmarks": [
+    "自建领口织物数据集 (235张)"
+   ]
+  }
+ }
 }

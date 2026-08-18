@@ -3,5 +3,32 @@
  "batch_id": "a5d5186f-2c30-4498-a9ca-6f9942ef6ab0",
  "token": "sk-owp49a3rO...",
  "created_at": "2026-08-12 16:06:04",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/301cf3e7-47e0-4e6a-a88b-93f27246781e.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/301cf3e7-47e0-4e6a-a88b-93f27246781e.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:50:44",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "图表理解",
+    "多模态基准",
+    "专家评估",
+    "专业场景",
+    "视觉感知",
+    "可接受范围"
+   ],
+   "field": "多模态大模型评估",
+   "innovations": [
+    "专家驱动的专业图表基准构建",
+    "专家校准的动态分级协议",
+    "对抗性难度筛选机制"
+   ],
+   "benchmarks": [
+    "Chartography",
+    "ChartQA",
+    "CharXiv",
+    "ChartMuseum"
+   ]
+  }
+ }
 }

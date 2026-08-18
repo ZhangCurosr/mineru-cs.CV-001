@@ -3,5 +3,34 @@
  "batch_id": "45eacd58-ba94-43d7-8f35-4de9e4dfc571",
  "token": "sk-Ar06zcDAy...",
  "created_at": "2026-08-12 15:34:12",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/c58dca41-a302-47e0-a4c4-29bc6f02f7cb.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/c58dca41-a302-47e0-a4c4-29bc6f02f7cb.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:52:07",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "视觉艺术理解",
+    "多视角数据集",
+    "视觉语言模型",
+    "跨模态检索",
+    "情感计算",
+    "艺术分析"
+   ],
+   "field": "多模态艺术理解",
+   "innovations": [
+    "提出多视角艺术数据集MMArt，同步提供叙事/形式/情感/历史四视角标注",
+    "设计双向互补性分析框架（生成式重建+判别式检索）验证视角非冗余性",
+    "实证发现任务非对称性：叙事主导检索、形式主导重建、历史最难替代"
+   ],
+   "benchmarks": [
+    "WikiArt",
+    "ArtEmis",
+    "CLIP ViT-L/14",
+    "DINOv3",
+    "FLUX.2-Klein-4B",
+    "Qwen-Image-2512"
+   ]
+  }
+ }
 }

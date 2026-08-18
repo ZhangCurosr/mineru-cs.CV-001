@@ -3,5 +3,31 @@
  "batch_id": "b2429888-5d05-47d0-9085-26c2b872ebe1",
  "token": "sk-Ar06zcDAy...",
  "created_at": "2026-08-12 15:34:15",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/bc98921d-4ce2-4f39-8261-f55518944e2f.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/bc98921d-4ce2-4f39-8261-f55518944e2f.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 06:53:14",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "3D Gaussian Splatting",
+    "Feed-Forward Reconstruction",
+    "Primitive Merging",
+    "Superpixel Segmentation",
+    "Novel View Synthesis",
+    "Scene Compression"
+   ],
+   "field": "3D 场景重建与渲染",
+   "innovations": [
+    "Saliency-guided BASS superpixel segmentation 实现内容自适应原语分组",
+    "Feature Gaussian latent-augmented 表示支持 variable-size 集合压缩",
+    "Backbone-agnostic encode-merge-decode 管线实现推理时 K 可控质量-效率权衡"
+   ],
+   "benchmarks": [
+    "DL3DV-Bench",
+    "MipNeRF360",
+    "Tanks & Temples"
+   ]
+  }
+ }
 }
