@@ -4,5 +4,31 @@
  "title": "Context-Matched-Distillation-Teacher-Causality-for-Autoregre",
  "token": "sk-dKfLTOMDH...",
  "created_at": "2026-08-14 04:10:02",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/3a3e5e6f-437b-4ef6-90b1-070adbc4b5c4.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/3a3e5e6f-437b-4ef6-90b1-070adbc4b5c4.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 13:44:06",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "autoregressive video generation",
+    "distribution matching distillation",
+    "causal distillation",
+    "camera-controlled video",
+    "long-video generation",
+    "diffusion forcing",
+    "prefix scoring"
+   ],
+   "field": "自回归视频生成与蒸馏",
+   "innovations": [
+    "用因果教师替代双向教师对齐学生信息集，消除未来帧/控制信号泄漏",
+    "Prefix Scoring匹配每个目标帧的实际生成前缀进行评分，Prefix Corruption对前缀加噪提升训练稳定性",
+    "统一支持frame-wise/chunk-wise/长视频/相机控制，无需ODE-matching或consistency初始化"
+   ],
+   "benchmarks": [
+    "VBench-I2V",
+    "SANA-WM"
+   ]
+  }
+ }
 }

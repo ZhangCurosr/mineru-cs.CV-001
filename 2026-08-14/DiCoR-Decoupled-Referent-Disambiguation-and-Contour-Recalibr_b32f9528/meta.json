@@ -4,5 +4,30 @@
  "title": "DiCoR-Decoupled-Referent-Disambiguation-and-Contour-Recalibr",
  "token": "sk-Zs9k8BxOo...",
  "created_at": "2026-08-14 04:12:46",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/6d011217-127b-4d0e-b657-66a18af6ed85.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/6d011217-127b-4d0e-b657-66a18af6ed85.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 13:45:23",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "referring remote sensing image segmentation",
+    "decoupled segmentation",
+    "contour recalibration",
+    "visual-language fusion",
+    "efficient segmentation",
+    "remote sensing"
+   ],
+   "field": "遥感图像理解与指代分割",
+   "innovations": [
+    "将指代表达定位reformulate为候选竞争排序问题，通过自适应语言线索和SAM3挖掘的硬干扰监督实现消歧",
+    "提出轻量残差轮廓重校准模块，以粗分割图为条件在局部轮廓监督下精细化边界，避免调用重型基础模型"
+   ],
+   "benchmarks": [
+    "RefSegRS",
+    "RRSIS-D",
+    "RISBench"
+   ]
+  }
+ }
 }

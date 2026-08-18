@@ -4,5 +4,30 @@
  "title": "BrainWAM-Action-Space-Coordination-of-Semantic-Priors-and-Pr",
  "token": "sk-jX4FaQZVZ...",
  "created_at": "2026-08-14 04:09:36",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/77ee7916-dbcc-42de-bf8d-d7302a82c9ff.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/77ee7916-dbcc-42de-bf8d-d7302a82c9ff.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 13:43:14",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "autonomous driving",
+    "vision-language-action",
+    "world action model",
+    "rectified flow",
+    "multimodal fusion",
+    "action-space coordination"
+   ],
+   "field": "端到端自动驾驶规划",
+   "innovations": [
+    "提出动作级协调框架BrainWAM，将VLA语义路径与WAM预测路径在动作表示层结构化交互，避免token级注意力竞争",
+    "发现并诊断Tri-MoT注意力分配失衡现象，证明朴素多模态融合在自动驾驶中劣于单分支",
+    "引入异步整流流推理策略，视频分支提前终止缓存特征以平衡预测质量与推理延迟"
+   ],
+   "benchmarks": [
+    "NAVSIM v1",
+    "NAVSIM v2"
+   ]
+  }
+ }
 }

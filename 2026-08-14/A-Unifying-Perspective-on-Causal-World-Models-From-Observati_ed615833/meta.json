@@ -4,5 +4,26 @@
  "title": "A-Unifying-Perspective-on-Causal-World-Models-From-Observati",
  "token": "sk-07nfPn8BZ...",
  "created_at": "2026-08-14 14:48:47",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/351d0745-f435-49d7-8a05-e8fa229c7116.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/351d0745-f435-49d7-8a05-e8fa229c7116.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 13:39:37",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "因果世界模型",
+    "Causal Representation Learning",
+    "Object-Centric Learning",
+    "Causal Discovery",
+    "Identifiability",
+    "Markov Decision Process"
+   ],
+   "field": "因果表示学习与世界模型",
+   "innovations": [
+    "将CWM形式化为从观测到关系结构到干预决策的分层四阶因果梯子",
+    "建立组件级可识别性框架，区分各组件的容许等价类与接口兼容条件",
+    "引入关系变量（Relational Variables）统一定义实体属性与实体间交互"
+   ]
+  }
+ }
 }

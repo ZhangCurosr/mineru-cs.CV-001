@@ -4,5 +4,32 @@
  "title": "DreamX-Phi-1-0-Action-Conditioned-Video-World-Model-for-Robo",
  "token": "sk-Yw2JG3IRJ...",
  "created_at": "2026-08-14 14:48:45",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/ddcaf7c2-01d5-4b72-8621-26b13bc619ab.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/ddcaf7c2-01d5-4b72-8621-26b13bc619ab.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 13:45:37",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "video world model",
+    "action-conditioned generation",
+    "robotic manipulation",
+    "PRoPE",
+    "flow matching",
+    "distribution matching distillation",
+    "SE(3) conditioning"
+   ],
+   "field": "机器人具身视频世界模型",
+   "innovations": [
+    "PRoPE-style SE(3) attention injection preserving rigid-body structure for bimanual action conditioning",
+    "asymmetric auxiliary depth branch with one-way cross-attention for geometry regularization without inference overhead",
+    "SAM3 mask reweighting plus frozen V-JEPA Gram-alignment for object-centric physical consistency"
+   ],
+   "benchmarks": [
+    "WorldArena 2.0 Track 1",
+    "WorldArena 2.0 Track 2",
+    "WorldArena 1.0 Track 1"
+   ]
+  }
+ }
 }

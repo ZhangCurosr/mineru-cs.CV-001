@@ -4,5 +4,32 @@
  "title": "CW-BASS-v2-Saturation-Aware-Pseudo-Label-Selection-for-Semi",
  "token": "sk-2d8Cyf5aG...",
  "created_at": "2026-08-14 14:49:04",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/ae7e5705-753b-4578-be0f-9c5c52e42799.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/ae7e5705-753b-4578-be0f-9c5c52e42799.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 13:42:43",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "semi-supervised semantic segmentation",
+    "pseudo-label selection",
+    "confidence thresholding",
+    "foundation models",
+    "DINOv2",
+    "model calibration",
+    "saturation-aware selection"
+   ],
+   "field": "半监督语义分割",
+   "innovations": [
+    "饱和感知门控：通过 Held-out 校准测量 π_kept，自动在严格阈值与自适应下界间切换",
+    "无偏 Held-out 噪声估计：打破 In-batch 估计的 optimism bias，提供可靠的置信集诊断信号",
+    "自适应置信下界：以固定分位数绑定 retention，防止动态阈值在饱和教师下坍缩至 full retention"
+   ],
+   "benchmarks": [
+    "Pascal VOC 2012 1/8",
+    "Cityscapes 1/8",
+    "ADE20K 1/8"
+   ]
+  }
+ }
 }

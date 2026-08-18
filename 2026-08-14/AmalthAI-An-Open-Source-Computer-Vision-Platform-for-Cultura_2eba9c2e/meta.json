@@ -4,5 +4,31 @@
  "title": "AmalthAI-An-Open-Source-Computer-Vision-Platform-for-Cultura",
  "token": "sk-MljcAo9Bd...",
  "created_at": "2026-08-14 14:49:45",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/369012fc-f5ce-4b5c-99bd-1ab765242973.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/369012fc-f5ce-4b5c-99bd-1ab765242973.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 13:40:00",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Cultural Heritage",
+    "Computer Vision Platform",
+    "MLOps",
+    "Explainable AI",
+    "Grad-CAM",
+    "Vision-Language Model",
+    "Archaeology",
+    "Data Sovereignty"
+   ],
+   "field": "文化遗产保护中的计算机视觉应用",
+   "innovations": [
+    "面向非技术专家的开源可自托管CV平台，集成分类/分割/检测训练与推理",
+    "将Grad-CAM与Qwen2-VL联动形成面向分类可解释的自动化审查链路",
+    "支持本地/外部双模存储的抽象层与无状态容器化推理保障数据主权"
+   ],
+   "benchmarks": [
+    "陶土纺织品印痕分类与分割数据集 (Material/T technique classification, segmentation subset)"
+   ]
+  }
+ }
 }

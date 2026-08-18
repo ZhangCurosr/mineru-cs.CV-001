@@ -4,5 +4,31 @@
  "title": "A-Generative-Approach-for-Improving-Multi-Label-Defect-Class",
  "token": "sk-NVka6yfS0...",
  "created_at": "2026-08-14 04:12:30",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/ec69baec-dd77-4c2d-bf9e-16692d8679ca.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/ec69baec-dd77-4c2d-bf9e-16692d8679ca.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 13:39:26",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "multi-label classification",
+    "defect isolation",
+    "inpainting",
+    "photovoltaic",
+    "data augmentation",
+    "electroluminescence imaging"
+   ],
+   "field": "工业视觉与光伏检测",
+   "innovations": [
+    "提出GDI方法，利用分割掩码指导神经修复生成单缺陷样本，缓解多缺陷共存导致的学习模糊",
+    "将像素级分割数据集复用于多标签分类，最大化已有标注资产价值",
+    "在ViT与EfficientNet架构上建立UCF-EL-Defect多标签分类新基准，低数据场景下F1提升最高达63.6%"
+   ],
+   "benchmarks": [
+    "UCF-EL-Defect",
+    "Zero-One Accuracy",
+    "Macro F1-Score"
+   ]
+  }
+ }
 }

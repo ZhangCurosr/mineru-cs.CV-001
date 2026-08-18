@@ -4,5 +4,30 @@
  "title": "KANResDif-Learning-Local-Residual-Difusion-via-Kolmogorov-Ar",
  "token": "sk-OZiRtsQic...",
  "created_at": "2026-08-13 07:12:08",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/1067bd1e-f447-4dbc-9447-dc3728ea8152.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/1067bd1e-f447-4dbc-9447-dc3728ea8152.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 13:36:58",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "模糊医学图像分割",
+    "扩散模型",
+    "Kolmogorov-Arnold Network",
+    "Schrödinger Bridge",
+    "残差扩散",
+    "B样条"
+   ],
+   "field": "医学图像分割",
+   "innovations": [
+    "提出基于B样条的独立时间编码（ITE），实现推理阶段局部独立优化",
+    "构建局部残差Schrödinger Bridge（RSB），动态分配残差权重实现确定性-随机性协同",
+    "首次将KAN与残差扩散结合用于模糊医学图像分割"
+   ],
+   "benchmarks": [
+    "LIDC-IDRI",
+    "ISIC3"
+   ]
+  }
+ }
 }

@@ -4,5 +4,10 @@
  "title": "CoverPrune-Coverage-Driven-Token-Pruning-for-3D-VLMs-via-Opt",
  "token": "sk-hwXfRrBR3...",
  "created_at": "2026-08-14 14:48:50",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/3a326637-c577-4f52-98a8-425f1eb67741.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/3a326637-c577-4f52-98a8-425f1eb67741.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 13:44:50",
+  "chunks": 1
+ }
 }

@@ -4,5 +4,32 @@
  "title": "Class-Geometry-as-Supervision-for-Sample-Eficient-Open-World",
  "token": "sk-xuJlHjv3a...",
  "created_at": "2026-08-14 04:13:26",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/4a523272-0d99-465f-a0d6-ff11a73f3b4c.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/4a523272-0d99-465f-a0d6-ff11a73f3b4c.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 13:43:32",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "open-world detection",
+    "few-shot detection",
+    "prototype learning",
+    "class geometry",
+    "sample efficiency",
+    "biomedical imaging",
+    "novel-class insertion"
+   ],
+   "field": "开放世界目标检测",
+   "innovations": [
+    "提出类几何监督（CGS）通过视觉/语义差异矩阵约束原型空间成对距离，提升开放世界检测样本效率",
+    "设计差异保持原型目标（L_CG）并给出平均图扭曲界的理论保证",
+    "在原型识别、生物医学少样本检测、COCO OWOD适配中统一应用CGS，揭示几何来源的差异化效应"
+   ],
+   "benchmarks": [
+    "Parasitic Ova Benchmark",
+    "COCO OWOD (Task 1-4)",
+    "ProtoNet Few-shot Recognition"
+   ]
+  }
+ }
 }

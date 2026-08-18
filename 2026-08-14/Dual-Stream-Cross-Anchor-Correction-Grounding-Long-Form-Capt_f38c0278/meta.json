@@ -4,5 +4,34 @@
  "title": "Dual-Stream-Cross-Anchor-Correction-Grounding-Long-Form-Capt",
  "token": "sk-Tq65tdoLK...",
  "created_at": "2026-08-14 14:49:05",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/ece49686-bc37-456c-8900-4244e6db2195.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/ece49686-bc37-456c-8900-4244e6db2195.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 13:46:39",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "对象幻觉",
+    "多模态大语言模型",
+    "对比学习",
+    "交叉注意力",
+    "课程学习",
+    "长caption生成",
+    "领域泛化"
+   ],
+   "field": "多模态大语言模型幻觉缓解",
+   "innovations": [
+    "双流交叉锚点架构：感知流构建对象级CLIP对齐锚点+认知流每步交叉注意力查询，将锚定约束注入训练阶段而非解码时",
+    "课程门控微调（CGFT）：两阶段curriculum先独立收敛感知锚点后联合适配认知查询，保障bf16训练稳定",
+    "长度感知评估范式：设置等长度/等密度SFT控制组分离数据效应与架构净增益，提出密度无关准则（1-CHAIR_I）为主证据"
+   ],
+   "benchmarks": [
+    "POPE",
+    "CHAIR-500",
+    "MME-Hallucination",
+    "HallusionBench",
+    "MMHal-Bench"
+   ]
+  }
+ }
 }

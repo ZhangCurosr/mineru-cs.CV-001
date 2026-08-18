@@ -4,5 +4,31 @@
  "title": "Beyond-Visual-Evidence-Revealing-and-Mitigating-Relational-P",
  "token": "sk-AG7sAmdzS...",
  "created_at": "2026-08-14 04:12:38",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/60997d0b-cd40-4969-8a47-6b1cb5950782.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/60997d0b-cd40-4969-8a47-6b1cb5950782.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 13:42:13",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Multimodal Large Language Models",
+    "Privacy Leakage",
+    "Machine Unlearning",
+    "Document Understanding",
+    "Relational Privacy",
+    "Key Information Extraction"
+   ],
+   "field": "多模态大模型隐私安全",
+   "innovations": [
+    "提出关系级隐私泄露概念并系统揭示文档MLLM在弱视觉证据下的联合敏感字段生成风险",
+    "设计动态关系遗忘框架DRUF，通过动态遗忘集合与乘性KL耦合实现字段对级别的隐私抑制",
+    "构建DocPrivacyBench评测基准，包含Image-Driven和Prompt-Driven双模式及三类提示探针"
+   ],
+   "benchmarks": [
+    "DocPrivacyBench",
+    "DocXPand-25k",
+    "IDNet"
+   ]
+  }
+ }
 }

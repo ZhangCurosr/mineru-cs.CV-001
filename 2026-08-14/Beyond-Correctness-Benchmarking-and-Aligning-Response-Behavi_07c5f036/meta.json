@@ -4,5 +4,35 @@
  "title": "Beyond-Correctness-Benchmarking-and-Aligning-Response-Behavi",
  "token": "sk-ZGznq9xBq...",
  "created_at": "2026-08-14 04:08:52",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/683d9e1d-e840-4797-a722-8061c8208316.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/683d9e1d-e840-4797-a722-8061c8208316.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 13:41:08",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Hybrid-Thinking MLLM",
+    "Response Pattern Alignment",
+    "PatternEval",
+    "PatternRM",
+    "PatternRL",
+    "Multimodal RL",
+    "Chain-of-Thought Leakage"
+   ],
+   "field": "多模态大模型训练与评估",
+   "innovations": [
+    "提出PatternEval基准，首次系统评估混合思考MLLM跨模式响应对齐性",
+    "训练PatternRM识别四类响应模式失败并转化为RL辅助reward",
+    "设计PatternRL在GRPO训练中引入模式特定惩罚，缓解非思考模式行为退化"
+   ],
+   "benchmarks": [
+    "PatternEval",
+    "MathVista",
+    "LogicVista",
+    "ChartQA",
+    "DocVQA",
+    "MMK12"
+   ]
+  }
+ }
 }

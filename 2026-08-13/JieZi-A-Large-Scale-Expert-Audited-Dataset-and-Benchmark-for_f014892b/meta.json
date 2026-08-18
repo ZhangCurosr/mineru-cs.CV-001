@@ -4,5 +4,28 @@
  "title": "JieZi-A-Large-Scale-Expert-Audited-Dataset-and-Benchmark-for",
  "token": "sk-qk0HszLxn...",
  "created_at": "2026-08-13 14:55:53",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/0dfba816-b8b5-4f62-8af9-5f465f055da3.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/0dfba816-b8b5-4f62-8af9-5f465f055da3.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 13:37:55",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "古代汉字训诂",
+    "视觉语言问答",
+    "古文字数据集",
+    "专家审校数据生成",
+    "多模态大模型微调"
+   ],
+   "field": "文化遗产智能理解",
+   "innovations": [
+    "首次将古代汉字训诂形式化为四层次渐进式VQA任务ACCE",
+    "构建首个覆盖六字种的大规模专家审校训诂数据集JieZi-Dataset（50万QA对）",
+    "通过专家模板约束+源文本锚定的LLM生成流水线有效降低专业领域幻觉"
+   ],
+   "benchmarks": [
+    "JieZi-Bench"
+   ]
+  }
+ }
 }

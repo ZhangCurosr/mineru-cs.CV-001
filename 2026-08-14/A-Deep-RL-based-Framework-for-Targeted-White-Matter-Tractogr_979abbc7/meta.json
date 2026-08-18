@@ -4,5 +4,32 @@
  "title": "A-Deep-RL-based-Framework-for-Targeted-White-Matter-Tractogr",
  "token": "sk-I70XXkbCl...",
  "created_at": "2026-08-14 04:14:13",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/ef7c7d63-4dcc-4356-a86b-3c2750b6c5ad.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/ef7c7d63-4dcc-4356-a86b-3c2750b6c5ad.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 13:38:45",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "white matter tractography",
+    "deep reinforcement learning",
+    "GPT-based policy refinement",
+    "multi-policy fusion",
+    "fiber orientation distribution function",
+    "tract-specific tracking",
+    "mask refinement module"
+   ],
+   "field": "神经影像计算与扩散MRI纤维束示踪",
+   "innovations": [
+    "提出Tract-RLFormer框架，利用GPT对TD3 RL策略进行离线精化，无需ground-truth标注",
+    "提出TractRLFusion框架，通过EDS数据选择和MCPFT微调融合TD3/SAC/DDPG多策略互补优势",
+    "设计MRM掩码精炼模块，自动生成个体适配的纤维束特异性追踪区域"
+   ],
+   "benchmarks": [
+    "TractoInferno",
+    "HCP",
+    "ISMRM-2015"
+   ]
+  }
+ }
 }

@@ -4,5 +4,37 @@
  "title": "Bias-Mitigation-in-Face-Recognition-via-Demographic-based-Su",
  "token": "sk-yjjHVmEWF...",
  "created_at": "2026-08-14 14:49:00",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/792700ea-7d4e-4be8-b706-c59a40120dd1.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/792700ea-7d4e-4be8-b706-c59a40120dd1.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 13:43:04",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "人脸识别",
+    "公平性",
+    "监督对比学习",
+    "Demographic bias",
+    "ArcFace",
+    "ISO 19795-10",
+    "FPD/FND"
+   ],
+   "field": "人脸识别公平性与去偏",
+   "innovations": [
+    "提出 Demographic-based Supervised Contrastive (DeSCon) 损失，联合 ArcFace 与 SupCon 优化嵌入尾部分布",
+    "设计 All/WG/Hard 三种人口感知非匹配对采样策略，Hard 变体在多种条件下最稳定提升公平性"
+   ],
+   "benchmarks": [
+    "RFW",
+    "BFW",
+    "VGGFace2",
+    "IJB-C",
+    "LFW",
+    "CPLFW",
+    "CALFW",
+    "AgeDB",
+    "CFP-FP"
+   ]
+  }
+ }
 }

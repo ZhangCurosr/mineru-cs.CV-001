@@ -4,5 +4,39 @@
  "title": "Beyond-Correctness-Benchmarking-and-Aligning-Response-Behavi",
  "token": "sk-ZGznq9xBq...",
  "created_at": "2026-08-14 14:49:04",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/683d9e1d-e840-4797-a722-8061c8208316.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/683d9e1d-e840-4797-a722-8061c8208316.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 13:41:33",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "混合思维 MLLM",
+    "响应模式对齐",
+    "思维链外溢",
+    "奖励模型",
+    "强化学习",
+    "多模态评测基准"
+   ],
+   "field": "多模态大模型对齐与评测",
+   "innovations": [
+    "提出失败富集的多模态响应模式基准 PatternEval 与四类可审计失败 taxonomy",
+    "训练响应级模式奖励模型 PatternRM 并将其稀疏惩罚引入 GRPO 强化学习 PatternRL",
+    "在 25 个主流/前沿 MLLM 上揭示思考/非思考跨模式响应行为系统性 misalignment 及规模非单调收敛现象"
+   ],
+   "benchmarks": [
+    "PatternEval",
+    "MathVista",
+    "MathVerse",
+    "DynaMath",
+    "WeMath",
+    "LogicVista",
+    "VisuLogic",
+    "AI2D",
+    "ChartQA",
+    "DocVQA",
+    "InfoVQA"
+   ]
+  }
+ }
 }

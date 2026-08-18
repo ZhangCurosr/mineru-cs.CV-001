@@ -4,5 +4,10 @@
  "title": "DreamX-Phi-1-0-Action-Conditioned-Video-World-Model-for-Robo",
  "token": "sk-Yw2JG3IRJ...",
  "created_at": "2026-08-14 04:08:59",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/ddcaf7c2-01d5-4b72-8621-26b13bc619ab.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/ddcaf7c2-01d5-4b72-8621-26b13bc619ab.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 13:46:34",
+  "chunks": 1
+ }
 }

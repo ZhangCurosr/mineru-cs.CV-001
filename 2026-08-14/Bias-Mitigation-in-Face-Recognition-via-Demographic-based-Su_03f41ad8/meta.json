@@ -4,5 +4,38 @@
  "title": "Bias-Mitigation-in-Face-Recognition-via-Demographic-based-Su",
  "token": "sk-yjjHVmEWF...",
  "created_at": "2026-08-14 04:08:22",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/792700ea-7d4e-4be8-b706-c59a40120dd1.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/792700ea-7d4e-4be8-b706-c59a40120dd1.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 13:41:38",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "人脸验证公平性",
+    "监督对比学习",
+    "bias mitigation",
+    "Demographic-based Supervised Contrastive Learning",
+    "ISO/IEC 19795-10",
+    "FPD/FND",
+    "ArcFace"
+   ],
+   "field": "人脸识别公平性",
+   "innovations": [
+    "提出 DeSCon 损失，将 Supervised Contrastive Learning 与 demographic 感知 pair 采样结合以优化非匹配分数分布尾部",
+    "设计 DeSCon-Hard/WG/All 三种采样策略，证明 within-group hard negative mining 在平衡/不平衡训练下均最稳健",
+    "采用 ISO/IEC 19795-10 标准的 FPD/FND/Gini 统一评测公平性，揭示 ACC/STD 指标的局限性"
+   ],
+   "benchmarks": [
+    "RFW",
+    "BFW",
+    "VGGFace2",
+    "LFW",
+    "CPLFW",
+    "CALFW",
+    "AgeDB",
+    "CFP-FP",
+    "IJB-C"
+   ]
+  }
+ }
 }

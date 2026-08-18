@@ -4,5 +4,34 @@
  "title": "DUAL-MANIFOLD-GEOMETRY-GUIDED-REPRESENTATION-LEARNING-ADAPTI",
  "token": "sk-vCwdEIcnG...",
  "created_at": "2026-08-14 04:13:52",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/b8768cf9-f82b-43e5-ac2d-4299c503600d.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/b8768cf9-f82b-43e5-ac2d-4299c503600d.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 13:45:58",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "双流形几何",
+    "Kernel-Guided Feature Transform",
+    "特征协方差",
+    "参数几何",
+    "Exploit-Explore调度",
+    "表示学习"
+   ],
+   "field": "深度学习表示学习与几何优化",
+   "innovations": [
+    "提出kernel manifold与data manifold的几何耦合框架，将参数几何显式传递到特征空间",
+    "KGFT模块通过协方差重塑而非响应重加权实现轻量几何指导",
+    "Exploit/Explore双模态+深度感知调度策略实现浅层对齐与深层多样性平衡"
+   ],
+   "benchmarks": [
+    "CIFAR-100",
+    "ImageNet-1K",
+    "GSM8K",
+    "MAWPS",
+    "SVAMP",
+    "AQuA"
+   ]
+  }
+ }
 }

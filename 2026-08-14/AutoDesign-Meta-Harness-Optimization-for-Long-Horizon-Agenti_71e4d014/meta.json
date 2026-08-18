@@ -4,5 +4,32 @@
  "title": "AutoDesign-Meta-Harness-Optimization-for-Long-Horizon-Agenti",
  "token": "sk-WJrSFDicB...",
  "created_at": "2026-08-14 14:48:44",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/9930449d-7491-4435-a7d6-61d417715b98.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/9930449d-7491-4435-a7d6-61d417715b98.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 13:40:57",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Meta-Harness Optimization",
+    "Long-Horizon Agentic Design",
+    "Multimodal Design Generation",
+    "Auto-Improving Systems",
+    "PosterBench",
+    "Academic Paper-to-Poster",
+    "Harness Evolution",
+    "Iterative Refinement"
+   ],
+   "field": "多模态智能体设计系统",
+   "innovations": [
+    "将多模态设计任务建模为元Harness优化问题，通过外层循环递归改进设计系统本身而非单次输出",
+    "提出DesignHarness五成分架构（Context/Tools/Runtime/Orchestration/Evaluation）并实现单成分更新+开发集接受门控",
+    "构建PosterBench七维度评测基准与记录级上限门控协议，区分优化时评估器与冻结评测协议"
+   ],
+   "benchmarks": [
+    "PosterBench Main Track (100 papers)",
+    "PosterBench-mini (10 papers)"
+   ]
+  }
+ }
 }

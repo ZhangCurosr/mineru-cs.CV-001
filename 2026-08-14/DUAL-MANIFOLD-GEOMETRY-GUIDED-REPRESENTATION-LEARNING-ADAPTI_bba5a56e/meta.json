@@ -4,5 +4,35 @@
  "title": "DUAL-MANIFOLD-GEOMETRY-GUIDED-REPRESENTATION-LEARNING-ADAPTI",
  "token": "sk-vCwdEIcnG...",
  "created_at": "2026-08-14 14:49:23",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/b8768cf9-f82b-43e5-ac2d-4299c503600d.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/b8768cf9-f82b-43e5-ac2d-4299c503600d.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 13:45:47",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "双流形几何",
+    "Kernel引导",
+    "特征协方差重塑",
+    "Exploit-Explore调度",
+    "参数几何",
+    "轻量化模块",
+    "跨架构泛化"
+   ],
+   "field": "深度学习表示学习",
+   "innovations": [
+    "提出Kernel-Manifold与Data-Manifold耦合的双流形表示学习框架",
+    "设计KGFT模块通过Kernel Gram矩阵显式重塑特征协方差结构",
+    "引入深度感知Exploit/Explore双模式调度与可学习引导强度机制"
+   ],
+   "benchmarks": [
+    "CIFAR-100",
+    "ImageNet-1K",
+    "GSM8K",
+    "MAWPS",
+    "SVAMP",
+    "AQuA"
+   ]
+  }
+ }
 }

@@ -4,5 +4,31 @@
  "title": "AmalthAI-An-Open-Source-Computer-Vision-Platform-for-Cultura",
  "token": "sk-MljcAo9Bd...",
  "created_at": "2026-08-14 04:10:38",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/369012fc-f5ce-4b5c-99bd-1ab765242973.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/369012fc-f5ce-4b5c-99bd-1ab765242973.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 13:40:51",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Cultural Heritage",
+    "Computer Vision Platform",
+    "No-code ML",
+    "Grad-CAM",
+    "Vision-Language Model",
+    "MLOps",
+    "Semantic Segmentation",
+    "Hypothesis Testing"
+   ],
+   "field": "文化遗产计算机视觉",
+   "innovations": [
+    "面向非ML专家的开源CV平台，集成分类/分割/检测端到端无代码工作流",
+    "Grad-CAM + VLM 双通道可解释性闭环，支持领域专家质疑与验证模型决策",
+    "模块化自托管架构：本地独立部署与外部数据服务双向同步共存"
+   ],
+   "benchmarks": [
+    "Textile-imprint dataset (Material classification: 1927 images; Technique classification: 1837 images; Segmentation: 387 images with masks)"
+   ]
+  }
+ }
 }

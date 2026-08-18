@@ -4,5 +4,38 @@
  "title": "A-Controlled-Study-of-Self-Supervised-Image-and-Video-Pretra",
  "token": "sk-ovHaiDbC4...",
  "created_at": "2026-08-14 04:11:48",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/1e5b2a3f-9dd0-47ee-92cb-97e3d2ff3d2f.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/1e5b2a3f-9dd0-47ee-92cb-97e3d2ff3d2f.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 13:38:12",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "自监督学习",
+    "视觉基础模型",
+    "资源受限预训练",
+    "DINOv2",
+    "VideoMAE",
+    "语义-几何权衡"
+   ],
+   "field": "视觉表示学习",
+   "innovations": [
+    "在匹配数据、架构与计算预算条件下系统比较多种 SSL 目标的图像与视频预训练效果",
+    "揭示 DINOv2 与像素级/视频目标联合训练的互补性与语义-几何权衡",
+    "通过时间颈消融分析揭示几何结构学习的位置分布"
+   ],
+   "benchmarks": [
+    "ImageNet-1K",
+    "Pascal VOC",
+    "Cityscapes",
+    "ADE20K",
+    "NYUv2",
+    "KITTI",
+    "K700",
+    "SSV2",
+    "RE10K",
+    "MOVi-F"
+   ]
+  }
+ }
 }

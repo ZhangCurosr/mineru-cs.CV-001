@@ -4,5 +4,32 @@
  "title": "Alaya-EVOKE-From-Linear-Scaling",
  "token": "sk-DXHHyylpH...",
  "created_at": "2026-08-14 04:11:07",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/fd0dfadf-e3c2-4c1f-9baa-bbc0e58730f9.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/fd0dfadf-e3c2-4c1f-9baa-bbc0e58730f9.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 13:40:06",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "interactive world model",
+    "video generation",
+    "distribution matching distillation",
+    "long-horizon generation",
+    "geometric memory",
+    "few-step diffusion",
+    "chunk-wise sparse attention"
+   ],
+   "field": "视频生成与交互式世界模型",
+   "innovations": [
+    "外部化几何世界状态库使 denoiser 上下文有界且独立于会话时长",
+    "chunk-wise 稀疏注意力 + per-chunk 文本条件实现线性成本的长时序监督",
+    "30秒 self-forced 全窗口分布匹配蒸馏将长程一致性传递到三步 CFG-free 学生"
+   ],
+   "benchmarks": [
+    "WBench",
+    "VBench-2.0",
+    "VBench-Long"
+   ]
+  }
+ }
 }

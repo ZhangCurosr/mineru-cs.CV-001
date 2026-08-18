@@ -4,5 +4,33 @@
  "title": "Alaya-EVOKE-From-Linear-Scaling",
  "token": "sk-DXHHyylpH...",
  "created_at": "2026-08-14 14:49:20",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/fd0dfadf-e3c2-4c1f-9baa-bbc0e58730f9.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/fd0dfadf-e3c2-4c1f-9baa-bbc0e58730f9.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 13:40:35",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "interactive world model",
+    "few-step video generation",
+    "distribution matching distillation",
+    "long-horizon supervision",
+    "geometric world state",
+    "sparse attention",
+    "recurrent generation",
+    "evocation"
+   ],
+   "field": "视频生成与交互世界模型",
+   "innovations": [
+    "将持久世界状态外置到相机索引几何世界状态银行，实现有界 recurrent 生成",
+    "教师模型面向长时交互重设计：分块稀疏注意力+逐块文本条件，支持 30 秒监督时域与 session 中段指令切换",
+    "通过自强制分布匹配将长程监督与动态条件能力蒸馏至三步 CFG-free 学生"
+   ],
+   "benchmarks": [
+    "WBench",
+    "VBench-2.0",
+    "VBench-Long"
+   ]
+  }
+ }
 }

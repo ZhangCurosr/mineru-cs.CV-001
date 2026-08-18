@@ -4,5 +4,30 @@
  "title": "A-Generative-Approach-for-Improving-Multi-Label-Defect-Class",
  "token": "sk-NVka6yfS0...",
  "created_at": "2026-08-14 14:49:06",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/ec69baec-dd77-4c2d-bf9e-16692d8679ca.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/ec69baec-dd77-4c2d-bf9e-16692d8679ca.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 13:39:21",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "多标签缺陷分类",
+    "光电致发光成像",
+    "生成式数据增强",
+    "图像修复",
+    "光伏组件",
+    "LaMa",
+    "频域卷积"
+   ],
+   "field": "工业视觉检测",
+   "innovations": [
+    "提出GDI方法：利用分割掩码指导LaMa修复模型移除非目标缺陷，从多缺陷图像生成高质量单缺陷合成样本",
+    "建立UCF-EL-Defect多标签分类新基准（F1-Score 0.7744），并证明GDI可显著提升稀有类别性能",
+    "首次系统性对比并否定Copy-Paste在EL缺陷数据增强的有效性，指出其违反物理约束的问题"
+   ],
+   "benchmarks": [
+    "UCF-EL-Defect"
+   ]
+  }
+ }
 }
