@@ -4,5 +4,35 @@
  "title": "Hybrid-LUT-Channel-Aware-Hybrid-Lookup-Table-and-Filtering-f",
  "token": "sk-nY8L7ieIq...",
  "created_at": "2026-08-13 07:11:52",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/7f69fd60-0666-4e74-9433-92bad6291eae.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/7f69fd60-0666-4e74-9433-92bad6291eae.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 12:27:06",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Image Denoising",
+    "Lookup Table",
+    "YUV Color Space",
+    "Hardware Efficiency",
+    "Edge Device",
+    "Asymmetric Processing",
+    "Multi-band LUT"
+   ],
+   "field": "低功耗图像恢复硬件友好方法",
+   "innovations": [
+    "提出 YUV 空间非对称通道处理，LUT 仅用于 Y 通道，UV 通道使用轻量滤波，减少 2/3 存储",
+    "设计多频带 LUT 分支与像素级方差引导的权重融合，自适应平衡细节保留与噪声抑制",
+    "基于 MSB/LSB 位平面特性互补分配不同感受野核组合，实现最优资源利用"
+   ],
+   "benchmarks": [
+    "CBSD68",
+    "Kodak24",
+    "McMaster",
+    "Urban100",
+    "SIDD",
+    "DnD"
+   ]
+  }
+ }
 }

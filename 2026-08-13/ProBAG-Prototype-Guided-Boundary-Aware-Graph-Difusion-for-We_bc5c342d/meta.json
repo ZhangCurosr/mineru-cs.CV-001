@@ -4,5 +4,30 @@
  "title": "ProBAG-Prototype-Guided-Boundary-Aware-Graph-Difusion-for-We",
  "token": "sk-Ar06zcDAy...",
  "created_at": "2026-08-13 06:51:52",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/efca390a-a09c-4cca-8de0-387fc3c0d333.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/efca390a-a09c-4cca-8de0-387fc3c0d333.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 12:38:20",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Weakly supervised semantic segmentation",
+    "Histopathology",
+    "Prototype learning",
+    "Graph diffusion",
+    "Vision-language foundation model",
+    "Boundary-aware segmentation"
+   ],
+   "field": "病理图像弱监督分割",
+   "innovations": [
+    "前景质量保持的逐类幂次重校准融合CAM",
+    "CONCH病理文本与视觉混合原型匹配冻结UNI多尺度特征",
+    "晚期注意力上下文差异正则化的一步图扩散边界保护"
+   ],
+   "benchmarks": [
+    "BCSS-WSSS",
+    "LUAD-HistoSeg"
+   ]
+  }
+ }
 }

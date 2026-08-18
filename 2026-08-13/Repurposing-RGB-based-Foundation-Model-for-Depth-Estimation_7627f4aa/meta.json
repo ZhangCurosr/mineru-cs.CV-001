@@ -4,5 +4,28 @@
  "title": "Repurposing-RGB-based-Foundation-Model-for-Depth-Estimation",
  "token": "sk-JMLCbBCEj...",
  "created_at": "2026-08-13 07:12:17",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/8f002dc2-b65d-44d1-b868-ce77c0559102.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/8f002dc2-b65d-44d1-b868-ce77c0559102.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 12:38:58",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "热成像深度估计",
+    "跨模态知识蒸馏",
+    "层级监督",
+    "DINOv3",
+    "RGB-热图对齐",
+    "MS²数据集"
+   ],
+   "field": "多光谱视觉感知",
+   "innovations": [
+    "提出层级对齐机制同时传递局部结构与全局语义，超越单层特征蒸馏",
+    "首次引入亮度-对比度置信度验证动态过滤低质量 RGB 监督"
+   ],
+   "benchmarks": [
+    "MS² (Multi-Spectral Stereo)"
+   ]
+  }
+ }
 }

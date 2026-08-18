@@ -4,5 +4,33 @@
  "title": "Understanding-Why-Foundation-Models-Work-for-Difusion-Genera",
  "token": "sk-Ar06zcDAy...",
  "created_at": "2026-08-13 03:38:26",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/d011212f-d4e4-417e-b75f-199b8f8b87d4.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/d011212f-d4e4-417e-b75f-199b8f8b87d4.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 13:01:19",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Diffusion-Generated Image Detection",
+    "Vision Foundation Models",
+    "DDIM Inversion",
+    "Frequency-Swapping Analysis",
+    "Effective Dimensionality",
+    "Digital Forensics",
+    "Robust Detection"
+   ],
+   "field": "生成式AI内容检测与数字取证",
+   "innovations": [
+    "提出基于DDIM反转的可控语义一致图像序列协议以隔离非语义判别线索",
+    "揭示VFM检测器主要依赖低-中频分布差异而非高频伪影",
+    "通过潜空间有效维度与方差量化扩散生成图像的多样性坍缩现象"
+   ],
+   "benchmarks": [
+    "unbiased GenImage",
+    "RAISE",
+    "MS-COCO",
+    "多生成器泛化测试(SD 1.4/2.1/XL/3, Flux, DALL-E 3, Firefly, Midjourney, Scale-RAE, PixelDiT)"
+   ]
+  }
+ }
 }

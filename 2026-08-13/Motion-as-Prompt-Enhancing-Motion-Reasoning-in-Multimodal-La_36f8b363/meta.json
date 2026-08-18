@@ -4,5 +4,10 @@
  "title": "Motion-as-Prompt-Enhancing-Motion-Reasoning-in-Multimodal-La",
  "token": "sk-nY8L7ieIq...",
  "created_at": "2026-08-13 07:11:48",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/6f4fe24a-9656-4ee2-845e-d6357be0acea.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/6f4fe24a-9656-4ee2-845e-d6357be0acea.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 12:35:20",
+  "chunks": 1
+ }
 }

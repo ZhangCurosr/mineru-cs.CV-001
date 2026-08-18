@@ -4,5 +4,35 @@
  "title": "Dual-Anchors-Do-It-Better-Hierarchical-Group-Merging-for-Zer",
  "token": "sk-Hms67LeAf...",
  "created_at": "2026-08-13 14:56:51",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/a59c35e1-6246-4042-9ee5-aa808ac7d4a7.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/a59c35e1-6246-4042-9ee5-aa808ac7d4a7.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 12:24:37",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "零样本异常检测",
+    "双锚点框架",
+    "层次化分组",
+    "视觉-语言模型",
+    "跨模态对齐",
+    "工业缺陷检测"
+   ],
+   "field": "零样本异常检测",
+   "innovations": [
+    "提出双锚点范式，通过层次化分组合并构建图像语义锚点与文本锚点并列对齐",
+    "设计组门控Token精化器利用图像锚点自适应精化全局表示",
+    "构建动态状态提示实现图像条件化的自适应文本生成"
+   ],
+   "benchmarks": [
+    "MVTec-AD",
+    "VisA",
+    "MPDD",
+    "BTAD",
+    "DTD-Synthetic",
+    "ISIC",
+    "Kvasir"
+   ]
+  }
+ }
 }

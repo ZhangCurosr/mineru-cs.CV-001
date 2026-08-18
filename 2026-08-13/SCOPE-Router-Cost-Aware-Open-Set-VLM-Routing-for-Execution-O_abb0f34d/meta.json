@@ -4,5 +4,32 @@
  "title": "SCOPE-Router-Cost-Aware-Open-Set-VLM-Routing-for-Execution-O",
  "token": "sk-Ir4JqYCnj...",
  "created_at": "2026-08-13 06:51:49",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/c1f9687b-fa32-4842-82b8-4a099362149d.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/c1f9687b-fa32-4842-82b8-4a099362149d.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 12:39:38",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "VLM routing",
+    "model routing",
+    "cost-aware",
+    "open-set",
+    "execution-oriented",
+    "hybrid calibration",
+    "contrastive regularization"
+   ],
+   "field": "多模态模型路由与部署优化",
+   "innovations": [
+    "提出混合校准策略（随机/诊断/多样性）在有限预算下最大化模型Profile区分度",
+    "CRM per-pair独立BCE消除多正样本稀释并将成本编码为连续目标",
+    "RCCR路由一致性对比正则化使相似路由偏好的查询在空间拉近以泛化跨样本"
+   ],
+   "benchmarks": [
+    "VLM-ExecRouterBench",
+    "VL-RouterBench",
+    "MMR-Bench"
+   ]
+  }
+ }
 }

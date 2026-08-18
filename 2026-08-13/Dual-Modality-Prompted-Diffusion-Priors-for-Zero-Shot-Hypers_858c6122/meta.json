@@ -4,5 +4,32 @@
  "title": "Dual-Modality-Prompted-Diffusion-Priors-for-Zero-Shot-Hypers",
  "token": "sk-zybFjYcVd...",
  "created_at": "2026-08-13 07:12:24",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/4c72a331-9d7f-4a03-855a-37177e3f90e0.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/4c72a331-9d7f-4a03-855a-37177e3f90e0.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 12:26:09",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "高光谱 pansharpening",
+    "零样本学习",
+    "扩散模型",
+    "双模态提示",
+    "特征级条件注入",
+    "结构正则化",
+    "遥感图像融合"
+   ],
+   "field": "高光谱图像融合与复原",
+   "innovations": [
+    "提出双模态图像提示扩散模型（DIDM），将LRHS/PAN观测编码为光谱/空间token并通过Cross-Attention直接注入冻结扩散骨干的中间特征层，实现观测与扩散先验的特征级耦合",
+    "引入PAN引导的加权像素感知全变分（WPATV）正则化，利用PAN梯度图自适应调节空间分量平滑强度，保留结构边界同时抑制均匀区域伪纹理"
+   ],
+   "benchmarks": [
+    "Pavia",
+    "Chikusei",
+    "Houston",
+    "FR1 (HyperPanCollection)"
+   ]
+  }
+ }
 }

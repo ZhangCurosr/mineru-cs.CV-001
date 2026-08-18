@@ -4,5 +4,33 @@
  "title": "LOOKBACK-Where-and-How-to-Score-LVLM-Responses-via-Visual-Re",
  "token": "sk-mBuyDYvkR...",
  "created_at": "2026-08-13 14:56:29",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/d5693161-513c-47da-b78c-d65ff9ed2f64.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/d5693161-513c-47da-b78c-d65ff9ed2f64.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 12:27:38",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "LVLM",
+    "Best-of-N",
+    "Visual Hallucination",
+    "Response Scoring",
+    "Visual Lookback",
+    "Training-free",
+    "Grounding"
+   ],
+   "field": "多模态大模型评估与可靠性",
+   "innovations": [
+    "提出visual lookback score作为token级视觉参考使用的轻量代理",
+    "将输出空间置信度与视觉回看分数在token级Product-of-Experts式校准",
+    "通过熵正则化推导视觉相关性加权分布实现响应级聚合"
+   ],
+   "benchmarks": [
+    "VQAv2",
+    "CHAIR",
+    "AMBER",
+    "HallusionBench"
+   ]
+  }
+ }
 }

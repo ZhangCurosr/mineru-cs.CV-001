@@ -4,5 +4,31 @@
  "title": "Learning-with-Bilevel-Minimax-Optimization-for-Eficient-and",
  "token": "sk-Ar06zcDAy...",
  "created_at": "2026-08-13 06:51:50",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/c9d6eac3-e491-46d0-9bc0-4977e244591a.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/c9d6eac3-e491-46d0-9bc0-4977e244591a.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 12:30:20",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "迁移攻击",
+    "双层优化",
+    "对抗样本",
+    "语义分割",
+    "极小大优化",
+    "黑盒攻击"
+   ],
+   "field": "对抗机器人与安全",
+   "innovations": [
+    "首次将双层极小大框架应用于迁移攻击，统一建模初始化-扰动-代理三元耦合",
+    "设计SW M+IGA自底向上求解器，单次反向传播联合适配扰动与代理软权重",
+    "提供稳定性导向的理论分析，刻画联合优化动力学的收敛性界"
+   ],
+   "benchmarks": [
+    "ImageNet",
+    "Cityscapes",
+    "ADE20K"
+   ]
+  }
+ }
 }

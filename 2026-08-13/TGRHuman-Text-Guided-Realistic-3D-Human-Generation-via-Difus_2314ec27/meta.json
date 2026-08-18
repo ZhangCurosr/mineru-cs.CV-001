@@ -4,5 +4,37 @@
  "title": "TGRHuman-Text-Guided-Realistic-3D-Human-Generation-via-Difus",
  "token": "sk-Ir4JqYCnj...",
  "created_at": "2026-08-13 07:13:42",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/7678cfe1-cfc7-44e5-b9bf-45f128fe55c9.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/7678cfe1-cfc7-44e5-b9bf-45f128fe55c9.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 12:40:22",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "3D human generation",
+    "diffusion renderer",
+    "multi-view consistency",
+    "texture prior",
+    "geometry carving",
+    "text-to-3D"
+   ],
+   "field": "3D 人体生成",
+   "innovations": [
+    "几何-纹理解耦生成策略，以显式多视图观测替代 SDS 优化，推理速度提升数十倍",
+    "基于 SMPL UV 空间的纹理先验构建与扩散渲染器双网络一致性机制",
+    "高分辨率多视图法线生成与动态 remeshing 几何雕刻，支持宽松服装"
+   ],
+   "benchmarks": [
+    "THuman2.0",
+    "THuman2.1",
+    "2K2K",
+    "Human4DiT",
+    "FID",
+    "CLIP Score",
+    "PSNR",
+    "SSIM",
+    "LPIPS"
+   ]
+  }
+ }
 }

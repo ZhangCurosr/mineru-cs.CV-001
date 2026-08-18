@@ -4,5 +4,33 @@
  "title": "Predicting-Functions-Not-Features-KANs-with-Function-Space-J",
  "token": "sk-45Ifw5Iq3...",
  "created_at": "2026-08-13 05:40:53",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/57d70efd-c0d1-4beb-b05d-9bfb378dbf2c.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/57d70efd-c0d1-4beb-b05d-9bfb378dbf2c.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 12:37:25",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Kolmogorov-Arnold Networks",
+    "医学图像分割",
+    "联合嵌入预测学习",
+    "自监督学习",
+    "函数空间表示",
+    "JEPA"
+   ],
+   "field": "医学图像分析与分割",
+   "innovations": [
+    "首次将JEPA扩展到KAN预聚合函数空间，实现从特征预测到函数预测的范式转变",
+    "提出多半径边函数签名表示以捕获局部函数变化模式",
+    "通过确定性边坐标与EMA目标分支实现训练期预测、推理期移除的高效学习框架"
+   ],
+   "benchmarks": [
+    "BUSI",
+    "DDTI",
+    "TN3K",
+    "CVC-ClinicDB",
+    "GlaS"
+   ]
+  }
+ }
 }

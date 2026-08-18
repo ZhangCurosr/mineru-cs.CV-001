@@ -4,5 +4,31 @@
  "title": "TD-VAD-Breaking-Visual-Dependence-in-Video-Anomaly-Detection",
  "token": "sk-Ir4JqYCnj...",
  "created_at": "2026-08-13 03:49:34",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/fd6b354e-4f9c-47cb-a898-a9c156861427.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/fd6b354e-4f9c-47cb-a898-a9c156861427.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 12:40:37",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Video Anomaly Detection",
+    "Vision-Free VAD",
+    "Text-Driven Learning",
+    "CLIP",
+    "Large Language Model",
+    "Cross-Modal Alignment",
+    "Causal Attention"
+   ],
+   "field": "视频异常检测",
+   "innovations": [
+    "提出仅用LLM生成文本描述训练的vision-free VAD范式，彻底打破对目标域视频数据的依赖",
+    "设计事件演化因果注意力EC-Attn（EFC局部+他ECC全局）捕获双粒度时序依赖",
+    "利用冻结CLIP跨模态对齐空间实现文本到视频的轻量迁移，参数量13B→0.31B、推理提速145倍"
+   ],
+   "benchmarks": [
+    "XD-Violence",
+    "UCF-Crime"
+   ]
+  }
+ }
 }

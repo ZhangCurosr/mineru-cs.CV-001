@@ -4,5 +4,30 @@
  "title": "ScaleVid-Geometry-Aware-Video-Object-Scaling-with-Mesh-Free",
  "token": "sk-9BdnpHblK...",
  "created_at": "2026-08-13 07:11:28",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/145ad504-fcdf-415d-b90e-bfc2d60b5431.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/145ad504-fcdf-415d-b90e-bfc2d60b5431.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 12:40:35",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "视频编辑",
+    "几何感知生成",
+    "视频物体缩放",
+    "扩散模型",
+    "伪源重建",
+    "形变引导"
+   ],
+   "field": "视频几何感知编辑",
+   "innovations": [
+    "伪源重建 formulation 解耦几何变换与视频合成，无需成对真实缩放数据；渐进式 2D-to-3D 两阶段训练使 Main Model 同时具备平面合成与几何感知缩放能力；逆形变策略消除训练-推理分布差距并提升几何保真度"
+   ],
+   "benchmarks": [
+    "Geometry Benchmark",
+    "Real-Background Benchmark",
+    "Pexels Real-World",
+    "DAVIS Real-World"
+   ]
+  }
+ }
 }

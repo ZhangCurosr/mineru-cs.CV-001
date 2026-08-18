@@ -4,5 +4,31 @@
  "title": "Learning-from-Multimodal-Pseudo-Labels-for-Robust-Open-Vocab",
  "token": "sk-ZGznq9xBq...",
  "created_at": "2026-08-13 14:56:19",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/272b23ff-5da1-4335-a3ea-e86dd603a5c2.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/272b23ff-5da1-4335-a3ea-e86dd603a5c2.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 12:31:26",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "open-vocabulary segmentation",
+    "pseudo-label generation",
+    "vision-language model",
+    "visual-textual alignment",
+    "CLIP",
+    "Grounded SAM",
+    "LLaVA"
+   ],
+   "field": "开放词汇视觉分割",
+   "innovations": [
+    "自动化多模态伪标签生成流水线（Grounded SAM+LLaVA+CLIP过滤）",
+    "扩展接地损失与语义一致性损失提升词汇鲁棒性",
+    "GPT驱动字幕重建损失增强细粒度视觉-文本推理"
+   ],
+   "benchmarks": [
+    "COCO OVIS",
+    "COCO OSPS"
+   ]
+  }
+ }
 }

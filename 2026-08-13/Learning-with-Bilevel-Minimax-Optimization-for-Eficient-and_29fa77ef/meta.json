@@ -4,5 +4,33 @@
  "title": "Learning-with-Bilevel-Minimax-Optimization-for-Eficient-and",
  "token": "sk-dD4E81LFV...",
  "created_at": "2026-08-13 14:56:31",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/c9d6eac3-e491-46d0-9bc0-4977e244591a.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/c9d6eac3-e491-46d0-9bc0-4977e244591a.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 12:31:07",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "迁移攻击",
+    "对抗样本",
+    "双层优化",
+    "极小极大优化",
+    "语义分割",
+    "模型鲁棒性",
+    "黑盒攻击",
+    "初始化扰动"
+   ],
+   "field": "对抗机器学习",
+   "innovations": [
+    "首次将迁移攻击统一表述为双层极小极大优化问题，显式耦合初始化扰动、对抗扰动和代理参数三元交互",
+    "提出SWMSWM单次反向传播联合更新扰动与软权重+IGA基于隐函数定理高效求解超梯度双层求解器",
+    "理论分析刻画了联合优化动力学的稳定性（外层面梯度均方上界O(1/√T)）并提供内层面误差bound"
+   ],
+   "benchmarks": [
+    "ImageNet分类",
+    "Cityscapes语义分割",
+    "ADE20K语义分割"
+   ]
+  }
+ }
 }

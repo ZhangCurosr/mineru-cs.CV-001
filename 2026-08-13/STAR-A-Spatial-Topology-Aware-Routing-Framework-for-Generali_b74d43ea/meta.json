@@ -4,5 +4,32 @@
  "title": "STAR-A-Spatial-Topology-Aware-Routing-Framework-for-Generali",
  "token": "sk-5WOIsMt5v...",
  "created_at": "2026-08-13 07:11:37",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/7eec3a62-91e2-4fca-833f-e4a7564e0da7.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/7eec3a62-91e2-4fca-833f-e4a7564e0da7.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 12:39:30",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "3D场景理解",
+    "Mixture-of-Experts",
+    "空间拓扑感知",
+    "跨域泛化",
+    "点云分割"
+   ],
+   "field": "3D视觉感知",
+   "innovations": [
+    "拓扑感知的MoE路由机制，将空间上下文显式注入专家选择",
+    "双分支解耦设计分离跨域表征学习与域自适应路由",
+    "基于Shannon熵的动态专家数量控制策略"
+   ],
+   "benchmarks": [
+    "ScanNet Val",
+    "S3DIS Area 5",
+    "nuScenes Val",
+    "Waymo Val",
+    "ScanNet200 Val"
+   ]
+  }
+ }
 }

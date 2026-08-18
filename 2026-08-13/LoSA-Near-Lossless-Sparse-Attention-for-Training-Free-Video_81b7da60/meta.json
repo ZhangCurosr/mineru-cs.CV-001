@@ -4,5 +4,31 @@
  "title": "LoSA-Near-Lossless-Sparse-Attention-for-Training-Free-Video",
  "token": "sk-45Ifw5Iq3...",
  "created_at": "2026-08-13 05:40:55",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/e707187f-9715-4cb4-91a3-eb746f1acfd8.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/e707187f-9715-4cb4-91a3-eb746f1acfd8.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 12:32:28",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "sparse attention",
+    "video diffusion",
+    "training-free acceleration",
+    "near-lossless",
+    "feature caching",
+    "inference optimization"
+   ],
+   "field": "视频生成推理加速",
+   "innovations": [
+    "一次性精确构造近无损稀疏模式并通过冻结块索引跨步复用",
+    "以保留质量阈值替代稀疏比作为控制变量实现自适应稀疏选择"
+   ],
+   "benchmarks": [
+    "Wan2.1-T2V-1.3B",
+    "Wan2.1-T2V-14B",
+    "HunyuanVideo-13B",
+    "VBench"
+   ]
+  }
+ }
 }

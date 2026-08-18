@@ -4,5 +4,31 @@
  "title": "Look-What-the-Probes-Dragged-In-Real-World-Chest-X-ray-Short",
  "token": "sk-45Ifw5Iq3...",
  "created_at": "2026-08-13 04:49:57",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/a80a5c34-d135-4739-ba3c-6aa4f33481c8.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/a80a5c34-d135-4739-ba3c-6aa4f33481c8.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 12:32:15",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "shortcut learning",
+    "MedCLIP",
+    "linear probing",
+    "chest X-ray",
+    "calibration",
+    "vision-language model"
+   ],
+   "field": "医学影像AI可解释性与鲁棒性",
+   "innovations": [
+    "将线性探针方法迁移至MedCLIP视觉编码器分析真实捷径的层间涌现",
+    "系统披露NIH-CXR14与PadChest数据集的标注质量缺陷",
+    "证实扩散型与局部化捷径在MedCLIP中按深度分层出现的模式"
+   ],
+   "benchmarks": [
+    "NIH-CXR14 pneumothorax",
+    "PadChest cardiomegaly",
+    "PadChest pneumothorax"
+   ]
+  }
+ }
 }

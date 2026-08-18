@@ -4,5 +4,42 @@
  "title": "Enhancing-Visual-Understanding-at-Zero-Inference-Overhead-vi",
  "token": "sk-twhrLv2pG...",
  "created_at": "2026-08-13 14:56:23",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/55f7d36e-820d-4d8d-8908-536c9cefde2e.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/55f7d36e-820d-4d8d-8908-536c9cefde2e.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 12:27:57",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "multimodal LLM",
+    "generation-guided training",
+    "Next Embedding Prediction",
+    "MoT",
+    "visual understanding",
+    "zero inference overhead"
+   ],
+   "field": "多模态大模型理解与生成统一训练",
+   "innovations": [
+    "在LLM输入嵌入空间进行自回归连续嵌入预测（NEP），使生成目标与理解表示完全对齐",
+    "解耦MoT架构使生成梯度仅回流共享下层，保护上层理解路径并在推理时完整丢弃生成支",
+    "提出基于潜在认知相关性的多任务生成数据构造原则，并通过匹配预算对照逐一剥离增益来源"
+   ],
+   "benchmarks": [
+    "MME",
+    "MMMU",
+    "BLINK",
+    "RealWorldQA",
+    "CharXiv",
+    "DynaMath",
+    "MathVision",
+    "MathVista",
+    "LogicVista",
+    "VisuLogic",
+    "Count-Bench",
+    "CV-Bench",
+    "Video-MME",
+    "MVBench"
+   ]
+  }
+ }
 }

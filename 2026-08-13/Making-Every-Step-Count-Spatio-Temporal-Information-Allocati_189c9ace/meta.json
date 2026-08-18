@@ -4,5 +4,33 @@
  "title": "Making-Every-Step-Count-Spatio-Temporal-Information-Allocati",
  "token": "sk-5WOIsMt5v...",
  "created_at": "2026-08-13 07:11:51",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/b4af6f33-bd9d-426d-a70d-a33abe786523.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/b4af6f33-bd9d-426d-a70d-a33abe786523.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 12:34:53",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "flow-based generative models",
+    "inverse problems",
+    "training-free solvers",
+    "spectrum-adaptive scheduling",
+    "measurement-prioritized attention",
+    "spatio-temporal allocation"
+   ],
+   "field": "图像逆问题求解",
+   "innovations": [
+    "提出频谱自适应调度（SAS）将退化算子谱与logSNR几何结合，实现有限NFE预算下的时域分配",
+    "提出测量优先注意力（MPA）利用先验-数据冲突热力图调制图像token自注意力，强化弱约束区域引导"
+   ],
+   "benchmarks": [
+    "FFHQ",
+    "DIV2K",
+    "SR8x",
+    "SR12x",
+    "Motion Deblur",
+    "Inpainting"
+   ]
+  }
+ }
 }

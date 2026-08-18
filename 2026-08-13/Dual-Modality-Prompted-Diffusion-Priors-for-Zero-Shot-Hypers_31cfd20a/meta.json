@@ -4,5 +4,31 @@
  "title": "Dual-Modality-Prompted-Diffusion-Priors-for-Zero-Shot-Hypers",
  "token": "sk-YrIlRFySy...",
  "created_at": "2026-08-13 14:56:33",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/4c72a331-9d7f-4a03-855a-37177e3f90e0.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/4c72a331-9d7f-4a03-855a-37177e3f90e0.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 12:24:32",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "高光谱全色锐化",
+    "扩散模型",
+    "零样本学习",
+    "双模态提示",
+    "交叉注意力",
+    "结构正则化"
+   ],
+   "field": "高光谱图像处理",
+   "innovations": [
+    "将LRHS/PAN编码为光谱/空间提示token，通过cross-attention注入冻结扩散模型中间特征，实现观察与先验的内部特征级交互",
+    "引入PAN引导的加权像素感知全变分（WPATV）正则化器，利用梯度自适应权重在边缘保留与均匀平滑间取得平衡"
+   ],
+   "benchmarks": [
+    "Pavia",
+    "Chikusei",
+    "Houston",
+    "FR1 (HyperPanCollection)"
+   ]
+  }
+ }
 }

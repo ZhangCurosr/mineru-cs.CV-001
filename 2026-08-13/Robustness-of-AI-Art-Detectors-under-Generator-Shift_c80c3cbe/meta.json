@@ -4,5 +4,33 @@
  "title": "Robustness-of-AI-Art-Detectors-under-Generator-Shift",
  "token": "sk-nY8L7ieIq...",
  "created_at": "2026-08-13 07:11:55",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/4c465402-7af3-4e48-899d-a9c1b36d1416.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/4c465402-7af3-4e48-899d-a9c1b36d1416.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 12:38:59",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "AI-Art Detection",
+    "Generator Shift",
+    "Out-of-Distribution Generalization",
+    "Stable Diffusion",
+    "CLIP ViT",
+    "Frozen Backbone",
+    "Linear Probe",
+    "Prompt Alignment"
+   ],
+   "field": "生成式AI内容检测与可解释性",
+   "innovations": [
+    "构建了Prompt对齐的SD3.5m跨生成器评估数据集，系统量化U-Net到DiT架构跃迁下的检测退化",
+    "揭示检测失败模式的高度非对称性：OOD下FPR保持低位而FNR骤升至43-58%",
+    "引入风格级与源级分层分析，定位Realism最脆弱、Ukiyo-e最鲁棒的梯度失效规律"
+   ],
+   "benchmarks": [
+    "AI-ArtBench",
+    "ArtBench-10",
+    "SD3.5m OOD (自构建)"
+   ]
+  }
+ }
 }

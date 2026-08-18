@@ -4,5 +4,32 @@
  "title": "Measuring-Browser-Webcam-Gaze-Honestly-A-Capture-Clock-Metho",
  "token": "sk-JMLCbBCEj...",
  "created_at": "2026-08-13 07:12:26",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/d5aeadc8-c398-4fbe-b16a-cc4f78d1dccd.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/d5aeadc8-c398-4fbe-b16a-cc4f78d1dccd.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 12:33:49",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "webcam eye tracking",
+    "latency measurement",
+    "rVFC",
+    "weakly-supervised segmentation",
+    "GazeMedSeg",
+    "browser-based gaze"
+   ],
+   "field": "浏览器端摄像头眼球追踪与延迟计量",
+   "innovations": [
+    "基于 rVFC 捕获时钟的浏览器 webcam gaze 延迟测量方法，支持精确配对与可证明下界配对两档策略",
+    "开源 TypeScript 基准测试平台与两套可互换引擎（WebGazer / FaceMesh+KRR）的统一度量管道",
+    "通过固定下游弱监督分割管线量化摄像头 gaze 精度边界： expert EyeLink Dice 0.68 vs. webcam Dice ≈ 0"
+   ],
+   "benchmarks": [
+    "Kvasir-SEG polyp segmentation",
+    "16×8 sweep grid accuracy/latency",
+    "12×8 drift grid accuracy/latency",
+    "Grid-resolution scaling (L1–L6)"
+   ]
+  }
+ }
 }

@@ -4,5 +4,31 @@
  "title": "Localizing-to-Debias-A-Patch-Level-Benchmark-and-Baseline-fo",
  "token": "sk-45Ifw5Iq3...",
  "created_at": "2026-08-13 05:41:00",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/ab26724a-7538-47a3-b8b0-eeee3f3ab98b.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/ab26724a-7538-47a3-b8b0-eeee3f3ab98b.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 12:31:57",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Weakly Supervised Video Anomaly Detection",
+    "Spatial Localization",
+    "Token Pruning",
+    "Background Debiasing",
+    "Motion-aware Regularization",
+    "Patch-level Evaluation"
+   ],
+   "field": "弱监督视频异常检测",
+   "innovations": [
+    "提出基于时间反转运动分解的运动感知稀疏化机制，无需光流即可引导管状体选择",
+    "首次为三个主流WSVAD数据集发布帧级空间标注与method-agnostic patch级评估协议",
+    "通过双分支cross-attention实现定位辅助检测的正反馈，在VideoMAEv2骨干上MSAD AUC达94.17"
+   ],
+   "benchmarks": [
+    "UCF-Crime",
+    "MSAD",
+    "XD-Violence"
+   ]
+  }
+ }
 }

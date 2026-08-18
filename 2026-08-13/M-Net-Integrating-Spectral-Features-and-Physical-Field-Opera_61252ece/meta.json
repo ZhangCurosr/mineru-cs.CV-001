@@ -4,5 +4,32 @@
  "title": "M-Net-Integrating-Spectral-Features-and-Physical-Field-Opera",
  "token": "sk-Ir4JqYCnj...",
  "created_at": "2026-08-13 07:10:46",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/4c7575d2-ca7a-47ff-a692-cf70bf70e80f.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/4c7575d2-ca7a-47ff-a692-cf70bf70e80f.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 12:32:37",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "医学图像分割",
+    "归纳偏置",
+    "条件数",
+    "物理场算子",
+    "U-Net",
+    "注意力机制",
+    "谱特征"
+   ],
+   "field": "医学图像计算分析",
+   "innovations": [
+    "将中心化局部像素矩阵条件数作为连续可微谱特征嵌入分割网络",
+    "引入散度与离散旋度边界不规则算子作为物理场归纳偏置",
+    "提出Math-Attention Gate在跳跃连接处自适应融合数学先验与CNN特征"
+   ],
+   "benchmarks": [
+    "LiTS 肝脏分割",
+    "KiTS23 肾脏分割",
+    "BraTS24 脑肿瘤分割"
+   ]
+  }
+ }
 }
