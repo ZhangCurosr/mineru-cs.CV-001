@@ -4,5 +4,30 @@
  "title": "Abstract",
  "token": "sk-SDuVT3fV1...",
  "created_at": "2026-08-13 14:55:56",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/b57f0199-d6bc-49d5-8f90-fdcb30cc831b.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/b57f0199-d6bc-49d5-8f90-fdcb30cc831b.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 08:14:27",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "体积视频流",
+    "隐私保护",
+    "多视角融合",
+    "深度感知遮罩",
+    "源端过滤",
+    "实例级策略"
+   ],
+   "field": "体积视频与计算机视觉隐私",
+   "innovations": [
+    "深度条件遮罩结合边界框与深度分布实现精准同品类剔除",
+    "参考视角公共实例跨校准变换同步解决多视角实例歧义",
+    "Chunk-based 时序复用在边缘设备上实现实时隐私过滤"
+   ],
+   "benchmarks": [
+    "Synthetic rooms (Gallery House/Round, Jedi Council)",
+    "Real RGB-D (5 environments, Intel RealSense D435)"
+   ]
+  }
+ }
 }

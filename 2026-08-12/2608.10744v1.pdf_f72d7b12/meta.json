@@ -3,5 +3,32 @@
  "batch_id": "f72d7b12-4ac4-49f5-919c-6481a8faaf8b",
  "token": "sk-Ir4JqYCnj...",
  "created_at": "2026-08-12 15:34:10",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/d6c05582-ada9-41cd-b17f-4c61b9f74eef.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/d6c05582-ada9-41cd-b17f-4c61b9f74eef.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 08:00:47",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "4D Generation",
+    "Video Latent",
+    "VAE",
+    "Geometry Reconstruction",
+    "Diffusion Model",
+    "Latent Alignment"
+   ],
+   "field": "4D 场景生成与重建",
+   "innovations": [
+    "提出共享 VAE latent 作为跨兼容 DiT 的通用 4D 接口，绕过 RGB 实现直接 latent-to-4D 映射",
+    "设计 L4AR 网络（3D 卷积对齐 + 帧内/全局交替注意力细化），单 checkpoint 跨多种视频生成器迁移",
+    "在 Text4D-200/I4D-200 上超越同级联 4RC 基线 DINO-F1 2.88-5.81 分，人类评估几何与稳定性更优"
+   ],
+   "benchmarks": [
+    "Text4D-200",
+    "I4D-200",
+    "7-Scenes",
+    "NRGBD"
+   ]
+  }
+ }
 }

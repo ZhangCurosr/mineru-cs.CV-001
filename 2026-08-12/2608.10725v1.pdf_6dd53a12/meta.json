@@ -3,5 +3,30 @@
  "batch_id": "6dd53a12-e40d-4b9d-a63a-7747beb920fe",
  "token": "sk-Ar06zcDAy...",
  "created_at": "2026-08-12 15:34:13",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/4518918b-53c6-403c-9a6d-380adb100c90.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/4518918b-53c6-403c-9a6d-380adb100c90.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 08:00:13",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Medical Reasoning",
+    "Abstention",
+    "Uncertainty Estimation",
+    "Ontology Grounding",
+    "SNOMED CT",
+    "LLM Verification"
+   ],
+   "field": "医疗大模型推理与验证",
+   "innovations": [
+    "将abstention作为不确定性控制信号实现选择性本体论精炼",
+    "两阶段按需SNOMED grounding超越KG基线且无需预建图谱",
+    "揭示证据结构对置信度分离与弃权选择性的影响机制"
+   ],
+   "benchmarks": [
+    "MedReason",
+    "MedQA"
+   ]
+  }
+ }
 }

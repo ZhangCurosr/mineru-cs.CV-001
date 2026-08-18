@@ -4,5 +4,30 @@
  "title": "Abstract",
  "token": "sk-nY8L7ieIq...",
  "created_at": "2026-08-13 07:11:52",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/b57f0199-d6bc-49d5-8f90-fdcb30cc831b.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/b57f0199-d6bc-49d5-8f90-fdcb30cc831b.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 08:14:52",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "volumetric video streaming",
+    "privacy-preserving vision",
+    "multi-view consistency",
+    "depth-aware masking",
+    "source-side filtering",
+    "instance-level privacy"
+   ],
+   "field": "隐私保护计算机视觉",
+   "innovations": [
+    "提出 depth-conditioned mask 结合边界框与深度统计阈值实现细粒度隐私遮蔽",
+    "设计 reference-view public/private sync 通过标定变换实现跨视角实例级公私策略一致性",
+    "构建 privacy-from-source 架构在 RGB-D 数据离开边缘设备前完成过滤而非事后处理"
+   ],
+   "benchmarks": [
+    "Synthetic RGB-D scenes (Gallery House/Round, Jedi Council)",
+    "Real-world RGB-D scenes (Conference room, Living room, Patio, Office, Floor corridor)"
+   ]
+  }
+ }
 }

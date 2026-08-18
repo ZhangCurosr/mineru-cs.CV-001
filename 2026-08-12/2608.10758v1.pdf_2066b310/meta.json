@@ -3,5 +3,34 @@
  "batch_id": "2066b310-34c8-46df-a431-32af1c051b45",
  "token": "sk-Ir4JqYCnj...",
  "created_at": "2026-08-12 15:02:57",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/51e406c5-c0cf-4d8c-bde2-439557e8e0d2.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/51e406c5-c0cf-4d8c-bde2-439557e8e0d2.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 08:02:54",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "causal tracing",
+    "vision-language models",
+    "mechanistic interpretability",
+    "spatial grounding",
+    "visual representations"
+   ],
+   "field": "多模态大模型可解释性",
+   "innovations": [
+    "将因果追踪扩展到VLM视觉编码器并量化因果贡献与空间对齐的关系",
+    "通过string-tracing受控任务揭示模型对外观线索的结构依赖",
+    "建立跨层因果-空间关联分析方法"
+   ],
+   "benchmarks": [
+    "CLIP",
+    "DeepSeek-VL",
+    "Qwen-2.5",
+    "LLaVA-NeXT",
+    "LLaVA-1.5",
+    "InternVL",
+    "SmolVLM"
+   ]
+  }
+ }
 }

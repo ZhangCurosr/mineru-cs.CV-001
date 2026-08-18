@@ -3,5 +3,32 @@
  "batch_id": "bed4826e-fba9-4c6b-8453-d52f0fab767a",
  "token": "sk-45Ifw5Iq3...",
  "created_at": "2026-08-13 02:22:20",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/621a9200-f599-4986-87b4-bfc744741e74.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/621a9200-f599-4986-87b4-bfc744741e74.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 08:05:57",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "开放词汇变化检测",
+    "伪标签学习",
+    "训练免费推理",
+    "视觉基础模型",
+    "遥感图像分析",
+    "噪声标签鲁棒学习"
+   ],
+   "field": "开放词汇遥感变化检测",
+   "innovations": [
+    "渐进式三模块伪标签精炼管线(MRM+SMFM+MCCM)系统性缓解阶段间误差累积",
+    "检查点投票与高共识样本选择联合的噪声感知两阶段训练策略",
+    "桥接训练免费VFM推理与伪标签监督学习，无需目标域像素级标注"
+   ],
+   "benchmarks": [
+    "LEVIR-CD",
+    "WHU-CD",
+    "S2Looking",
+    "SECOND"
+   ]
+  }
+ }
 }

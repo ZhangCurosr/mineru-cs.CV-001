@@ -4,5 +4,32 @@
  "title": "A-Neighborhood-Attention-Transformer-Network-for-Enhanced-3D",
  "token": "sk-Jd4ujJMnj...",
  "created_at": "2026-08-13 14:55:34",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/3476909b-b0f5-4661-b1c7-3d088c9e695b.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/3476909b-b0f5-4661-b1c7-3d088c9e695b.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 08:11:41",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Left Anterior Descending Artery",
+    "3D Medical Image Segmentation",
+    "Neighborhood Attention",
+    "Transformer",
+    "Coronary Artery",
+    "Low-contrast CT",
+    "Parameter-efficient Fine-tuning",
+    "LoRA"
+   ],
+   "field": "医学图像分割",
+   "innovations": [
+    "提出 NA-UNETR：将 Neighbourhood Attention 与 Dilated NA 结合，实现局部精细结构与长程血管连续性的联合建模",
+    "首次将 LoRA 参数高效微调引入 3D 医学 Transformer 分割，冻结编码器注意力层并适配 rank-8 LoRA 适配器",
+    "引入同方差不确定性加权的 Dice-Focal + Hausdorff 复合损失，动态平衡区域重叠与边界精度"
+   ],
+   "benchmarks": [
+    "LAD-SEG (institutional, n=20)",
+    "ImageCAS (public, n=1,000)"
+   ]
+  }
+ }
 }

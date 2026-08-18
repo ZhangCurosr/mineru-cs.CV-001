@@ -4,5 +4,30 @@
  "title": "Advancing-MLLM-based-UAV-Image-Understanding-and-Reasoning-A",
  "token": "sk-WcZzSI744...",
  "created_at": "2026-08-13 14:55:53",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/7378211a-c3b6-4599-85ba-fc553244c651.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/7378211a-c3b6-4599-85ba-fc553244c651.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 08:18:01",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "UAV aerial image understanding",
+    "multimodal large language models",
+    "multi-agent systems",
+    "visual reasoning benchmark",
+    "training-free agent",
+    "aerial visual grounding"
+   ],
+   "field": "无人机视觉理解与多模态推理",
+   "innovations": [
+    "UAVQA-Bench：全人工标注的无人机航拍图像理解与推理综合基准（6维度/16任务/1500样本）",
+    "UAV-MAS：无训练多智能体系统，通过DSPE+CAIR+DAAS三个模块解决领域错配、误差累积和静态推理三大失效模式",
+    "Per-Tool Activation机制与连续一致性剪枝策略，分别解决小模型多工具调度溢出与过早终止问题"
+   ],
+   "benchmarks": [
+    "UAVQA-Bench",
+    "CHOICE"
+   ]
+  }
+ }
 }

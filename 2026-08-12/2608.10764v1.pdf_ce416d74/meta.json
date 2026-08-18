@@ -3,5 +3,30 @@
  "batch_id": "ce416d74-abe0-481f-920f-8e8ba71a974e",
  "token": "sk-Ir4JqYCnj...",
  "created_at": "2026-08-12 15:34:09",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/204c6b74-38f4-476d-8c67-1d3b1a071708.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/204c6b74-38f4-476d-8c67-1d3b1a071708.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 08:03:50",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "反事实视频理解",
+    "文本锚点",
+    "多模态大模型",
+    "强化学习",
+    "视觉grounding",
+    "评估协议"
+   ],
+   "field": "视频多模态理解与反事实推理",
+   "innovations": [
+    "提出FADE两阶段训练框架实现从被动验证到主动发现的转变",
+    "设计渐变锚点RL课程学习策略",
+    "构建无需新建测试集的锚点褪色评估协议"
+   ],
+   "benchmarks": [
+    "DualityVidQA-test",
+    "IPV-Bench"
+   ]
+  }
+ }
 }

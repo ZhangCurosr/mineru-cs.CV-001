@@ -3,5 +3,31 @@
  "batch_id": "ab92b19b-aad4-48b5-aea0-8f99e2c36906",
  "token": "sk-n7iJ0Z1Ol...",
  "created_at": "2026-08-13 02:58:50",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/262d9fad-31cf-444c-922e-c2b1713ca90f.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/262d9fad-31cf-444c-922e-c2b1713ca90f.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 08:08:09",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Aerial Vision-Language Navigation",
+    "Diffusion Policy",
+    "Vision-Language-Action Model",
+    "Receding-Horizon Planning",
+    "Causal Memory",
+    "Termination Control",
+    "OpenFly"
+   ],
+   "field": "航拍视觉-语言导航",
+   "innovations": [
+    "提出因果对齐历史记忆（read-before-write）防止历史信息泄露",
+    "滚动时域扩散规划将未来动作作为辅助规划目标实现闭环重规划",
+    "LiteStop 从冻结策略 all-mask logit 解耦提取显式终止概率"
+   ],
+   "benchmarks": [
+    "OpenFly test-seen",
+    "OpenFly test-unseen"
+   ]
+  }
+ }
 }

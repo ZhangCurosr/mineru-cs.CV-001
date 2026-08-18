@@ -3,5 +3,28 @@
  "batch_id": "9db325f1-467d-4a6a-83dd-fd2890db125d",
  "token": "sk-45Ifw5Iq3...",
  "created_at": "2026-08-12 15:34:19",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/874b6782-8563-44ae-abda-4d1e0495992e.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/874b6782-8563-44ae-abda-4d1e0495992e.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 08:03:14",
+  "chunks": 3,
+  "meta": {
+   "keywords": [
+    "视频自回归生成",
+    "稀疏注意力",
+    "训练无关优化",
+    "块选择策略",
+    "视频合成"
+   ],
+   "field": "视频生成与稀疏化注意力",
+   "innovations": [
+    "聚合QK Block Selector实现0.016%算术量",
+    "Clip-dependent与Scale-wise自适应稀疏化",
+    "系统分析揭示注意力模式转移不可靠"
+   ],
+   "benchmarks": [
+    "VBench"
+   ]
+  }
+ }
 }

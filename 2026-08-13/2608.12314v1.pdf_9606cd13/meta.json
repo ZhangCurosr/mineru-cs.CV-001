@@ -3,5 +3,33 @@
  "batch_id": "9606cd13-f835-460d-9543-75296c5d26bc",
  "token": "sk-n7iJ0Z1Ol...",
  "created_at": "2026-08-13 02:58:50",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/d9149ea9-daae-4ee2-b752-dfa1f8a716d7.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/d9149ea9-daae-4ee2-b752-dfa1f8a716d7.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 08:10:14",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "previsualization",
+    "3D world state",
+    "state-centric generation",
+    "camera planning",
+    "video generation",
+    "structured 3D representation"
+   ],
+   "field": "3D内容生成与预可视化",
+   "innovations": [
+    "将预可视化建模为持久化3D世界状态的构建-演化-访问过程",
+    "先验引导冲突感知双视图初始化实现无冲突3D场景构建",
+    "渲染反馈反思的双系统摄像机规划无需训练摄像机策略"
+   ],
+   "benchmarks": [
+    "VBench",
+    "CLIP-I",
+    "CLIP-T",
+    "HPS V2",
+    "Q-Align"
+   ]
+  }
+ }
 }

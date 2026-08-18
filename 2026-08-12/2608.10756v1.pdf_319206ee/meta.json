@@ -3,5 +3,33 @@
  "batch_id": "319206ee-b24c-421a-a01a-dfc905e3b99c",
  "token": "sk-Ir4JqYCnj...",
  "created_at": "2026-08-12 15:02:58",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/2a6ca45f-a85d-408a-ab29-926b006c7f50.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/2a6ca45f-a85d-408a-ab29-926b006c7f50.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 08:01:58",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "embodied multimodal grounding",
+    "semantic 3D Gaussian splatting",
+    "vision-language-action",
+    "mobile manipulation",
+    "open-vocabulary grounding",
+    "late-block injection",
+    "reachability-aware control"
+   ],
+   "field": "具身多模态操作与3D语义重建",
+   "innovations": [
+    "以局部可刷新 Semantic-3DGS 作为主动感知、语言定位、障碍物推理与动作条件化的共享接口",
+    "Late-Block Semantic Injection 在冻结预训练 VLA 骨干基础上仅于末五扩散块注入轻量语义 adapter",
+    "将可达性感知基座姿态控制与目标相对位姿/高度模式显式耦合以提升长程与高度偏移鲁棒性"
+   ],
+   "benchmarks": [
+    "Long-horizon manipulation (50 trials)",
+    "Height adaptability (30/60/75 cm offset)",
+    "Photo deception rejection",
+    "Cluttered banana-to-bowl (50 trials)"
+   ]
+  }
+ }
 }

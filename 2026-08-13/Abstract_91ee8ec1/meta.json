@@ -4,5 +4,29 @@
  "title": "Abstract",
  "token": "sk-45Ifw5Iq3...",
  "created_at": "2026-08-13 05:41:00",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/4b8c7cc6-a049-4f9b-a092-a98f1ed43e2c.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/4b8c7cc6-a049-4f9b-a092-a98f1ed43e2c.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 08:14:55",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "3D Gaussian Splatting",
+    "camera-free segmentation",
+    "open-vocabulary extraction",
+    "virtual orbit tracking",
+    "LERF-MASK"
+   ],
+   "field": "3DGS 开放词汇分割",
+   "innovations": [
+    "一次接地分离身份与覆盖，通过虚拟轨道追踪传播种子",
+    "可靠性加权多视图 BCE 损失动态抑制冲突监督",
+    "可视性自适应上升螺旋轨道平衡覆盖与计算开销"
+   ],
+   "benchmarks": [
+    "LERF-MASK",
+    "3D-OVS"
+   ]
+  }
+ }
 }

@@ -3,5 +3,31 @@
  "batch_id": "3273995a-0c39-41b2-931b-eff6ceaa3b6a",
  "token": "sk-Ir4JqYCnj...",
  "created_at": "2026-08-12 15:34:10",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/51e406c5-c0cf-4d8c-bde2-439557e8e0d2.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/51e406c5-c0cf-4d8c-bde2-439557e8e0d2.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 08:03:52",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "causal tracing",
+    "vision-language models",
+    "mechanistic interpretability",
+    "spatial grounding",
+    "visual representations",
+    "activation patching"
+   ],
+   "field": "多模态可解释性",
+   "innovations": [
+    "首次系统量化视觉token因果贡献与空间IoU对齐的关系，发现强因果性token常位于目标区域外",
+    "提出因果-空间失配概念并通过跨6个主流VLM的实证验证其普遍性",
+    "设计受控字符串追踪任务分离外观线索与结构信息，揭示模型对颜色的依赖"
+   ],
+   "benchmarks": [
+    "CLIP causal tracing实验",
+    "DeepSeek-VL/Qwen-2.5/LLaVA系列/InternVL/SmolVLM跨模型评估",
+    "String Puzzle Task（同色/异色条件）"
+   ]
+  }
+ }
 }

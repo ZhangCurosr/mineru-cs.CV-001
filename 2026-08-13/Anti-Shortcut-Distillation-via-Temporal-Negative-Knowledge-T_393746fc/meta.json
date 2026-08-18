@@ -4,5 +4,34 @@
  "title": "Anti-Shortcut-Distillation-via-Temporal-Negative-Knowledge-T",
  "token": "sk-Zs9k8BxOo...",
  "created_at": "2026-08-13 14:56:32",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/9c9a3d54-4878-4c6b-bc42-8c2bd1a9a7f5.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/9c9a3d54-4878-4c6b-bc42-8c2bd1a9a7f5.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 08:23:36",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "知识蒸馏",
+    "捷径学习",
+    "对比学习",
+    "鲁棒性",
+    "教师轨迹",
+    "子空间抑制"
+   ],
+   "field": "模型压缩与知识蒸馏",
+   "innovations": [
+    "将教师早期与收敛 checkpoint 分别作为正/时间负锚点的 push–pull KD 框架",
+    "用未中心化二阶矩 E[DhDh^T] 的主特征子空间无标签识别并抑制捷径方向",
+    "两损失分工：L_TC 样本级对比、L_SS 子空间几何硬约束，组合获得 non-redundant 增益"
+   ],
+   "benchmarks": [
+    "CIFAR-100",
+    "CIFAR-100-C",
+    "ImageNet-100",
+    "TinyImageNet",
+    "ADE20K",
+    "Stylized-ImageNet-100"
+   ]
+  }
+ }
 }

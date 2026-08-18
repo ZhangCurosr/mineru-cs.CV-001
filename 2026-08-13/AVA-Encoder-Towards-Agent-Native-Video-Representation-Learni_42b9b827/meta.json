@@ -4,5 +4,30 @@
  "title": "AVA-Encoder-Towards-Agent-Native-Video-Representation-Learni",
  "token": "sk-aQHhxC28I...",
  "created_at": "2026-08-13 14:54:55",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/932dc3e8-fba0-4e93-9183-e636759b311c.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/932dc3e8-fba0-4e93-9183-e636759b311c.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 08:21:28",
+  "chunks": 6,
+  "meta": {
+   "keywords": [
+    "Text-to-Video",
+    "Video Representation Learning",
+    "Knowledge Graph",
+    "Evaluation Benchmark",
+    "Prompt Engineering",
+    "Agent-Native"
+   ],
+   "field": "视频生成与理解",
+   "innovations": [
+    "分层 film-shot-keyframe 编码器策略，相对单层提升 18.3 点",
+    "双循环优化（Data-Independent 伪训练 + Data-Dependent KG 精炼）叠加提升 6.6 点",
+    "QA-Reward 原子事实比对系统，支持 Audio/Style/Camera/Narrative 四维度一致性评估"
+   ],
+   "benchmarks": [
+    "VBench",
+    "Open-VBench"
+   ]
+  }
+ }
 }

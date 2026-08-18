@@ -4,5 +4,33 @@
  "title": "A-Hybrid-Framework-of-Vision-Transformer-and-Gated-Recurrent",
  "token": "sk-OZiRtsQic...",
  "created_at": "2026-08-13 07:12:09",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/dd4e76bf-040b-4aed-8b0b-b789959fd172.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/dd4e76bf-040b-4aed-8b0b-b789959fd172.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 08:10:22",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "蚊子行为分析",
+    "Vision Transformer",
+    "ConvGRU",
+    "目标检测",
+    "视频分类",
+    "登革热检测"
+   ],
+   "field": "生物医学计算机视觉",
+   "innovations": [
+    "YOLO 11M目标聚焦背景消除预处理",
+    "冻结ViT作为小样本特征提取器",
+    "ConvGRU同时建模空间与时间依赖用于蚊子行为分类"
+   ],
+   "benchmarks": [
+    "Accuracy",
+    "Precision",
+    "Recall",
+    "F1-score",
+    "mAP50"
+   ]
+  }
+ }
 }

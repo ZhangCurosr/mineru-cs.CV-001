@@ -4,5 +4,31 @@
  "title": "Alignment-of-Similarity-Transformed-Images-Based-on-Fourier",
  "token": "sk-rvQMAAO2D...",
  "created_at": "2026-08-13 14:56:02",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/936c9d47-eb5a-4d70-9fbd-b5f69ba44caf.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/936c9d47-eb5a-4d70-9fbd-b5f69ba44caf.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 08:20:24",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "image registration",
+    "Fourier-Mellin transform",
+    "auxiliary function method",
+    "subpixel accuracy",
+    "similarity transformation",
+    "phase correlation",
+    "log-polar transform"
+   ],
+   "field": "图像配准与几何变换估计",
+   "innovations": [
+    "将辅助函数方法集成到傅里叶-梅林两阶段框架，实现缩放/旋转/平移的亚像素联合估计",
+    "使用对数幅度谱替代原始幅度谱以抑制直流主导效应，提升对数极坐标域相关估计稳定性"
+   ],
+   "benchmarks": [
+    "MusicBox",
+    "Moss",
+    "Ship"
+   ]
+  }
+ }
 }

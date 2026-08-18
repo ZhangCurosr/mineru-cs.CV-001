@@ -3,5 +3,35 @@
  "batch_id": "9dcda10d-ac79-417c-a646-47800f50a1be",
  "token": "sk-7NOZt17oN...",
  "created_at": "2026-08-13 02:45:18",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/d9149ea9-daae-4ee2-b752-dfa1f8a716d7.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/d9149ea9-daae-4ee2-b752-dfa1f8a716d7.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 08:11:48",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "预可视化",
+    "3D 世界状态",
+    "持久化场景表示",
+    "双视图初始化",
+    "渲染反馈摄像机规划",
+    "结构化状态转移",
+    "生成式内容创作"
+   ],
+   "field": "3D 场景生成与可控视频合成",
+   "innovations": [
+    "将预可视化重新建模为持久化 3D 世界状态的构建-演化-访问三阶段过程",
+    "正面/BEV 双视图不对称分工结合 VLM 先验的冲突感知初始化",
+    "基于渲染反馈反射的零样本摄像机轨迹规划与局部修复闭环"
+   ],
+   "benchmarks": [
+    "VBench",
+    "CLIP-I/CLIP-T",
+    "HPS V2",
+    "Q-Align",
+    "用户研究 Likert 5 分制",
+    "MLLM 自动评估"
+   ]
+  }
+ }
 }
