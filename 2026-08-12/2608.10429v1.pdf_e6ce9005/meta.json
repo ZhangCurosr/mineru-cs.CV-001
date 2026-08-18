@@ -3,5 +3,32 @@
  "batch_id": "e6ce9005-2fd1-431c-b258-83068907b5de",
  "token": "sk-7NOZt17oN...",
  "created_at": "2026-08-12 15:40:58",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/6226239e-62ca-46af-a018-b1e3be260925.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/6226239e-62ca-46af-a018-b1e3be260925.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 04:51:18",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "CT-to-PET synthesis",
+    "Prostate cancer",
+    "PSMA PET",
+    "Lesion-aware learning",
+    "Fourier neural operator",
+    "Radiomics reproducibility",
+    "Synthetic PET"
+   ],
+   "field": "医学图像合成与跨模态翻译",
+   "innovations": [
+    "CT衍生对比度/紊乱代理通道替代高维影像组学条件",
+    "病灶级对数归一化TLA损失与指数距离加权瘤周监督联合设计"
+   ],
+   "benchmarks": [
+    "TCIA PSMA-PET-CT-Lesions",
+    "SSIM/PSNR/MAE",
+    "Total Lesion Activity error",
+    "Radiomics ICC (FO/GLCM/GLRLM/GLSZM)"
+   ]
+  }
+ }
 }

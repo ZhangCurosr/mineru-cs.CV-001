@@ -3,5 +3,35 @@
  "batch_id": "0b7ecb02-c42b-4b27-a250-353b5ac0b4bd",
  "token": "sk-Ir4JqYCnj...",
  "created_at": "2026-08-12 15:00:36",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/6226239e-62ca-46af-a018-b1e3be260925.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/6226239e-62ca-46af-a018-b1e3be260925.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 04:51:05",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "CT-to-PET synthesis",
+    "PSMA PET",
+    "prostate cancer",
+    "lesion-aware learning",
+    "adaptive Fourier neural operator",
+    "radiomics reproducibility",
+    "total lesion activity",
+    "proxy conditioning"
+   ],
+   "field": "医学图像跨模态合成与定量评估",
+   "innovations": [
+    "以放射组学空间趋势为动机推导可微 CT 对比度与紊乱度双代理，推理期无需分割",
+    "引入病灶级 TLA 对数归一化损失 + 瘤核对比度损失 + 指数距离加权瘤周损失联合监督",
+    "以 ICC 瘤核/瘤周放射组学重复性与病灶 TLA 误差为补充指标，超越全容积 SSIM/PSNR 评测局限"
+   ],
+   "benchmarks": [
+    "TCIA PSMA-PET-CT-Lesions",
+    "SSIM / PSNR / MAE",
+    "SUVmax & SUVmean percentage error",
+    "Total Lesion Activity (TLA) error",
+    "Radiomics ICC (FO/GLCM/GLRLM/GLSZM)"
+   ]
+  }
+ }
 }

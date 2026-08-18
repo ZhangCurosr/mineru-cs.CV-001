@@ -3,5 +3,30 @@
  "batch_id": "89a2b9d1-b90c-442b-bc7d-b5dde7b09de4",
  "token": "sk-owp49a3rO...",
  "created_at": "2026-08-12 16:06:19",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/db099243-4832-4f3d-8390-67171cc8e6cc.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/db099243-4832-4f3d-8390-67171cc8e6cc.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 04:51:58",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "protein complex",
+    "molecular dynamics",
+    "diffusion model",
+    "dynamic dataset",
+    "binding trajectory",
+    "enhanced sampling"
+   ],
+   "field": "蛋白质复合物动态建模与AI生成",
+   "innovations": [
+    "提出面向复合物重新组合的大规模动态轨迹数据集DynaPPI",
+    "构建包含多模态物理属性的AI就绪标注体系",
+    "将条件生成与物理预测统一为复合物组装任务框架"
+   ],
+   "benchmarks": [
+    "CAPRI",
+    "Docking Benchmark 5.0"
+   ]
+  }
+ }
 }

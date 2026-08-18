@@ -3,5 +3,30 @@
  "batch_id": "44778009-3cb5-4d37-b186-a6d64c55e534",
  "token": "sk-n7iJ0Z1Ol...",
  "created_at": "2026-08-12 15:03:13",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/67e87f90-bc37-4726-aa7c-1074aac3679f.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/67e87f90-bc37-4726-aa7c-1074aac3679f.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 04:48:36",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Autonomous Driving",
+    "Vision-Language-Action Model",
+    "Test-Time Training",
+    "Failure-Aware Memory",
+    "Retrieval-Augmented Planning",
+    "LoRA Adaptation"
+   ],
+   "field": "端到端自动驾驶",
+   "innovations": [
+    "解耦静态/动态双分支检索机制，解决驾驶场景结构匹配问题",
+    "基于失败感知的潜在记忆池与在线测试时训练协同",
+    "训练无关的记忆扩展带来无参数成本的性能持续提升"
+   ],
+   "benchmarks": [
+    "NAVSIMv1 (Navtest)",
+    "NAVSIMv2 (Navhard)"
+   ]
+  }
+ }
 }

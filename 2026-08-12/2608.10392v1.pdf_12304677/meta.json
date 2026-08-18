@@ -3,5 +3,29 @@
  "batch_id": "12304677-51a9-4695-9975-77e8dc02c99a",
  "token": "sk-n7iJ0Z1Ol...",
  "created_at": "2026-08-12 15:03:10",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/0249a42b-eb4c-494b-a177-4c1a07ec1d9d.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/0249a42b-eb4c-494b-a177-4c1a07ec1d9d.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 04:44:24",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "mixture of experts",
+    "token-adaptive computation",
+    "shared expert",
+    "dynamic routing",
+    "sparse upcycling",
+    "domain generalization"
+   ],
+   "field": "高效大模型架构",
+   "innovations": [
+    "提出'先共享后路由'原则，将共享建模、细粒度计算与动态路由统一为有序的单一预算分配",
+    "基于通道对齐性分析的 block 级共享-残差分解，实现 token 自适应的共享宽度与残差专家数联合优化"
+   ],
+   "benchmarks": [
+    "DomainBed",
+    "GLUE"
+   ]
+  }
+ }
 }

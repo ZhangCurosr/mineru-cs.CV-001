@@ -3,5 +3,38 @@
  "batch_id": "46409f05-bf5d-4913-87b6-4c260ba7eadb",
  "token": "sk-45Ifw5Iq3...",
  "created_at": "2026-08-12 15:34:24",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/e45c870f-9170-4f50-abbe-7997a3d2997a.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/e45c870f-9170-4f50-abbe-7997a3d2997a.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 04:50:51",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "开放词汇分割",
+    "遥感影像",
+    "视觉-语言模型",
+    "结构引导",
+    "成本聚合",
+    "零样本迁移",
+    "地理空间鸿沟",
+    "CLIP"
+   ],
+   "field": "开放词汇遥感影像分割",
+   "innovations": [
+    "将辅助VFM从视觉-文本匹配中解耦并重新用作结构先验指导成本聚合",
+    "多旋转CLIP编码构建方向鲁棒成本体",
+    "成本感知解码(CAD)实现解码器条件化的自适应多源特征融合"
+   ],
+   "benchmarks": [
+    "HRLC全球高分辨率土地覆盖基准",
+    "FLAIR",
+    "OpenEarthMap",
+    "LoveDA",
+    "EarthMiss",
+    "DeepGlobe",
+    "Potsdam",
+    "Vaihingen"
+   ]
+  }
+ }
 }

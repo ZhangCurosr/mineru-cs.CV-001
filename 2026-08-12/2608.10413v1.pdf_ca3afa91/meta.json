@@ -3,5 +3,29 @@
  "batch_id": "ca3afa91-b42b-4a4c-af33-80ce03870c44",
  "token": "sk-45Ifw5Iq3...",
  "created_at": "2026-08-12 15:34:24",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/67e87f90-bc37-4726-aa7c-1074aac3679f.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/67e87f90-bc37-4726-aa7c-1074aac3679f.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 04:49:15",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Autonomous Driving",
+    "Vision-Language-Action Model",
+    "Test-Time Training",
+    "Memory Augmentation",
+    "Failure Awareness",
+    "LoRA"
+   ],
+   "field": "端到端自动驾驶与VLA模型",
+   "innovations": [
+    "故障感知的潜在记忆构建与结构化检索",
+    "解耦LoRA测试时训练实现场景特定纠正"
+   ],
+   "benchmarks": [
+    "NAVSIMv1 (Navtest)",
+    "NAVSIMv2 (Navhard)"
+   ]
+  }
+ }
 }

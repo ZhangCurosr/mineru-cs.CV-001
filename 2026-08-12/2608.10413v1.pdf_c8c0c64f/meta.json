@@ -3,5 +3,29 @@
  "batch_id": "c8c0c64f-f974-4b38-8ef9-cdfb336dfbcb",
  "token": "sk-7NOZt17oN...",
  "created_at": "2026-08-12 15:40:59",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/67e87f90-bc37-4726-aa7c-1074aac3679f.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/67e87f90-bc37-4726-aa7c-1074aac3679f.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 04:50:37",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "端到端自动驾驶",
+    "视觉语言动作模型",
+    "记忆增强",
+    "测试时训练",
+    "失败感知",
+    "低秩适配"
+   ],
+   "field": "端到端自动驾驶规划",
+   "innovations": [
+    "失败感知潜记忆池与结构解耦检索",
+    "Map/Agent双分支LoRA测试时训练机制"
+   ],
+   "benchmarks": [
+    "NAVSIMv1 Navtest",
+    "NAVSIMv2 Navhard"
+   ]
+  }
+ }
 }

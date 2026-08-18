@@ -3,5 +3,32 @@
  "batch_id": "2efddbda-c888-4361-9ef1-a78f8c4341d7",
  "token": "sk-Ir4JqYCnj...",
  "created_at": "2026-08-12 15:41:00",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/d6edd86a-e982-4aca-83fd-73d3b4a7bd98.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/d6edd86a-e982-4aca-83fd-73d3b4a7bd98.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 04:41:56",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "低剂量CT去噪",
+    "噪声上下文建模",
+    "自协方差",
+    "FlyingConv",
+    "噪声2噪声",
+    "零样本条件去噪",
+    "GPU加速"
+   ],
+   "field": "医学图像去噪与物理建模",
+   "innovations": [
+    "用噪声自协方差作为模型友好的先验替代随机噪声图",
+    "FlyingConv基于解剖与噪声上下文动态调制卷积权重",
+    "基于Cornish-Fisher展开注入泊松偏斜的物理一致性N2N训练"
+   ],
+   "benchmarks": [
+    "Mayo2016",
+    "Mayo2020",
+    "Tabletop体模扫描"
+   ]
+  }
+ }
 }

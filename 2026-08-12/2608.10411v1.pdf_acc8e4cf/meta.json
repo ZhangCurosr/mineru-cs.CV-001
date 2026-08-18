@@ -3,5 +3,37 @@
  "batch_id": "acc8e4cf-4ac5-490c-80b5-803050862ff2",
  "token": "sk-Ar06zcDAy...",
  "created_at": "2026-08-12 16:06:21",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/940fd553-7076-4e6f-802b-9aa2644eb74b.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/940fd553-7076-4e6f-802b-9aa2644eb74b.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 04:48:32",
+  "chunks": 4,
+  "meta": {
+   "keywords": [
+    "Depth from Focus",
+    "二阶纹理",
+    "主观散斑",
+    "窄带滤波",
+    "被动深度传感",
+    "有限孔径成像",
+    "BRDF"
+   ],
+   "field": "计算成像与被动三维感知",
+   "innovations": [
+    "提出二阶纹理理论：即使一阶无纹理表面，在有限孔径+窄带滤波下仍存在可恢复的焦点内散斑对比度",
+    "建立有限孔径下样本BRDF照度模型，统一描述散焦模糊与二阶纹理，针孔极限回退经典BRDF",
+    "给出α-recoverability充要条件与闭合错误概率上界，引入对比度-SNR乘积Θ²作为核心决策参数"
+   ],
+   "benchmarks": [
+    "illusion",
+    "side table",
+    "knight",
+    "set cards",
+    "sculpture",
+    "trash can",
+    "hair & mesh",
+    "bottles & mugs"
+   ]
+  }
+ }
 }

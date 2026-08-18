@@ -3,5 +3,30 @@
  "batch_id": "85238499-9f29-4556-86f4-2ed888090f7a",
  "token": "sk-Ir4JqYCnj...",
  "created_at": "2026-08-12 15:00:38",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/d6edd86a-e982-4aca-83fd-73d3b4a7bd98.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/d6edd86a-e982-4aca-83fd-73d3b4a7bd98.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 04:42:09",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "低剂量CT",
+    "去噪",
+    "噪声上下文",
+    "自监督学习",
+    "自适应卷积",
+    "FlyingConv"
+   ],
+   "field": "医学图像去噪",
+   "innovations": [
+    "将噪声自协方差图作为模型友好的上下文输入，替代原始随机噪声图",
+    "设计FlyingConv模块，根据局部解剖和噪声上下文动态生成卷积权重",
+    "引入Cornish-Fisher偏度校正替代高斯近似，提升低剂量物理一致性"
+   ],
+   "benchmarks": [
+    "Mayo2016",
+    "Mayo2020"
+   ]
+  }
+ }
 }

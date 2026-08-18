@@ -3,5 +3,31 @@
  "batch_id": "07389b80-aae3-4d60-b3dc-31e03afb4b1a",
  "token": "sk-45Ifw5Iq3...",
  "created_at": "2026-08-12 15:34:22",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/db099243-4832-4f3d-8390-67171cc8e6cc.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/db099243-4832-4f3d-8390-67171cc8e6cc.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 04:51:41",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "protein complex",
+    "molecular dynamics",
+    "diffusion model",
+    "dataset",
+    "enhanced sampling",
+    "protein-protein interaction",
+    "structural biology"
+   ],
+   "field": "蛋白质相互作用与结构预测",
+   "innovations": [
+    "提出面向蛋白复合体动态再结合的大规模 MD 轨迹数据集框架",
+    "设计减少未结合构象偏差的三阶段起始状态构建流程"
+   ],
+   "benchmarks": [
+    "CAPRI",
+    "Docking Benchmark v5.0",
+    "Dynamic PDB"
+   ]
+  }
+ }
 }

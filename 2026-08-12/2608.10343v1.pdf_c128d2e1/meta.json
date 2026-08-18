@@ -3,5 +3,32 @@
  "batch_id": "c128d2e1-b6ba-4745-aec5-1a17dd354c32",
  "token": "sk-Ar06zcDAy...",
  "created_at": "2026-08-12 16:06:23",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/d6edd86a-e982-4aca-83fd-73d3b4a7bd98.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/d6edd86a-e982-4aca-83fd-73d3b4a7bd98.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 04:42:22",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "低剂量CT去噪",
+    "噪声上下文",
+    "动态卷积",
+    "Noise2Noise",
+    "Cornish-Fisher展开",
+    "自协方差",
+    "零样本条件去噪"
+   ],
+   "field": "医学影像计算与低剂量CT重建",
+   "innovations": [
+    "基于Cornish-Fisher展开的偏斜校正噪声合成，改进N2N训练分布",
+    "自协方差预处理提取稳定噪声上下文，替代随机噪声图拼接",
+    "FlyingConv动态权重卷积，联合解剖与噪声上下文实现空间自适应去噪"
+   ],
+   "benchmarks": [
+    "Mayo2016 (10%/25% dose)",
+    "Mayo2020 cross-vendor (GE)",
+    "Tabletop cone-beam phantom"
+   ]
+  }
+ }
 }

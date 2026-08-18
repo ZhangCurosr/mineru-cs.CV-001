@@ -3,5 +3,31 @@
  "batch_id": "cc4cfcbe-4b83-4c05-bcf5-434a4743cd44",
  "token": "sk-Ir4JqYCnj...",
  "created_at": "2026-08-12 15:00:36",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/67e87f90-bc37-4726-aa7c-1074aac3679f.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/67e87f90-bc37-4726-aa7c-1074aac3679f.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 04:49:10",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "端到端自动驾驶",
+    "VLA模型",
+    "测试时训练",
+    "记忆增强",
+    "故障感知",
+    "检索增强生成",
+    "参数高效微调"
+   ],
+   "field": "自动驾驶VLA规划",
+   "innovations": [
+    "结构化检索：解耦静态道路与动态智能体的双分支Retrieve Model，替代传统VL特征检索",
+    "故障感知记忆：基于PDM oracle自动识别失败案例并写入隐式记忆池，推理时按需触发纠偏",
+    "解耦LoRA TTT：Map/Agent分支分别微调并路径融合评分，以26.44ms延迟实现情景特异性适配"
+   ],
+   "benchmarks": [
+    "NAVSIMv1 (Navtest)",
+    "NAVSIMv2 (Navhard)"
+   ]
+  }
+ }
 }

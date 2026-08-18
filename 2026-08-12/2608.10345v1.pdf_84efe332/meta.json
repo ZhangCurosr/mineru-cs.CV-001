@@ -3,5 +3,31 @@
  "batch_id": "84efe332-c20b-480c-af42-067bdf118884",
  "token": "sk-Ir4JqYCnj...",
  "created_at": "2026-08-12 15:00:37",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/54323a19-6871-42e8-8387-a9b170259083.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/54323a19-6871-42e8-8387-a9b170259083.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 04:44:40",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "3D Gaussian Splatting",
+    "去模糊",
+    "稀疏视角重建",
+    "Pose-free 3DGS",
+    "多视图一致性",
+    "光流引导",
+    "前馈重建"
+   ],
+   "field": "稀疏视角去模糊神经渲染",
+   "innovations": [
+    "提出级联 2D-to-3D 多视图一致性去模糊重建框架，从局部对应推进到全局 3D 重渲染引导",
+    "设计遮挡感知跨视图引导模块 OCGM，利用前向-后向一致性与运动自适应阈值过滤不可靠对应",
+    "在免位姿前馈骨干上通过级联引导实现仅两幅模糊图像的高质量新视角合成"
+   ],
+   "benchmarks": [
+    "Deblur-NeRF 真实子集",
+    "Deblur-NeRF 合成子集"
+   ]
+  }
+ }
 }

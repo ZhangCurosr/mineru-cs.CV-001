@@ -3,5 +3,32 @@
  "batch_id": "fa9889f3-eff9-4e58-8f02-eaf6b7ea0da7",
  "token": "sk-n7iJ0Z1Ol...",
  "created_at": "2026-08-12 15:03:12",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/a5659bb1-6821-4ba4-9389-37ad1d347a4a.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/a5659bb1-6821-4ba4-9389-37ad1d347a4a.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 04:46:30",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "table-form document",
+    "document structure recognition",
+    "diagnostic benchmark",
+    "hierarchical evaluation",
+    "multimodal document understanding"
+   ],
+   "field": "文档理解与结构识别",
+   "innovations": [
+    "提出层次化诊断基准 FormStruct-Bench，覆盖区域-网格-字段-控件-关系五级结构",
+    "设计 Director-Artist-Verifier 多智能体生成流水线，实现可追溯的大规模验证数据构建"
+   ],
+   "benchmarks": [
+    "FormStruct-Bench",
+    "SciTSR",
+    "PubTabNet",
+    "FUNSD",
+    "SRFUND",
+    "VAREX"
+   ]
+  }
+ }
 }

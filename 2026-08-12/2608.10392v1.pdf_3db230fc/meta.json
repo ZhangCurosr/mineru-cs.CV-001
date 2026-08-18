@@ -3,5 +3,30 @@
  "batch_id": "3db230fc-4cc2-4a5e-b399-4c5eccd4f3c5",
  "token": "sk-45Ifw5Iq3...",
  "created_at": "2026-08-12 15:34:26",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/0249a42b-eb4c-494b-a177-4c1a07ec1d9d.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/0249a42b-eb4c-494b-a177-4c1a07ec1d9d.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 04:45:24",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Mixture-of-Experts",
+    "Token-Adaptive",
+    "Shared-Residual",
+    "Dynamic Routing",
+    "Domain Generalization",
+    "Efficient Inference"
+   ],
+   "field": "高效MoE架构设计",
+   "innovations": [
+    "揭示共享与路由的依赖关系，提出先共享后路由的有序原则",
+    "通过累积路由质量自适应确定剩余专家数量",
+    "引入Gram正则化促进路由方向多样性"
+   ],
+   "benchmarks": [
+    "DomainBed",
+    "GLUE"
+   ]
+  }
+ }
 }

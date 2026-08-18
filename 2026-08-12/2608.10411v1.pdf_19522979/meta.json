@@ -3,5 +3,30 @@
  "batch_id": "19522979-6649-406d-b347-dc6ba5f1d34f",
  "token": "sk-7NOZt17oN...",
  "created_at": "2026-08-12 15:41:00",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/940fd553-7076-4e6f-802b-9aa2644eb74b.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/940fd553-7076-4e6f-802b-9aa2644eb74b.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 04:48:38",
+  "chunks": 4,
+  "meta": {
+   "keywords": [
+    "depth from focus",
+    "second-order texture",
+    "subjective speckle",
+    "narrowband filtering",
+    "passive depth sensing",
+    "coherence imaging"
+   ],
+   "field": "被动深度感知与计算摄影",
+   "innovations": [
+    "提出二阶纹理理论，证明无纹理表面可通过主观散斑实现DFF深度恢复",
+    "推导α-可恢复性判据与对比度-SNR乘积的闭式表达式",
+    "证明窄带滤光片可显著提升二阶纹理对比度并提供系统参数优化准则"
+   ],
+   "benchmarks": [
+    "日光与室内顶灯双照明均匀表面场景",
+    "标准DFF baseline（无滤光片）"
+   ]
+  }
+ }
 }

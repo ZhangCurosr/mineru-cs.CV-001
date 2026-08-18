@@ -3,5 +3,33 @@
  "batch_id": "f5043be9-ccea-4396-ba27-15acf9f1473b",
  "token": "sk-Ir4JqYCnj...",
  "created_at": "2026-08-12 14:59:53",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/db099243-4832-4f3d-8390-67171cc8e6cc.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/db099243-4832-4f3d-8390-67171cc8e6cc.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 04:52:13",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "protein complex",
+    "molecular dynamics",
+    "diffusion model",
+    "dynamic dataset",
+    "protein interactomics",
+    "enhanced sampling"
+   ],
+   "field": "计算生物学与AI驱动结构预测",
+   "innovations": [
+    "提出首个面向蛋白质复合物动态重组的大规模MD轨迹数据集DynaPPI，覆盖4类生物分子相互作用且计划达10万复合物规模",
+    "将扩散模型定义为以解离态和环境物理参数为条件的生成-预测联合任务，统一结合路径探索与终态结构预测",
+    "设计去偏的unbound state近似方案与多增强采样策略组合，提升稀有结合事件的采样保真度"
+   ],
+   "benchmarks": [
+    "CAPRI",
+    "Docking Benchmark 5.0",
+    "Dynamic PDB",
+    "AlphaFold-Multimer",
+    "AlphaFold 3"
+   ]
+  }
+ }
 }
