@@ -4,5 +4,32 @@
  "title": "A-Plug-and-Play-2D-Motion-Interface-for-Real-World-Motion-La",
  "token": "sk-aeujzMN4P...",
  "created_at": "2026-08-18 02:56:53",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/a22da64a-87c6-4c14-8173-4db8a13d1b11.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/a22da64a-87c6-4c14-8173-4db8a13d1b11.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:51:21",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Motion Language Models",
+    "2D-3D cross-modal alignment",
+    "VQ-VAE",
+    "plug-and-play interface",
+    "monocular pose estimation",
+    "real-world motion understanding",
+    "representation alignment"
+   ],
+   "field": "运动语言模型与跨模态对齐",
+   "innovations": [
+    "提出冻结预训练MoLM的即插即用2D motion encoder，通过L1特征对齐损失将2D运动映射至VQ-VAE连续潜在空间，无需微调基础模型",
+    "构造单目真实视频运动评测数据集并提出real-video adapter（轻量残差MLP），在姿态估计噪声场景下2D输入优于3D输入且计算成本更低",
+    "系统性验证2D运动可高度近似3D预训练MoLM所需的运动表征：潜在空间分布重叠、离散token Top-k一致性达44.8%/59.6%/67.1%、邻近token语义相似性高"
+   ],
+   "benchmarks": [
+    "HumanML3D",
+    "FineMotion",
+    "Monocular Real-World Video Dataset (self-constructed)"
+   ]
+  }
+ }
 }

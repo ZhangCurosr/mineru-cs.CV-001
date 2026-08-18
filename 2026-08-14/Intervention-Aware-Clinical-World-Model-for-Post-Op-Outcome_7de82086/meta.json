@@ -4,5 +4,29 @@
  "title": "Intervention-Aware-Clinical-World-Model-for-Post-Op-Outcome",
  "token": "sk-qKu2Cn1y4...",
  "created_at": "2026-08-14 04:09:22",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/639d40ae-aa64-4591-9d98-0c15acc78ae3.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/639d40ae-aa64-4591-9d98-0c15acc78ae3.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:49:20",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Clinical World Model",
+    "Atrial Fibrillation Ablation",
+    "Post-Intervention Forecasting",
+    "Multimodal Learning",
+    "Anytime Risk Updating",
+    "Latent State Dynamics"
+   ],
+   "field": "医学影像纵向预测建模",
+   "innovations": [
+    "干预感知的3D潜状态世界模型支持不规则事件驱动的动态风险更新",
+    "Horizon-token机制实现任意时点 anytime 复发风险预测",
+    "训练-推理分离的隐式随访监督：latent matching loss 提供结构正则化而推理无需随访影像"
+   ],
+   "benchmarks": [
+    "DECAAF-II"
+   ]
+  }
+ }
 }

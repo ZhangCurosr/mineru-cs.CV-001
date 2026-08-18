@@ -4,5 +4,35 @@
  "title": "Beyond-Similarity-Matching-Structured-Reasoning-for-Open-Voc",
  "token": "sk-SDuVT3fV1...",
  "created_at": "2026-08-18 14:31:20",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/d811749e-c648-4ed4-bd75-74e2734940bb.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/d811749e-c648-4ed4-bd75-74e2734940bb.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:54:34",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "3D Gaussian Splatting",
+    "Referring Segmentation",
+    "Open-Vocabulary",
+    "Query-Conditioned Slot",
+    "Graph Neural Reasoning",
+    "Adaptive Routing"
+   ],
+   "field": "3D 开放词汇感知",
+   "innovations": [
+    "查询条件化多尺度高斯槽学习，候选感受野由语言表达式塑造",
+    "语言条件化边权重的关系感知槽图推理，建模目标-参考/属性/部分-整体交互",
+    "粒度自适应软路由融合五分支掩码预测与关系约束细化"
+   ],
+   "benchmarks": [
+    "ScanRefer",
+    "ReferIt3D",
+    "Multi3DRefer",
+    "ReferSplat",
+    "PartNet",
+    "PartNet-Mobility",
+    "ShapeNetPart"
+   ]
+  }
+ }
 }

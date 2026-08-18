@@ -4,5 +4,31 @@
  "title": "AdROD-HyperNetwork-based-Adversarially-Robust-Object-Detecti",
  "token": "sk-F0hECVUrq...",
  "created_at": "2026-08-18 14:31:10",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/fa920520-339a-4121-aea0-42f3968a9b83.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/fa920520-339a-4121-aea0-42f3968a9b83.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:52:09",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Adversarial Robustness",
+    "Object Detection",
+    "HyperNetwork",
+    "Moving Target Defense",
+    "Autonomous Driving",
+    "Adversarial Patch"
+   ],
+   "field": "自动驾驶感知系统的对抗鲁棒性防御",
+   "innovations": [
+    "参数高效的低秩超网络设计，仅需标准超网络1.6%参数即可生成多样化检测器",
+    "双重随机化的功能多样性机制，耦合权重更新与分块像素洗牌输入变换",
+    "基于不确定性排名和运动学不连续性的两种服务模式（连续保护与按需高效）"
+   ],
+   "benchmarks": [
+    "COCO (mAP, ASR)",
+    "Physical Outdoor Testbed (SysAdv)",
+    "OpenCDA/CARLA End-to-End Simulation"
+   ]
+  }
+ }
 }

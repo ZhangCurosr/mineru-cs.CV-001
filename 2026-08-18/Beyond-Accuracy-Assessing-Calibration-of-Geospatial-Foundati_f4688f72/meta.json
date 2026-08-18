@@ -4,5 +4,42 @@
  "title": "Beyond-Accuracy-Assessing-Calibration-of-Geospatial-Foundati",
  "token": "sk-rnwM2rvcl...",
  "created_at": "2026-08-18 02:54:38",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/6ced46d0-4a08-4d15-8b3d-e6ad788f1237.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/6ced46d0-4a08-4d15-8b3d-e6ad788f1237.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:54:04",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "geospatial foundation models",
+    "calibration",
+    "distribution shift",
+    "uncertainty quantification",
+    "earth observation",
+    "benchmarking",
+    "representation drift"
+   ],
+   "field": "遥感基础模型评测与可靠性",
+   "innovations": [
+    "首次系统评估GeoFM在分布偏移下的校准性，揭示干净数据排名无法迁移至偏移条件",
+    "提出表征刚性假说，通过CKA关联EO预训练编码器的过置信偏移退化机制",
+    "评估温度缩放/深度集成/SVGP在偏移下的校准极限，证明后处理无法充分恢复偏移校准"
+   ],
+   "benchmarks": [
+    "GEO-Bench-1",
+    "PANGAEA",
+    "REOBench",
+    "EarthShift",
+    "ADVANCE",
+    "m-EuroSAT",
+    "RESISC45",
+    "So2Sat",
+    "CloudSEN12",
+    "DynamicEarthNet",
+    "FLAIR#2",
+    "Fields of the World",
+    "SpaceNet2"
+   ]
+  }
+ }
 }

@@ -4,5 +4,30 @@
  "title": "Learning-Unified-Video-and-Image-Representation-for-Video-Fa",
  "token": "sk-JMLCbBCEj...",
  "created_at": "2026-08-14 04:12:27",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/34d65619-03eb-4394-8331-29bfc0b96ffd.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/34d65619-03eb-4394-8331-29bfc0b96ffd.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:48:29",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Face Forgery Detection",
+    "Video Deepfake Detection",
+    "Unified Representation",
+    "Partial Forgery",
+    "Multiple Instance Learning",
+    "Feature Alignment",
+    "Pseudo Labeling"
+   ],
+   "field": "视频人脸伪造检测",
+   "innovations": [
+    "提出统一视频-图像表示框架UVIF，利用图像细粒度标注缓解部分伪造视频帧级监督缺失问题",
+    "设计伪标签生成与视频导向特征对齐策略，桥接图像与视频帧分布并提升帧级判别力"
+   ],
+   "benchmarks": [
+    "ForgeryNet",
+    "DFDC"
+   ]
+  }
+ }
 }

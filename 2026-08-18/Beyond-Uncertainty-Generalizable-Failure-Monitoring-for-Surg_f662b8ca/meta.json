@@ -4,5 +4,31 @@
  "title": "Beyond-Uncertainty-Generalizable-Failure-Monitoring-for-Surg",
  "token": "sk-vBvZ06NsJ...",
  "created_at": "2026-08-18 02:55:07",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/13892d14-270f-41d6-8060-7e44ebf706db.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/13892d14-270f-41d6-8060-7e44ebf706db.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:55:14",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "surgical segmentation",
+    "failure monitoring",
+    "conformal prediction",
+    "acquisition degradation",
+    "uncertainty estimation",
+    "LOCO generalization",
+    "Mondrian calibration"
+   ],
+   "field": "手术视频分割的部署时失败监控",
+   "innovations": [
+    "多源可观测特征（置信度/形状/时序/质量）融合的后验失败监控框架 TCSR-Monitor",
+    "LOCO 泛化+循环性控制+Mondrian 校准三层验证协议",
+    "定量证明不确定性 alone 不足以捕获高置信度失败，且跨 segmenter 特征表征可迁移"
+   ],
+   "benchmarks": [
+    "EndoVis 2017",
+    "SAM2-Tiny zero-shot transfer"
+   ]
+  }
+ }
 }

@@ -4,5 +4,33 @@
  "title": "Beyond-Clear-Skies-Synthetic-Seasonal-and-Weather-Variations",
  "token": "sk-WcZzSI744...",
  "created_at": "2026-08-18 14:31:06",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/e196620c-54a9-443d-82b6-66d190a2b898.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/e196620c-54a9-443d-82b6-66d190a2b898.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:54:07",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "drone detection",
+    "synthetic data",
+    "adverse weather",
+    "seasonal variation",
+    "YOLO",
+    "Sim2Real",
+    "object detection"
+   ],
+   "field": "低空安防无人机视觉检测",
+   "innovations": [
+    "提出SDV-W合成数据集，在保留几何/轨迹一致性的前提下系统性引入三季六类天气变化，支持配对对照分析",
+    "量化雪/雾/雨等条件对YOLO系列检测器的架构不变性退化排序并分离天气多样性与训练规模的贡献"
+   ],
+   "benchmarks": [
+    "DUT Anti-UAV",
+    "LRDDv1",
+    "LRDDv2",
+    "R1-POS3",
+    "R2-POS7"
+   ]
+  }
+ }
 }

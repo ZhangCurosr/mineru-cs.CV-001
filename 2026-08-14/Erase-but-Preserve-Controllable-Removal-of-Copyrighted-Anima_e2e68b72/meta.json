@@ -4,5 +4,36 @@
  "title": "Erase-but-Preserve-Controllable-Removal-of-Copyrighted-Anima",
  "token": "sk-0vgcClVqT...",
  "created_at": "2026-08-14 14:49:04",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/e3fbbd65-1f18-4f39-bbc5-1f702c6fcc12.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/e3fbbd65-1f18-4f39-bbc5-1f702c6fcc12.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:48:04",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "概念删除",
+    "扩散模型",
+    "版权保护",
+    "动画角色",
+    "连续嵌入",
+    "可控生成"
+   ],
+   "field": "生成模型安全与可控性",
+   "innovations": [
+    "连续嵌入空间的锚点优化方法解决独特动画角色的删除问题",
+    "结构感知自适应替换策略实现删除效果与保真度的平衡",
+    "即插即用的锚点设计可提升现有模型修改方法的删除性能"
+   ],
+   "benchmarks": [
+    "80个动画角色数据集",
+    "LLaVA-1.5识别准确率",
+    "BLIP-3识别准确率",
+    "SSIM",
+    "LPIPS",
+    "Aesthetic Score",
+    "FID",
+    "CLIP Score"
+   ]
+  }
+ }
 }

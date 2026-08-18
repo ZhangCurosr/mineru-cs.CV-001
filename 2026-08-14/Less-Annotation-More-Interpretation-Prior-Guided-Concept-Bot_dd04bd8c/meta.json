@@ -4,5 +4,10 @@
  "title": "Less-Annotation-More-Interpretation-Prior-Guided-Concept-Bot",
  "token": "sk-Ar06zcDAy...",
  "created_at": "2026-08-14 14:48:54",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/1c4f270f-2c41-485b-88d4-2829b8fe828a.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/1c4f270f-2c41-485b-88d4-2829b8fe828a.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:49:44",
+  "chunks": 1
+ }
 }

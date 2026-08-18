@@ -4,5 +4,30 @@
  "title": "NARU-A-Benchmark-for-NARrative-Evolution-and-Cultural-Nuance",
  "token": "sk-n7iJ0Z1Ol...",
  "created_at": "2026-08-14 04:11:34",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/1e6c96b3-1be3-43db-a937-08016f24a2af.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/1e6c96b3-1be3-43db-a937-08016f24a2af.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:50:21",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "多模态大语言模型",
+    "长视频理解",
+    "叙事推理",
+    "文化理解",
+    "视频问答基准",
+    "非英语多模态",
+    "高语境文化"
+   ],
+   "field": "多模态大模型评测与理解",
+   "innovations": [
+    "提出首个联合评估叙事演进与文化隐式理解的超长日语视频基准NARU",
+    "设计层次化记忆标注与迭代去偏置的自动化QA生成流水线",
+    "揭示模型在叙事追踪与文化理解上的能力差异及帧数缩放动态"
+   ],
+   "benchmarks": [
+    "NARU"
+   ]
+  }
+ }
 }

@@ -4,5 +4,31 @@
  "title": "AnyTalk-Speech-Animation-for-Arbitrary-Characters-Leveraging",
  "token": "sk-0vgcClVqT...",
  "created_at": "2026-08-18 14:31:07",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/083c6337-87ce-4e3d-b46d-62c1481af145.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/083c6337-87ce-4e3d-b46d-62c1481af145.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:53:00",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "audio-driven animation",
+    "speech animation",
+    "diffusion model",
+    "blendshape optimization",
+    "character personalization",
+    "3D facial animation"
+   ],
+   "field": "音频驱动3D面部动画",
+   "innovations": [
+    "首个无需动画数据训练的任意角色3D语音动画方法，通过2D视频扩散模型生成后优化提升",
+    "CsF微调用零化音频嵌入解耦运动与外观，冻结时间模块保护motion prior",
+    "单应性扭曲引导的地标优化与非对称张嘴损失实现任意blendshape配置的精确参数估计"
+   ],
+   "benchmarks": [
+    "LibriSpeech",
+    "LSE-D",
+    "LSE-C"
+   ]
+  }
+ }
 }

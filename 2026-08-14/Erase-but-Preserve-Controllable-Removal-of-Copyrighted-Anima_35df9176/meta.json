@@ -4,5 +4,31 @@
  "title": "Erase-but-Preserve-Controllable-Removal-of-Copyrighted-Anima",
  "token": "sk-0vgcClVqT...",
  "created_at": "2026-08-14 04:08:27",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/476ad50e-42eb-40c1-b9de-1445dbbf6e2d.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/476ad50e-42eb-40c1-b9de-1445dbbf6e2d.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:48:10",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "版权保护",
+    "概念擦除",
+    "扩散模型",
+    "语义锚点",
+    "可控编辑"
+   ],
+   "field": "生成模型安全与合规",
+   "innovations": [
+    "连续嵌入空间中联合结构-细节约束优化语义锚点嵌入",
+    "结构感知自适应替换策略实现去噪中途动态触发嵌入替换"
+   ],
+   "benchmarks": [
+    "LLaVA-1.5识别准确率",
+    "BLIP-3识别准确率",
+    "SSIM",
+    "LPIPS",
+    "Aesthetic Score"
+   ]
+  }
+ }
 }

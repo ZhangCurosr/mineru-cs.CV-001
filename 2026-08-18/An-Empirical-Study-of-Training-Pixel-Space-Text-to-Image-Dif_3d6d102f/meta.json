@@ -4,5 +4,31 @@
  "title": "An-Empirical-Study-of-Training-Pixel-Space-Text-to-Image-Dif",
  "token": "sk-aQHhxC28I...",
  "created_at": "2026-08-18 02:53:10",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/8b998974-3e86-4ea5-9512-861888a815a9.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/8b998974-3e86-4ea5-9512-861888a815a9.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:52:36",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "pixel-space diffusion",
+    "latent-to-pixel transition",
+    "text-to-image generation",
+    "step distillation",
+    "progressive patch adaptation"
+   ],
+   "field": "扩散模型训练策略",
+   "innovations": [
+    "提出潜空间预训练+像素空间后训练的迁移配方，系统消融权重初始化、数据混合、预测目标、解码器、噪声调度五要素",
+    "渐进式patch size适应+像素空间步蒸馏实现4.75×端到端加速且质量不降",
+    "跨Z-Image与FLUX2-klein两大家族验证配方的泛化性"
+   ],
+   "benchmarks": [
+    "GenEval",
+    "DPG",
+    "OneIG",
+    "LongText"
+   ]
+  }
+ }
 }

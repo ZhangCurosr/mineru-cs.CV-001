@@ -4,5 +4,34 @@
  "title": "A-cross-modal-generative-model-for-incomplete-and-degraded-p",
  "token": "sk-YrIlRFySy...",
  "created_at": "2026-08-18 14:31:49",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/5ecf0b33-c7e6-4d2e-8fc6-3b46490ef76a.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/5ecf0b33-c7e6-4d2e-8fc6-3b46490ef76a.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:51:53",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "前列腺 MRI",
+    "跨模态生成",
+    "多参数 MRI",
+    "序列补全",
+    "医学图像增强",
+    "诊断 AI",
+    "伪影恢复"
+   ],
+   "field": "医学图像生成与分析",
+   "innovations": [
+    "序列条件化门控融合框架 MSCNet 实现多模态路由与病灶保真度提升",
+    "边缘感知监督与 Transformer 全局上下文建模结合增强边界保留",
+    "重建风险评分与选择性预测框架支持临床安全部署边界界定"
+   ],
+   "benchmarks": [
+    "PI-CAI",
+    "PROSTATEx",
+    "三医院外部验证队列",
+    "1000例盲审读者研究",
+    "200例csPCa诊断验证"
+   ]
+  }
+ }
 }

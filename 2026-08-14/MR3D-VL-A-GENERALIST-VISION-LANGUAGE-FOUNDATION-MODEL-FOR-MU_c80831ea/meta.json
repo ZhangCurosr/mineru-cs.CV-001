@@ -4,5 +4,30 @@
  "title": "MR3D-VL-A-GENERALIST-VISION-LANGUAGE-FOUNDATION-MODEL-FOR-MU",
  "token": "sk-F0hECVUrq...",
  "created_at": "2026-08-14 04:08:29",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/28f0dfae-acbe-4f12-b266-04306fd314e3.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/28f0dfae-acbe-4f12-b266-04306fd314e3.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:49:09",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "3D Vision Language Model",
+    "Multiparametric MRI",
+    "4D-RoPE",
+    "Medical Foundation Model",
+    "Self-Supervised Learning"
+   ],
+   "field": "医学影像视觉-语言模型",
+   "innovations": [
+    "提出4D旋转位置编码(4D-RoPE)以建模3D MRI体数据空间关系",
+    "设计多分辨率视觉Token植入策略实现层级视觉-语言融合",
+    "采用无监督预训练的共享模态不可知3D编码器增强跨模态泛化能力"
+   ],
+   "benchmarks": [
+    "Brain mpMRI Report Generation",
+    "Open-ended VQA",
+    "Multiple-choice VQA"
+   ]
+  }
+ }
 }

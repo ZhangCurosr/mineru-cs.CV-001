@@ -4,5 +4,28 @@
  "title": "MergeOver-Post-Training-Token-Merging-for-Recursive-Vision-T",
  "token": "sk-FMTQpgZxg...",
  "created_at": "2026-08-14 14:48:54",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/8de70305-e64e-40b4-8be2-c4dcd0b2fb98.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/8de70305-e64e-40b4-8be2-c4dcd0b2fb98.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:50:06",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Vision Transformer",
+    "Token Merging",
+    "Recursive Weight Sharing",
+    "Post-Training Compression",
+    "Edge AI"
+   ],
+   "field": "高效视觉Transformer",
+   "innovations": [
+    "提出MergeOver后训练方法将ToMe集成到递归ViT中无需重新训练",
+    "设计Unmerge Stack解决层次化架构的空间网格恢复问题",
+    "提出stage-wise single-shot调度策略在精度与效率间取得最优平衡"
+   ],
+   "benchmarks": [
+    "ImageNet-1K"
+   ]
+  }
+ }
 }

@@ -4,5 +4,31 @@
  "title": "A-Plug-and-Play-2D-Motion-Interface-for-Real-World-Motion-La",
  "token": "sk-aeujzMN4P...",
  "created_at": "2026-08-18 14:31:49",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/a22da64a-87c6-4c14-8173-4db8a13d1b11.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/a22da64a-87c6-4c14-8173-4db8a13d1b11.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:51:35",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Motion Language Models",
+    "2D motion",
+    "plug-and-play interface",
+    "representation alignment",
+    "human motion understanding",
+    "VQ-VAE"
+   ],
+   "field": "动作语言模型与跨模态对齐",
+   "innovations": [
+    "提出即插即用的2D动作编码器，冻结3D预训练MoLM仅训练轻量编码器对齐潜空间",
+    "通过潜空间与离散token空间分析验证2D动作可有效近似3D预训练MoLM的运动表征",
+    "构建单目真实视频数据集并提出real-video adapter，证明2D方案在真实场景下优于3D方案"
+   ],
+   "benchmarks": [
+    "HumanML3D",
+    "FineMotion",
+    "Monocular Real-World Video Dataset"
+   ]
+  }
+ }
 }

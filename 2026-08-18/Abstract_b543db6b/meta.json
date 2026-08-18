@@ -4,5 +4,35 @@
  "title": "Abstract",
  "token": "sk-4GZLsbGFG...",
  "created_at": "2026-08-18 14:30:52",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/d76bc2f5-f762-4ce7-b1d2-cbf6df69dc82.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/d76bc2f5-f762-4ce7-b1d2-cbf6df69dc82.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:52:00",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "AnchorScore",
+    "CLIP",
+    "multimodal large language models",
+    "zero-shot evaluation",
+    "annotation difficulty",
+    "model routing",
+    "visual-language models"
+   ],
+   "field": "多模态模型评估与效率优化",
+   "innovations": [
+    "提出冻结CLIP零样本准确率作为MLLM标注难度的低成本先验诊断信号，在SCB5和Stanford40上分别达到ρ=0.769和ρ=0.817的类别级相关性",
+    "证明该信号捕获跨模型共享的难度因子而非CLIP特有偏差，并通过交叉模型共识控制加以验证",
+    "基于AnchorScore实现三种实用工作流：CLIP/MLLM混合路由（最高+23pp准确率增益、44%成本节省）、提示消歧优化与人工审核优先级预测"
+   ],
+   "benchmarks": [
+    "SCB5",
+    "Stanford40 Actions",
+    "EuroSAT",
+    "BloodMNIST",
+    "TissueMNIST",
+    "PathMNIST"
+   ]
+  }
+ }
 }

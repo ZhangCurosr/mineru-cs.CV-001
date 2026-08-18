@@ -4,5 +4,35 @@
  "title": "Online-Learning-of-Correspondences-between-Images",
  "token": "sk-NnOQ8YDzm...",
  "created_at": "2026-08-14 14:48:56",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/3fed9fae-2f1f-4192-88ea-ff363211ae5d.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/3fed9fae-2f1f-4192-88ea-ff363211ae5d.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:51:02",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "online learning",
+    "correspondence problem",
+    "channel representation",
+    "Neyman chi-square divergence",
+    "multimodal regression",
+    "surveillance calibration",
+    "PHD",
+    "correspondence-free learning"
+   ],
+   "field": "多视图计算机视觉与在线学习",
+   "innovations": [
+    "提出基于Neyman's chi-square散度的在线CMap学习算法，无需标定和对应标签即可学习跨视图点对应映射",
+    "推导固定大小参数的增量更新方程，在保留历史统计信息的同时实现O(1)复杂度在线学习",
+    "将channel representation与线性映射结合，在channel域实现原始域的非线性多模态对应估计"
+   ],
+   "benchmarks": [
+    "Cross 2D synthetic data (D1)",
+    "Synthetic 3D projections with real camera models (D2)",
+    "PETS2001 surveillance dataset (D3)",
+    "PROMETHEUS dataset (D4)",
+    "Spiral staircase dataset (D5)"
+   ]
+  }
+ }
 }

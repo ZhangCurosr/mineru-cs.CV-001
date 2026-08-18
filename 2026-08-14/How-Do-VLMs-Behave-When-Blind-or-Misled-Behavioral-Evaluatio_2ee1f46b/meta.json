@@ -4,5 +4,35 @@
  "title": "How-Do-VLMs-Behave-When-Blind-or-Misled-Behavioral-Evaluatio",
  "token": "sk-1FwfANuN8...",
  "created_at": "2026-08-14 14:49:11",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/c6d01c9b-1f78-4fb0-ad92-30b0c8def8f3.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/c6d01c9b-1f78-4fb0-ad92-30b0c8def8f3.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:48:05",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "VLM",
+    "科学图表理解",
+    "行为可靠性",
+    "幻觉评估",
+    "多模态基准",
+    "Admittance-Resistance-Inductance",
+    "选择性模糊"
+   ],
+   "field": "多模态大模型评估与可靠性",
+   "innovations": [
+    "提出 A-R-I 行为框架，首次将承认不确定性、抵抗误导上下文、有界推断三者统一为可量化的行为评估维度",
+    "设计选择性模糊探针区分不可恢复与可推断两类条件，同时测量 Admittance 与 Inductance",
+    "揭示描述质量与行为可靠性的根本脱钩：GPT-5.2 MQM 第一但主动承认率仅 8%，Gemini 3.1 Pro MQM 第二但全维度行为最优"
+   ],
+   "benchmarks": [
+    "SCIFIGBENCH",
+    "ChartQA",
+    "SciFIBench",
+    "CharXiv",
+    "ChartMuseum",
+    "ChartQAPro"
+   ]
+  }
+ }
 }

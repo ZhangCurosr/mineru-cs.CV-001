@@ -4,5 +4,35 @@
  "title": "Beyond-Clear-Skies-Synthetic-Seasonal-and-Weather-Variations",
  "token": "sk-WcZzSI744...",
  "created_at": "2026-08-18 02:59:29",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/e196620c-54a9-443d-82b6-66d190a2b898.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/e196620c-54a9-443d-82b6-66d190a2b898.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:54:17",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "无人机检测",
+    "合成数据",
+    "恶劣天气鲁棒性",
+    "数据集",
+    "YOLO",
+    "季节性变化",
+    "仿真渲染"
+   ],
+   "field": "视觉无人机检测与鲁棒性",
+   "innovations": [
+    "提出SDV-W数据集，系统扩展合成无人机的季节与恶劣天气覆盖",
+    "通过配对重渲染量化天气诱导的检测器退化",
+    "分离天气多样性与训练规模效应，证明SDV-W应作为补充训练数据"
+   ],
+   "benchmarks": [
+    "LRDDv1",
+    "LRDDv2",
+    "DUT Anti-UAV",
+    "R1-POS3",
+    "R2-POS7",
+    "SDV-W"
+   ]
+  }
+ }
 }

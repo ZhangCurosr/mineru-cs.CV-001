@@ -4,5 +4,33 @@
  "title": "NaviDC-OCR-Navigating-Document-Parsing-Across-Digital-and-Ca",
  "token": "sk-iG65PZaJv...",
  "created_at": "2026-08-14 04:09:35",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/b26f933a-83d0-4055-a57e-d697cd7c33e9.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/b26f933a-83d0-4055-a57e-d697cd7c33e9.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:50:37",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "文档解析",
+    "视觉语言模型",
+    "形变感知",
+    "内容结构解耦",
+    "OCR",
+    "表格识别",
+    "公式解析"
+   ],
+   "field": "文档智能",
+   "innovations": [
+    "形变感知学习策略将几何校正整合进VLM",
+    "内容-结构解耦学习降低结构化解析优化复杂度",
+    "曲率引导的自适应采样机制实现复杂布局建模"
+   ],
+   "benchmarks": [
+    "OmniDocBench v1.6",
+    "Wild-OmniDocBench v1.5",
+    "PureDocBench",
+    "ICDAR 2026 Sci-ImageMiner Challenge"
+   ]
+  }
+ }
 }

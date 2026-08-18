@@ -4,5 +4,10 @@
  "title": "EgoPHI-Estimating-3D-Hand-Object-Contact-and-Force-from-Egoc",
  "token": "sk-JiEKTe0tT...",
  "created_at": "2026-08-14 04:12:05",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/094c5026-aabb-4bc5-ae52-439183ed9baa.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/094c5026-aabb-4bc5-ae52-439183ed9baa.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:48:33",
+  "chunks": 1
+ }
 }

@@ -4,5 +4,10 @@
  "title": "Beyond-Accuracy-Assessing-Calibration-of-Geospatial-Foundati",
  "token": "sk-rnwM2rvcl...",
  "created_at": "2026-08-18 14:31:36",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/6ced46d0-4a08-4d15-8b3d-e6ad788f1237.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/6ced46d0-4a08-4d15-8b3d-e6ad788f1237.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:55:57",
+  "chunks": 1
+ }
 }
