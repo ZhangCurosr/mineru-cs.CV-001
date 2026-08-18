@@ -4,5 +4,30 @@
  "title": "Multi-scale-Decomposed-Convolution-Refinement-Network-for-Vi",
  "token": "sk-EwecAZ9oF...",
  "created_at": "2026-08-18 02:56:05",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/5d1d1661-cc7e-441e-b11f-8e764ccd92e6.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/5d1d1661-cc7e-441e-b11f-8e764ccd92e6.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:26:08",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "VI-ReID",
+    "跨模态学习",
+    "多尺度卷积",
+    "判别度量学习",
+    "行人重识别",
+    "分解卷积注意力"
+   ],
+   "field": "跨模态行人重识别",
+   "innovations": [
+    "提出层次分解卷积注意力模块(HDCA)，通过级联渐进核实现感受野二次增长的多尺度空间感知",
+    "设计三组分粒度判别损失(GDL)统一优化跨模态对齐、跨身份区分与同模态聚类",
+    "四流架构结合轻量通道注意力，以CNN方案超越CLIP辅助方法的SOTA性能"
+   ],
+   "benchmarks": [
+    "SYSU-MM01",
+    "RegDB"
+   ]
+  }
+ }
 }

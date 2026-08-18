@@ -4,5 +4,10 @@
  "title": "InstaBind-Lite-Diagnosing-Dense-Same-Class-Attribute-Misbind",
  "token": "sk-Jd4ujJMnj...",
  "created_at": "2026-08-18 14:30:47",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/854a200c-cb19-409c-be40-9e40536f87b1.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/854a200c-cb19-409c-be40-9e40536f87b1.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:24:53",
+  "chunks": 1
+ }
 }

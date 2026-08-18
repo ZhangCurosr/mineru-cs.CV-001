@@ -4,5 +4,31 @@
  "title": "Graph-Neural-Assisted-Actor-Critic-for-Latency-Efficient-Edg",
  "token": "sk-ZGznq9xBq...",
  "created_at": "2026-08-18 14:31:39",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/9b5a5876-a985-4c64-ab99-4b301d2949d2.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/9b5a5876-a985-4c64-ab99-4b301d2949d2.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:23:18",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "低延迟传输",
+    "GCN",
+    "A2C",
+    "边缘计算",
+    "UAV视觉",
+    "RoI选择"
+   ],
+   "field": "边缘智能视频传输",
+   "innovations": [
+    "GCN辅助A2C实现像素相关性驱动的RoI选择",
+    "Lagrangian对偶动态更新避免约束违反"
+   ],
+   "benchmarks": [
+    "FlexPatch",
+    "EdgeDuet",
+    "DQN",
+    "DDPG"
+   ]
+  }
+ }
 }

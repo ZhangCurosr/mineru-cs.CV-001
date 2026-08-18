@@ -4,5 +4,33 @@
  "title": "Depth-guided-Multi-view-Exposure-Bracketing-for-HDR-Robot-Vi",
  "token": "sk-3sasXMHBZ...",
  "created_at": "2026-08-18 14:31:11",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/ea059e2a-1bdb-430b-a5e7-0c46ff0071ec.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/ea059e2a-1bdb-430b-a5e7-0c46ff0071ec.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:22:48",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "HDR成像",
+    "多视角融合",
+    "深度引导",
+    "曝光合成",
+    "机器人视觉",
+    "动态范围"
+   ],
+   "field": "计算摄影与机器视觉",
+   "innovations": [
+    "深度引导多视角曝光合成替代时序合成",
+    "置信度感知融合机制支持大曝光差异",
+    "首个多视角变曝光HDR公开数据集"
+   ],
+   "benchmarks": [
+    "Real Modest DR",
+    "Real Ultra DR",
+    "Synthetic CARLA",
+    "iPhone Dataset",
+    "Choi 2-view"
+   ]
+  }
+ }
 }

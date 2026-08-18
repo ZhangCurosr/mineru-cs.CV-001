@@ -4,5 +4,30 @@
  "title": "HiFi-BRep-High-Fidelity-Latent-Representation-for-Robust-B-R",
  "token": "sk-fYugtz9Wo...",
  "created_at": "2026-08-18 02:59:28",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/9c563ad8-82d7-4de6-ac97-9812d9767789.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/9c563ad8-82d7-4de6-ac97-9812d9767789.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:24:06",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "B-Rep Generation",
+    "CAD Generation",
+    "Diffusion Model",
+    "Topological Constraints",
+    "Manifold Solids",
+    "Variational Autoencoder"
+   ],
+   "field": "3D CAD 几何生成",
+   "innovations": [
+    "拓扑感知编码器通过可学习查询消除 padding 噪声并用拓扑引导注意力防止特征污染",
+    "单阶段有效性约束解码器联合预测几何与拓扑，行向双峰目标可微分实现流形约束",
+    "VAE-LDM 解耦架构在拓扑感知高保真隐空间上训练扩散模型"
+   ],
+   "benchmarks": [
+    "DeepCAD",
+    "ABC"
+   ]
+  }
+ }
 }

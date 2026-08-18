@@ -4,5 +4,31 @@
  "title": "Calibration-Free-Vehicle-Speed-Estimation-A-Monocular-Keypoi",
  "token": "sk-Yw2JG3IRJ...",
  "created_at": "2026-08-18 02:55:07",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/17dc477d-dc9f-4cb6-a483-a658f224efd6.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/17dc477d-dc9f-4cb6-a483-a658f224efd6.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:22:54",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "vehicle speed estimation",
+    "calibration-free",
+    "monocular vision",
+    "homography",
+    "optical flow",
+    "keypoint detection",
+    "ITS"
+   ],
+   "field": "智能交通系统视觉感知",
+   "innovations": [
+    "提出完全无需相机标定和道路特征的单目车辆速度估算框架",
+    "设计动态帧级单应性更新机制抑制投影偏差累积",
+    "提出warped optical flow策略在凸包约束下实现鲁棒的稠密度量速度估计"
+   ],
+   "benchmarks": [
+    "VS13",
+    "BrnoCompSpeed"
+   ]
+  }
+ }
 }

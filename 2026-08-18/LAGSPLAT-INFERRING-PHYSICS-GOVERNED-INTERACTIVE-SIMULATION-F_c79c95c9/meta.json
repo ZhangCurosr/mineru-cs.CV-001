@@ -4,5 +4,33 @@
  "title": "LAGSPLAT-INFERRING-PHYSICS-GOVERNED-INTERACTIVE-SIMULATION-F",
  "token": "sk-1jVZGxTQ1...",
  "created_at": "2026-08-18 02:58:51",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/a1efcb79-9c3d-40b4-9dbf-db76a57cbba7.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/a1efcb79-9c3d-40b4-9dbf-db76a57cbba7.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:25:45",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "latent Lagrangian",
+    "Gaussian Splatting",
+    "interactive simulation",
+    "physics from video",
+    "generalized force",
+    "structured dynamics"
+   ],
+   "field": "从视频学习物理与可交互场景重建",
+   "innovations": [
+    "隐状态同时作为拉格朗日广义坐标与高斯渲染条件实现端到端视频到可交互物理模型",
+    "通过解码器图元常数雅可比将任意图像力虚功投影为隐广义力无需重训",
+    "引入耗散下界与coercive势保证自由外推结构性收敛"
+   ],
+   "benchmarks": [
+    "Delfys75 Pendulum",
+    "Krauss soft continuum robot 1/2 segment",
+    "Rainbow rocker",
+    "Hanging bag",
+    "Double pendulum"
+   ]
+  }
+ }
 }

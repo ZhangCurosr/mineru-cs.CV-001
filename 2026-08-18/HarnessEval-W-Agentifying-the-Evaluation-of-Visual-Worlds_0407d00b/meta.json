@@ -4,5 +4,29 @@
  "title": "HarnessEval-W-Agentifying-the-Evaluation-of-Visual-Worlds",
  "token": "sk-xjs1Z4GZW...",
  "created_at": "2026-08-18 14:30:47",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/5b05b609-1896-4ccf-b6e8-5ebce7a9a80f.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/5b05b609-1896-4ccf-b6e8-5ebce7a9a80f.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:23:39",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "世界模型评估",
+    "Agent化基准",
+    "视频生成评测",
+    "可解释AI评估",
+    "交互式世界模型",
+    "Benchmark"
+   ],
+   "field": "视觉生成模型评估",
+   "innovations": [
+    "层级化agent评估架构生成可追溯证据树",
+    "基于世界模型状态因子化的三轴八项评估框架",
+    "Agent化案例构造流水线与活基准设计"
+   ],
+   "benchmarks": [
+    "HarnessEval-W"
+   ]
+  }
+ }
 }

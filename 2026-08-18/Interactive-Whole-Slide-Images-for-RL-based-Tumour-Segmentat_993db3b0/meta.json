@@ -4,5 +4,33 @@
  "title": "Interactive-Whole-Slide-Images-for-RL-based-Tumour-Segmentat",
  "token": "sk-hwXfRrBR3...",
  "created_at": "2026-08-18 14:30:54",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/9079aa25-697f-4a7d-9059-a1f20830ebd1.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/9079aa25-697f-4a7d-9059-a1f20830ebd1.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:24:33",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "whole-slide image",
+    "reinforcement learning",
+    "tumour segmentation",
+    "actor-critic",
+    "PPO",
+    "computational pathology",
+    "multi-resolution environment"
+   ],
+   "field": "计算病理学与强化学习",
+   "innovations": [
+    "将WSI多分辨率金字塔建模为端到端RL交互环境以完成序贯肿瘤分割",
+    "基于后期IoU增益的奖励塑形以平衡覆盖与边界精度",
+    "在含BatchNorm/Dropout架构中联合训练backbone时引入MDR稳定PPO"
+   ],
+   "benchmarks": [
+    "Dice",
+    "NSD@512",
+    "NSD@2048",
+    "Inference time (mean/worst/best per slide)"
+   ]
+  }
+ }
 }

@@ -4,5 +4,31 @@
  "title": "MIRROR-Multimodal-Intelligent-Radiology-Reasoning-and-Observ",
  "token": "sk-jywkrqzJV...",
  "created_at": "2026-08-18 14:30:51",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/5ddfa056-e0ef-4b4e-bce3-01b5b0f1ef72.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/5ddfa056-e0ef-4b4e-bce3-01b5b0f1ef72.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:25:43",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "可解释AI",
+    "医学影像",
+    "放射科报告生成",
+    "多标签分类",
+    "架构约束",
+    " hallucination mitigation"
+   ],
+   "field": "医学影像可解释AI",
+   "innovations": [
+    "发现级接地：通过架构约束确保报告仅陈述分类器实际检测的发现",
+    "注册表驱动的多模态路由：模态差异数据化而非代码化",
+    "无技能基线报告规范：揭示多标签失衡任务中聚合指标的误导性"
+   ],
+   "benchmarks": [
+    "ChestMNIST",
+    "MedMNIST v2",
+    "NIH ChestX-ray14"
+   ]
+  }
+ }
 }

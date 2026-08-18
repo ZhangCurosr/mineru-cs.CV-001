@@ -4,5 +4,32 @@
  "title": "HOW-SAMPLING-STRATEGY-AFFECTS-IMBALANCE-MITIGATION-IN-LIDAR",
  "token": "sk-JqniBRrr0...",
  "created_at": "2026-08-18 14:30:53",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/dd45940c-9069-41f8-90ab-7dd582221d69.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/dd45940c-9069-41f8-90ab-7dd582221d69.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:23:28",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "LiDAR segmentation",
+    "class imbalance",
+    "sampling strategy",
+    "loss landscape",
+    "KPConv",
+    "RandLA-Net",
+    "reweighting"
+   ],
+   "field": "3D点云语义分割",
+   "innovations": [
+    "揭示逆频率加权在LiDAR分割中一致性失败（最多-12%）",
+    "建立采样策略×数据特征的双路径相互作用理论",
+    "为结构化/随机采样架构提供针对性的损失选择指南"
+   ],
+   "benchmarks": [
+    "DALES",
+    "S3DIS",
+    "STPLS3D"
+   ]
+  }
+ }
 }

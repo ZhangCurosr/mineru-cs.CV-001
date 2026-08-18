@@ -4,5 +4,32 @@
  "title": "Joint-Flow-Matching-Enables-Continuous-Dose-Conditioned-Cell",
  "token": "sk-mtKOSZtKc...",
  "created_at": "2026-08-18 02:57:49",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/a0049f40-55ea-4736-816e-beccb8f7e587.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/a0049f40-55ea-4736-816e-beccb8f7e587.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:24:36",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Flow Matching",
+    "Cell Perturbation",
+    "Dose-Response Modeling",
+    "Generative Modeling",
+    "Continuous Condition",
+    "Cell Morphology"
+   ],
+   "field": "生物医学图像生成与计算病理学",
+   "innovations": [
+    "双时间步联合流匹配建模细胞潜变量与连续药物浓度的联合分布",
+    "利用流匹配可逆性实现单细胞剂量条件形态变换并支持未见剂量插值",
+    "联合建模诱导潜空间单调剂量-响应几何并支持浓度反推"
+   ],
+   "benchmarks": [
+    "C7 compound on ONS-76 cell line",
+    "CK-666 compound on ONS-76 cell line",
+    "FID/KID per concentration",
+    "Unseen dose generalization (0.33 uM held-out)"
+   ]
+  }
+ }
 }

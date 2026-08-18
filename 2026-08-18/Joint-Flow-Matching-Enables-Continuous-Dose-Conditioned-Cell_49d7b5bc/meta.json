@@ -4,5 +4,31 @@
  "title": "Joint-Flow-Matching-Enables-Continuous-Dose-Conditioned-Cell",
  "token": "sk-mtKOSZtKc...",
  "created_at": "2026-08-18 14:31:15",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/a0049f40-55ea-4736-816e-beccb8f7e587.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/a0049f40-55ea-4736-816e-beccb8f7e587.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:25:28",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Flow Matching",
+    "Cell Perturbation",
+    "Dose-Response Modeling",
+    "Generative Modeling",
+    "Cellular Morphology",
+    "Continuous Conditioning"
+   ],
+   "field": "生物医学图像生成",
+   "innovations": [
+    "双时间步联合流匹配建模 p(z,c) 实现连续剂量条件化细胞形态变换",
+    "利用流匹配可逆性实现反转-重积分单细胞形态变换及未见剂量插值"
+   ],
+   "benchmarks": [
+    "C7化合物5剂量生成FID/KID",
+    "CK-666化合物5剂量生成FID/KID",
+    "未见剂量0.33μM泛化FID",
+    "浓度推断top-1准确率"
+   ]
+  }
+ }
 }

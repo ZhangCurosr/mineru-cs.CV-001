@@ -4,5 +4,39 @@
  "title": "InstaBind-Lite-Diagnosing-Dense-Same-Class-Attribute-Misbind",
  "token": "sk-Jd4ujJMnj...",
  "created_at": "2026-08-18 02:53:12",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/735b0f72-a939-4e57-8d0f-adc8bd712b69.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/735b0f72-a939-4e57-8d0f-adc8bd712b69.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:24:12",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Large Vision-Language Models",
+    "visual hallucination",
+    "attribute binding",
+    "benchmark",
+    "visual grounding",
+    "instance attribution"
+   ],
+   "field": "多模态大模型幻觉与绑定评估",
+   "innovations": [
+    "形式化定义DSCAM（密集同类属性绑定错误）作为独立失败类别，从幻觉/识别失败中分离",
+    "构建InstaBind-Lite诊断基准，通过有序同类组与源实例标注实现绑定错误的直接可测量",
+    "引入MBR/A-MBR/Distance-MBR等绑定导向度量体系及多尺度干预实验设计"
+   ],
+   "benchmarks": [
+    "InstaBind-Lite",
+    "VQA",
+    "VQA v2",
+    "Visual7W",
+    "COCO",
+    "GQA",
+    "VAW",
+    "MME",
+    "SEED-Bench",
+    "MMBench",
+    "Winoground"
+   ]
+  }
+ }
 }

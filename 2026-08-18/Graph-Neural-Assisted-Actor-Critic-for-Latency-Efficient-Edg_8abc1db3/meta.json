@@ -4,5 +4,10 @@
  "title": "Graph-Neural-Assisted-Actor-Critic-for-Latency-Efficient-Edg",
  "token": "sk-ZGznq9xBq...",
  "created_at": "2026-08-18 02:54:58",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/51e987c1-a418-4111-877c-5438e82b40a1.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/51e987c1-a418-4111-877c-5438e82b40a1.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:23:57",
+  "chunks": 1
+ }
 }

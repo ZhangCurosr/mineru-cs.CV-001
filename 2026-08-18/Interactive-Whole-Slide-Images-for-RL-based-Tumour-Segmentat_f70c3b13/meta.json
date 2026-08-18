@@ -4,5 +4,31 @@
  "title": "Interactive-Whole-Slide-Images-for-RL-based-Tumour-Segmentat",
  "token": "sk-hwXfRrBR3...",
  "created_at": "2026-08-18 02:55:43",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/9079aa25-697f-4a7d-9059-a1f20830ebd1.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/9079aa25-697f-4a7d-9059-a1f20830ebd1.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:24:32",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Whole Slide Image",
+    "Reinforcement Learning",
+    "Tumor Segmentation",
+    "Computational Pathology",
+    "PPO",
+    "Multi-resolution Environment"
+   ],
+   "field": "计算病理学与医学图像分析",
+   "innovations": [
+    "将WSI金字塔建模为RL交互环境实现序列肿瘤分割",
+    "端到端actor-critic架构联合处理局部与全局观察",
+    "系统性分析奖励设计/动作粒度/训练稳定性对WSI-RL的影响"
+   ],
+   "benchmarks": [
+    "肺腺癌WSI数据集 (94 patients, 106 slides)",
+    "UNI-1024/2048/4096 patch-based baselines",
+    "Dice / NSD@512 / NSD@2048 / Recall / Precision"
+   ]
+  }
+ }
 }

@@ -4,5 +4,30 @@
  "title": "Matched-Outcomes-Divergent-Gaze-How-Foveated-MLLMs-Search-Co",
  "token": "sk-ovHaiDbC4...",
  "created_at": "2026-08-18 02:58:39",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/f5eca3ee-c0c2-41ef-8f47-004ccdc08c8e.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/f5eca3ee-c0c2-41ef-8f47-004ccdc08c8e.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:26:05",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "visual search",
+    "foveated vision",
+    "multimodal LLMs",
+    "eye movements",
+    "COCO-Search18",
+    "human-model alignment",
+    "scanpath prediction"
+   ],
+   "field": "多模态视觉认知建模",
+   "innovations": [
+    "三轴解耦：decision/finding/gaze可分离，证明MLLMs类人outcome但非类人process",
+    "无序列瓶颈的null model：单次通过架构达成类人准确率但产生低熵大振幅scanpath",
+    "降解sweeps证明不存在人类-like搜索的操作点"
+   ],
+   "benchmarks": [
+    "COCO-Search18"
+   ]
+  }
+ }
 }

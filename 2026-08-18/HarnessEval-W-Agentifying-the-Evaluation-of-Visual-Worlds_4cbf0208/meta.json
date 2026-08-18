@@ -4,5 +4,32 @@
  "title": "HarnessEval-W-Agentifying-the-Evaluation-of-Visual-Worlds",
  "token": "sk-xjs1Z4GZW...",
  "created_at": "2026-08-18 02:53:10",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/5b05b609-1896-4ccf-b6e8-5ebce7a9a80f.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/5b05b609-1896-4ccf-b6e8-5ebce7a9a80f.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:23:53",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "世界模型评测",
+    "智能体评测",
+    "视频生成",
+    "可解释基准",
+    "分层推理",
+    "人机对齐"
+   ],
+   "field": "多模态模型评测",
+   "innovations": [
+    "分层智能体评测管道：将评测分解为可追溯的子问题和证据树",
+    "三维评测轴框架：从世界模型状态方程因子分解出发构建 Observation/Transition/Persistence 评测体系",
+    "Agent 驱动案例构造：六维场景分类法 + 探针族分配 + 自动验证的智能体流水线"
+   ],
+   "benchmarks": [
+    "HarnessEval-W",
+    "WBench",
+    "VBench",
+    "WorldScore"
+   ]
+  }
+ }
 }

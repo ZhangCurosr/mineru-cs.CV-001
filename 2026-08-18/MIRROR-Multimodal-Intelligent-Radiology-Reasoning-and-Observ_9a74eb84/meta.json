@@ -4,5 +4,30 @@
  "title": "MIRROR-Multimodal-Intelligent-Radiology-Reasoning-and-Observ",
  "token": "sk-jywkrqzJV...",
  "created_at": "2026-08-18 02:54:34",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/1c190066-0c77-4b3b-a3b7-54871d4bb95c.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/1c190066-0c77-4b3b-a3b7-54871d4bb95c.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:25:53",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "radiology",
+    "explainable AI",
+    "multimodal",
+    "report generation",
+    "grounding",
+    "class imbalance"
+   ],
+   "field": "医学影像可解释人工智能",
+   "innovations": [
+    "架构约束保证发现级可审计性（语言层不可见像素）",
+    "基于注册表的多模态路由使新增模态仅需数据变更",
+    "提出无技能基线（no-skill floor）报告法揭示聚合指标在类别不平衡下的误导性"
+   ],
+   "benchmarks": [
+    "ChestMNIST",
+    "MedMNIST v2"
+   ]
+  }
+ }
 }

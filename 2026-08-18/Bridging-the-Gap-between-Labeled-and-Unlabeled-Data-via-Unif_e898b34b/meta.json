@@ -4,5 +4,31 @@
  "title": "Bridging-the-Gap-between-Labeled-and-Unlabeled-Data-via-Unif",
  "token": "sk-dKfLTOMDH...",
  "created_at": "2026-08-18 14:30:52",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/969bd747-57f1-45c6-b650-af0f50bbc29d.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/969bd747-57f1-45c6-b650-af0f50bbc29d.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:22:59",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "半监督语义分割",
+    "统一流",
+    "特征记忆库",
+    "视觉基础模型",
+    "遥感影像分割",
+    "伪标签",
+    "特征对齐"
+   ],
+   "field": "遥感半监督学习",
+   "innovations": [
+    "提出统一流UF，融合VFM结构先验与域教师语义分配生成低偏差伪标签",
+    "提出特征记忆库FMB，通过EMA维护类别原型实现对齐标记与未标记特征空间",
+    "在统一loss下联合优化标记与未标记数据，桥接优化与表征双重差距"
+   ],
+   "benchmarks": [
+    "DeepGlobe",
+    "ISPRS-Potsdam"
+   ]
+  }
+ }
 }

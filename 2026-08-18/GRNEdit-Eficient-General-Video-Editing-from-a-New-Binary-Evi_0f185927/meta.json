@@ -4,5 +4,29 @@
  "title": "GRNEdit-Eficient-General-Video-Editing-from-a-New-Binary-Evi",
  "token": "sk-dY4OBV5wM...",
  "created_at": "2026-08-18 02:59:28",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/006cca8a-6bf8-48d1-93e9-d5bae2746e6d.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/006cca8a-6bf8-48d1-93e9-d5bae2746e6d.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:23:12",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "视频编辑",
+    "生成模型",
+    "二元量化",
+    "参数高效微调",
+    "视频生成"
+   ],
+   "field": "指令基视频编辑",
+   "innovations": [
+    "提出二元证据视角将视频编辑建模为保留/翻转决策，条件参数占比<3%",
+    "身份对齐空条件设计以源重建为锚增强内容保留并提供Stage II参考",
+    "两阶段框架：Stage I注入指令感知源证据、Stage II通过Bit-Margin Router残差修正"
+   ],
+   "benchmarks": [
+    "OpenVE-Bench",
+    "ReCo-Bench"
+   ]
+  }
+ }
 }

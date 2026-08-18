@@ -4,5 +4,29 @@
  "title": "KeyID-Decoupled-Drafting-and-Keyframe-Editing-for-Identity-P",
  "token": "sk-0a1o6nr9t...",
  "created_at": "2026-08-18 14:31:06",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/a834144d-c3c5-4d78-a0e4-9d0be790d8e6.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/a834144d-c3c5-4d78-a0e4-9d0be790d8e6.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:24:58",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "身份保持视频生成",
+    "训练无依赖方法",
+    "关键帧编辑",
+    "视频动态解耦",
+    "ACM MM 2026 挑战赛"
+   ],
+   "field": "身份保持视频生成",
+   "innovations": [
+    "提出解耦视频动态合成与身份注入的新范式，通过两阶段生成缓解提示遵循与身份保真的内在权衡",
+    "设计稀疏关键帧校正与运动插值机制，免训练实现高精度身份保持，避免逐帧编辑导致的时间抖动",
+    "模块化支持多参考与顺序动作生成，推理时控制模块 Prompt Relay 实现时序动作路由"
+   ],
+   "benchmarks": [
+    "ACM MM 2026 IPVG Challenge (Track 1 & Track 2)",
+    "VIP-200K 测试数据集"
+   ]
+  }
+ }
 }

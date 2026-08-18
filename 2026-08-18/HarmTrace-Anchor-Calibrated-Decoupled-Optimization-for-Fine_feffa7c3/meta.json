@@ -4,5 +4,29 @@
  "title": "HarmTrace-Anchor-Calibrated-Decoupled-Optimization-for-Fine",
  "token": "sk-JdJPQj6CY...",
  "created_at": "2026-08-18 02:56:11",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/9064e5de-2b33-4cd7-a462-22cf99bf7f1b.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/9064e5de-2b33-4cd7-a462-22cf99bf7f1b.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:23:47",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "有害表情包检测",
+    "多模态目标识别",
+    "策略优化",
+    "解耦归一化",
+    "虚拟正样本锚点",
+    "Meme3W"
+   ],
+   "field": "多模态内容安全与理解",
+   "innovations": [
+    "提出实体感知监督微调（E-SFT）增强目标实体字段监督",
+    "设计条件目标识别策略优化（CTPO）解耦有害性与目标识别信用分配",
+    "引入虚拟正样本锚点（VPA）防止部分正确回复的优势归一化坍缩"
+   ],
+   "benchmarks": [
+    "Meme3W"
+   ]
+  }
+ }
 }

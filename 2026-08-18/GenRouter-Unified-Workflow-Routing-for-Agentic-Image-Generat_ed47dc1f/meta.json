@@ -4,5 +4,34 @@
  "title": "GenRouter-Unified-Workflow-Routing-for-Agentic-Image-Generat",
  "token": "sk-CZoysi7P5...",
  "created_at": "2026-08-18 14:31:36",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/da90b46b-1ccf-44b1-8fa9-c50dfe0554e3.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/da90b46b-1ccf-44b1-8fa9-c50dfe0554e3.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:23:18",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Agentic Image Generation",
+    "Workflow Routing",
+    "Text-to-Image",
+    "Multi-Objective Optimization",
+    "Experience-Driven Routing",
+    "GenCanvas"
+   ],
+   "field": "智能体图像生成",
+   "innovations": [
+    "首个统一工作流路由框架GenRouter，联合路由工作流模板与生成器后端",
+    "双记忆系统（轨迹记忆+路由记忆）支持经验蒸馏与零样本泛化",
+    "7维任务签名与Pareto过滤实现可解释的多目标路由决策"
+   ],
+   "benchmarks": [
+    "WISE",
+    "DPG-Bench",
+    "GenEval2",
+    "OneIG-Bench",
+    "SpatialGenEval",
+    "LongText-Bench"
+   ]
+  }
+ }
 }
