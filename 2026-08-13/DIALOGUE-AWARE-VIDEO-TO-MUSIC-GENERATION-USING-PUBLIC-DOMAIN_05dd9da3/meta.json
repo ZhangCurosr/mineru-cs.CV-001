@@ -4,5 +4,34 @@
  "title": "DIALOGUE-AWARE-VIDEO-TO-MUSIC-GENERATION-USING-PUBLIC-DOMAIN",
  "token": "sk-JMLCbBCEj...",
  "created_at": "2026-08-13 07:12:11",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/61366327-eeae-4d89-8ea8-a741178f7910.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/61366327-eeae-4d89-8ea8-a741178f7910.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 10:47:02",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Video-to-Music Generation",
+    "Audio Generation",
+    "Dialogue Conditioning",
+    "Public Dataset",
+    "FiLM Modulation",
+    "Benchmark"
+   ],
+   "field": "视频到音乐生成",
+   "innovations": [
+    "提出OSSL-v2大规模自托管公有领域电影配乐数据集（246.4小时）",
+    "设计轻量级对话感知FiLM适配器，实现帧级时间对齐调制",
+    "通过LRM子集严格归因验证对话信号的独立增益"
+   ],
+   "benchmarks": [
+    "OSSL-v2 Test Set",
+    "OES-Com",
+    "FAD",
+    "CLAP Similarity",
+    "PaSST KL Divergence",
+    "Precision/Recall"
+   ]
+  }
+ }
 }

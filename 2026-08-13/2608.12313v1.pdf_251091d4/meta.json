@@ -3,5 +3,29 @@
  "batch_id": "251091d4-dfc9-4e58-9d8b-1e0a22606537",
  "token": "sk-7NOZt17oN...",
  "created_at": "2026-08-13 02:45:19",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/932dc3e8-fba0-4e93-9183-e636759b311c.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/932dc3e8-fba0-4e93-9183-e636759b311c.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 10:36:07",
+  "chunks": 6,
+  "meta": {
+   "keywords": [
+    "视频表征学习",
+    "知识图谱",
+    "智能体自动编码",
+    "双环策略演化",
+    "多层级视频理解",
+    "文本梯度优化"
+   ],
+   "field": "多模态表示学习",
+   "innovations": [
+    "提出自演化智能体自动编码框架，以QA残差奖励驱动编码策略持续优化",
+    "设计三层层次化编码器+登记簿锚定机制，实现跨镜头实体身份一致性",
+    "构建纯文本瓶颈知识图谱表征，所有节点仅存文本，视觉信息通过生成资产间接保留"
+   ],
+   "benchmarks": [
+    "论文未在原分段笔记中提供具体基准数据集名称"
+   ]
+  }
+ }
 }

@@ -4,5 +4,29 @@
  "title": "Auditing-Frame-Level-AUC-in-Weakly-Supervised-Video-Anomaly",
  "token": "sk-45Ifw5Iq3...",
  "created_at": "2026-08-13 05:40:57",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/14b46b1c-7e6c-4aee-a647-706bc90487ec.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/14b46b1c-7e6c-4aee-a647-706bc90487ec.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 10:24:16",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "弱监督视频异常检测",
+    "评估协议",
+    "AUC审计",
+    "场景偏差",
+    "多粒度评估",
+    "表征诊断"
+   ],
+   "field": "视频异常检测评估",
+   "innovations": [
+    "提出global/per-category/within-video三粒度AUC框架解耦定位能力与跨视频分离",
+    "通过配对视频bootstrap量化pooled AUC在微小差异上的分辨率不足",
+    "在正常帧上审计场景偏差，发现所有模型均按录制属性分离视频"
+   ],
+   "benchmarks": [
+    "UCF-Crime"
+   ]
+  }
+ }
 }

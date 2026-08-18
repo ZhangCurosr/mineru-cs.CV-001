@@ -4,5 +4,34 @@
  "title": "Domain-Aware-Lightweight-Spectral-Grouped-Convolutions-for-H",
  "token": "sk-7NOZt17oN...",
  "created_at": "2026-08-13 07:10:45",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/c30c3a34-128b-4968-83c1-12f6bbca757a.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/c30c3a34-128b-4968-83c1-12f6bbca757a.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 10:57:23",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "高光谱成像",
+    "鱼类新鲜度分类",
+    "轻量级卷积神经网络",
+    "有序分类",
+    "分组卷积",
+    "双注意力机制"
+   ],
+   "field": "高光谱图像分析",
+   "innovations": [
+    "显式谱空分解：分组卷积约束光谱交互、深度可分离卷积独立处理空间特征",
+    "轻量双注意力门控：通道SE与空间门控耦合，低于5%参数代价",
+    "4.75M参数架构在16天三文鱼数据集达97.8%准确率与0.64天MAE"
+   ],
+   "benchmarks": [
+    "Salmon Freshness Dataset (16-day refrigerated, 800 HSI cubes)",
+    "ResNet-50",
+    "ViT-B/16",
+    "Swin-T",
+    "ConvNeXt-T",
+    "HybridSN"
+   ]
+  }
+ }
 }

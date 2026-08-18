@@ -4,5 +4,30 @@
  "title": "Avatar-Forever-Decoupled-Parallel-Training-for-High-Quality",
  "token": "sk-Ir4JqYCnj...",
  "created_at": "2026-08-13 06:51:51",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/11af378c-b562-4edd-8ecb-e7b48ba3ab6f.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/11af378c-b562-4edd-8ecb-e7b48ba3ab6f.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 10:30:07",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Audio-Driven Avatar",
+    "Streaming Video Generation",
+    "Distillation",
+    "Long-Horizon Generation",
+    "Diffusion Model"
+   ],
+   "field": "音频驱动数字人生成",
+   "innovations": [
+    "解耦并行训练：将少步生成效率与长程自回归鲁棒性作为独立分支并行学习",
+    "RRT恢复导向rollout训练：在多步误差累积后施加流匹配监督以提升长程稳定性",
+    "ForeverCache推理缓存：chunk-wise历史特征复用，减少23%冗余transformer计算"
+   ],
+   "benchmarks": [
+    "EMTD",
+    "HDTF",
+    "TalkVid"
+   ]
+  }
+ }
 }

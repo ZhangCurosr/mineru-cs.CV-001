@@ -4,5 +4,32 @@
  "title": "BoltNet-An-Ultra-Lightweight-Convolutional-Network-for-On-De",
  "token": "sk-Ar06zcDAy...",
  "created_at": "2026-08-13 07:11:11",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/7bf6e887-0d28-4f0b-afad-a7587f85b56b.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/7bf6e887-0d28-4f0b-afad-a7587f85b56b.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 10:34:26",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "超轻量级CNN",
+    "边缘推理",
+    "细粒度分类",
+    "植物物种识别",
+    "通道-空间重分布",
+    "能效优化",
+    "Pl@ntNet-300K"
+   ],
+   "field": "边缘部署与细粒度视觉识别",
+   "innovations": [
+    "SRB：无损通道-空间重分布瓶颈，以空间分辨率换取通道数缩减，保持dense算子能效",
+    "LPS：无参数Logit预采样，通过重排将高基数分类头参数量削减约4倍",
+    "ACT指标：非线性精度-压缩权衡诊断工具，用于识别最优压缩架构变体"
+   ],
+   "benchmarks": [
+    "Pl@ntNet-300K",
+    "AIDERv2",
+    "CLRS"
+   ]
+  }
+ }
 }

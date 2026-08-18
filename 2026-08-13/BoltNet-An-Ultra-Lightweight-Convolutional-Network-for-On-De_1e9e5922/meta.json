@@ -4,5 +4,10 @@
  "title": "BoltNet-An-Ultra-Lightweight-Convolutional-Network-for-On-De",
  "token": "sk-aknYEUs8O...",
  "created_at": "2026-08-13 14:56:39",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/7bf6e887-0d28-4f0b-afad-a7587f85b56b.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/7bf6e887-0d28-4f0b-afad-a7587f85b56b.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 10:32:57",
+  "chunks": 1
+ }
 }

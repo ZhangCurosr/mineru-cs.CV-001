@@ -4,5 +4,10 @@
  "title": "Diagram-MMU-A-Multi-Modal-Benchmark-for-Scientific-Diagrams",
  "token": "sk-ZHrWl9Czg...",
  "created_at": "2026-08-13 14:55:34",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/18a0dd18-1792-40ed-b785-fcbfc0b76c54.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/18a0dd18-1792-40ed-b785-fcbfc0b76c54.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 10:53:31",
+  "chunks": 4
+ }
 }

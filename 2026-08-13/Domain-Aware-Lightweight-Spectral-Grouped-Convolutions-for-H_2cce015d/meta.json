@@ -4,5 +4,31 @@
  "title": "Domain-Aware-Lightweight-Spectral-Grouped-Convolutions-for-H",
  "token": "sk-TTQuLp2ot...",
  "created_at": "2026-08-13 14:56:07",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/c30c3a34-128b-4968-83c1-12f6bbca757a.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/c30c3a34-128b-4968-83c1-12f6bbca757a.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 10:56:18",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "高光谱成像",
+    "轻量化网络",
+    "光谱-空间解耦",
+    "序数分类",
+    "鱼类新鲜度检测"
+   ],
+   "field": "食品质量高光谱检测",
+   "innovations": [
+    "显式光谱-空间因子化：分组卷积限制跨波段交互+深度可分空间通路，防止光谱冗余纠缠",
+    "轻量双注意力门控：SE通道注意力+空间门控，参数量占比<5%"
+   ],
+   "benchmarks": [
+    "ResNet-50",
+    "ViT-B/16",
+    "Swin-T",
+    "ConvNeXt-T",
+    "HybridSN"
+   ]
+  }
+ }
 }

@@ -4,5 +4,32 @@
  "title": "Boundary-Continuous-Cross-Camera-RGB-Mapping-via-Hue-Split-M",
  "token": "sk-sKVjU65N5...",
  "created_at": "2026-08-13 07:12:32",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/8cb792ba-8135-43ad-805b-510213bb1132.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/8cb792ba-8135-43ad-805b-510213bb1132.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 10:33:09",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "跨相机色彩映射",
+    "颜色校正矩阵",
+    "色调分割",
+    "模型树",
+    "边界连续正则化",
+    "路径混合",
+    "色彩一致性"
+   ],
+   "field": "计算摄影与色彩科学",
+   "innovations": [
+    "将跨相机RGB映射表述为log域色调分割模型树",
+    "提出确定性边界原型对与路径权重优化实现显式边界连续性",
+    "证明相比M5固定融合，带连续正则化的路径混合能同时提升精度与边界平滑性"
+   ],
+   "benchmarks": [
+    "Middlebury Registered Color Checker",
+    "Canon EOS-1Ds Mark II → Canon EOS 20D",
+    "log-RMSE, 边界跳变B"
+   ]
+  }
+ }
 }

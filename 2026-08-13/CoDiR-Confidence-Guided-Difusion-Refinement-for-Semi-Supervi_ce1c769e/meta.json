@@ -4,5 +4,30 @@
  "title": "CoDiR-Confidence-Guided-Difusion-Refinement-for-Semi-Supervi",
  "token": "sk-Ar06zcDAy...",
  "created_at": "2026-08-13 06:51:51",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/3b7e443e-ac66-40f1-b260-e0a6a065edeb.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/3b7e443e-ac66-40f1-b260-e0a6a065edeb.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 10:38:04",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Semi-supervised learning",
+    "Histopathology segmentation",
+    "Diffusion models",
+    "Pseudo-label refinement",
+    "Mean Teacher",
+    "Confidence gating"
+   ],
+   "field": "半监督医学图像分割",
+   "innovations": [
+    "置信度门控扩散精炼模块：仅对教师低置信度区域进行部分加噪条件去噪，避免全图修正破坏可靠结构",
+    "双源置信度加权策略：融合教师与扩散模型置信度生成像素级监督权重，抑制不可靠伪标签噪声",
+    "在 GlaS/CRAG 上以 10%/20% 标注数据超越已有最强方法，扩散精炼模块单独贡献 +6.36% mDice"
+   ],
+   "benchmarks": [
+    "GlaS",
+    "CRAG"
+   ]
+  }
+ }
 }

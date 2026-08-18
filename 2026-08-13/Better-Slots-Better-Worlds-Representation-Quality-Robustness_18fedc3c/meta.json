@@ -4,5 +4,29 @@
  "title": "Better-Slots-Better-Worlds-Representation-Quality-Robustness",
  "token": "sk-45Ifw5Iq3...",
  "created_at": "2026-08-13 04:49:59",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/89260e8d-f1c6-4af7-a18b-c14522f40ced.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/89260e8d-f1c6-4af7-a18b-c14522f40ced.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 10:31:52",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "object-centric world model",
+    "representation quality",
+    "distribution shift robustness",
+    "model-predictive control",
+    "slot attention",
+    "pretrained visual features"
+   ],
+   "field": "物体中心表征学习与世界模型",
+   "innovations": [
+    "揭示槽位质量是OCWM规划成功的决定性因素，辅助机制仅补偿弱表征",
+    "证明冻结预训练视觉特征比物体中心分解本身更能保障分布偏移鲁棒性"
+   ],
+   "benchmarks": [
+    "PushT",
+    "OGBench-Cube"
+   ]
+  }
+ }
 }

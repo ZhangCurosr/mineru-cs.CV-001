@@ -4,5 +4,35 @@
  "title": "Context-Blindness-in-DPO-Mitigating-Object-Hallucination-in",
  "token": "sk-Ir4JqYCnj...",
  "created_at": "2026-08-13 07:11:01",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/58a48734-0391-4dd4-82d4-dcd4842329d1.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/58a48734-0391-4dd4-82d4-dcd4842329d1.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 10:40:00",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "多模态大语言模型",
+    "物体幻觉",
+    "偏好优化",
+    "DPO",
+    "上下文校准",
+    "CPG"
+   ],
+   "field": "多模态对齐与幻觉缓解",
+   "innovations": [
+    "提出CPG度量揭示DPO上下文盲区",
+    "设计C2-DPO框架显式最大化上下文偏好增益",
+    "方法可无缝迁移至SimPO/RDPO及纯文本场景"
+   ],
+   "benchmarks": [
+    "Object HalBench",
+    "AMBER",
+    "HallusionBench",
+    "ScienceQA",
+    "MM-Vet",
+    "TextVQA",
+    "AlpacaEval 2"
+   ]
+  }
+ }
 }

@@ -3,5 +3,34 @@
  "batch_id": "14998cf6-d416-4cb9-9e4c-44a541ce5cb8",
  "token": "sk-Ir4JqYCnj...",
  "created_at": "2026-08-12 15:02:58",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/d6c05582-ada9-41cd-b17f-4c61b9f74eef.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/d6c05582-ada9-41cd-b17f-4c61b9f74eef.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 10:21:48",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "4D generation",
+    "latent-to-4D",
+    "video prior",
+    "VAE latent",
+    "feed-forward reconstruction",
+    "spatiotemporal attention",
+    "Wan",
+    "DINO-F1"
+   ],
+   "field": "4D 场景生成",
+   "innovations": [
+    "提出直接将视频 VAE 最终去噪 latent 作为可复用接口映射到预训练 4D 解码器，绕过 RGB 中间表示",
+    "设计 L4AR 网络实现跨表示对齐与时空精炼，单 checkpoint 跨三个共享 VAE 的 DiT 零迁移",
+    "在 Text4D-200 和 I4D-200 上 DINO-F1 分别超越匹配级联基线 2.88-3.45 和 5.81 点"
+   ],
+   "benchmarks": [
+    "Text4D-200",
+    "I4D-200",
+    "7-Scenes",
+    "NRGBD"
+   ]
+  }
+ }
 }

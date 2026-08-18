@@ -4,5 +4,30 @@
  "title": "DIALOGUE-AWARE-VIDEO-TO-MUSIC-GENERATION-USING-PUBLIC-DOMAIN",
  "token": "sk-B2hxqutYc...",
  "created_at": "2026-08-13 14:56:00",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/61366327-eeae-4d89-8ea8-a741178f7910.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/61366327-eeae-4d89-8ea8-a741178f7910.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 10:39:29",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Video-to-Music Generation",
+    "Dialogue-Aware Conditioning",
+    "Self-Hosted Dataset",
+    "FiLM Modulation",
+    "Reproducibility",
+    "Public Domain Films"
+   ],
+   "field": "视频到音乐生成",
+   "innovations": [
+    "提出轻量级对话适配器，通过FiLM逐帧调制视频跨注意力，显著提升配对保真度",
+    "发布OSSL-v2大规模自托管数据集（246.4小时/34,343片段），解决领域可复现性危机",
+    "在公共领域与商业电影双数据集上系统评测三基线模型，揭示对话条件的正则化泛化效应"
+   ],
+   "benchmarks": [
+    "OSSL-v2",
+    "OES-Com"
+   ]
+  }
+ }
 }

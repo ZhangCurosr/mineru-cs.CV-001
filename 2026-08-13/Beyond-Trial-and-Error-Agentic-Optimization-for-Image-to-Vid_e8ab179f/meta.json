@@ -4,5 +4,30 @@
  "title": "Beyond-Trial-and-Error-Agentic-Optimization-for-Image-to-Vid",
  "token": "sk-DXHHyylpH...",
  "created_at": "2026-08-13 14:54:55",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/4f73cc8e-1b5f-402b-a054-28b228df2cbe.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/4f73cc8e-1b5f-402b-a054-28b228df2cbe.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 10:31:13",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Image-to-Video",
+    "Agentic Optimization",
+    "Prompt Engineering",
+    "Bayesian Optimization",
+    "Video Generation",
+    "Automated Evaluation"
+   ],
+   "field": "视频生成与控制",
+   "innovations": [
+    "提出两阶段Agentic Self-Improvement框架实现I2V闭环优化",
+    "设计DSG/CMQ结构化评估与VTA递归评分机制",
+    "贝叶斯优化联合搜索随机种子与CFG超参数"
+   ],
+   "benchmarks": [
+    "V-Bench",
+    "V-Bench++"
+   ]
+  }
+ }
 }

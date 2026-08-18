@@ -3,5 +3,33 @@
  "batch_id": "320e90d5-f553-46bf-be97-bdcd21d9c836",
  "token": "sk-45Ifw5Iq3...",
  "created_at": "2026-08-12 15:40:50",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/1b9742cc-c9bb-4f77-a897-beddfccad9a9.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/1b9742cc-c9bb-4f77-a897-beddfccad9a9.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 10:27:25",
+  "chunks": 4,
+  "meta": {
+   "keywords": [
+    "多模态推理",
+    "测试时扩展",
+    "过程验证",
+    "多智能体共识",
+    "训练自由验证"
+   ],
+   "field": "多模态大语言模型推理验证",
+   "innovations": [
+    "训练自由的分歧感知耦合评分验证器",
+    "异构顽固性参数的隐式自适应机制",
+    "闭式解共识保证唯一Nash均衡"
+   ],
+   "benchmarks": [
+    "3DSRBench",
+    "CV-Bench-3D",
+    "CV-Bench-2D",
+    "BLINK",
+    "MMStar",
+    "AI2D"
+   ]
+  }
+ }
 }

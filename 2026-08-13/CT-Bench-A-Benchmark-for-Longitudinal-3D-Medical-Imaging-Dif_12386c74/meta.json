@@ -4,5 +4,30 @@
  "title": "CT-Bench-A-Benchmark-for-Longitudinal-3D-Medical-Imaging-Dif",
  "token": "sk-sKVjU65N5...",
  "created_at": "2026-08-13 07:12:27",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/773c0b53-b433-42c9-8b45-02cec14fce7a.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/773c0b53-b433-42c9-8b45-02cec14fce7a.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 10:35:48",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "longitudinal CT",
+    "difference reporting",
+    "medical VLM",
+    "change-aware evaluation",
+    "CT-∆Bench",
+    "DeltaMed"
+   ],
+   "field": "纵向医学影像分析",
+   "innovations": [
+    "提出CT-∆Bench基准与患者级划分，首次系统化评估配对CT差异报告生成",
+    "设计变化感知事件级评估指标体系（Change-F1/Missing Rate/Hallucination Rate/Change Type Accuracy）",
+    "提出DeltaMed显式差异分支架构，在低数据 regime 下事件级指标显著优于直接微调基线"
+   ],
+   "benchmarks": [
+    "CT-∆Bench",
+    "CT-RATE"
+   ]
+  }
+ }
 }

@@ -4,5 +4,31 @@
  "title": "CoQui-A-Coordinate-Conditioned-Quantum-Implicit-Generative-A",
  "token": "sk-OZiRtsQic...",
  "created_at": "2026-08-13 14:56:53",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/c08b0ead-42e6-4a77-afc9-114870ce4e53.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/c08b0ead-42e6-4a77-afc9-114870ce4e53.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 10:37:56",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "量子生成对抗网络",
+    "隐式神经表示",
+    "量子图像处理",
+    "坐标条件生成",
+    "WGAN-GP",
+    "参数化量子电路",
+    "NISQ"
+   ],
+   "field": "量子机器学习/量子生成模型",
+   "innovations": [
+    "提出坐标条件隐式量子生成范式，解耦量子比特数与图像分辨率",
+    "设计特征-颜色解耦的结构化量子电路，通过受控写入实现像素级独立控制",
+    "验证低量子资源（5量子比特）下端到端图像生成的可行性与优越性"
+   ],
+   "benchmarks": [
+    "MNIST",
+    "Fashion-MNIST"
+   ]
+  }
+ }
 }

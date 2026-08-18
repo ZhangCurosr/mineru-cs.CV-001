@@ -4,5 +4,31 @@
  "title": "CoDiR-Confidence-Guided-Difusion-Refinement-for-Semi-Supervi",
  "token": "sk-qf4fjeNDd...",
  "created_at": "2026-08-13 14:56:31",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/3b7e443e-ac66-40f1-b260-e0a6a065edeb.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/3b7e443e-ac66-40f1-b260-e0a6a065edeb.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 10:36:37",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "semi-supervised learning",
+    "histopathology segmentation",
+    "diffusion model",
+    "pseudo-label refinement",
+    "Mean Teacher",
+    "confi-dence gating",
+    "pathology foundation model"
+   ],
+   "field": "医学图像半监督分割",
+   "innovations": [
+    "置信度门控扩散精炼模块，仅修正低置信度伪标签区域",
+    "结合冻结 UNI 编码器与 Mean Teacher 的半监督分割框架",
+    "扩散置信度 × 教师置信度的联合加权无监督损失"
+   ],
+   "benchmarks": [
+    "GlaS",
+    "CRAG"
+   ]
+  }
+ }
 }

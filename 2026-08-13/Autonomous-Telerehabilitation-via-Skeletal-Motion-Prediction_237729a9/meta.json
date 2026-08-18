@@ -4,5 +4,32 @@
  "title": "Autonomous-Telerehabilitation-via-Skeletal-Motion-Prediction",
  "token": "sk-Ir4JqYCnj...",
  "created_at": "2026-08-13 07:10:56",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/25ee9dc7-d30a-4501-8bdb-204238d08d67.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/25ee9dc7-d30a-4501-8bdb-204238d08d67.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 10:27:23",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "telerehabilitation",
+    "skeleton-based action recognition",
+    "motion prediction",
+    "metric learning",
+    "MMD-NCA",
+    "graph neural network",
+    "exercise quality assessment"
+   ],
+   "field": "骨骼动作识别与康复反馈",
+   "innovations": [
+    "将MMD-NCA度量学习与自注意力BiLSTM结合用于变长康复动作质量分类",
+    "基于STARS图网络预测器的关节级位置误差空间定位反馈机制",
+    "整合整体质量标签与局部偏差信号的远程康复双模块管道设计"
+   ],
+   "benchmarks": [
+    "PROZIS Challenge",
+    "Human3.6M",
+    "CMU Motion Capture"
+   ]
+  }
+ }
 }

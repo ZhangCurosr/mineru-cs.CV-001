@@ -4,5 +4,31 @@
  "title": "Curvature-Aware-Zeroth-Order-Optimization-for-Memory-Efficie",
  "token": "sk-45Ifw5Iq3...",
  "created_at": "2026-08-13 06:51:43",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/cce64234-5e7b-4c84-8958-05163a40d5c9.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/cce64234-5e7b-4c84-8958-05163a40d5c9.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 10:44:16",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Test-Time Adaptation",
+    "Zeroth-Order Optimization",
+    "Memory-Efficient",
+    "Hessian Low-Rank",
+    "BP-Free"
+   ],
+   "field": "边缘设备自适应学习",
+   "innovations": [
+    "揭示TTA过程中Hessian的低秩与缓变结构",
+    "提出基于EMA对角Hessian估计的曲率感知各向异性扰动采样",
+    "在减少70%内存开销的同时实现SOTA适配精度"
+   ],
+   "benchmarks": [
+    "ImageNet-C",
+    "ImageNet-R",
+    "ImageNet-V2",
+    "ImageNet-Sketch"
+   ]
+  }
+ }
 }

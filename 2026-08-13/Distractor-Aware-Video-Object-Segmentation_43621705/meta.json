@@ -4,5 +4,30 @@
  "title": "Distractor-Aware-Video-Object-Segmentation",
  "token": "sk-Ar06zcDAy...",
  "created_at": "2026-08-13 06:51:50",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/8546d7a0-b19b-4218-b3fb-c9bf0fe6741e.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/8546d7a0-b19b-4218-b3fb-c9bf0fe6741e.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 10:46:16",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "视频目标分割",
+    "干扰物感知",
+    "半监督分割",
+    "判别式方法",
+    "winner-take-all",
+    "联合细化上采样"
+   ],
+   "field": "视频目标分割",
+   "innovations": [
+    "提出干扰物感知的视频目标分割框架，将一比一分类扩展为一比多分类",
+    "设计WTA干扰物合并函数与平衡损失，解决多目标场景下的分类歧义问题",
+    "结合高分辨率特征与convex upsampler进行联合细化与局部一致性正则化"
+   ],
+   "benchmarks": [
+    "DAVIS 2017",
+    "YouTube-VOS 2018"
+   ]
+  }
+ }
 }
