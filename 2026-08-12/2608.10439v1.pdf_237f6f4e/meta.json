@@ -3,5 +3,32 @@
  "batch_id": "237f6f4e-6dd9-44c6-b776-1428cf117c04",
  "token": "sk-owp49a3rO...",
  "created_at": "2026-08-12 16:06:18",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/8e03ffe4-0c79-46db-a6bb-e7676ac60512.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/8e03ffe4-0c79-46db-a6bb-e7676ac60512.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 05:28:58",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "流式视频生成",
+    "扩散模型",
+    "训练-推理一致性",
+    "课程学习",
+    "噪声采样",
+    "Logit-Normal分布",
+    "零样本外推"
+   ],
+   "field": "视频生成与流式推理",
+   "innovations": [
+    "将噪声采样重构为帧索引Logit-Normal随机过程，统一独立与渐进采样",
+    "提出Stream Forcing框架，构建从独立到推理对齐的连续课程轨迹",
+    "设计联合校准与Gaussian Copula时序相关采样，保证轨迹平滑与帧间依赖"
+   ],
+   "benchmarks": [
+    "UCF-101",
+    "Taichi-HD",
+    "nuScenes"
+   ]
+  }
+ }
 }

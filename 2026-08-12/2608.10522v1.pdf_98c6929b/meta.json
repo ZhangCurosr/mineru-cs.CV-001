@@ -3,5 +3,32 @@
  "batch_id": "98c6929b-1c4b-4bfa-889b-56d4ef4192c0",
  "token": "sk-9BdnpHblK...",
  "created_at": "2026-08-12 15:40:55",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/b8511e1b-dc05-43f8-b7ab-6e1c59422d54.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/b8511e1b-dc05-43f8-b7ab-6e1c59422d54.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 05:38:09",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "多模态预训练",
+    "医学表格数据",
+    "语义感知",
+    "自监督学习",
+    "图像-表格对齐",
+    "软标签离散化",
+    "课程学习掩码"
+   ],
+   "field": "医学多模态表示学习",
+   "innovations": [
+    "重要性感知自适应掩码：利用冻结TabPFN v2提取无标签特征重要性，构建课程学习掩码率",
+    "软标签离散化模块：三角形核函数将连续值映射为相邻语义区间概率分布，保留序数关系",
+    "二维层次结构建模：首次显式建模医学表格的特征间重要性差异与特征内连续-离散双重性"
+   ],
+   "benchmarks": [
+    "SLICE-3D (ID/OOD)",
+    "HOP",
+    "EyePACS"
+   ]
+  }
+ }
 }

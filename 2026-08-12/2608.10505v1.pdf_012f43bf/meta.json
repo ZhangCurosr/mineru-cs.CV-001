@@ -3,5 +3,31 @@
  "batch_id": "012f43bf-2eb8-4460-b15d-2af11434ec79",
  "token": "sk-45Ifw5Iq3...",
  "created_at": "2026-08-12 15:34:19",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/947d482e-f26a-4e6f-8e8a-5902789b92ad.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/947d482e-f26a-4e6f-8e8a-5902789b92ad.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 05:33:38",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "threshold-controllable",
+    "radiology report generation",
+    "ROC validation",
+    "medical VQA",
+    "LLM rewriting",
+    "sensitivity-specificity trade-off",
+    "clinical AI"
+   ],
+   "field": "医疗影像报告生成",
+   "innovations": [
+    "首个实现阈值可控的放射科报告生成框架，使生成报告性能追踪分类器ROC曲线",
+    "三分支融合架构：分类器置信度+VQA报告生成器+LLM重写器的可移植设计",
+    "提出闭环ROC验证协议与三维阈值扩展方案支持分级临床决策"
+   ],
+   "benchmarks": [
+    "MIMIC-CXR",
+    "CheXpert 13-class ROC-AUC"
+   ]
+  }
+ }
 }

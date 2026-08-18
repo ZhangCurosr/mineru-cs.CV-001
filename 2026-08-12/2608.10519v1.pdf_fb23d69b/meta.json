@@ -3,5 +3,29 @@
  "batch_id": "fb23d69b-73c7-4f5a-8eda-06dee047b978",
  "token": "sk-9BdnpHblK...",
  "created_at": "2026-08-12 15:40:55",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/874b6782-8563-44ae-abda-4d1e0495992e.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/874b6782-8563-44ae-abda-4d1e0495992e.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 05:37:44",
+  "chunks": 3,
+  "meta": {
+   "keywords": [
+    "视频生成",
+    "稀疏注意力",
+    "视觉自回归",
+    "STAR",
+    "块稀疏",
+    "FlexAttention"
+   ],
+   "field": "视频生成与高效注意力",
+   "innovations": [
+    "训练免费的块稀疏注意力框架，每尺度重新计算而非复用跨尺度/跨clip模式",
+    "发现并量化了跨尺度注意力模式一致性差（质量下降~35.6%）和clip边界持久性有限（fresh保留85% vs reuse仅56%）",
+    "设计了Clip-Dependent Retained & Selectable Blocks机制，final scale成本占比74.6%得以有效稀疏化"
+   ],
+   "benchmarks": [
+    "720p T2V"
+   ]
+  }
+ }
 }

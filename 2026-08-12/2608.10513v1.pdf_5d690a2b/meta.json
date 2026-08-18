@@ -3,5 +3,35 @@
  "batch_id": "5d690a2b-5857-4878-ada1-20eba8bf2672",
  "token": "sk-owp49a3rO...",
  "created_at": "2026-08-12 16:06:13",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/f1368ad5-91b2-4eb5-bff4-c2ac48ad4a2e.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/f1368ad5-91b2-4eb5-bff4-c2ac48ad4a2e.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 05:34:43",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "LVLM安全",
+    "强化学习",
+    "图像描述",
+    "多模态对齐",
+    "Jailbreak防御"
+   ],
+   "field": "多模态大模型安全",
+   "innovations": [
+    "将LVLM安全对齐重构为self-captioning问题，通过中间描述暴露视觉安全证据",
+    "提出结合直接答案奖励与冻结LLM一致性评估的caption-mediated强化学习目标",
+    "设计指数风险折扣S(u,h)=u·γ^h的非线性安全奖励形式避免退化拒绝行为"
+   ],
+   "benchmarks": [
+    "MM-SafetyBench",
+    "MSSBench",
+    "VLSBench",
+    "FigStep",
+    "MIS-Test",
+    "MM-Vet",
+    "BLINK",
+    "MMVP"
+   ]
+  }
+ }
 }

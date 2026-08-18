@@ -3,5 +3,32 @@
  "batch_id": "74c26596-d4ea-4d72-9e1e-d5ddb7c0b731",
  "token": "sk-owp49a3rO...",
  "created_at": "2026-08-12 16:06:13",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/874b6782-8563-44ae-abda-4d1e0495992e.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/874b6782-8563-44ae-abda-4d1e0495992e.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 05:37:13",
+  "chunks": 3,
+  "meta": {
+   "keywords": [
+    "Sparse Attention",
+    "Video Generation",
+    "AutoRegressive",
+    "Video VAR",
+    "SparSTAR",
+    "STAR"
+   ],
+   "field": "视频生成与稀疏注意力",
+   "innovations": [
+    "首次系统分析 Video VAR 中跨 scale/clip 注意力模式的一致性，揭示复用策略的失效原因",
+    "提出动态稀疏注意力机制 SparSTAR，每个 scale 独立计算 Block-wise Top-K 避免 attention-mass loss",
+    "设计训练-free 的空间-时间联合稀疏模式，在保持生成质量的同时降低计算开销"
+   ],
+   "benchmarks": [
+    "MSRVTT",
+    "UCF101",
+    "HBV",
+    "480p 10s T2V"
+   ]
+  }
+ }
 }

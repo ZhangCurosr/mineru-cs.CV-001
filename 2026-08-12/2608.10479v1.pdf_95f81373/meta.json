@@ -3,5 +3,31 @@
  "batch_id": "95f81373-c80a-47cb-b93f-4a38654f82c4",
  "token": "sk-7NOZt17oN...",
  "created_at": "2026-08-12 15:40:56",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/c5fb2873-b303-43dd-8805-19c6215a7c00.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/c5fb2873-b303-43dd-8805-19c6215a7c00.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 05:30:50",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "视频帧插值",
+    "事件相机",
+    "扩散Transformer",
+    "IWE",
+    "光流对齐",
+    "适配器微调"
+   ],
+   "field": "事件视觉与视频生成",
+   "innovations": [
+    "提出轻量适配器将IWE与双向稀疏光流注入预训练DiT，避免端到端重型训练",
+    "通过CMax将异步事件转化为LDM兼容的边缘-运动联合控制信号",
+    "构建迄今最大规模合成事件-视频数据集EvPexels并开源"
+   ],
+   "benchmarks": [
+    "BS-ERGB",
+    "DAVIS",
+    "Pexels"
+   ]
+  }
+ }
 }

@@ -3,5 +3,30 @@
  "batch_id": "3925f8df-fca1-4d63-8d52-d3d458001f41",
  "token": "sk-7NOZt17oN...",
  "created_at": "2026-08-12 15:40:56",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/fe421f21-a362-4dc8-9d67-089e574fff6a.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/fe421f21-a362-4dc8-9d67-089e574fff6a.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 05:34:10",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Neural Rendering",
+    "3D Gaussian Splatting",
+    "Temporal Modeling",
+    "Avatar Reconstruction",
+    "Autoregressive",
+    "Cloth Dynamics"
+   ],
+   "field": "神经渲染与动态人体重建",
+   "innovations": [
+    "双流自回归架构同时建模可观测几何与隐式内部状态",
+    "运动自适应因果注意力（MATA）实现空间异质性时序聚合"
+   ],
+   "benchmarks": [
+    "4D-DRESS",
+    "AvatarREX",
+    "AMASS"
+   ]
+  }
+ }
 }

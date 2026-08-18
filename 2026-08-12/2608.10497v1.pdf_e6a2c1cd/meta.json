@@ -3,5 +3,37 @@
  "batch_id": "e6a2c1cd-3bd8-4da2-bcd5-d62b190fed4c",
  "token": "sk-45Ifw5Iq3...",
  "created_at": "2026-08-12 15:34:20",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/90a40143-7829-413a-8927-cfccaf809dc0.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/90a40143-7829-413a-8927-cfccaf809dc0.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 05:32:56",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "person re-identification",
+    "gait recognition",
+    "soft biometrics",
+    "multimodal large language model",
+    "semantic alignment",
+    "kinematic attention",
+    "foundation model"
+   ],
+   "field": "多模态人识别基础模型",
+   "innovations": [
+    "双路子空间对齐（固定语义主成分对齐+瞬态噪声正交解耦）",
+    "运动学语义注意力头K-SAH将静态attention扩展至时间窗捕获步态签名",
+    "统一单模型零样本覆盖人脸/reID/步态三类任务"
+   ],
+   "benchmarks": [
+    "CCVID",
+    "CCPG",
+    "LTCC",
+    "PRCC",
+    "Market1501",
+    "MSMT17",
+    "LFW",
+    "Celeb-ReID"
+   ]
+  }
+ }
 }

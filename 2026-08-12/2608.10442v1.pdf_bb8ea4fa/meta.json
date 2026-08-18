@@ -3,5 +3,30 @@
  "batch_id": "bb8ea4fa-90b1-4b0e-b0fe-afb2f09fc71f",
  "token": "sk-owp49a3rO...",
  "created_at": "2026-08-12 16:06:18",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/8edeef39-a18d-4656-ac22-dd9a23667f66.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/8edeef39-a18d-4656-ac22-dd9a23667f66.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 05:29:42",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "stress recognition",
+    "facial video",
+    "asymmetric attention",
+    "temporal stride",
+    "video classification",
+    "affective computing",
+    "long-video modeling"
+   ],
+   "field": "非接触式生理信号检测",
+   "innovations": [
+    "提出将时间维度折叠到通道维度的统一处理框架",
+    "使用不对称注意力实现完整录制的端到端处理",
+    "系统评估时序步长配置揭示性能-效率权衡"
+   ],
+   "benchmarks": [
+    "58-subject stress dataset (binary classification)"
+   ]
+  }
+ }
 }

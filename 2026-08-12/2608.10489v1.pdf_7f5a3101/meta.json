@@ -3,5 +3,35 @@
  "batch_id": "7f5a3101-b559-4c44-8872-d349386a5d34",
  "token": "sk-owp49a3rO...",
  "created_at": "2026-08-12 16:06:18",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/b981b763-a933-4360-8a02-d1ff06ad0bff.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/b981b763-a933-4360-8a02-d1ff06ad0bff.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 05:32:39",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "视觉语言模型",
+    "token 剪枝",
+    "跨模态吸收",
+    "无训练压缩",
+    "VLM 推理加速"
+   ],
+   "field": "多模态高效推理",
+   "innovations": [
+    "提出 CMR（跨模态残差）度量视觉 token 中无法被文本子空间解释的信息量",
+    "设计 SIEVE 训练无感知压缩框架，联合残差得分、注意力相关性与残差空间多样性选择",
+    "发现并量化 VLM 中视觉 token 随层深被文本子空间渐进吸收的单调规律"
+   ],
+   "benchmarks": [
+    "GQA",
+    "MMBench",
+    "MMBench-CN",
+    "MME",
+    "POPE",
+    "SQA",
+    "VQAv2",
+    "TextVQA"
+   ]
+  }
+ }
 }

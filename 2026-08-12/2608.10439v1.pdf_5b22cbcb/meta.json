@@ -3,5 +3,30 @@
  "batch_id": "5b22cbcb-f190-4800-afd4-1c13fb04ac75",
  "token": "sk-Ir4JqYCnj...",
  "created_at": "2026-08-12 14:58:57",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/8e03ffe4-0c79-46db-a6bb-e7676ac60512.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/8e03ffe4-0c79-46db-a6bb-e7676ac60512.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 05:29:04",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "流式视频生成",
+    "扩散模型",
+    "训练-推理对齐",
+    "课程学习",
+    "随机过程",
+    "Logit-Normal分布"
+   ],
+   "field": "视频生成与world modeling",
+   "innovations": [
+    "将噪声级采样重构为帧索引随机过程，建立独立采样与渐进采样的统一参数空间",
+    "设计联合校准与时间相关采样算法构建连续训练轨迹，平衡分布覆盖与推理一致性"
+   ],
+   "benchmarks": [
+    "UCF-101",
+    "Taichi-HD",
+    "nuScenes"
+   ]
+  }
+ }
 }

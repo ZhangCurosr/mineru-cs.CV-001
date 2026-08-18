@@ -3,5 +3,30 @@
  "batch_id": "7cd3e615-70f6-4ca0-a3d7-62e22a5f944d",
  "token": "sk-7NOZt17oN...",
  "created_at": "2026-08-12 15:00:14",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/b8511e1b-dc05-43f8-b7ab-6e1c59422d54.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/b8511e1b-dc05-43f8-b7ab-6e1c59422d54.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 05:37:24",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "多模态预训练",
+    "医学表格数据",
+    "自监督学习",
+    "软标签离散化",
+    "跨模态对齐"
+   ],
+   "field": "医学人工智能/多模态表征学习",
+   "innovations": [
+    "重要性感知自适应掩码：基于冻结TabPFN提取无标签特征重要性，构建差异化掩码课程",
+    "软标签离散化模块：三角形核分布匹配替代连续回归，保留临床测量序数关系",
+    "连续-离散二元性框架：全局对齐用精确值、局部重建用离散分布的双重目标设计"
+   ],
+   "benchmarks": [
+    "SLICE-3D",
+    "HOP",
+    "EyePACS"
+   ]
+  }
+ }
 }

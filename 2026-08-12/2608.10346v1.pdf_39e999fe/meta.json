@@ -3,5 +3,34 @@
  "batch_id": "39e999fe-84d7-490b-85aa-22a8bad30e69",
  "token": "sk-n7iJ0Z1Ol...",
  "created_at": "2026-08-12 15:03:11",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/7a4cb28c-3b0c-45f1-8dd4-013007513a79.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/7a4cb28c-3b0c-45f1-8dd4-013007513a79.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 05:28:54",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Face Landmark Detection",
+    "Unified Training",
+    "Dynamic Prediction",
+    "FPALP",
+    "Multi-dataset Learning",
+    "Zero-shot Generalization",
+    "Cross-modality Decoder"
+   ],
+   "field": "人脸分析",
+   "innovations": [
+    "提出FPALPs表示，将地标编码为沿面部区域轮廓的归一化进度值，实现多数据集统一训练",
+    "首个无需3D先验/插值的Unified FLD方法，支持端到端融合训练并实现运行时动态地标预测"
+   ],
+   "benchmarks": [
+    "AFLW-19",
+    "300W",
+    "WFLW",
+    "COFW",
+    "COFW68",
+    "WFLW68"
+   ]
+  }
+ }
 }

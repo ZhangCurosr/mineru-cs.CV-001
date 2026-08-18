@@ -3,5 +3,32 @@
  "batch_id": "84e5fc6d-c260-49f1-89f4-6befb39d2471",
  "token": "sk-7NOZt17oN...",
  "created_at": "2026-08-12 15:40:59",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/4dbd8fd7-f66a-4dd6-a0ba-64f78148b023.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/4dbd8fd7-f66a-4dd6-a0ba-64f78148b023.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 05:34:42",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "低光照图像增强",
+    "色彩校正",
+    "圆柱形色偏变换",
+    "色度缩放",
+    "超出色域补偿"
+   ],
+   "field": "低光照图像增强",
+   "innovations": [
+    "AdaLAB 圆柱形自适应 LAB 色彩空间",
+    "前向色调偏移+逆回色域补偿的不对称 AdaCCT 变换"
+   ],
+   "benchmarks": [
+    "LOLv1",
+    "LOLv2-real",
+    "LOLv2-synthetic",
+    "SDSD-indoor",
+    "SDSD-outdoor",
+    "SID"
+   ]
+  }
+ }
 }

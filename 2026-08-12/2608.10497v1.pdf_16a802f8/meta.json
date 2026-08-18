@@ -3,5 +3,34 @@
  "batch_id": "16a802f8-89a1-4894-938c-ec6344fbd144",
  "token": "sk-7NOZt17oN...",
  "created_at": "2026-08-12 15:40:57",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/90a40143-7829-413a-8927-cfccaf809dc0.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/90a40143-7829-413a-8927-cfccaf809dc0.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 05:31:51",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "人类识别",
+    "软生物特征",
+    "知识蒸馏",
+    "时序注意力",
+    "人体重识别",
+    "步态识别"
+   ],
+   "field": "多模态生物特征识别",
+   "innovations": [
+    "基于MLLM蒸馏的双路径语义子空间对齐（固定特征锚定+动态特征解耦）",
+    "运动学语义注意力头通过关键点轨迹追踪实现轻量级时序建模"
+   ],
+   "benchmarks": [
+    "CCVID",
+    "CCPG",
+    "LTCC",
+    "PRCC",
+    "Market1501",
+    "MSMT17",
+    "LFW"
+   ]
+  }
+ }
 }

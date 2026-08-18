@@ -3,5 +3,31 @@
  "batch_id": "ba104f3a-8bea-4061-82ab-07fd91252188",
  "token": "sk-7NOZt17oN...",
  "created_at": "2026-08-12 14:59:51",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/fe421f21-a362-4dc8-9d67-089e574fff6a.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/fe421f21-a362-4dc8-9d67-089e574fff6a.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 05:33:57",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Animatable Avatars",
+    "3D Gaussian Splatting",
+    "Dual-Stream",
+    "Temporal Causality",
+    "Cloth Dynamics",
+    "Autoregressive Modeling"
+   ],
+   "field": "神经渲染与数字人",
+   "innovations": [
+    "双流自回归架构同时建模布料可观测几何形变与隐式内部状态，建立显式时序因果",
+    "运动自适应时序聚合MATA实现空间变化的因果注意力聚合",
+    "基于运动幅度的自适应时序正则化解耦静态稳态与动态灵活性"
+   ],
+   "benchmarks": [
+    "4D-DRESS",
+    "AvatarREX",
+    "AMASS"
+   ]
+  }
+ }
 }

@@ -3,5 +3,39 @@
  "batch_id": "d0e98d55-06d5-4281-8037-ec7a17da7b59",
  "token": "sk-45Ifw5Iq3...",
  "created_at": "2026-08-12 15:34:19",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/f1368ad5-91b2-4eb5-bff4-c2ac48ad4a2e.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-12/f1368ad5-91b2-4eb5-bff4-c2ac48ad4a2e.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 05:35:38",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "LVLM安全对齐",
+    "强化学习",
+    "图像描述",
+    "多模态安全",
+    "GRPO",
+    "caption中介奖励"
+   ],
+   "field": "多模态大模型安全对齐",
+   "innovations": [
+    "将LVLM安全对齐形式化为自描述问题，训练模型先输出安全相关caption再回答问题",
+    "引入caption中介强化学习奖励，利用冻结纯文本LLM评估caption支持的安全一致回答",
+    "提出DirectCap/Prism多协议评估框架，在11个基准上证明安全增益同时保持视觉效用"
+   ],
+   "benchmarks": [
+    "MM-SafetyBench",
+    "MSSBench",
+    "VLSBench",
+    "FigStep",
+    "MIS-Test",
+    "MM-Vet",
+    "BLINK",
+    "MMVP",
+    "ERQA",
+    "VPCT",
+    "MMStar"
+   ]
+  }
+ }
 }
