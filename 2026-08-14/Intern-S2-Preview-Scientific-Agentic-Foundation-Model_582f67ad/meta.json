@@ -4,5 +4,40 @@
  "title": "Intern-S2-Preview-Scientific-Agentic-Foundation-Model",
  "token": "sk-ZHrWl9Czg...",
  "created_at": "2026-08-14 14:48:45",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/96fd8e2a-2357-4bcf-b4a7-f54f998bedab.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/96fd8e2a-2357-4bcf-b4a7-f54f998bedab.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:04:06",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "scientific foundation model",
+    "agentic RL",
+    "multimodal pretraining",
+    "time series forecasting",
+    "Memory Decoder",
+    "on-policy distillation",
+    "speculative decoding"
+   ],
+   "field": "科学AI与智能体基础模型",
+   "innovations": [
+    "统一后训练流水线（SFT+多任务RL+黑/白盒智能体RL+对策蒸馏）协同优化推理与工具交互能力",
+    "Memory Decoder模块化解耦主干与领域专门化，通过token级路由器实现可插拔参数化记忆",
+    "时间序列建模从长序列理解扩展至数值预测分支，统一理解与生成能力"
+   ],
+   "benchmarks": [
+    "Biology-Instructions",
+    "Mol-Instructions",
+    "MolecularIQ",
+    "SciReasoner",
+    "TOMG-Bench",
+    "MP20",
+    "ProteinBinder-9",
+    "SciTS",
+    "MMLU-Pro",
+    "SWE-Bench-Pro",
+    "Terminal-Bench 2.1"
+   ]
+  }
+ }
 }

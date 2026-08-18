@@ -4,5 +4,29 @@
  "title": "LOCUSGS-SPATIALLY-GROUNDED-TOKENS-FOR-FEED-FORWARD-3D-GAUSSI",
  "token": "sk-0a1o6nr9t...",
  "created_at": "2026-08-14 04:10:13",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/e08b04fe-1d38-4b44-b4b6-14a78c65650c.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/e08b04fe-1d38-4b44-b4b6-14a78c65650c.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:04:21",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "3D Gaussian Splatting",
+    "Feed-forward Reconstruction",
+    "Query-based Methods",
+    "Spatial Grounding",
+    "Novel View Synthesis"
+   ],
+   "field": "3D 视觉与神经渲染",
+   "innovations": [
+    "引入显式3D anchor状态（中心+半径）为query提供空间定位先验",
+    "提出anchor-to-ray几何偏置引导cross-attention进行几何一致的跨视图特征聚合",
+    "以anchor为中心、半径为缩放因子进行Gaussian局部偏移解码"
+   ],
+   "benchmarks": [
+    "DL3DV",
+    "RealEstate10K"
+   ]
+  }
+ }
 }

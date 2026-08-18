@@ -4,5 +4,31 @@
  "title": "Intervention-Aware-Clinical-World-Model-for-Post-Op-Outcome",
  "token": "sk-qKu2Cn1y4...",
  "created_at": "2026-08-14 14:48:44",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/639d40ae-aa64-4591-9d98-0c15acc78ae3.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/639d40ae-aa64-4591-9d98-0c15acc78ae3.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:03:59",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Clinical World Model",
+    "Atrial Fibrillation Ablation",
+    "Post-Intervention Forecasting",
+    "Multimodal Learning",
+    "Anytime Risk Updating",
+    "LGE-MRI",
+    "ECG Foundation Model"
+   ],
+   "field": "医学世界模型与术后预后预测",
+   "innovations": [
+    "以3D潜状态演化串联术前影像-消融几何-不规则空白期事件-ECG嵌入，实现 anytime 多时域风险回放",
+    "训练期仅用随访MRI作潜匹配监督、推理期无需随访影像即可预测451天复发与瘢痕范围",
+    "horizon-token与耗时漂移项联合设计，支持任意查询时点且不依赖重采样插补"
+   ],
+   "benchmarks": [
+    "DECAAF-II N=91 5-fold CV × 3 seeds (AUROC 0.756 / AUPRC 0.777 / Scar MAE 2.971pp)",
+    "DECAAF-II no-geometry auxiliary cohort N=258 (AUROC 0.713 / AUPRC 0.747)"
+   ]
+  }
+ }
 }

@@ -4,5 +4,10 @@
  "title": "How-Good-are-Foundation-Models-in-Longitudinal-MRI-Disease-P",
  "token": "sk-4LF0lBYcu...",
  "created_at": "2026-08-14 04:10:36",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/dc9e6a55-cb3e-406e-be01-5ac51628070d.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/dc9e6a55-cb3e-406e-be01-5ac51628070d.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:03:28",
+  "chunks": 1
+ }
 }

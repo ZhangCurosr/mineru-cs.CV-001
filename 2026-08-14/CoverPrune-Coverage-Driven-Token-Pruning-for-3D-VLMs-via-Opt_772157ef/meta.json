@@ -4,5 +4,31 @@
  "title": "CoverPrune-Coverage-Driven-Token-Pruning-for-3D-VLMs-via-Opt",
  "token": "sk-hwXfRrBR3...",
  "created_at": "2026-08-14 04:09:05",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/4f390336-c416-49d7-b0ac-2d4ab9e0a34a.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/4f390336-c416-49d7-b0ac-2d4ab9e0a34a.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 14:57:55",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Visual Token Pruning",
+    "Optimal Transport",
+    "3D Vision-Language Models",
+    "Spatial Reasoning",
+    "Inference-time Acceleration"
+   ],
+   "field": "3D 视觉语言模型高效推理",
+   "innovations": [
+    "将3D VLM token剪枝从多样性最大化重新定义为最优传输驱动的视觉证据覆盖问题",
+    "提出FST多维传输代价与信息感知容量的联合设计",
+    "设计SGS贪心算法与轻量级块结构OT近似两种高效求解方案"
+   ],
+   "benchmarks": [
+    "ScanQA",
+    "SQA3D",
+    "Scan2Cap",
+    "VSI-Bench"
+   ]
+  }
+ }
 }

@@ -4,5 +4,10 @@
  "title": "GS-sup-2-sup-CI-Robust-Gaussian-Splatting-For",
  "token": "sk-331OfnzjD...",
  "created_at": "2026-08-14 04:09:23",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/74946b54-238f-4a9b-ac39-80dad20d3f86.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/74946b54-238f-4a9b-ac39-80dad20d3f86.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:01:10",
+  "chunks": 1
+ }
 }

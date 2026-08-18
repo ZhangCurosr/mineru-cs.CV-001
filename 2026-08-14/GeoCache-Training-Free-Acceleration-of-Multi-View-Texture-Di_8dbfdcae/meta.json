@@ -4,5 +4,34 @@
  "title": "GeoCache-Training-Free-Acceleration-of-Multi-View-Texture-Di",
  "token": "sk-JdJPQj6CY...",
  "created_at": "2026-08-14 04:09:04",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/7965d9e7-05a6-4f12-b0f9-b29723bd5e85.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/7965d9e7-05a6-4f12-b0f9-b29723bd5e85.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:01:09",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "多视角纹理生成",
+    "免训练加速",
+    "几何缓存",
+    "扩散模型",
+    "跨视角冗余",
+    "GeoCache"
+   ],
+   "field": "3D生成与纹理合成加速",
+   "innovations": [
+    "首次识别跨视角几何冗余作为多视角纹理扩散的独立加速轴",
+    "提出增量传输（delta transport）机制避免跨视图状态覆盖导致的去谐化丢失",
+    "揭示几何缓存与时间缓存在速度-保真度曲线斜率上的结构性差异"
+   ],
+   "benchmarks": [
+    "eval200",
+    "Hunyuan3D-2.1",
+    "SyncMVD",
+    "MVPainter",
+    "TexVerse-100",
+    "ABO-100"
+   ]
+  }
+ }
 }

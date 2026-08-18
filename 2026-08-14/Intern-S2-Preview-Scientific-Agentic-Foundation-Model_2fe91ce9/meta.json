@@ -4,5 +4,54 @@
  "title": "Intern-S2-Preview-Scientific-Agentic-Foundation-Model",
  "token": "sk-ZHrWl9Czg...",
  "created_at": "2026-08-14 04:10:52",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/96fd8e2a-2357-4bcf-b4a7-f54f998bedab.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/96fd8e2a-2357-4bcf-b4a7-f54f998bedab.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:03:53",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "scientific foundation model",
+    "agentic RL",
+    "multimodal pretraining",
+    "time series forecasting",
+    "memory decoder",
+    "on-policy distillation",
+    "speculative decoding"
+   ],
+   "field": "科学智能体与多模态基础模型",
+   "innovations": [
+    "统一后训练流水线（SFT+多任务RL+黑/白盒智能体RL+OPD）并配套部分rollout与off-policy校正",
+    "Memory Decoder 冻结主干的可插拔域专业化机制",
+    "时间序列从理解扩展到统一数值预测分支并集成到多模态LLM"
+   ],
+   "benchmarks": [
+    "Biology-Instructions",
+    "Mol-Instructions",
+    "MolecularIQ",
+    "SciReasoner",
+    "TOMG-Bench",
+    "MP20",
+    "ProteinBinder-9",
+    "XLRS-Bench",
+    "MicroVQA",
+    "SFE",
+    "ObsCrisis-Bench",
+    "SciCode",
+    "SGI-Bench",
+    "ResearchClawBench",
+    "MMLU-Pro",
+    "SimpleQA-Verified",
+    "MMMU-Pro",
+    "ChartQAPro",
+    "SkillsBench",
+    "Terminal-Bench 2.1",
+    "SWE-Bench Pro",
+    "SWE-Bench Multilingual",
+    "WildClawBench",
+    "SciTS",
+    "GIFT-Eval"
+   ]
+  }
+ }
 }

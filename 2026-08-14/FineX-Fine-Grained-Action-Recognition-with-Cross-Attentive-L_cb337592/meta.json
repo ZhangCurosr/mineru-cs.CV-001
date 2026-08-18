@@ -4,5 +4,32 @@
  "title": "FineX-Fine-Grained-Action-Recognition-with-Cross-Attentive-L",
  "token": "sk-twhrLv2pG...",
  "created_at": "2026-08-14 04:10:53",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/b94a715e-9b32-487b-93e2-63830fbc7c5a.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/b94a715e-9b32-487b-93e2-63830fbc7c5a.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:00:26",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Fine-Grained Action Recognition",
+    "Cross-Attention",
+    "Sparse Mixture of Experts",
+    "Multimodal Fusion",
+    "Long-Tail Recognition",
+    "Pose Heatmap",
+    "Skeletal Graph"
+   ],
+   "field": "细粒度人体动作识别",
+   "innovations": [
+    "三流证据分解（RGB外观/热图几何/骨架拓扑）与对称成对交叉注意力融合",
+    "流式共享隐式稀疏MoE按内容自适应精炼每条流",
+    "无需文本监督在长尾Gym288上MCA提升+7.6达到SOTA"
+   ],
+   "benchmarks": [
+    "Gym99",
+    "Gym288",
+    "Diving48"
+   ]
+  }
+ }
 }

@@ -4,5 +4,28 @@
  "title": "HumanTracker-Towards-Comprehensive-and-Human-Aligned-Motion",
  "token": "sk-EqwJR1nOB...",
  "created_at": "2026-08-14 04:09:21",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/998d12dc-0d75-426e-8095-7e541061ab8d.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/998d12dc-0d75-426e-8095-7e541061ab8d.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:03:16",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "humanoid motion tracking",
+    "benchmark",
+    "preference-aligned evaluation",
+    "reward model",
+    "motion quality metric"
+   ],
+   "field": "人形机器人运动跟踪评估",
+   "innovations": [
+    "提出HumanTracker大规模基准，按四类接触模式划分并提供文本标签",
+    "构建HumanScore偏好对齐指标，12K配对数据训练的Temporal Transformer奖励模型",
+    "提供标准化评估协议，统一参考、入口与终止准则以实现跨方法公平对比"
+   ],
+   "benchmarks": [
+    "HumanTracker"
+   ]
+  }
+ }
 }

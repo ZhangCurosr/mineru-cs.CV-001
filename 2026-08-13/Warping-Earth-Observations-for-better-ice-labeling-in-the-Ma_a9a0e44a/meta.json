@@ -4,5 +4,32 @@
  "title": "Warping-Earth-Observations-for-better-ice-labeling-in-the-Ma",
  "token": "sk-7NOZt17oN...",
  "created_at": "2026-08-13 03:49:33",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/fbc18275-b973-4271-8a7c-a655ddf93c15.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/fbc18275-b973-4271-8a7c-a655ddf93c15.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 14:57:28",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Multimodal Satellite Alignment",
+    "Sea Ice Segmentation",
+    "Mutual Information Warping",
+    "Earth Observation",
+    "Perceptual Grounding",
+    "Deformable Registration",
+    "Marginal Ice Zone"
+   ],
+   "field": "多模态地球观测影像配准与海冰分割",
+   "innovations": [
+    "提出基于局部互信息的跨模态形变配准架构，显式纠正 SAR 与光学/热红外影像间的亚日级几何错位",
+    "构建 43 景南极 MIZ 稀疏专家点级标注数据集，证明 warp 后可从稀疏标注训练高精度稠密分割模型",
+    "首次证明显式空间对齐（warping）比增加网络复杂度对动态 EO 多模态分类更有效"
+   ],
+   "benchmarks": [
+    "Balanced Accuracy (bAcc)",
+    "Macro F1",
+    "Mean Signed Distance (geometric margin)"
+   ]
+  }
+ }
 }

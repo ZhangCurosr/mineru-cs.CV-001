@@ -4,5 +4,32 @@
  "title": "GS-sup-2-sup-CI-Robust-Gaussian-Splatting-For",
  "token": "sk-331OfnzjD...",
  "created_at": "2026-08-14 14:48:46",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/74946b54-238f-4a9b-ac39-80dad20d3f86.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/74946b54-238f-4a9b-ac39-80dad20d3f86.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:00:53",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Snapshot Compressive Imaging",
+    "3D Gaussian Splatting",
+    "Vision Foundation Model",
+    "3D Reconstruction",
+    "Opacity-Guided Densification",
+    "Novel View Synthesis"
+   ],
+   "field": "计算成像与3D重建",
+   "innovations": [
+    "提出基于3D/2D VFM先验的SCI单测量3D重建框架，结合VGGT几何初始化与辅助伪视图精化",
+    "设计OSGR不透明度引导分裂与生长调控策略，稳定稀疏SCI监督下的3DGS联合优化"
+   ],
+   "benchmarks": [
+    "NeRF Synthetic",
+    "DTU",
+    "Mip-NeRF 360",
+    "Tanks and Temples",
+    "DAVIS"
+   ]
+  }
+ }
 }

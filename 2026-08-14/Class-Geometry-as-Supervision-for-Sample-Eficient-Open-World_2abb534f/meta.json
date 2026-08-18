@@ -4,5 +4,31 @@
  "title": "Class-Geometry-as-Supervision-for-Sample-Eficient-Open-World",
  "token": "sk-xuJlHjv3a...",
  "created_at": "2026-08-14 14:49:18",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/4a523272-0d99-465f-a0d6-ff11a73f3b4c.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/4a523272-0d99-465f-a0d6-ff11a73f3b4c.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 14:57:54",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "open-world detection",
+    "few-shot detection",
+    "prototype learning",
+    "class geometry supervision",
+    "sample-efficient",
+    "unknown rejection",
+    "novel-class insertion"
+   ],
+   "field": "开放世界/少样本目标检测",
+   "innovations": [
+    "提出类几何监督CGS，通过视觉/语义差异矩阵对齐原型距离以改善少样本开集校准",
+    "给出原型图失真bound与邻域序保持定理，为关系几何监督提供理论保证",
+    "在ProtoNet识别、虫卵检测与COCO OWOD三档任务统一实例化并验证迁移性"
+   ],
+   "benchmarks": [
+    "Ova few-shot/open-set detection",
+    "COCO OWOD (Task 1-4)"
+   ]
+  }
+ }
 }

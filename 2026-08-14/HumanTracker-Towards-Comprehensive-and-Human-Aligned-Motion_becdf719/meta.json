@@ -4,5 +4,32 @@
  "title": "HumanTracker-Towards-Comprehensive-and-Human-Aligned-Motion",
  "token": "sk-EqwJR1nOB...",
  "created_at": "2026-08-14 14:48:43",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/e2514529-44dc-44de-b6db-ead3028d3d24.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/e2514529-44dc-44de-b6db-ead3028d3d24.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:04:09",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "humanoid motion tracking",
+    "preference-aligned evaluation",
+    "motion benchmark",
+    "reward model",
+    "contact stability",
+    "HumanScore"
+   ],
+   "field": "人形机器人运动跟踪评测",
+   "innovations": [
+    "提出 HumanTracker 基准：153小时、四族分类、带文本标签的大规模动捕数据集",
+    "设计 HumanScore：基于12K偏好对的时序Transformer奖励模型，与人类感知高度对齐（Align Rate 90.83%）",
+    "建立标准化评测协议：统一参考表示、模拟器入口与终止准则，实现SOTA tracker的可比评估"
+   ],
+   "benchmarks": [
+    "HumanTracker",
+    "AMASS",
+    "PHUMA",
+    "SONIC"
+   ]
+  }
+ }
 }

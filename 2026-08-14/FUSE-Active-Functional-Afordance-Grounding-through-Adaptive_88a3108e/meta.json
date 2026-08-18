@@ -4,5 +4,30 @@
  "title": "FUSE-Active-Functional-Afordance-Grounding-through-Adaptive",
  "token": "sk-EwecAZ9oF...",
  "created_at": "2026-08-14 04:08:30",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/80e0bd12-67d9-41ea-94ba-15d75a036105.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/80e0bd12-67d9-41ea-94ba-15d75a036105.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 14:59:31",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Active Perception",
+    "Functional Affordance",
+    "3D Gaussian Splatting",
+    "Embodied AI",
+    "Semantic-Geometric Reasoning",
+    "Next-Best-View Planning"
+   ],
+   "field": "具身主动感知与功能定位",
+   "innovations": [
+    "提出主动功能可供性定位任务，解决无预设目标类别下的功能导向主动感知",
+    "设计语义-几何融合的证据获取图与SSNR几何不确定性度量",
+    "构建自适应快-慢系统架构，通过熵门控切换摊销规划与显式探索"
+   ],
+   "benchmarks": [
+    "Habitat-Sim v0.3.3",
+    "AI2-THOR functional grounding benchmark"
+   ]
+  }
+ }
 }

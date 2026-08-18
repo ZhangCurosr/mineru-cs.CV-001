@@ -4,5 +4,33 @@
  "title": "GeoCache-Training-Free-Acceleration-of-Multi-View-Texture-Di",
  "token": "sk-JdJPQj6CY...",
  "created_at": "2026-08-14 14:48:50",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/d14808d0-36b1-4d6b-89f4-850d74bd23f1.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/d14808d0-36b1-4d6b-89f4-850d74bd23f1.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:02:06",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "multi-view texture diffusion",
+    "training-free acceleration",
+    "geometric cache",
+    "delta transport",
+    "cross-view consistency",
+    "Hunyuan3D-2.1"
+   ],
+   "field": "3D generative model acceleration",
+   "innovations": [
+    "首次利用跨视角几何冗余（Delta transport）加速多视角纹理扩散，避免时间步缓存破坏跨视角交互",
+    "提出 sampler-consistent 的增量传输接口，保持多步历史缓冲区参数化一致",
+    "周期全视角刷新调度实现速度-保真度斜率显著优于时间步缓存"
+   ],
+   "benchmarks": [
+    "Eval200 (Hunyuan3D-2.1)",
+    "SyncMVD",
+    "MVPainter",
+    "TexVerse-100",
+    "ABO-100"
+   ]
+  }
+ }
 }

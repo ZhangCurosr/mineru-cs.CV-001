@@ -4,5 +4,31 @@
  "title": "FOR-TEXT-IMAGE-TO-VIDEO-DIFFUSION-MODELS",
  "token": "sk-LV19Ft0NN...",
  "created_at": "2026-08-14 14:49:45",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/b77c57fb-5dd4-415b-9c37-1a40fdbe923c.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/b77c57fb-5dd4-415b-9c37-1a40fdbe923c.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 14:59:02",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "自蒸馏",
+    "视频生成",
+    "TI2V",
+    "混合策略",
+    "流匹配",
+    "条件激发"
+   ],
+   "field": "视频生成模型蒸馏",
+   "innovations": [
+    "提出混合策略自蒸馏HPSD，结合离策略锚定与在策略校正",
+    "揭示TI2V中条件-状态不匹配问题并提出结构化解决方案"
+   ],
+   "benchmarks": [
+    "VideoAlign",
+    "VisionReward",
+    "UnifiedReward-v2",
+    "VBench"
+   ]
+  }
+ }
 }

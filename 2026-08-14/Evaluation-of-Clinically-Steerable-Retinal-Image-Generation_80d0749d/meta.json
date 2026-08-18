@@ -4,5 +4,30 @@
  "title": "Evaluation-of-Clinically-Steerable-Retinal-Image-Generation",
  "token": "sk-CZoysi7P5...",
  "created_at": "2026-08-14 14:48:48",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/a6984ad1-c03f-49a6-86e4-7c0aacdc77cf.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/a6984ad1-c03f-49a6-86e4-7c0aacdc77cf.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 14:59:05",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Retinal Foundation Models",
+    "Clinically Steerable Image Generation",
+    "Representation Tokenizer",
+    "Synthetic-to-real Representation Gap",
+    "Medical Image Synthesis"
+   ],
+   "field": "医疗图像生成与基础模型评估",
+   "innovations": [
+    "系统评估视网膜基础模型作为可控生成潜空间的表型保留能力",
+    "揭示内部与外部评估间合成-真实表示差距",
+    "证实多模态预训练在可控生成中的优势"
+   ],
+   "benchmarks": [
+    "UK Biobank眼底图像",
+    "Retokenizer Framework",
+    "ResNet32 External Classifier"
+   ]
+  }
+ }
 }

@@ -4,5 +4,32 @@
  "title": "Edit2TikZ-A-Comprehensive-and-Challenging-Benchmark-for-Scie",
  "token": "sk-Wt6bONApk...",
  "created_at": "2026-08-14 04:09:01",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/69fd42a9-0f23-46a9-afa6-32b29b649b69.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/69fd42a9-0f23-46a9-afa6-32b29b649b69.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 14:58:30",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "科学图形编辑",
+    "TikZ 代码生成",
+    "多模态大模型",
+    "基准评测",
+    "课程学习",
+    "图像编辑"
+   ],
+   "field": "多模态代码生成与编辑",
+   "innovations": [
+    "提出 Edit2TikZ 科学图形编辑基准，支持文本/视觉定位与多步编辑评测",
+    "构建 RS/ECS 人对齐评估框架，解耦编辑正确性与非目标保留",
+    "通过两阶段课程学习（重建→编辑）在 Qwen3.5-4B 上将编译成功率从 45.35% 提升至 83.40%"
+   ],
+   "benchmarks": [
+    "Edit2TikZ",
+    "DaTikZv2",
+    "DaTikZv3",
+    "DeTikZify"
+   ]
+  }
+ }
 }

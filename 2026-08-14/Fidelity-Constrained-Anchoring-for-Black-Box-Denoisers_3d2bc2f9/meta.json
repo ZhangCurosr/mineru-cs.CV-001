@@ -4,5 +4,32 @@
  "title": "Fidelity-Constrained-Anchoring-for-Black-Box-Denoisers",
  "token": "sk-45Ifw5Iq3...",
  "created_at": "2026-08-14 04:11:34",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/245a8e87-d253-48fb-9d85-e7d7403185de.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/245a8e87-d253-48fb-9d85-e7d7403185de.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:00:04",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "图像去噪",
+    "黑盒模型后处理",
+    "保真度约束",
+    "SSIM优化",
+    "PSNR控制",
+    "超分辨率"
+   ],
+   "field": "图像恢复与增强",
+   "innovations": [
+    "提出无需重新训练的黑盒去噪器后处理锚定框架",
+    "推导PSNR约束闭式解与SSIM逆度量迭代求解方法",
+    "系统揭示PSNR与SSIM锚定在不同噪声水平下的敏感性差异"
+   ],
+   "benchmarks": [
+    "DIV2K",
+    "Real-ESRGAN",
+    "Non-local Means",
+    "Bilateral Filter"
+   ]
+  }
+ }
 }

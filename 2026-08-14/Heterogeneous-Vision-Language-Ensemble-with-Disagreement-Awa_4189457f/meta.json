@@ -4,5 +4,31 @@
  "title": "Heterogeneous-Vision-Language-Ensemble-with-Disagreement-Awa",
  "token": "sk-jIjWdfVgv...",
  "created_at": "2026-08-14 04:08:25",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/cf78a811-bb4c-47d9-a1ba-c19675047814.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/cf78a811-bb4c-47d9-a1ba-c19675047814.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:02:17",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Text-Based Person Anomaly Retrieval",
+    "Vision-Language Ensemble",
+    "Heterogeneous Embedding",
+    "VLM Reranking",
+    "AI City Challenge",
+    "PAB Benchmark",
+    "Reciprocal Rank Fusion"
+   ],
+   "field": "跨模态检索与异常行为理解",
+   "innovations": [
+    "异构视觉-语言嵌入模型迭代集成与分数对齐策略",
+    "分歧感知VLM交叉编码器选择性重排序路由机制",
+    "RRF融合异构双编码器与VLM排名结果"
+   ],
+   "benchmarks": [
+    "PAB (Pedestrian Anomaly Behavior)",
+    "AI City Challenge 2026 Track 4"
+   ]
+  }
+ }
 }

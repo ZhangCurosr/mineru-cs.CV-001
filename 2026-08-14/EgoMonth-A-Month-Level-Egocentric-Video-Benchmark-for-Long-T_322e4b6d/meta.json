@@ -4,5 +4,34 @@
  "title": "EgoMonth-A-Month-Level-Egocentric-Video-Benchmark-for-Long-T",
  "token": "sk-Hms67LeAf...",
  "created_at": "2026-08-14 04:12:52",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/16676971-35d6-44e6-9236-433fdccdc201.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/16676971-35d6-44e6-9236-433fdccdc201.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 14:58:36",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "egocentric video",
+    "long-term memory",
+    "multimodal LLM",
+    "video understanding benchmark",
+    "spatiotemporal reasoning",
+    "first-person video"
+   ],
+   "field": "多模态长视频理解与长期记忆",
+   "innovations": [
+    "提出首个为期20-120天的第一人称视频理解基准EgoMonth，涵盖301小时视频与1443个多跳QA",
+    "设计基于认知科学的三层14任务分类框架（图式巩固/情节索引/级联推理）系统评估长期时空记忆",
+    "揭示当前MLLMs在月级连续日常视频上仍远落后人类，指出帧密度与参数规模并非决定性因素"
+   ],
+   "benchmarks": [
+    "EgoMonth",
+    "Ego4D",
+    "EgoLife",
+    "LongVideoBench",
+    "MLVU",
+    "HLV-1K"
+   ]
+  }
+ }
 }

@@ -4,5 +4,36 @@
  "title": "Geometry-Grounded-Unified-3D-Perception-for-Autonomous-Drivi",
  "token": "sk-fYugtz9Wo...",
  "created_at": "2026-08-14 04:14:03",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/a7e39109-e467-4a92-8da9-05cd607c5de9.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/a7e39109-e467-4a92-8da9-05cd607c5de9.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:01:36",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "3D感知",
+    "视觉几何基础模型",
+    "VGGT",
+    "多相机自动驾驶",
+    "统一感知",
+    "深度估计",
+    "3D目标检测",
+    "语义体素预测"
+   ],
+   "field": "自动驾驶多相机3D感知",
+   "innovations": [
+    "将VGGT重建导向隐空间适配到已标定流式多相机驾驶场景",
+    "时间-视角注意力分解与校准感知Plücker射线编码注入"
+   ],
+   "benchmarks": [
+    "nuScenes",
+    "Argoverse 2",
+    "Waymo",
+    "Occ3D-nuScenes",
+    "KITTI",
+    "DDAD",
+    "NAVSIMv2"
+   ]
+  }
+ }
 }

@@ -4,5 +4,10 @@
  "title": "From-Local-Mismatch-to-Global-Impact-Optimizing-Cache-Reuse",
  "token": "sk-dY4OBV5wM...",
  "created_at": "2026-08-14 14:49:22",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/2a140ec4-a4d2-4d39-8d62-c587691d1d6d.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/2a140ec4-a4d2-4d39-8d62-c587691d1d6d.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:01:10",
+  "chunks": 1
+ }
 }

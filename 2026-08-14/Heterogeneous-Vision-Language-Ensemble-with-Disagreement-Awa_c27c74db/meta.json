@@ -4,5 +4,10 @@
  "title": "Heterogeneous-Vision-Language-Ensemble-with-Disagreement-Awa",
  "token": "sk-jIjWdfVgv...",
  "created_at": "2026-08-14 14:49:03",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/9ba0bc11-cf62-48e2-b3e7-483f9ad92c60.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/9ba0bc11-cf62-48e2-b3e7-483f9ad92c60.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:02:46",
+  "chunks": 1
+ }
 }

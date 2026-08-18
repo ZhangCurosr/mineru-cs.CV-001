@@ -4,5 +4,30 @@
  "title": "Evaluation-of-Clinically-Steerable-Retinal-Image-Generation",
  "token": "sk-CZoysi7P5...",
  "created_at": "2026-08-14 04:08:37",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/a6984ad1-c03f-49a6-86e4-7c0aacdc77cf.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/a6984ad1-c03f-49a6-86e4-7c0aacdc77cf.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 14:58:57",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Retinal Foundation Model",
+    "Controllable Image Generation",
+    "Representation Tokenizer",
+    "Synthetic-to-real Gap",
+    "Medical Image Synthesis"
+   ],
+   "field": "医学图像可控生成与基础模型",
+   "innovations": [
+    "系统评估多种视网膜基础模型潜在空间在可控生成中的临床表型保留能力",
+    "揭示并量化可控医学图像生成中的合成-真实表征鸿沟",
+    "发现多模态预训练的RFM在表型保留任务上优于单模态大模型"
+   ],
+   "benchmarks": [
+    "UK Biobank Retinal Images",
+    "rFID/gFID/KID",
+    "URFound/RETFound/PRETI/FLAIR prediction tasks"
+   ]
+  }
+ }
 }

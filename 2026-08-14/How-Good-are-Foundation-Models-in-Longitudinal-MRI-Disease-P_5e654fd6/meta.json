@@ -4,5 +4,30 @@
  "title": "How-Good-are-Foundation-Models-in-Longitudinal-MRI-Disease-P",
  "token": "sk-4LF0lBYcu...",
  "created_at": "2026-08-14 14:48:50",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/dc9e6a55-cb3e-406e-be01-5ac51628070d.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/dc9e6a55-cb3e-406e-be01-5ac51628070d.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:03:27",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "纵向MRI",
+    "视觉-语言模型",
+    "时序推理",
+    "多视角成像",
+    "疾病进展评估",
+    "结构化定位"
+   ],
+   "field": "医学影像时序推理与基准评测",
+   "innovations": [
+    "提出首个覆盖多视角+时序+结构化定位的Time-Aware Multi-View MRI Benchmark",
+    "构建TAC四维复合时序推理度量（TEDS/Trend-F1/SignAcc/Coverage）",
+    "揭示多视角输入对小参数VLM时序推理的负向过载效应"
+   ],
+   "benchmarks": [
+    "Time-Aware Multi-View MRI Benchmark",
+    "UCSF-GBM子集（1,192样本）"
+   ]
+  }
+ }
 }

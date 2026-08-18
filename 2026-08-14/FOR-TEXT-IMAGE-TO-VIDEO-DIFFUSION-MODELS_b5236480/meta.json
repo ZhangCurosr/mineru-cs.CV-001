@@ -4,5 +4,35 @@
  "title": "FOR-TEXT-IMAGE-TO-VIDEO-DIFFUSION-MODELS",
  "token": "sk-LV19Ft0NN...",
  "created_at": "2026-08-14 04:14:14",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/b77c57fb-5dd4-415b-9c37-1a40fdbe923c.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/b77c57fb-5dd4-415b-9c37-1a40fdbe923c.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 14:59:33",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "TI2V",
+    "self-distillation",
+    "on-policy distillation",
+    "flow matching",
+    "video generation",
+    "hybrid-policy",
+    "diffusion models"
+   ],
+   "field": "视频生成模型",
+   "innovations": [
+    "提出HPSD混合策略自蒸馏框架，解决TI2V场景下on-policy蒸馏的条件-状态不匹配问题",
+    "首次系统形式化特权条件激发的能力内化任务，实现跨条件生成能力迁移",
+    "设计子轨迹长度K作为离/在线策略插值参数，在保留教师先验与策略对齐间取得平衡"
+   ],
+   "benchmarks": [
+    "VBench",
+    "VideoAlign",
+    "VisionReward",
+    "UnifiedReward-v2",
+    "HPS Score",
+    "CLIP Score"
+   ]
+  }
+ }
 }

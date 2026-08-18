@@ -4,5 +4,34 @@
  "title": "HounsWorld-A-Multimodal-World-Model-for-Hidden-Patient-State",
  "token": "sk-xfpcKPjW4...",
  "created_at": "2026-08-14 04:12:54",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/72bc95ef-1204-46cf-8c27-5760f6405880.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/72bc95ef-1204-46cf-8c27-5760f6405880.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:02:41",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "multimodal world model",
+    "CT imaging",
+    "patient state inference",
+    "medical VQA",
+    "volume reconstruction",
+    "contrast transfer",
+    "flow matching"
+   ],
+   "field": "医学多模态大模型与CT世界模型",
+   "innovations": [
+    "将CT中心临床智能统一为共享潜在患者状态的多模态世界建模，同时支持读出、重建与条件转移模拟",
+    "提出HounsBench基准与三家族评测协议",
+    "CSPC联合理解-生成训练结合零初始化CT残差适配器与条件显式HU采样"
+   ],
+   "benchmarks": [
+    "HounsBench-Readout",
+    "HounsBench-Reconstruction",
+    "HounsBench-Simulation",
+    "CT-RATE",
+    "M3D"
+   ]
+  }
+ }
 }

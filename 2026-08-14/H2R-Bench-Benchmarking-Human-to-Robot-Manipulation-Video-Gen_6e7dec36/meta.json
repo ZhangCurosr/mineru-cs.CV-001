@@ -4,5 +4,29 @@
  "title": "H2R-Bench-Benchmarking-Human-to-Robot-Manipulation-Video-Gen",
  "token": "sk-sKVjU65N5...",
  "created_at": "2026-08-14 04:12:53",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/c19018f2-fdf7-4ae6-ad62-cb8c31c62d4f.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/c19018f2-fdf7-4ae6-ad62-cb8c31c62d4f.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 15:01:48",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "视频生成",
+    "机器人操纵",
+    "跨形态迁移",
+    "世界模型",
+    "基准测试",
+    "具身智能"
+   ],
+   "field": "机器人视频生成与评估",
+   "innovations": [
+    "提出源条件人类到机器人视频迁移评估设定，将源视频视为交互证据而非视觉风格参考",
+    "设计五维迁移感知评估协议（目标、动作、接触、形态、质量），揭示视觉质量与有效迁移的弱相关性"
+   ],
+   "benchmarks": [
+    "H2R-Bench",
+    "EgoDex"
+   ]
+  }
+ }
 }
