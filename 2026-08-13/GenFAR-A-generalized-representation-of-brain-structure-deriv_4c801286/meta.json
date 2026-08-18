@@ -4,5 +4,31 @@
  "title": "GenFAR-A-generalized-representation-of-brain-structure-deriv",
  "token": "sk-Ir4JqYCnj...",
  "created_at": "2026-08-13 07:14:28",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/6f741a52-4af4-4e1b-a67a-2c702efa9c78.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/6f741a52-4af4-4e1b-a67a-2c702efa9c78.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 11:51:04",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "foundation model",
+    "neuroimaging",
+    "multi-task learning",
+    "sequential learning",
+    "brain MRI",
+    "representation learning"
+   ],
+   "field": "神经影像基础模型",
+   "innovations": [
+    "提出Donor Score指标量化任务间知识转移贡献",
+    "确定序贯学习最优序列长度为6",
+    "通过5个强正向捐赠任务构建固定基序实现跨任务泛化"
+   ],
+   "benchmarks": [
+    "LTO-CV (Leave-Task-Out Cross-Validation)",
+    "MESA external cohort",
+    "Sample efficiency (100-4000 samples)"
+   ]
+  }
+ }
 }

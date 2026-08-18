@@ -4,5 +4,33 @@
  "title": "Automated-Borehole-Core-Analysis-with-Report-Derived-Weak-La",
  "token": "sk-9BdnpHblK...",
  "created_at": "2026-08-13 07:10:50",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/33ca2b00-37a2-4480-8cbe-4f3b41b3b714.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/33ca2b00-37a2-4480-8cbe-4f3b41b3b714.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 11:18:05",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "borehole core analysis",
+    "crack segmentation",
+    "weak supervision",
+    "self-supervised learning",
+    "gated U-Net",
+    "defect spacing",
+    "rock mass classification"
+   ],
+   "field": "地质工程视觉感知",
+   "innovations": [
+    "报告文本层弱监督标签+embedding一致性过滤的间距分类框架",
+    "空间门控U-Net实现边缘图与分割掩码逐像素自适应融合",
+    "圆柱投影+PCA的零样本层面角估计规则基线"
+   ],
+   "benchmarks": [
+    "Crack Segmentation (F1=0.860, IoU=0.754)",
+    "Defect Spacing Classification (hierarchical F1 via DINO)",
+    "Bedding Angle Estimation (75.4% agreement)",
+    "Lithological Color Detection (84.7% agreement)"
+   ]
+  }
+ }
 }

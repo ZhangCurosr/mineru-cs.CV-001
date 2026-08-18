@@ -4,5 +4,10 @@
  "title": "Hybrid-LUT-Channel-Aware-Hybrid-Lookup-Table-and-Filtering-f",
  "token": "sk-RsHYrwqhL...",
  "created_at": "2026-08-13 14:55:56",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/7f69fd60-0666-4e74-9433-92bad6291eae.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/7f69fd60-0666-4e74-9433-92bad6291eae.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 11:59:37",
+  "chunks": 1
+ }
 }

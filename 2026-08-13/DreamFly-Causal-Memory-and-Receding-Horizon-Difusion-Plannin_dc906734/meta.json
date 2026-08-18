@@ -4,5 +4,10 @@
  "title": "DreamFly-Causal-Memory-and-Receding-Horizon-Difusion-Plannin",
  "token": "sk-EqwJR1nOB...",
  "created_at": "2026-08-13 14:55:33",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/262d9fad-31cf-444c-922e-c2b1713ca90f.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/262d9fad-31cf-444c-922e-c2b1713ca90f.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 11:28:18",
+  "chunks": 1
+ }
 }

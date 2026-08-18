@@ -4,5 +4,31 @@
  "title": "Hand-Visibility-Detector-Per-Keypoint-Visibility-Estimation",
  "token": "sk-JMLCbBCEj...",
  "created_at": "2026-08-13 07:12:12",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/847bf53c-469c-44d2-a52f-f787208fd891.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/847bf53c-469c-44d2-a52f-f787208fd891.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 11:55:50",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Hand Visibility Estimation",
+    "Hand Pose Estimation",
+    "Occlusion Handling",
+    "3D Hand Triangulation",
+    "Vision Transformer"
+   ],
+   "field": "手部姿态估计",
+   "innovations": [
+    "首次将逐关节手部可见性估计作为独立任务系统研究",
+    "冻结大规模预训练HPE骨干+轻量GAU可见性头实现高精度可见性预测",
+    "可见性加权多视角三角测量降低3D手姿重投影误差"
+   ],
+   "benchmarks": [
+    "HInt",
+    "DexYCB",
+    "HO3D",
+    "H2O"
+   ]
+  }
+ }
 }

@@ -4,5 +4,31 @@
  "title": "Few-Shot-Ordinal-Learning-for-Day-Wise-Freshness-Estimation",
  "token": "sk-7NOZt17oN...",
  "created_at": "2026-08-13 07:10:48",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/647eddc2-be6e-4cf9-9a38-4e3a4b7d7b71.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/647eddc2-be6e-4cf9-9a38-4e3a4b7d7b71.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 11:46:19",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "few-shot learning",
+    "ordinal regression",
+    "hyperspectral imaging",
+    "food freshness",
+    "CORAL",
+    "meta-learning",
+    "temporal regularization"
+   ],
+   "field": "少样本时序预测与食品质量评估",
+   "innovations": [
+    "首个面向 HSI 食品质量的 episodic 少样本序数学习框架",
+    "CORAL 累积序数头与双正则化（单调性+嵌入平滑性）结合",
+    "pack-level 严格 unseen-fillet 评估协议下实现 MAE=1.58 天"
+   ],
+   "benchmarks": [
+    "self-made salmon HSI dataset (50 packs, 16 days, 256 bands)",
+    "unseen-fillet protocol with k=1/2/3/5 support sizes"
+   ]
+  }
+ }
 }

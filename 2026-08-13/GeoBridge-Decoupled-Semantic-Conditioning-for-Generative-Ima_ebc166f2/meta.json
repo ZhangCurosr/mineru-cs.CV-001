@@ -4,5 +4,30 @@
  "title": "GeoBridge-Decoupled-Semantic-Conditioning-for-Generative-Ima",
  "token": "sk-dY4OBV5wM...",
  "created_at": "2026-08-13 14:56:39",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/87d1b85b-4fe6-4770-b5ae-3bf7ce615b81.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/87d1b85b-4fe6-4770-b5ae-3bf7ce615b81.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 11:52:47",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "image geolocalization",
+    "multimodal large language models",
+    "flow matching",
+    "Riemannian geometry",
+    "conditional generation",
+    "role-decoupled conditioning"
+   ],
+   "field": "多模态地理定位与生成式坐标解码",
+   "innovations": [
+    "角色解耦条件机制：分离离散语义监督与连续球面解码的几何冲突",
+    "证明条件质量而非解码头是部署精度的瓶颈（Oracle @25从38.67%提升至71.67%）",
+    "图像接地解码的优雅退化：语义错误时仍优于离散地名地理编码"
+   ],
+   "benchmarks": [
+    "IM2GPS3K",
+    "MP16-Reason-Test"
+   ]
+  }
+ }
 }

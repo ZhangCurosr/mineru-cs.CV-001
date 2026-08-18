@@ -4,5 +4,29 @@
  "title": "HSTGFormer-Hyper-Spatial-Temporal-Graph-Transformer-for-3D-H",
  "token": "sk-kdPBKi9MQ...",
  "created_at": "2026-08-13 14:55:37",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/0f8dc5b5-a99f-416e-9d1d-72f57eab051c.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/0f8dc5b5-a99f-416e-9d1d-72f57eab051c.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 11:55:32",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "3D Human Pose Estimation",
+    "Spatio-Temporal Graph",
+    "Transformer",
+    "Graph Attention",
+    "Temporal Dependency"
+   ],
+   "field": "单目3D人体姿态估计",
+   "innovations": [
+    "提出HSTG将骨架图扩展至局部时序邻域实现耦合时空推理",
+    "设计ADSTG构建自适应双尺度动态时序图",
+    "节点级自适应融合+负载均衡损失的多图融合机制"
+   ],
+   "benchmarks": [
+    "Human3.6M",
+    "MPI-INF-3DHP"
+   ]
+  }
+ }
 }

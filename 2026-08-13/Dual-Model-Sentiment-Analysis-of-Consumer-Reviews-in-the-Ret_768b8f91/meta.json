@@ -4,5 +4,32 @@
  "title": "Dual-Model-Sentiment-Analysis-of-Consumer-Reviews-in-the-Ret",
  "token": "sk-45Ifw5Iq3...",
  "created_at": "2026-08-13 05:40:58",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/0aa7b45a-fec9-49e1-9a09-12fa98a02fd1.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/0aa7b45a-fec9-49e1-9a09-12fa98a02fd1.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 11:29:50",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Sentiment Analysis",
+    "Machine Learning",
+    "Deep Learning",
+    "Imbalanced Data",
+    "Starbucks Reviews",
+    "BiLSTM",
+    "SVM",
+    "NLP"
+   ],
+   "field": "情感分析与用户评论挖掘",
+   "innovations": [
+    "在同一重度不平衡真实数据集上系统对比传统ML与深度学习双模型框架",
+    "保留真实类别分布并通过class_weight补偿而非重采样",
+    "在轻量级TF-IDF基础上实现92%准确率的BiLSTM情感分类方案"
+   ],
+   "benchmarks": [
+    "Starbucks Reviews Dataset (Kaggle)",
+    "ConsumerAffairs Platform Reviews"
+   ]
+  }
+ }
 }

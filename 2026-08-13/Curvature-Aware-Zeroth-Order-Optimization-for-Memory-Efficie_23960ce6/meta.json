@@ -4,5 +4,32 @@
  "title": "Curvature-Aware-Zeroth-Order-Optimization-for-Memory-Efficie",
  "token": "sk-dQ65jxzP4...",
  "created_at": "2026-08-13 14:54:56",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/cce64234-5e7b-4c84-8958-05163a40d5c9.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/cce64234-5e7b-4c84-8958-05163a40d5c9.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 11:21:39",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "test-time adaptation",
+    "zeroth-order optimization",
+    "memory-efficient",
+    "curvature-aware",
+    "forward-only",
+    "edge deployment"
+   ],
+   "field": "测试时适配与零阶优化",
+   "innovations": [
+    "揭示TTA中Hessian持久低秩与慢变性质，为ZO方差缩减提供几何先验",
+    "提出CAZO曲率感知零阶优化，通过EMA对角Hessian估计实现各向异性扰动采样",
+    "在不使用反向传播的前提下实现70%+内存降低与SOTA适配精度"
+   ],
+   "benchmarks": [
+    "ImageNet-C severity-5",
+    "ImageNet-R",
+    "ImageNet-V2",
+    "ImageNet-Sketch"
+   ]
+  }
+ }
 }

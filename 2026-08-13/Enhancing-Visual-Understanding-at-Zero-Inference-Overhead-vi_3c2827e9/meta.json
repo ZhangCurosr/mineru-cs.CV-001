@@ -4,5 +4,42 @@
  "title": "Enhancing-Visual-Understanding-at-Zero-Inference-Overhead-vi",
  "token": "sk-7NOZt17oN...",
  "created_at": "2026-08-13 07:12:40",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/55f7d36e-820d-4d8d-8908-536c9cefde2e.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/55f7d36e-820d-4d8d-8908-536c9cefde2e.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 11:43:44",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "多模态大模型",
+    "视觉理解",
+    "生成辅助训练",
+    "NEP",
+    "MoT解耦",
+    "零推理开销"
+   ],
+   "field": "多模态大模型视觉理解增强",
+   "innovations": [
+    "NEP：在LLM输入连续嵌入空间中自回归预测目标图像嵌入，实现生成目标与理解输入空间的对齐",
+    "MoT解耦架构：共享下层trunk + 独立上层生成分支，生成梯度仅精炼共享视觉表征，推理时生成支路完全移除实现零开销",
+    "任务相关性驱动的生成数据构建：通过自动化管线构造10M跨5类15子任务的生成样本，证明强认知相关任务带来最大理解增益"
+   ],
+   "benchmarks": [
+    "MME",
+    "MMMU",
+    "BLINK",
+    "RealWorldQA",
+    "CharXiv",
+    "DynaMath",
+    "MathVision",
+    "MathVista",
+    "LogicVista",
+    "VisuLogic",
+    "CountBench",
+    "CV-Bench",
+    "Video-MME",
+    "MVBench"
+   ]
+  }
+ }
 }

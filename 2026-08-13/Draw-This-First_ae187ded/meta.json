@@ -4,5 +4,33 @@
  "title": "Draw-This-First",
  "token": "sk-45Ifw5Iq3...",
  "created_at": "2026-08-13 04:50:16",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/13082645-d42b-4f79-bd6b-e22fc4c1abba.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/13082645-d42b-4f79-bd6b-e22fc4c1abba.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 11:22:36",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "sketch generation",
+    "ordered vector",
+    "flow matching",
+    "order-as-color",
+    "text-conditioned generation",
+    "latent diffusion"
+   ],
+   "field": "矢量草图生成与顺序控制",
+   "innovations": [
+    "将绘制顺序编码为HSV颜色场(order-as-color)，使预训练图像DiT直接在图像潜空间学习有序草图生成",
+    "新增order-native解码器头，从潜变量高精度还原弧场、前景与实例嵌入",
+    "通过约束排列训练与程序化caption生成，实现文本指令对绘制顺序的灵活控制而不改变几何"
+   ],
+   "benchmarks": [
+    "Creative Birds",
+    "Creative Creatures",
+    "FS-COCO",
+    "QuickDraw",
+    "ControlSketch-Part"
+   ]
+  }
+ }
 }

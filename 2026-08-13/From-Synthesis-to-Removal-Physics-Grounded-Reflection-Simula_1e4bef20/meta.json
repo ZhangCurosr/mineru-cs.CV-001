@@ -4,5 +4,35 @@
  "title": "From-Synthesis-to-Removal-Physics-Grounded-Reflection-Simula",
  "token": "sk-sKVjU65N5...",
  "created_at": "2026-08-13 07:12:25",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/77f9da2d-ea1b-4d64-b9db-ae3889340e5e.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/77f9da2d-ea1b-4d64-b9db-ae3889340e5e.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 11:47:17",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "视频去反射",
+    "扩散模型",
+    "物理接地增强",
+    "合成数据",
+    "时序一致性",
+    "反射去除基准"
+   ],
+   "field": "视频恢复与计算摄影",
+   "innovations": [
+    "物理接地增强驱动的闭环视频反射合成管线",
+    "单步扩散视频去反射模型，推理速度超越非扩散基线",
+    "首个视频去反射专用基准S2R‑Bench"
+   ],
+   "benchmarks": [
+    "S2R‑Bench",
+    "S2R‑Ref",
+    "S2R‑Real",
+    "Real",
+    "SIR²",
+    "Nature",
+    "OpenRR‑1k"
+   ]
+  }
+ }
 }

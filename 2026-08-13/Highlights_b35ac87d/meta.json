@@ -4,5 +4,32 @@
  "title": "Highlights",
  "token": "sk-45Ifw5Iq3...",
  "created_at": "2026-08-13 05:40:56",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/2884d177-ec2a-435a-91aa-cc28ce8a4dc1.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/2884d177-ec2a-435a-91aa-cc28ce8a4dc1.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 11:57:22",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Active Learning",
+    "Cashew Orchard Detection",
+    "Sentinel-2",
+    "Remote Sensing",
+    "Margin Sampling",
+    "Land Cover Classification",
+    "Guinea-Bissau",
+    "Google Earth Engine"
+   ],
+   "field": "遥感智能解译",
+   "innovations": [
+    "首次将Margin Sampling主动学习策略应用于腰果种植园遥感制图，以16%标注量获得更优性能",
+    "构建全国尺度（34,800 km²）10m分辨率腰果分布图，产出首个公开可用的几内亚比绍国家级腰果地图",
+    "融合光谱（CCDC谐波系数）+时空（GLCM纹理）三源特征并结合sieve filter后处理，显著提升分类精度"
+   ],
+   "benchmarks": [
+    "Balanced Accuracy 94.0%",
+    "F1-Cashew 89.5%"
+   ]
+  }
+ }
 }

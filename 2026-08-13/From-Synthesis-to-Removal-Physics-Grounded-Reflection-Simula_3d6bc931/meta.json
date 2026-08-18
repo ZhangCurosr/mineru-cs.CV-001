@@ -4,5 +4,33 @@
  "title": "From-Synthesis-to-Removal-Physics-Grounded-Reflection-Simula",
  "token": "sk-Dw4PCoiSK...",
  "created_at": "2026-08-13 14:56:20",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/77f9da2d-ea1b-4d64-b9db-ae3889340e5e.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/77f9da2d-ea1b-4d64-b9db-ae3889340e5e.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 11:47:23",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "video reflection removal",
+    "diffusion model",
+    "physics-grounded synthesis",
+    "temporal consistency",
+    "dereflection"
+   ],
+   "field": "计算摄影/视频恢复",
+   "innovations": [
+    "物理引导的结构空间反射合成框架",
+    "基于扩散模型的单步视频去反射网络",
+    "首个视频反射移除基准测试 S2R-Bench"
+   ],
+   "benchmarks": [
+    "S2R-Ref",
+    "S2R-Real",
+    "Real",
+    "SIR²",
+    "Nature",
+    "OpenRR-1k"
+   ]
+  }
+ }
 }

@@ -4,5 +4,32 @@
  "title": "HAMP-LIC-Hessian-Aware-Mixed-Precision-Post-Training-Quantiz",
  "token": "sk-9BdnpHblK...",
  "created_at": "2026-08-13 07:11:09",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/8fbdecb2-638d-4829-a640-6c4d2209f569.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/8fbdecb2-638d-4829-a640-6c4d2209f569.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 11:55:34",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Learned Image Compression",
+    "Post-Training Quantization",
+    "Mixed-Precision Quantization",
+    "Hessian-based Sensitivity",
+    "Rate-Distortion Optimization",
+    "Model Compression",
+    "Cross-platform Robustness"
+   ],
+   "field": "神经图像压缩与模型高效部署",
+   "innovations": [
+    "结合Hessian迹与率失真损失的混合精度PTQ框架",
+    "基于Pareto前沿搜索的高效比特分配方法",
+    "实现高压缩比、低BD-rate损失及跨平台一致性的统一优化"
+   ],
+   "benchmarks": [
+    "Kodak",
+    "Tecnick",
+    "CLIC 2020"
+   ]
+  }
+ }
 }

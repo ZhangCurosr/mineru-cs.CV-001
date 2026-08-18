@@ -4,5 +4,33 @@
  "title": "Hand-Visibility-Detector-Per-Keypoint-Visibility-Estimation",
  "token": "sk-1TedD2e6f...",
  "created_at": "2026-08-13 14:56:01",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/847bf53c-469c-44d2-a52f-f787208fd891.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/847bf53c-469c-44d2-a52f-f787208fd891.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 11:55:43",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "hand pose estimation",
+    "visibility estimation",
+    "hand occlusion",
+    "ViT backbone",
+    "triangulation",
+    "3D hand annotation",
+    "HInt dataset"
+   ],
+   "field": "手姿态估计与可见性分析",
+   "innovations": [
+    "首次将 per-joint 手可见性估计形式化为独立任务，提出 Hand Visibility Detector",
+    "利用冻结的预训练 HPE ViT 骨干（HaMeR/WiLoR）迁移至可见性估计，mAP 达 0.931，显著优于 CNN 基线",
+    "将 per-joint 可见性概率用于多视角三角测量加权，在 HO3D 上将重投影误差降低 10.1%"
+   ],
+   "benchmarks": [
+    "HInt",
+    "DexYCB",
+    "HO3D",
+    "H2O"
+   ]
+  }
+ }
 }

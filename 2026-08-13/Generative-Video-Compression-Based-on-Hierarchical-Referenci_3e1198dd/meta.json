@@ -4,5 +4,31 @@
  "title": "Generative-Video-Compression-Based-on-Hierarchical-Referenci",
  "token": "sk-uDfT0rM1x...",
  "created_at": "2026-08-13 14:55:58",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/6853d5a6-f294-4613-baeb-f41677b91836.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/6853d5a6-f294-4613-baeb-f41677b91836.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 11:51:10",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "generative video compression",
+    "diffusion model",
+    "hierarchical reference structure",
+    "perceptual quality",
+    "neural video coding",
+    "flow matching"
+   ],
+   "field": "生成式视频压缩",
+   "innovations": [
+    "首次统一将分层引用结构应用于潜码编码与扩散生成重建两阶段",
+    "提出HTCM从短程局部细节与长程全局语义中提取互补时序上下文",
+    "设计HA-Adapter通过分层注意力掩码阻断低质量帧向高质量帧的伪影传播"
+   ],
+   "benchmarks": [
+    "HEVC B",
+    "UVG",
+    "MCL-JCV"
+   ]
+  }
+ }
 }

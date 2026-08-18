@@ -4,5 +4,30 @@
  "title": "HarmoniDPO-Video-guided-Audio-Generation-via-Preference-Opti",
  "token": "sk-Ar06zcDAy...",
  "created_at": "2026-08-13 07:10:58",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/61cd5b4e-1b9a-4f95-9816-c466e9bb2a2c.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/61cd5b4e-1b9a-4f95-9816-c466e9bb2a2c.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 11:56:02",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "video-to-audio generation",
+    "diffusion models",
+    "Direct Preference Optimization",
+    "RLHF",
+    "audio-visual alignment",
+    "test-time scaling"
+   ],
+   "field": "跨模态生成与对齐",
+   "innovations": [
+    "首次将online-DPO引入V2A生成任务，实现无标注动态偏好对齐",
+    "双视频特征表示（全局InternVid+帧级CLIP）保留时序动态与细粒度语义",
+    "VA-DPO损失显式融入奖励边际提升偏好强度敏感度"
+   ],
+   "benchmarks": [
+    "VGGSound",
+    "AVSync15"
+   ]
+  }
+ }
 }

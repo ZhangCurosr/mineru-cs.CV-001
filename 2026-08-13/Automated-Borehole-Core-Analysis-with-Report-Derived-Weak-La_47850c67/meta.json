@@ -4,5 +4,31 @@
  "title": "Automated-Borehole-Core-Analysis-with-Report-Derived-Weak-La",
  "token": "sk-331OfnzjD...",
  "created_at": "2026-08-13 14:54:58",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/33ca2b00-37a2-4480-8cbe-4f3b41b3b714.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-13/33ca2b00-37a2-4480-8cbe-4f3b41b3b714.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 11:26:17",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "borehole core analysis",
+    "crack segmentation",
+    "self-supervised learning",
+    "weak supervision",
+    "gated U-Net",
+    "defect spacing",
+    "rock mass classification",
+    "DINO"
+   ],
+   "field": "地质图像分析",
+   "innovations": [
+    "报告派生弱标签+嵌入一致性过滤的自监督间距分类框架",
+    "空间门控U-Net融合PiDiNet边缘与Mask R-CNN掩码实现0.860 F1裂缝分割",
+    "确定性几何后处理将裂缝位置序列转换为工程间距类别"
+   ],
+   "benchmarks": [
+    "自制钻孔核心裂缝分割数据集（5,087图像）"
+   ]
+  }
+ }
 }
