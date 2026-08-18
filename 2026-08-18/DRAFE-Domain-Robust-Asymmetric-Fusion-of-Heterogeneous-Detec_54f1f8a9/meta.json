@@ -4,5 +4,30 @@
  "title": "DRAFE-Domain-Robust-Asymmetric-Fusion-of-Heterogeneous-Detec",
  "token": "sk-1FwfANuN8...",
  "created_at": "2026-08-18 02:55:43",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/032c36a5-cefb-4c38-83d9-06bff5666963.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/032c36a5-cefb-4c38-83d9-06bff5666963.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:16:19",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "fine-grained object detection",
+    "domain generalization",
+    "detector ensemble",
+    "asymmetric fusion",
+    "intelligent transportation systems",
+    "privacy-preserving learning"
+   ],
+   "field": "跨域细粒度目标检测",
+   "innovations": [
+    "锚点条件类一致匹配与互补假设恢复的非对称集成框架",
+    "伪标签扩展+完整人工审核的数据中心训练流水线",
+    "可靠性加权坐标融合与一致性感知置信度校准"
+   ],
+   "benchmarks": [
+    "AI City Challenge 2026 Track 6",
+    "Project Hafnia Cross-City Detection"
+   ]
+  }
+ }
 }

@@ -4,5 +4,10 @@
  "title": "DRAFE-Domain-Robust-Asymmetric-Fusion-of-Heterogeneous-Detec",
  "token": "sk-1FwfANuN8...",
  "created_at": "2026-08-18 14:30:54",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/032c36a5-cefb-4c38-83d9-06bff5666963.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/032c36a5-cefb-4c38-83d9-06bff5666963.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:17:00",
+  "chunks": 1
+ }
 }

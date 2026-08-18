@@ -4,5 +4,31 @@
  "title": "Breaking-the-Compression-Barrier-Cross-Architecture-Compress",
  "token": "sk-B2hxqutYc...",
  "created_at": "2026-08-18 14:31:11",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/46a929fe-63f9-4689-8927-9804cff387b2.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/46a929fe-63f9-4689-8927-9804cff387b2.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:13:47",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "model compression",
+    "network pruning",
+    "compression boundary learning",
+    "reverse regrowth",
+    "reinforcement learning",
+    "structured pruning",
+    "Transformer compression"
+   ],
+   "field": "模型压缩与剪枝",
+   "innovations": [
+    "提出压缩边界估计作为独立问题，证明正向剪枝范式的根本局限",
+    "设计BRIDGE反向边界学习框架：过压缩暴露边界+RL层级再生恢复最小可行模型",
+    "跨架构统一有效（4种CNN+1种ViT），结构化剪枝最高提升4.77%，边缘设备最高43.2x加速"
+   ],
+   "benchmarks": [
+    "CIFAR-10",
+    "Tiny-ImageNet"
+   ]
+  }
+ }
 }

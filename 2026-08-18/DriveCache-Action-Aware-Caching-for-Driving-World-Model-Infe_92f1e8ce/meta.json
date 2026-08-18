@@ -4,5 +4,29 @@
  "title": "DriveCache-Action-Aware-Caching-for-Driving-World-Model-Infe",
  "token": "sk-sKVjU65N5...",
  "created_at": "2026-08-18 02:58:50",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/7f2a9347-a635-47f0-af54-5787a95eb3f0.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/7f2a9347-a635-47f0-af54-5787a95eb3f0.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:17:34",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "diffusion caching",
+    "driving video generation",
+    "training-free acceleration",
+    "autonomous driving world model",
+    "dynamic programming scheduling"
+   ],
+   "field": "自动驾驶视频生成推理加速",
+   "innovations": [
+    "首次将规划自车运动（平移/旋转）作为扩散缓存预生成信号用于场景级缓存预算分配",
+    "提出免训练的两锚点联合响应校准加精确DP调度加因果漂移检查的三级控制框架"
+   ],
+   "benchmarks": [
+    "DrivingGen",
+    "nuScenes",
+    "VBench"
+   ]
+  }
+ }
 }

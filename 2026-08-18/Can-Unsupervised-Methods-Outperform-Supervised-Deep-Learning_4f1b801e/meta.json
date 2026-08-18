@@ -4,5 +4,32 @@
  "title": "Can-Unsupervised-Methods-Outperform-Supervised-Deep-Learning",
  "token": "sk-DXHHyylpH...",
  "created_at": "2026-08-18 14:30:48",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/2991712b-0d02-409d-9dfa-78ddcd77ae1b.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/2991712b-0d02-409d-9dfa-78ddcd77ae1b.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:14:34",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "bronchovascular bundle segmentation",
+    "low-dose CT",
+    "unsupervised learning",
+    "lung nodule detection",
+    "CAD system",
+    "airway segmentation",
+    "vessel segmentation",
+    "LDCT screening"
+   ],
+   "field": "医学图像分割",
+   "innovations": [
+    "提出无监督结节感知支气管血管束分割框架RONALD，在LDCT上实现99.92%/100%结节保留率，显著优于有监督深度学习基线",
+    "首创以结节保留率为核心评估指标的分割评估范式，直接对齐下游结节检测临床任务",
+    "设计自适应骨架化切换与圆柱拟合建模策略，有效抑制LDCT气道分割渗漏"
+   ],
+   "benchmarks": [
+    "Pomeranian Pilot Lung Cancer Screening Program",
+    "Duke Lung Cancer Screening (DLCS)"
+   ]
+  }
+ }
 }

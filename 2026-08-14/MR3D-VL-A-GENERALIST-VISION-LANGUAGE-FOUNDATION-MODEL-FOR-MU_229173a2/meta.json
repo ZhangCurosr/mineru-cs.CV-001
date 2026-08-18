@@ -4,5 +4,30 @@
  "title": "MR3D-VL-A-GENERALIST-VISION-LANGUAGE-FOUNDATION-MODEL-FOR-MU",
  "token": "sk-F0hECVUrq...",
  "created_at": "2026-08-14 14:49:07",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/c771a70b-5900-4fae-a78e-5dc5840b1059.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-14/c771a70b-5900-4fae-a78e-5dc5840b1059.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:13:24",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "3D Vision Language Model",
+    "Multiparametric MRI",
+    "4D Rotational Positional Encoding",
+    "Self-supervised Pretraining",
+    "Medical Report Generation"
+   ],
+   "field": "医疗影像多模态大模型",
+   "innovations": [
+    "无监督预训练的模态无关共享3D编码器",
+    "4D旋转位置编码保留3D体积空间结构",
+    "多分辨率视觉特征分层注入LLM"
+   ],
+   "benchmarks": [
+    "报告生成(BERTScore 0.856)",
+    "开放问答准确率(0.713)",
+    "选择题准确率(0.912)"
+   ]
+  }
+ }
 }

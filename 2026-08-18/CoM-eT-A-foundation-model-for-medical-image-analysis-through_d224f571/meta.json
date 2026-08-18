@@ -4,5 +4,31 @@
  "title": "CoM-eT-A-foundation-model-for-medical-image-analysis-through",
  "token": "sk-yjjHVmEWF...",
  "created_at": "2026-08-18 02:56:24",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/15aca535-50c6-485c-93d2-3a8ae54f1651.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/15aca535-50c6-485c-93d2-3a8ae54f1651.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:14:24",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Medical Foundation Model",
+    "Federated Learning",
+    "Multimodal Medical Imaging",
+    "Vision Transformer",
+    "Partial Fine-tuning",
+    "Medical Image Segmentation"
+   ],
+   "field": "医学图像分析基础模型",
+   "innovations": [
+    "提出了统一的 CoM³eT 架构，融合病理学与放射学及多模态多维上下文建模",
+    "设计了部分微调结合 Token 缓存的高效联邦学习方案，实现资源受限环境下的跨机构协作训练"
+   ],
+   "benchmarks": [
+    "UNICORN Competition",
+    "Cancer Recurrence (Whole Slide)",
+    "Vessel Segmentation (CT)",
+    "Tumor Segmentation (MRI)"
+   ]
+  }
+ }
 }

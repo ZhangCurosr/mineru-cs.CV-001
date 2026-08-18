@@ -4,5 +4,32 @@
  "title": "GaussianDWM-Language-Grounded-3D-Gaussian-Driving-World-Mode",
  "token": "sk-iG65PZaJv...",
  "created_at": "2026-08-18 02:55:59",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/c7ba772d-838f-4815-aed3-ed98662aa65c.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/c7ba772d-838f-4815-aed3-ed98662aa65c.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:18:51",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Driving World Model",
+    "3D Gaussian Splatting",
+    "Vision-Language Model",
+    "Visual Grounding",
+    "4D Generation",
+    "Autonomous Driving"
+   ],
+   "field": "自动驾驶场景理解与生成",
+   "innovations": [
+    "首次将 Qwen 基础特征端到端蒸馏至 3D 高斯基元以构建统一语义场",
+    "提出几何感知适配器与 KL 分布对齐实现稠密高斯到紧凑语言兼容 token 的转换",
+    "统一了 3D 高斯驱动场景理解与可控 4D 编辑生成任务"
+   ],
+   "benchmarks": [
+    "NuInteract",
+    "NuInstruct",
+    "OmniDrive",
+    "nuScenes Generation"
+   ]
+  }
+ }
 }

@@ -4,5 +4,33 @@
  "title": "Decoupling-Parcellation-from-Classification-Systematic-Bench",
  "token": "sk-xuJlHjv3a...",
  "created_at": "2026-08-18 02:58:45",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/e8e922df-2006-4109-a34c-ffe3c48097e5.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/e8e922df-2006-4109-a34c-ffe3c48097e5.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:16:43",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "脑分区",
+    "阿尔茨海默病检测",
+    "深度学习基准测试",
+    "少样本学习",
+    "体积测量策略",
+    "大语言模型",
+    "OASIS-1"
+   ],
+   "field": "医学影像分析与AI辅助诊断",
+   "innovations": [
+    "首次解耦分区与分类任务进行系统性因子设计基准测试",
+    "揭示图谱-分类器兼容性约束及快速分区在自适应分类器下的等效性",
+    "建立LLM少样本提示的样本效率曲线并量化概率输出优化增益"
+   ],
+   "benchmarks": [
+    "OASIS-1",
+    "FS-HV baseline",
+    "SynthSeg+",
+    "OpenMAP-T1"
+   ]
+  }
+ }
 }

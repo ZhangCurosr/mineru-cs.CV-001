@@ -4,5 +4,30 @@
  "title": "Concept-based-explanation-of-gene-expression-prediction-from",
  "token": "sk-oJ013oevc...",
  "created_at": "2026-08-18 14:31:38",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/c22dcd88-8699-4ce8-bdad-f8d8ade2a7c9.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/c22dcd88-8699-4ce8-bdad-f8d8ade2a7c9.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:14:26",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "空间转录组学",
+    "可解释AI",
+    "稀疏自编码器",
+    "相关性传播",
+    "计算病理学",
+    "ViT解释性"
+   ],
+   "field": "计算病理学与可解释AI交叉",
+   "innovations": [
+    "将CRP扩展至ViT架构实现概念级空间预测解释",
+    "结合注意力感知LRP与RA-SAE后验概念发现用于虚拟空间转录组学",
+    "系统比较R-based与Z-based概念并建立多维度评测框架"
+   ],
+   "benchmarks": [
+    "HEST-1k COAD",
+    "TCGA COAD"
+   ]
+  }
+ }
 }

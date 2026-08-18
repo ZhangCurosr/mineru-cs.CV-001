@@ -4,5 +4,31 @@
  "title": "FLEET-Token-Based-Feature-Extraction-for-Event-Camera-based",
  "token": "sk-7NOZt17oN...",
  "created_at": "2026-08-18 14:30:56",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/2c8f28b9-4884-4457-ad21-b7c0be5dbf57.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/2c8f28b9-4884-4457-ad21-b7c0be5dbf57.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:17:59",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Event Camera",
+    "Reinforcement Learning",
+    "Feature Extractor",
+    "Cross-Attention",
+    "Random Fourier Features",
+    "Tokenization"
+   ],
+   "field": "事件相机强化学习感知表征",
+   "innovations": [
+    "Perceiver交叉注意力将变长事件序列压缩为固定大小隐token，解耦计算成本与传感器分辨率",
+    "纯端到端RL奖励驱动训练，无需辅助重建损失，表征与控制目标对齐",
+    "RFF时空编码+时间门控融合，突破MLP频谱偏置，精确解析高频空间细节"
+   ],
+   "benchmarks": [
+    "Event-CarEnv Racing",
+    "Event-CarEnv Parking",
+    "Event Inverted Double Pendulum"
+   ]
+  }
+ }
 }

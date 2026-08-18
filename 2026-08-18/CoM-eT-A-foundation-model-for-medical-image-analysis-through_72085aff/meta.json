@@ -4,5 +4,35 @@
  "title": "CoM-eT-A-foundation-model-for-medical-image-analysis-through",
  "token": "sk-yjjHVmEWF...",
  "created_at": "2026-08-18 14:31:03",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/15aca535-50c6-485c-93d2-3a8ae54f1651.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/15aca535-50c6-485c-93d2-3a8ae54f1651.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:14:10",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "医学视觉基础模型",
+    "多任务预训练",
+    "联邦学习",
+    "部分微调",
+    "Transformer",
+    "医学影像分析",
+    "多维度图像",
+    "UNICORN"
+   ],
+   "field": "医学影像分析基础模型",
+   "innovations": [
+    "统一架构同时支持病理与放射学、稀疏与密集预测、2D与高维输入的医学视觉基础模型",
+    "Image Transformer+Pyramid Transformer联合机制实现全局上下文建模与多维分割",
+    "参数高效部分微调（仅训练2.5%参数）结合联邦学习实现隐私保护协作"
+   ],
+   "benchmarks": [
+    "UNICORN",
+    "TotalSegmentator",
+    "Medical Segmentation Decathlon",
+    "DeepLesion",
+    "RadImageNet"
+   ]
+  }
+ }
 }

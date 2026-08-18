@@ -4,5 +4,28 @@
  "title": "DON-T-DROP-THE-BATON-LONG-HORIZON-ROBOT-MANIPULATION-VIA-AGE",
  "token": "sk-WJrSFDicB...",
  "created_at": "2026-08-18 14:30:46",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/06789235-eff1-4a5d-8749-247eadedcd7f.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/06789235-eff1-4a5d-8749-247eadedcd7f.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:15:47",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "long-horizon robot manipulation",
+    "vision-language-action",
+    "coding agent",
+    "transition-aware memory",
+    "frozen VLA",
+    "RoboMemArena"
+   ],
+   "field": "长 horizon 机器人操作",
+   "innovations": [
+    "以子任务为单位的分层探索，将探索成本从乘法(T^K)降至加法(T*K)",
+    "三种转换感知记忆：调用/交接/前瞻转换的语言契约化表示与执行时检查"
+   ],
+   "benchmarks": [
+    "RoboMemArena"
+   ]
+  }
+ }
 }

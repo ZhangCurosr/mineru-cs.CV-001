@@ -4,5 +4,30 @@
  "title": "Audio-Visual-Segmentation-via-Depth-Guided-Collaborative-Mod",
  "token": "sk-zw57yHIgm...",
  "created_at": "2026-08-18 14:31:16",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/27b2fa10-4034-48f3-b6ce-f394a8a02672.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/27b2fa10-4034-48f3-b6ce-f394a8a02672.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:13:07",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Audio-Visual Segmentation",
+    "Depth Estimation",
+    "Multi-modal Fusion",
+    "Cross-modal Alignment",
+    "Spatial Structure"
+   ],
+   "field": "音频-视觉多模态感知",
+   "innovations": [
+    "首次将深度作为显式几何桥接线索引入 AVS 任务",
+    "提出 DADM 频域分解模块实现视觉低频语义与深度高频边界互补融合",
+    "设计 DGPF 两阶段渐进融合机制以深度为桥实现音频-视觉精确对齐"
+   ],
+   "benchmarks": [
+    "AVSBench-S4",
+    "AVSBench-MS3",
+    "AVSBench-Semantic (AVSS)"
+   ]
+  }
+ }
 }

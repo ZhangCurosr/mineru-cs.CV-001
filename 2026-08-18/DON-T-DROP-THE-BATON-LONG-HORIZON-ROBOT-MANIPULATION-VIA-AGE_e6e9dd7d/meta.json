@@ -4,5 +4,10 @@
  "title": "DON-T-DROP-THE-BATON-LONG-HORIZON-ROBOT-MANIPULATION-VIA-AGE",
  "token": "sk-WJrSFDicB...",
  "created_at": "2026-08-18 02:53:09",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/41a950a7-6e83-4f72-95b2-93562cbb8444.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/41a950a7-6e83-4f72-95b2-93562cbb8444.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:16:19",
+  "chunks": 1
+ }
 }

@@ -4,5 +4,32 @@
  "title": "Bridging-the-Gap-between-Labeled-and-Unlabeled-Data-via-Unif",
  "token": "sk-dKfLTOMDH...",
  "created_at": "2026-08-18 02:55:41",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/5e4d1b76-a3ff-4bb1-8cb5-e079e778539f.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/5e4d1b76-a3ff-4bb1-8cb5-e079e778539f.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:13:45",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "semi-supervised semantic segmentation",
+    "remote sensing",
+    "visual foundation model",
+    "pseudo-labeling",
+    "feature memory bank",
+    "unified flow",
+    "DINOv2",
+    "SAM3"
+   ],
+   "field": "遥感半监督语义分割",
+   "innovations": [
+    "UF融合VFM区域先验与域教师语义校准生成低偏差伪标签",
+    "FMB通过EMA类别原型与余弦权重桥接标注与非标注特征空间",
+    "联合优化标注与非标注数据以缓解标注主导导致的伪标签退化"
+   ],
+   "benchmarks": [
+    "DeepGlobe",
+    "ISPRS-Potsdam"
+   ]
+  }
+ }
 }

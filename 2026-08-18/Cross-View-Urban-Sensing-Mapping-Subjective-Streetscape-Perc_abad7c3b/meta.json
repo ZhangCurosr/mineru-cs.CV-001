@@ -4,5 +4,34 @@
  "title": "Cross-View-Urban-Sensing-Mapping-Subjective-Streetscape-Perc",
  "token": "sk-JiEKTe0tT...",
  "created_at": "2026-08-18 02:59:29",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/6baa80e5-0c96-4485-8cfb-39ff90ee235f.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/6baa80e5-0c96-4485-8cfb-39ff90ee235f.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:15:20",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "跨视角学习",
+    "街道景观感知",
+    "AlphaEarth",
+    "遥感",
+    "城市不平等",
+    "环境暴露"
+   ],
+   "field": "遥感与城市感知融合",
+   "innovations": [
+    "提出CVLNet跨视角学习网络，从AlphaEarth嵌入与城市上下文预测主观街道感知，无需推理时依赖SVI",
+    "逐任务自适应门控融合机制使不同感知维度自适应调整遥感与上下文特征的贡献比例",
+    "生成四城市全覆盖路网感知地图并量化人口暴露不平等"
+   ],
+   "benchmarks": [
+    "SVI-Percept",
+    "RandomForest",
+    "XGBoost",
+    "D-MLP",
+    "ResNet",
+    "Transformer"
+   ]
+  }
+ }
 }

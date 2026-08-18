@@ -4,5 +4,10 @@
  "title": "Decoupling-Parcellation-from-Classification-Systematic-Bench",
  "token": "sk-xuJlHjv3a...",
  "created_at": "2026-08-18 14:31:11",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/e8e922df-2006-4109-a34c-ffe3c48097e5.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/e8e922df-2006-4109-a34c-ffe3c48097e5.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:16:28",
+  "chunks": 1
+ }
 }

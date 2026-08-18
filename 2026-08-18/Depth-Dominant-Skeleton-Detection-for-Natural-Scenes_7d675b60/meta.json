@@ -4,5 +4,32 @@
  "title": "Depth-Dominant-Skeleton-Detection-for-Natural-Scenes",
  "token": "sk-JMLCbBCEj...",
  "created_at": "2026-08-18 02:57:50",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/ba6c7a28-8b04-42e4-b72f-01085aa57769.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/ba6c7a28-8b04-42e4-b72f-01085aa57769.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:17:15",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "骨架检测",
+    "多模态融合",
+    "深度主导",
+    "非对称编码器",
+    "自然场景理解",
+    "计算机视觉"
+   ],
+   "field": "自然场景骨架检测",
+   "innovations": [
+    "首次提出深度主导骨架检测新范式，以深度图为主模态、RGB为辅助",
+    "设计非对称双分支编码器，RGB分支参数仅为深度分支的12%",
+    "以36%参数量在SymPASCAL上超越SOTA达10% F-measure提升"
+   ],
+   "benchmarks": [
+    "SymPASCAL",
+    "SK-LARGE",
+    "SK506",
+    "WH-SYMMAX"
+   ]
+  }
+ }
 }

@@ -4,5 +4,33 @@
  "title": "GaussianDWM-Language-Grounded-3D-Gaussian-Driving-World-Mode",
  "token": "sk-iG65PZaJv...",
  "created_at": "2026-08-18 14:31:24",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/c7ba772d-838f-4815-aed3-ed98662aa65c.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/c7ba772d-838f-4815-aed3-ed98662aa65c.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:18:50",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "driving world model",
+    "3D Gaussian Splatting",
+    "vision-language model",
+    "scene understanding",
+    "controllable generation",
+    "visual grounding"
+   ],
+   "field": "自动驾驶场景理解与生成",
+   "innovations": [
+    "将Qwen基础视觉语言特征端到端蒸馏到3D高斯原语，构建开词汇高斯语义场",
+    "提出驾驶感知分层高斯选择与文本条件化Perceiver交叉注意力适配器，结合KL分布对齐压缩密集原语为LLM兼容的world tokens",
+    "扩展到指令可控4D场景编辑（天气条件与动态车辆操作），实现理解-推理-生成统一框架"
+   ],
+   "benchmarks": [
+    "NuInteract",
+    "NuInstruct",
+    "OmniDrive",
+    "nuScenes spatial generation",
+    "nuScenes temporal generation"
+   ]
+  }
+ }
 }

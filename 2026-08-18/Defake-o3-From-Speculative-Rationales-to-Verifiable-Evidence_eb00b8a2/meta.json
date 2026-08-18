@@ -4,5 +4,33 @@
  "title": "Defake-o3-From-Speculative-Rationales-to-Verifiable-Evidence",
  "token": "sk-gD7m2ian9...",
  "created_at": "2026-08-18 02:57:06",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/90a9b94d-689d-47f9-813f-a707704ac4d4.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/90a9b94d-689d-47f9-813f-a707704ac4d4.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:17:07",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "AIGI检测",
+    "可解释检测",
+    "多模态大语言模型",
+    "交互式视觉搜索",
+    "强化学习",
+    "证据对齐"
+   ],
+   "field": "AI生成图像检测与可解释性",
+   "innovations": [
+    "交互式视觉搜索与验证器引导的RL奖励相结合，从推测性理由推进到可视觉验证的证据",
+    "构建GroundFake去偏数据集并提供证据级多路监督信号",
+    "提出FakeFrontier OOD基准与多评委MLLM解释质量评测协议"
+   ],
+   "benchmarks": [
+    "GroundFake",
+    "FakeFrontier",
+    "AIGI-Now",
+    "EvalGEN",
+    "MNW"
+   ]
+  }
+ }
 }

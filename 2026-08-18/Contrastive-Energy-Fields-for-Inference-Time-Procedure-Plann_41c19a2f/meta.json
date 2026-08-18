@@ -4,5 +4,29 @@
  "title": "Contrastive-Energy-Fields-for-Inference-Time-Procedure-Plann",
  "token": "sk-Hms67LeAf...",
  "created_at": "2026-08-18 14:30:59",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/4498186f-5b8a-4dcd-b211-9fef383a6df4.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/4498186f-5b8a-4dcd-b211-9fef383a6df4.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:15:01",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "Procedure Planning",
+    "Contrastive Learning",
+    "Inference-Time Optimization",
+    "Instructional Videos",
+    "Energy-Based Model"
+   ],
+   "field": "指令视频程序规划",
+   "innovations": [
+    "将程序规划重构为动作条件能量场的对比学习最小化问题",
+    "引入自适应边距与混合负样本采样构建层次化判别空间",
+    "基于任务分类器的推理时约束搜索，无需LLM实现SOTA"
+   ],
+   "benchmarks": [
+    "CrossTask",
+    "COIN"
+   ]
+  }
+ }
 }

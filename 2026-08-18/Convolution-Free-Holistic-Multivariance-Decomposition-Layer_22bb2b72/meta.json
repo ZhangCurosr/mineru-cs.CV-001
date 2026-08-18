@@ -4,5 +4,32 @@
  "title": "Convolution-Free-Holistic-Multivariance-Decomposition-Layer",
  "token": "sk-xfpcKPjW4...",
  "created_at": "2026-08-18 14:31:18",
- "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/472ea668-0839-4059-9769-3ed7fc1a0045.zip"
+ "result_url": "https://cdn-mineru.openxlab.org.cn/pdf/2026-08-18/472ea668-0839-4059-9769-3ed7fc1a0045.zip",
+ "summarized": {
+  "model": "agnes-2.5-flash",
+  "at": "2026-08-18 18:14:53",
+  "chunks": 1,
+  "meta": {
+   "keywords": [
+    "高光谱图像分类",
+    "张量分解",
+    "特征提取",
+    "参数效率",
+    "卷积神经网络",
+    "多变异分解",
+    "端到端学习"
+   ],
+   "field": "高光谱遥感图像智能解译",
+   "innovations": [
+    "提出HMD框架，将矩阵值支撑引入可微分张量分解以显式建模空谱高阶交互",
+    "设计共享支撑矩阵的层次化近似（HMD-0/1/2），在参数不变的情况下逐级提升表达能力",
+    "在统一协议下证明HMD-1/2能以约1/14的参数量达到优于或媲美2D-CNN的分类精度与训练稳定性"
+   ],
+   "benchmarks": [
+    "Indian Pines",
+    "Pavia University",
+    "Loukia"
+   ]
+  }
+ }
 }
